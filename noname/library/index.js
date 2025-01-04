@@ -3226,6 +3226,7 @@ export class Library {
 						off: "关闭",
 					},
 				},
+				/*
 				die_move: {
 					name: "阵亡效果",
 					intro: "阵亡后武将的显示效果",
@@ -3236,7 +3237,7 @@ export class Library {
 						move: "移动",
 						flip: "翻面",
 					},
-				},
+				},*/
 				target_shake: {
 					name: "目标效果",
 					intro: "一名玩家成为卡牌或技能的目标时的显示效果",
