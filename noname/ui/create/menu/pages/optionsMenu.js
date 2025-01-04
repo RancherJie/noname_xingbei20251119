@@ -150,7 +150,7 @@ export const optionsMenu = function (connectMenu) {
 					}
 					autoskillexpanded = !autoskillexpanded;
 				});
-				banskill = ui.create.div(".config.more", "双将禁配 <div>&gt;</div>", page, function () {
+				banskill = ui.create.div(".config.more", "双角禁配 <div>&gt;</div>", page, function () {
 					if (banskillexpanded) {
 						this.classList.remove("on");
 						for (var k = 0; k < banskillNodes.length; k++) {
@@ -1031,7 +1031,7 @@ export const optionsMenu = function (connectMenu) {
 					placeholder.style.display = "block";
 					placeholder.style.width = "100%";
 					placeholder.style.height = "14px";
-					createDash2("将", "武将图片", "image/character", page);
+					createDash2("角", "角色图片", "image/character", page);
 					createDash2("肤", "皮肤图片", "image/skin", page);
 					createDash2("卡", "卡牌图片", "image/card", page);
 					createDash2("模", "模式图片", "image/mode", page);

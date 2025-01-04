@@ -1823,7 +1823,7 @@ export class Player extends HTMLDivElement {
 		}
 		for (let name of newPairs) {
 			if (!lib.character[name]) {
-				console.warn(`警告：Player[${this.name}]试图将武将牌变更为不存在的武将:`, name);
+				console.warn(`警告：Player[${this.name}]试图将角色牌变更为不存在的角色:`, name);
 				return;
 			}
 		}

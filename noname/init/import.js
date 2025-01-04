@@ -96,7 +96,7 @@ function generateImportFunction(type, pathParser) {
 		script.remove();
 		if (status === "error") {
 			if (type === "character") {
-				console.warn("如果您在扩展中使用了game.import创建武将包，可将以下代码删除: lib.config.all.characters.push('武将包名');");
+				console.warn("如果您在扩展中使用了game.import创建角色包，可将以下代码删除: lib.config.all.characters.push('角色包名');");
 			}
 			return;
 		}

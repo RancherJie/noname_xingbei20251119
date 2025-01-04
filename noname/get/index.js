@@ -726,7 +726,7 @@ export class Get extends GetCompatible {
 			name = name.slice(name.indexOf("_") + 1);
 		}
 		if (lib.characterIntro[name]) return lib.characterIntro[name];
-		return "暂无武将介绍";
+		return "暂无角色介绍";
 	}
 	bordergroup(info, raw) {
 		if (typeof info == "string") info = get.character(info);

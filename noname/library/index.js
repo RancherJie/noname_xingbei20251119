@@ -1021,10 +1021,10 @@ export class Library {
 					},
 				},
 				doubleclick_intro: {
-					name: "双击显示武将资料",
+					name: "双击显示角色资料",
 					init: true,
 					unfrequent: true,
-					intro: "双击武将头像后显示其资料卡",
+					intro: "双击角色头像后显示其资料卡",
 				},
 				video: {
 					name: "保存录像",
@@ -1875,7 +1875,7 @@ export class Library {
 				change_skin: {
 					name: "开启换肤",
 					init: true,
-					intro: "在武将的右键菜单中换肤，皮肤可在选项-文件-图片文件-皮肤图片中添加",
+					intro: "在角色的右键菜单中换肤，皮肤可在选项-文件-图片文件-皮肤图片中添加",
 				},
 				change_skin_auto: {
 					name: "自动换肤",
@@ -3385,7 +3385,7 @@ export class Library {
 					}
 				},*/
 				buttoncharacter_style: {
-					name: "选将样式",
+					name: "选角样式",
 					init: "default",
 					item: {
 						default: "默认",
@@ -3395,7 +3395,7 @@ export class Library {
 					unfrequent: true,
 				},
 				buttoncharacter_prefix: {
-					name: "武将前缀",
+					name: "角色前缀",
 					init: "default",
 					item: {
 						default: "默认",
@@ -3936,7 +3936,7 @@ export class Library {
 					},
 				},
 				show_rarity: {
-					name: "显示武将评级",
+					name: "显示角色评级",
 					init: false,
 					intro: "仅供娱乐，重启后生效",
 					unfrequent: true,
@@ -3955,8 +3955,8 @@ export class Library {
 					},
 				},
 				character_dialog_tool: {
-					name: "自由选将显示",
-					intro: "点击自由选将时默认显示的条目",
+					name: "自由选角显示",
+					intro: "点击自由选角时默认显示的条目",
 					init: "最近",
 					item: {
 						收藏: "收藏",
@@ -3966,8 +3966,8 @@ export class Library {
 					unfrequent: true,
 				},
 				recent_character_number: {
-					name: "最近使用武将",
-					intro: "自由选将对话框中最近使用武将的数量",
+					name: "最近使用角色",
+					intro: "自由选角对话框中最近使用角色的数量",
 					init: "12",
 					item: {
 						5: "5",
@@ -3980,8 +3980,8 @@ export class Library {
 					unfrequent: true,
 				},
 				showMax_character_number: {
-					name: "最大武将数显示",
-					intro: "设置自由选将对话框一页显示的最大武将数<br><span class=firetext>注意事项：<br><li>更改此选项后，需要重启游戏以使用新选项配置<br><li>推荐将此选项设置为偏小数值，可降低加载过多武将时导致的性能损耗</span>",
+					name: "最大角色数显示",
+					intro: "设置自由选角对话框一页显示的最大角色数<br><span class=firetext>注意事项：<br><li>更改此选项后，需要重启游戏以使用新选项配置<br><li>推荐将此选项设置为偏小数值，可降低加载过多角色时导致的性能损耗</span>",
 					init: "10",
 					item: {
 						5: "5",
@@ -4002,13 +4002,13 @@ export class Library {
 				},
 				filternode_button: {
 					name: "触屏筛选按钮",
-					intro: "设置自由选将对话框中筛选按钮的样式",
+					intro: "设置自由选角对话框中筛选按钮的样式",
 					init: true,
 					unfrequent: true,
 				},
 				show_charactercard: {
-					name: "显示武将资料",
-					intro: "在武将界面单击时弹出武将资料卡",
+					name: "显示角色资料",
+					intro: "在角色界面单击时弹出角色资料卡",
 					init: true,
 					unfrequent: true,
 				},
@@ -4026,13 +4026,13 @@ export class Library {
 				},
 				show_favourite_menu: {
 					name: "显示收藏菜单",
-					intro: "在选项-武将中显示收藏一栏",
+					intro: "在选项-角色中显示收藏一栏",
 					init: true,
 					unfrequent: true,
 				},
 				show_ban_menu: {
-					name: "显示禁将菜单",
-					intro: "在选项-武将中显示禁将一栏",
+					name: "显示禁角菜单",
+					intro: "在选项-角色中显示禁角一栏",
 					init: true,
 					unfrequent: true,
 				},
@@ -4274,8 +4274,8 @@ export class Library {
 					unfrequent: true,
 				},
 				show_characternamepinyin: {
-					name: "显示武将名注解",
-					intro: "在武将资料卡显示武将名及其注解、性别、势力、体力等信息",
+					name: "显示角色名注解",
+					intro: "在角色资料卡显示角色名及其注解、性别、势力、体力等信息",
 					init: "showPinyin",
 					unfrequent: true,
 					item: {
@@ -4322,7 +4322,7 @@ export class Library {
 				},
 				show_skillnamepinyin: {
 					name: "显示技能名注解",
-					intro: "在武将资料卡显示技能名注解",
+					intro: "在角色资料卡显示技能名注解",
 					get init() {
 						return lib.configMenu.view.config.show_characternamepinyin.init;
 					},
@@ -9585,7 +9585,7 @@ export class Library {
 		mode_derivation_card_config: "衍生",
 		mode_banned_card_config: "禁卡",
 		mode_favourite_character_config: "收藏",
-		mode_banned_character_config: "禁将",
+		mode_banned_character_config: "禁角",
 		heart: "♥︎",
 		diamond: "♦︎",
 		spade: "♠︎",
@@ -9646,7 +9646,7 @@ export class Library {
 		draw_card: "摸牌",
 		discard_card: "弃牌",
 		take_damage: "受伤害",
-		reset_character: "复原武将牌",
+		reset_character: "复原角色牌",
 		recover_hp: "回复体力",
 		lose_hp: "失去体力",
 		get_damage: "受伤害",

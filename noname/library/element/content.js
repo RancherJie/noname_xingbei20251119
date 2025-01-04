@@ -156,7 +156,7 @@ export const Content = {
 		const newPairs = event.newPairs;
 		for (let name of newPairs) {
 			if (!lib.character[name]) {
-				console.warn(`警告：Player[${player.name}]试图将武将牌变更为不存在的武将:`, name);
+				console.warn(`警告：Player[${player.name}]试图将角色牌变更为不存在的角色:`, name);
 				return;
 			}
 		}
@@ -8402,7 +8402,7 @@ export const Content = {
 		}
 		if (event.animate == "draw") {
 			player.$draw(cards.length);
-			if (event.log) game.log(player, "将", get.cnNumber(cards.length), "张牌置于了武将牌上");
+			if (event.log) game.log(player, "将", get.cnNumber(cards.length), "张牌置于了角色牌上");
 			game.pause();
 			setTimeout(function () {
 				player.$addToExpansion(cards, null, event.gaintag);
@@ -8434,18 +8434,18 @@ export const Content = {
 				for (var i in evtmap) {
 					var source = (_status.connectMode ? lib.playerOL : game.playerMap)[i];
 					source.$give(evtmap[i][0], player, false);
-					if (event.log) game.log(player, "将", evtmap[i][0], "置于了武将牌上");
+					if (event.log) game.log(player, "将", evtmap[i][0], "置于了角色牌上");
 				}
 			} else {
 				for (var i in evtmap) {
 					var source = (_status.connectMode ? lib.playerOL : game.playerMap)[i];
 					if (evtmap[i][1].length) {
 						source.$giveAuto(evtmap[i][1], player, false);
-						if (event.log) game.log(player, "将", get.cnNumber(evtmap[i][1].length), "张牌置于了武将牌上");
+						if (event.log) game.log(player, "将", get.cnNumber(evtmap[i][1].length), "张牌置于了角色牌上");
 					}
 					if (evtmap[i][2].length) {
 						source.$give(evtmap[i][2], player, false);
-						if (event.log) game.log(player, "将", evtmap[i][2], "置于了武将牌上");
+						if (event.log) game.log(player, "将", evtmap[i][2], "置于了角色牌上");
 					}
 				}
 			}

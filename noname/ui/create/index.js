@@ -1152,7 +1152,7 @@ export class Create {
 					if (!packsource.onlypack) {
 						packsource.classList.remove("thundertext");
 						if (!get.is.phoneLayout() || !lib.config.filternode_button) {
-							packsource.innerHTML = "武将包";
+							packsource.innerHTML = "角色包";
 						}
 					}
 				}
@@ -1376,7 +1376,7 @@ export class Create {
 					packsource.style.display = "none";
 					packsource.previousSibling.style.display = "none";
 				} else {
-					packsource.innerHTML = "武将包";
+					packsource.innerHTML = "角色包";
 				}
 			}
 

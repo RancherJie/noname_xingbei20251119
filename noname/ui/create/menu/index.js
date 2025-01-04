@@ -461,7 +461,7 @@ export function menu(connectMenu) {
 				clickContainer.call(cacheMenuContainer, connectMenu);
 			}
 		};
-		menux = createMenu(connectMenu, ["开始", "选项", "武将", "卡牌", "扩展", "其它"], {
+		menux = createMenu(connectMenu, ["开始", "选项", "角色", "卡牌", "扩展", "其它"], {
 			position: cacheMenuContainer,
 			bar: 40,
 		});
@@ -495,7 +495,7 @@ export function menu(connectMenu) {
 			}
 		};
 
-		menux = createMenu(connectMenu, ["模式", "武将", "卡牌"], {
+		menux = createMenu(connectMenu, ["模式", "角色", "卡牌"], {
 			position: cacheMenuContainer,
 			bar: 123,
 		});
