@@ -3139,12 +3139,13 @@ export class Library {
 						lib.init.cssstyles();
 					},
 				},
+				/*
 				equip_span: {
 					name: "装备牌占位",
 					intro: "打开后，没有装备的装备区将在装备栏占据空白位置。",
 					init: false,
 					unfrequent: false,
-				},
+				},*/
 				fold_card: {
 					name: "折叠手牌",
 					init: true,
