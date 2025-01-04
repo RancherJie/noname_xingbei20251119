@@ -762,6 +762,7 @@ export class Library {
 					unfrequent: true,
 					intro: "当候选目标只有1个时，点击目标后无需再点击确认",
 				},
+				/*
 				skip_shan: {
 					name: "无闪自动取消",
 					init: false,
@@ -785,7 +786,7 @@ export class Library {
 					init: false,
 					intro: "双方阵营明确的模式中（如对决），敌方角色濒死时不询问出桃",
 					unfrequent: true,
-				},
+				},*/
 				enable_drag: {
 					name: "启用拖拽",
 					init: true,
