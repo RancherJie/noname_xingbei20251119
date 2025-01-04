@@ -3211,7 +3211,7 @@ export class Library {
 				},*/
 				animation: {
 					name: "游戏特效",
-					intro: "开启后出现属性伤害、回复体力等情况时会显示动画",
+					intro: "开启后出现部分情况时会显示动画",
 					init: false,
 					unfrequent: true,
 				},
