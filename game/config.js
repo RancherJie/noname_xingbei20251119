@@ -75,7 +75,7 @@ window.config = {
 	brokenFile: [],
 
 	theme: "woodden",
-	layout: "mobile",
+	layout: "nova",
 	card_style: "default",
 	cardback_style: "default",
 	hp_style: "default",
