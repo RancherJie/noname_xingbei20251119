@@ -1,10 +1,10 @@
 window.config = {
 	extension_sources: {
-		"GitHub Proxy": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/libccy/noname-extension/master/",
-		FastGit: "https://raw.fgit.cf/libccy/noname-extension/master/",
-		GitHub: "https://raw.githubusercontent.com/libccy/noname-extension/master/",
+		"GitHub Proxy": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/RancherJie/noname_xingbei_extension/master/",
+		gitee: "https://gitee.com/RancherJie/noname_xingbei_extension/raw/master/",
+		GitHub: "https://raw.githubusercontent.com/RancherJie/noname_xingbei_extension/master/",
 	},
-	extension_source: "GitHub Proxy",
+	extension_source: "GitHub",
 	forbidai: ["ns_liuzhang"],
 	forbidai_user: [],
 	forbidall: [],

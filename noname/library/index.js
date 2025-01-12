@@ -1153,7 +1153,7 @@ export class Library {
 				},
 				extension_source: {
 					name: "获取扩展地址",
-					init: "GitHub Proxy",
+					init: "GitHub",
 					unfrequent: true,
 					item: {},
 					intro: () => `获取在线扩展时的地址。当前地址：${document.createElement("br").outerHTML}${lib.config.extension_sources[lib.config.extension_source]}`,
