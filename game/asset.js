@@ -58,10 +58,9 @@ window.noname_asset_list
 	"image/background/noname_bg.jpg",
 	"image/background/wuming_bg.jpg",
 
-	"image/card/cardtempname_bg.png",
 	"image/card/shield.png",
 	"image/card/tiesuo_mark.png",
-	
+
 	"image/card/moDan.png",
 	"image/card/shengDun.png",
 	"image/card/shengGuang.png",
