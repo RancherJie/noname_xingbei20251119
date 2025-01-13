@@ -27,6 +27,26 @@ import { GameCompatible } from "./compatible.js";
 import { save } from "../util/config.js";
 
 export class Game extends GameCompatible {
+	shiQiMax=15;
+	xingBeiMax=5;
+	zhanJiMax=5;
+	hongShiQi=0;
+	lanShiQi=0;
+	hongZhanJi=[];
+	lanZhanJi=[];
+	hongXingBei=0;
+	lanXingBei=0;
+
+	moDanFangXiang='you';
+	jiChuXiaoGuo={
+		fengYinShi:['diZhiFengYin_xiaoGuo','shuiZhiFengYin_xiaoGuo','huoZhiFengYin_xiaoGuo','fengZhiFengYin_xiaoGuo','leiZhiFengYin_xiaoGuo'],
+		qiDaoShi:['weiLiCiFu_xiaoGuo','xunJieCiFu_xiaoGuo'],
+		pai:['_shengDun','_xuRuo','_zhongDu'],
+	};
+	handcardLimit=6;
+	zhiLiaoMax=2;
+	nengLiangMax=3;
+
 	documentZoom;
 	online = false;
 	onlineID = null;

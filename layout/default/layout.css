@@ -717,6 +717,27 @@ table {
 	right: 14px;
 	text-align: right;
 }
+.touchinfo.bottom-right{
+	top:auto;
+    right: 0;
+    bottom: 0;
+
+	border-collapse: collapse;
+	border-radius: 8px;
+	overflow: hidden;
+	background-color: rgba(255, 255, 255, 0.7); /* 半透明白色背景 */
+}
+tr > td{
+    padding: 2px;
+	text-align: center;
+	border: none;
+	font-size: 24px;
+}
+
+tr.highlight {
+	background-color:rgba(6, 165, 165, 0.352);
+}
+
 #window.touchinfohidden > .touchinfo {
 	opacity: 0;
 }

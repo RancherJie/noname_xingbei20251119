@@ -87,7 +87,7 @@ export default () => {
             'step 4'
             game.broadcastAll(function(){
                 ui.shiQiInfo=ui.create.div('.touchinfo.bottom-right',ui.window);
-                //ui.updateShiQiInfo();
+                ui.updateShiQiInfo();
             });
 			if(_status.connectMode){
                 _status.first_less=true;
@@ -2488,10 +2488,11 @@ export default () => {
 
 			_tiLian_backup:'提炼',
 			_heCheng_backup:'合成',
-			
+			baoShi:'宝石',
+            shuiJing:'水晶',
 		},
 		skill:{
-			_gongJiRiZhi:{
+			gongJiRiZhi:{
 				trigger:{player:'useCardToTarget'},
                 filter:function(event,player){
 					return get.is.gongJi(event.getParent());
@@ -3449,11 +3450,11 @@ export default () => {
 					check:function(button){
 						var player=_status.event.player;
 						if(player.hasSkillTag('baoShi')&&!player.hasSkillTag('shuiJing')){
-							if(button.link=='宝石') return 5;
+							if(button.link=='baoShi') return 5;
 							else return -1;
 						}
 						if(player.hasSkillTag('shuiJing')&&!player.hasSkillTag('baoShi')){
-							if(button.link=='水晶') return 5;
+							if(button.link=='shuiJing') return 5;
 							else return 2;
 						}
 						//既有水晶也有宝石
@@ -3476,7 +3477,7 @@ export default () => {
 							if(zhanJi.length<=1) return 0;
 
 							if(player.hasSkillTag('shuiJing')&&!player.hasSkillTag('baoShi')){
-								if(!zhanJi.includes('水晶')) return 0;
+								if(!zhanJi.includes('shuiJing')) return 0;
 							}
 
 							var num=player.getNengLiangLimit()-player.countNengLiangAll();
@@ -3547,14 +3548,6 @@ export default () => {
 				},
 				changeShiQi:function(){
 					'step 0'
-					event.trigger('changeShiQi1');
-					'step 1'
-					event.trigger('changeShiQi2');
-					'step 2'
-					event.trigger('changeShiQi3');
-					'step 3'
-					event.trigger('changeShiQi4');
-					'step 4'
 					num=event.num;
 					side=event.side;
 					//增加参数是否存在最大变动值，如果存在则进行限制
@@ -3597,24 +3590,20 @@ export default () => {
 				},
 				changeZhanJi:function(){
 					num=event.num;
-					color=event.color;
+					xingShi=event.xingShi;
 					side=event.side;
-					if(color=="r"){
-						var xingShi='宝石';
-					}else if(color=="b"){
-						var xingShi='水晶';
-					}
 					var numx=num;
+                    var name=get.translation(xingShi);
 					if(num>0){
 						if(side==true){
 							for(let i=0;i<num;i++){
 								game.hongZhanJi.push(xingShi);
-								game.log('<span style="color:red;">红方</span>战绩区增加',xingShi);
+								game.log('<span style="color:red;">红方</span>战绩区增加',name);
 							}
 						}else if(side==false){
 							for(let i=0;i<num;i++){
 								game.lanZhanJi.push(xingShi);
-								game.log('<span style="color:blue;">蓝方</span>战绩区增加为',xingShi);
+								game.log('<span style="color:blue;">蓝方</span>战绩区增加为',name);
 							}
 						}
 					}else if(num<0){
@@ -3624,7 +3613,7 @@ export default () => {
 								let index = game.hongZhanJi.indexOf(xingShi);  
 								if (index !== -1) {  
 									game.hongZhanJi.splice(index, 1);  
-									game.log('<span style="color:red;">红方</span>战绩区移除',xingShi);
+									game.log('<span style="color:red;">红方</span>战绩区移除',name);
 								}
 							}
 							
@@ -3633,7 +3622,7 @@ export default () => {
 								let index = game.lanZhanJi.indexOf(xingShi);  
 								if (index !== -1) {  
 									game.lanZhanJi.splice(index, 1);  
-									game.log('<span style="color:blue;">蓝方</span>战绩区移除',xingShi);
+									game.log('<span style="color:blue;">蓝方</span>战绩区移除',name);
 								}
 							}
 							
@@ -3648,7 +3637,7 @@ export default () => {
 						ui.updateShiQiInfo();
 					},game.hongZhanJi,game.lanZhanJi);
 				
-					game.addVideo('changeZhanJi',null,[numx,color,side]);
+					game.addVideo('changeZhanJi',null,[numx,xingShi,side]);
 					game.checkResult();
 				},
 
@@ -3656,7 +3645,7 @@ export default () => {
 				removeBiShaShuiJing:function(){
 					'step 0'
                     if(player.hasMark('_tiLian_b')&&player.hasMark('_tiLian_r')){
-                        var list=['宝石','水晶'];
+                        var list=['baoShi','shuiJing'];
                         player.chooseControl(list).set('prompt','选择要移除的星石').set('ai',function(){
 							return 1;
 						});
@@ -3686,281 +3675,9 @@ export default () => {
 					}
 				},
 
-				replacePlayer:function(){
-					"step 0"
-					var cards=source.getCards('hej');
-					if(cards.length){
-						source.$throw(cards,1000);
-						game.cardsDiscard(cards);
-					}
-					"step 1"
-					var list=(source.side==game.me.side)?_status.friend:_status.enemy;
-					if(list.length==0){
-						// if(game.friend.contains(source)){
-						// 	game.over(false);
-						// }
-						// else{
-						// 	game.over(true);
-						// }
-						game.friend.remove(source);
-						game.enemy.remove(source);
-						if(game.friend.length==0) game.over(false);
-						else if(game.enemy.length==0) game.over(true);
-						if(game.friendZhu&&game.friendZhu.classList.contains('dead')&&game.friend.length){
-							game.friendZhu=game.friend[0];
-							game.friendZhu.setIdentity(_status.color+'Zhu');
-						}
-						if(game.enemyZhu&&game.enemyZhu.classList.contains('dead')&&game.enemy.length){
-							game.enemyZhu=game.enemy[0];
-							game.enemyZhu.setIdentity(!_status.color+'Zhu');
-						}
-						event.finish();
-						return;
-					}
-					if(source.side==game.me.side&&list.length>1&&(game.me==game.friendZhu||(lib.storage.zhu&&lib.storage.single_control))&&
-						!_status.auto){
-						event.dialog=ui.create.dialog('选择替补角色',[list,'character']);
-						event.filterButton=function(){return true;};
-						event.player=game.me;
-						event.forced=true;
-						event.custom.replace.confirm=function(){
-							event.character=ui.selected.buttons[0].link;
-							event.dialog.close();
-							if(ui.confirm) ui.confirm.close();
-							delete event.player;
-							game.resume();
-						}
-						game.check();
-						game.pause();
-					}
-					else{
-						event.character=list[Math.floor(Math.random()*list.length)];
-					}
-					"step 2"
-					game.uncheck();
-					_status.friend.remove(event.character);
-					_status.enemy.remove(event.character);
-					source.revive(null,false);
-					game.additionaldead.push({
-						name:source.name,
-						stat:source.stat
-					});
-					game.addVideo('reinit',source,[event.character,get.translation(source.side+'Color')]);
-					source.uninit();
-					source.init(event.character);
-					game.log(source,'出场');
-					source.node.identity.dataset.color=get.translation(source.side+'Color');
-					source.draw(4);
-					var evt=event.getParent('dying');
-					if(evt&&evt.parent){
-						evt=evt.parent;
-						evt.untrigger(false,source);
-						for(var i=0;i<100;i++){
-							evt=evt.parent;
-							if(evt.player==source){
-								evt.finish();
-							}
-							if(evt.name=='phase'){
-								break;
-							}
-						}
-					}
-					if(lib.storage.single_control){
-						game.onSwapControl();
-					}
-					game.triggerEnter(source);
-					"step 3"
-					// if(_status.currentPhase==source){
-					// 	source.skip('phase');
-					// }
-				},
-				replacePlayerTwo:function(){
-					'step 0'
-					var cards=source.getCards('hej');
-					if(cards.length){
-						source.$throw(cards,1000);
-						game.cardsDiscard(cards);
-					}
-					game.delay();
-					'step 1'
-					source.revive(null,false);
-					game.additionaldead.push({
-						name:source.name,
-						stat:source.stat
-					});
-					game.addVideo('reinit',source,[event.character,get.translation(source.side+'Color')]);
-					source.uninit();
-					source.init(event.character);
-					game.log(source,'出场');
-					// source.node.identity.dataset.color=source.side+'zhu';
-					source.draw(4);
-					var evt=event.getParent('dying');
-					if(evt&&evt.parent){
-						evt=evt.parent;
-						evt.untrigger(false,source);
-						for(var i=0;i<100;i++){
-							evt=evt.parent;
-							if(evt.player==source){
-								evt.finish();
-							}
-							if(evt.name=='phase'){
-								break;
-							}
-						}
-					}
-					game.triggerEnter(source);
-				},
-				replacePlayerOL:function(){
-					'step 0'
-					var cards=source.getCards('hej');
-					if(cards.length){
-						source.$throw(cards,1000);
-						game.cardsDiscard(cards);
-					}
-					game.delay();
-					'step 1'
-					if(event.source.side==game.me.side){
-						if(_status.friend.length==1){
-							event.directresult=_status.friend[0];
-						}
-						else if(event.source==game.me){
-							if(_status.auto){
-								event.directresult=_status.friend.randomGet();
-							}
-						}
-						else{
-							if(!event.source.isOnline()){
-								event.directresult=_status.friend.randomGet();
-							}
-						}
-					}
-					else{
-						if(_status.enemy.length==1){
-							event.directresult=_status.enemy[0];
-						}
-						else{
-							if(!event.source.isOnline()){
-								event.directresult=_status.enemy.randomGet();
-							}
-						}
-					}
-					if(!event.directresult){
-						if(event.source==game.me){
-							event.dialog=ui.create.dialog('选择替补角色',[_status.friend,'character']);
-							event.filterButton=function(){return true};
-							event.player=game.me;
-							event.forced=true;
-							event.custom.replace.confirm=function(){
-								event.directresult=ui.selected.buttons[0].link;
-								event.dialog.close();
-								if(ui.confirm) ui.confirm.close();
-								delete event.player;
-								game.resume();
-							}
-							event.switchToAuto=function(){
-								event.directresult=_status.friend.randomGet();
-								event.dialog.close();
-								if(ui.confirm) ui.confirm.close();
-								delete event.player;
-							};
-							game.check();
-							game.pause();
-						}
-						else{
-							event.source.send(function(player){
-								if(_status.auto){
-									_status.event._result=_status.friend.randomGet();
-								}
-								else{
-									var next=game.createEvent('replacePlayer');
-									next.source=player;
-									next.setContent(function(){
-										event.dialog=ui.create.dialog('选择替补角色',[_status.friend,'character']);
-										event.filterButton=function(){return true};
-										event.player=event.source;
-										event.forced=true;
-										event.custom.replace.confirm=function(){
-											event.result=ui.selected.buttons[0].link;
-											event.dialog.close();
-											if(ui.confirm) ui.confirm.close();
-											delete event.player;
-											game.resume();
-											game.uncheck();
-										}
-										event.switchToAuto=function(){
-											event.result=_status.friend.randomGet();
-											event.dialog.close();
-											if(ui.confirm) ui.confirm.close();
-											delete event.player;
-											game.uncheck();
-										};
-										game.check();
-										game.pause();
-									});
-								}
-								game.resume();
-							},event.source);
-							event.source.wait();
-							game.pause();
-						}
-					}
-					'step 2'
-					game.uncheck();
-					if(!event.directresult){
-						if(event.resultOL){
-							event.directresult=event.resultOL[source.playerid];
-						}
-						if(!event.directresult||event.directresult=='ai'){
-							if(source.side==game.me.side){
-								event.directresult=_status.friend.randomGet();
-							}
-							else{
-								event.directresult=_status.enemy.randomGet();
-							}
-						}
-					}
-					var name=event.directresult;
-					var color=source.node.identity.dataset.color;
-					game.additionaldead.push({
-						name:source.name,
-						stat:source.stat
-					});
-
-					game.broadcastAll(function(source,name,color){
-						_status.friend.remove(name);
-						_status.enemy.remove(name);
-						source.revive(null,false);
-						source.uninit();
-						source.init(name);
-						source.node.identity.dataset.color=color;
-						if(source==game.me){
-							ui.arena.classList.remove('selecting');
-						}
-					},source,name,color);
-					game.log(source,'出场');
-
-					source.draw(4);
-					var evt=event.getParent('dying');
-					if(evt&&evt.parent){
-						evt=evt.parent;
-						evt.untrigger(false,source);
-						for(var i=0;i<100;i++){
-							evt=evt.parent;
-							if(evt.player==source){
-								evt.finish();
-							}
-							if(evt.name=='phase'){
-								break;
-							}
-						}
-					}
-					game.addVideo('reinit',source,[name,color]);
-					game.triggerEnter(source);
-				},
 			},
 			player:{
 				//xingbei
-
 				changeShiQi:function(num,side){//xingbei
 					var next=game.createEvent('changeShiQi');
 					next.player=this;
@@ -3985,11 +3702,11 @@ export default () => {
 					next.setContent('changeShiQi');
 					return next;
 				},
-				changeZhanJi:function(color,num,side){//xingbei
+				changeZhanJi:function(xingShi,num,side){//xingbei
 					var next=game.createEvent('changeZhanJi');
 					if(typeof num!='number'||!num) num=1;
 					next.player=this;
-					next.color=color;
+					next.xingShi=color;
 					var sidex;
 					if(side==undefined){
 						sidex=this.side;

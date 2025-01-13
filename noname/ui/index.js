@@ -6,6 +6,93 @@ import { Click } from "./click/index.js";
 import { Create } from "./create/index.js";
 
 export class UI {
+	updateShiQiInfo(){
+		var lanZhanJi={};
+		var hongZhanJi={};
+		for(var i=0;i<game.hongZhanJi.length;i++){
+			if(game.hongZhanJi[i]=='baoShi'){
+				hongZhanJi['baoShi']=(hongZhanJi['baoShi']||0)+1;
+			}else if(game.hongZhanJi[i]=='shuiJing'){
+				hongZhanJi['shuiJing']=(hongZhanJi['shuiJing']||0)+1;
+			}
+		}
+		for(var i=0;i<game.lanZhanJi.length;i++){
+			if(game.lanZhanJi[i]=='baoShi'){
+				lanZhanJi['baoShi']=(lanZhanJi['baoShi']||0)+1;
+			}else if(game.lanZhanJi[i]=='shuiJing'){
+				lanZhanJi['shuiJing']=(lanZhanJi['shuiJing']||0)+1;
+			}
+		}
+		var hongZhanJi_str='';
+		var lanZhanJi_str='';
+		var baoShi=lib.assetURL+'image/card/xingShi/baoShi.png';  // 根据颜色选择不同图片
+		var shuiJing=lib.assetURL+'image/card/xingShi/shuiJing.png';
+
+		var keysSorted = Object.keys(hongZhanJi).sort();  // 获取键数组并排序
+		keysSorted.forEach(function(key) {
+			let images = '';
+			for (let i = 0; i < hongZhanJi[key]; i++) {
+				let imageSrc = (key == 'baoShi' ? baoShi : shuiJing);  // 根据键来决定使用哪张图片
+				images += `<img src="${imageSrc}" style="width: 20px; height: 20px;">`;
+			}
+			hongZhanJi_str += images;
+		});
+
+		var keysSorted = Object.keys(lanZhanJi).sort();  // 获取键数组并排序
+		keysSorted.forEach(function(key) {
+			let images = '';
+			for (let i = 0; i < lanZhanJi[key]; i++) {
+				let imageSrc = (key == 'baoShi' ? baoShi : shuiJing);  // 根据键来决定使用哪张图片
+				images += `<img src="${imageSrc}" style="width: 20px; height: 20px;">`;
+			}
+			lanZhanJi_str += images;
+		});
+	
+		if(game.me){
+			var highlightRedTeam=game.me.side;
+		}else{
+			var highlightRedTeam=null;
+		}
+		if(highlightRedTeam!=null){
+			var teamClass1=(highlightRedTeam ? 'highlight' : '');
+			var teamClass2=(highlightRedTeam ? '' : 'highlight');
+		}else{
+			var teamClass1='';
+			var teamClass2='';
+		}
+
+		// 定义布尔变量
+
+		// 根据布尔变量值修改表格内容
+		ui.shiQiInfo.innerHTML = `
+			<table>
+				<tr>
+					<td>士气</td>
+					<td>星石</td>
+					<td>星杯</td>
+				</tr>
+				<tr class="${teamClass1}">
+					<td>
+						<span style="color:red;">${game.hongShiQi}</span>
+					</td>
+					<td style="width: 100px;">${hongZhanJi_str}</td>
+					<td>
+						<span style="color:red;">${game.hongXingBei}</span>
+					</td>
+				</tr>
+				<tr class="${teamClass2}">
+					<td>
+						<span style="color:blue;">${game.lanShiQi}</span>
+					</td>
+					<td style="width: 100px;">${lanZhanJi_str}</td>
+					<td>
+						<span style="color:blue;">${game.lanXingBei}</span>
+					</td>
+				</tr>
+			</table>
+		`;
+	}
+
 	updates = [];
 	thrown = [];
 	touchlines = [];
