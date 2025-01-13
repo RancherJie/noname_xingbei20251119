@@ -228,6 +228,7 @@ export class Card extends HTMLDivElement {
 	 * }} card
 	 */
 	init(card) {
+		/*
 		if (Array.isArray(card)) {
 			if (card[2] == "huosha") {
 				card[2] = "sha";
@@ -255,9 +256,9 @@ export class Card extends HTMLDivElement {
 			}
 		} else if (typeof card == "object") {
 			card = [card.suit, card.number, card.name, card.nature];
-		}
-		var cardnum = card[1] || "";
-		if (parseInt(cardnum) == cardnum) cardnum = parseInt(cardnum);
+		}*/
+		//var cardnum = card[1] || "";
+		//if (parseInt(cardnum) == cardnum) cardnum = parseInt(cardnum);
 
 		if (!lib.card[card[2]]) {
 			lib.card[card[2]] = {};
@@ -273,10 +274,11 @@ export class Card extends HTMLDivElement {
 			}
 			delete info.global;
 		}
-		this.suit = card[0];
-		this.number = parseInt(card[1]) || 0;
+		this.xiBie = card[0] || '';
+		//this.number = parseInt(card[1]) || 0;
+		this.mingGe = card[1] || '';
 		this.name = card[2];
-
+		this.duYou = card[3];
 		if (
 			info.destroy &&
 			typeof info.destroy != "boolean" &&
@@ -309,9 +311,9 @@ export class Card extends HTMLDivElement {
 	 */
 	$init(card) {
 		var info = lib.card[card[2]];
-		var cardnum = card[1] || "";
-		if (parseInt(cardnum) == cardnum) cardnum = parseInt(cardnum);
-		cardnum = get.strNumber(cardnum, true) || "";
+		var mingGe = get.translation(card[1]) || "";
+		//if (parseInt(cardnum) == cardnum) cardnum = parseInt(cardnum);
+		//cardnum = get.strNumber(cardnum, true) || "";
 		if (this.name) {
 			this.classList.remove("epic");
 			this.classList.remove("legend");
@@ -542,7 +544,7 @@ export class Card extends HTMLDivElement {
 			this.node.info.innerHTML =
 				get.translation(card[0]) +
 				'<span style="font-family:xinwei"> </span><span style="font-family:xinwei">' +
-				cardnum +
+				mingGe +
 				"</span>";
 		}
 		if (info.addinfo) {
@@ -583,7 +585,7 @@ export class Card extends HTMLDivElement {
 			}
 		}
 		this.node.name2.innerHTML =
-			get.translation(card[0]) + cardnum + " " + name;
+			get.translation(card[0]) + mingGe + " " + name;
 		this.classList.add("card");
 		if (card[3]) {
 			let natures = get.natureList(card[3]);
@@ -591,7 +593,7 @@ export class Card extends HTMLDivElement {
 				if (n) this.classList.add(n);
 			});
 			this.nature = natures
-				.filter((n) => lib.nature.has(n))
+				//.filter((n) => lib.nature.has(n))
 				.sort(lib.sort.nature)
 				.join(lib.natureSeparator);
 		} else if (this.nature) {
@@ -600,6 +602,9 @@ export class Card extends HTMLDivElement {
 		}
 		if (info.subtype) this.classList.add(info.subtype);
 		this.node.range.innerHTML = "";
+		if(get.type(this)=='gongJi'){
+			this.node.range.innerHTML=get.translation(this.duYou);
+		}
 		switch (get.subtype(this, false)) {
 			case "equip1":
 				var added = false;

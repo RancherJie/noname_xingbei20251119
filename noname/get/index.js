@@ -1519,7 +1519,7 @@ export class Get extends GetCompatible {
 		return Array.from(infos || []).map(info => game.playerMap[info]);
 	}
 	cardInfo(card) {
-		return [card.suit, card.number, card.name, card.nature, card.cardid];
+		return [card.xiBie, card.mingGe, card.name, card.duYou, card.cardid];
 	}
 	cardsInfo(cards = []) {
 		return Array.from(cards).map(get.cardInfo);

@@ -44,7 +44,7 @@ window.noname_package = {
 		xianjian: "仙剑奇侠传",
 	},
 	card: {
-		
+		xingBei:'星杯',
 	},
 	play: {
 		boss: "诸神降临",
