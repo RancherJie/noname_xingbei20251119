@@ -3654,11 +3654,12 @@ export class Library {
 						map.show_time.show();
 						map.watchface.hide();
 					}
+					/*
 					if (lib.config.show_deckMonitor) {
 						map.show_deckMonitor_online.show();
 					} else {
 						map.show_deckMonitor_online.hide();
-					}
+					}*/
 					if (lib.config.show_extensionmaker) {
 						map.show_extensionshare.show();
 					} else {
@@ -4205,6 +4206,7 @@ export class Library {
 						document.documentElement.style.setProperty("--tip-display", bool ? "flex" : "none");
 					},
 				},
+				/*
 				show_deckMonitor: {
 					name: "显示记牌器",
 					init: true,
@@ -4240,7 +4242,7 @@ export class Library {
 							game.saveConfig("show_deckMonitor_online", bool);
 						}
 					},
-				},
+				},*/
 				show_wuxie: {
 					name: "显示无懈按钮",
 					intro: "在右上角显示不询问无懈",
@@ -12355,6 +12357,7 @@ export class Library {
 			 * @this {import("./element/client.js").Client}
 			 */
 			init(version, config, banned_info) {
+				/*
 				var show_deckMonitor = false;
 				if (lib.config.show_deckMonitor && lib.config.show_deckMonitor_online) {
 					show_deckMonitor = true;
@@ -12365,7 +12368,7 @@ export class Library {
 					} else {
 						ui.deckMonitor.style.display = "none";
 					}
-				}, show_deckMonitor);
+				}, show_deckMonitor);*/
 				this.onlineKey = config.onlineKey;
 				var banBlacklist = lib.config.banBlacklist === undefined ? [] : lib.config.banBlacklist;
 				if (lib.node.banned.includes(banned_info) || banBlacklist.includes(config.onlineKey)) {

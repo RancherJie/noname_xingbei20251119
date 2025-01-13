@@ -2521,6 +2521,7 @@ export class Create {
 
 
 		lib.arenaReady?.push(function () {
+			/*
 			if (lib.config.show_deckMonitor) {
 				ui.deckMonitor.style.display = "";
 				if (_status.connectMode && !lib.config.show_deckMonitor_online) {
@@ -2528,7 +2529,8 @@ export class Create {
 				}
 			} else {
 				ui.deckMonitor.style.display = "none";
-			}
+			}*/
+			ui.deckMonitor.style.display = "none";
 			document.documentElement.style.setProperty("--tip-display", lib.config.show_tip ? "flex" : "none");
 		});
 
