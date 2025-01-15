@@ -1777,7 +1777,7 @@ div:not(.handcards) > .card > .info > span,
 }
 #window > .dialog.popped {
 	z-index: 5;
-	width: 220px;
+	width: 420px;
 	background: rgba(0, 0, 0, 0.2);
 	box-shadow: rgba(0, 0, 0, 0.3) 0 0 0 1px;
 	border-radius: 6px;
@@ -1977,9 +1977,10 @@ div:not(.handcards) > .card > .info > span,
 }
 
 .skill {
+	color: rgb(75, 96, 3);
 	left: 0 !important;
-	width: 70px !important;
-	/*-- white-space: nowrap; --*/
+	width: 400px !important;
+	white-space: nowrap;
 }
 .skilln {
 	left: 0 !important;
@@ -3460,6 +3461,16 @@ div:not(.handcards) > .card > .info > span,
 	line-height: 22px;
 	bottom: 47px;
 	right: 13px;
+}
+
+.tiaoJian {
+    color: rgb(131, 109, 31); 
+}
+.hong {
+	color: rgb(160, 72, 36); 
+}
+.lan {
+	color: rgb(0, 133, 160);
 }
 
 /*--------动画--------*/

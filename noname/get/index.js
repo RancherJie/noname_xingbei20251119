@@ -2793,7 +2793,8 @@ export class Get extends GetCompatible {
 		}
 		if (arg == "skill") {
 			if (lib.translate[str + "_ab"]) return lib.translate[str + "_ab"];
-			if (lib.translate[str]) return lib.translate[str].slice(0, 2);
+			//if (lib.translate[str]) return lib.translate[str].slice(0, 2);
+			if (lib.translate[str]) return lib.translate[str];
 			return str;
 		} else if (arg == "info") {
 			if (lib.translate[str + "_info"]) return lib.translate[str + "_info"];
@@ -3418,7 +3419,8 @@ export class Get extends GetCompatible {
 				} else {
 					opacity = "";
 				}
-				var skilltrans = get.translation(skills[i]).slice(0, 2);
+				//var skilltrans = get.translation(skills[i]).slice(0, 2);
+				var skilltrans = get.translation(skills[i]);
 				str += '<div class="skill" style="' + opacity + '">【' + skilltrans + '】</div><div style="' + opacity + '">' + get.skillInfoTranslation(skills[i]) + '</div><div style="display:block;height:10px"></div>';
 			}
 		}
@@ -3631,7 +3633,8 @@ export class Get extends GetCompatible {
 					if (lib.translate[skills[i] + "_ab"]) translation = lib.translate[skills[i] + "_ab"];
 					else {
 						translation = get.translation(skills[i]);
-						if (!lib.skill[skills[i]].nobracket) translation = `【${translation.slice(0, 2)}】`;
+						//if (!lib.skill[skills[i]].nobracket) translation = `【${translation.slice(0, 2)}】`;
+						if (!lib.skill[skills[i]].nobracket) translation = `${translation}`;
 					}
 
 					if (node.forbiddenSkills[skills[i]]) {
@@ -4412,7 +4415,8 @@ export class Get extends GetCompatible {
 						if (lib.translate[skills[i] + "_ab"]) translation = lib.translate[skills[i] + "_ab"];
 						else {
 							translation = get.translation(skills[i]);
-							if (!lib.skill[skills[i]].nobracket) translation = `【${translation.slice(0, 2)}】`;
+							//if (!lib.skill[skills[i]].nobracket) translation = `【${translation.slice(0, 2)}】`;
+							if (!lib.skill[skills[i]].nobracket) translation = `${translation}`;
 						}
 
 						uiintro.add('<div><div class="skill">' + translation + "</div><div>" + get.skillInfoTranslation(skills[i]) + "</div></div>");
