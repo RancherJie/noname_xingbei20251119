@@ -731,11 +731,15 @@ tr > td{
     padding: 2px;
 	text-align: center;
 	border: none;
-	font-size: 18px;
+	/*font-size: 18px;*/
 }
 
 tr.highlight {
 	background-color:rgba(6, 165, 165, 0.352);
+}
+
+.table.zhanJi {
+	font-size: 24px;
 }
 
 #window.touchinfohidden > .touchinfo {

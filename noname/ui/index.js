@@ -65,7 +65,7 @@ export class UI {
 
 		// 根据布尔变量值修改表格内容
 		ui.shiQiInfo.innerHTML = `
-			<table>
+			<table class="table zhanJi">
 				<tr>
 					<td>士气</td>
 					<td>星石</td>
