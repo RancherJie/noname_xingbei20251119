@@ -3745,9 +3745,9 @@ export class Get extends GetCompatible {
 				table = document.createElement("table");
 				tr = document.createElement("tr");
 				table.appendChild(tr);
-				td = document.createElement("td");
-				td.innerHTML = "距离";
-				tr.appendChild(td);
+				//td = document.createElement("td");
+				//td.innerHTML = "距离";
+				//tr.appendChild(td);
 				td = document.createElement("td");
 				td.innerHTML = "手牌";
 				tr.appendChild(td);
@@ -3757,9 +3757,10 @@ export class Get extends GetCompatible {
 				td = document.createElement("td");
 				td.innerHTML = "伤害";
 				tr.appendChild(td);
-
+				
 				tr = document.createElement("tr");
 				table.appendChild(tr);
+				/*
 				td = document.createElement("td");
 				if (node == game.me || !game.me || !game.me.isIn()) {
 					td.innerHTML = "-";
@@ -3773,6 +3774,7 @@ export class Get extends GetCompatible {
 					}
 				}
 				tr.appendChild(td);
+				*/
 				td = document.createElement("td");
 				let handcardLimit = node.getHandcardLimit();
 				td.innerHTML = `${node.countCards("h")}/${handcardLimit >= 114514 ? "∞" : handcardLimit}`;
