@@ -2815,6 +2815,7 @@ export class Player extends HTMLDivElement {
 				else str += '人数：<span class="firetext">' + this.hp + "/" + this.maxHp + "</span>";
 
 				str += "　(" + info[0].slice(0, 12) + " 的房间)";
+				/*
 				if (config.mode != "guozhan" && (config.mode != "doudizhu" || config.doudizhu_mode != "online")) {
 					str += "【";
 					for (var i = 0; i < config.cardPack.length; i++) {
@@ -2822,8 +2823,16 @@ export class Player extends HTMLDivElement {
 						if (i < config.cardPack.length - 1) str += "+";
 					}
 					str += "】";
+				}*/
+				if(config.mode=='xingBei'){
+					str+='【';
+					for(var i=0;i<config.characterPack.length;i++){
+						str+=(get.translation(config.characterPack[i]+'_character_config'));
+						if(i<config.characterPack.length-1) str+='+';
+					}
+					str+='】';
 				}
-				
+
 				if(info[2].remark && info[2].remark!='无'){
 					str+=`备注[${info[2].remark}]`;
 				}
