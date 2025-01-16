@@ -542,10 +542,6 @@ export default () => {
 
 					if(get.config('phaseswap')){
 						game.addGlobalSkill('autoswap');
-						if(lib.config.show_handcardbutton){
-							ui.versushs=ui.create.system('手牌',null,true);
-							lib.setPopped(ui.versushs,game.versusHoverHandcards,220);
-						}
 					}
 					
 				});
