@@ -562,7 +562,7 @@ export default () => {
                     ui.updateShiQiInfo();
                 }];
 
-				if(!lib.configOL.versus_mode=='4v4'){
+				if(lib.configOL.versus_mode=='4v4'){
 					game.chooseCharacterOLDuoXuanYi();
 				}else{
 					switch(lib.configOL.choose_mode){
