@@ -951,6 +951,7 @@ export class Click {
 				game.shuffleNumber +
 				"</div>"
 		);
+		/*
 		uiintro.add('<div class="text center">弃牌堆</div>');
 		if (ui.discardPile.childNodes.length) {
 			var list = [];
@@ -960,7 +961,7 @@ export class Click {
 			uiintro.addSmall([list, "card"]);
 		} else {
 			uiintro.add('<div class="text center" style="padding-bottom:3px">无</div>');
-		}
+		}*/
 		return uiintro;
 	}
 	chat() {
