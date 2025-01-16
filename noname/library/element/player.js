@@ -2823,6 +2823,11 @@ export class Player extends HTMLDivElement {
 					}
 					str += "】";
 				}
+				
+				if(info[2].remark && info[2].remark!='无'){
+					str+=`备注[${info[2].remark}]`;
+				}
+
 				this.config = config;
 				if (this.hp == this.maxHp && !config.gameStarted) {
 					this.roomfull = true;
