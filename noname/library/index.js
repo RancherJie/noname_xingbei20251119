@@ -10565,11 +10565,11 @@ export class Library {
 				let base = 0;
 				if (get.is.double(name, true)) base = 9;
 				const group = info[1];
-				if (group == "ji") return base;
-				if (group == "huan") return base + 1;
-				if (group == "xue") return base + 2;
-				if (group == "yong") return base + 3;
-				if (group == "sheng") return base + 4;
+				if (group == "jiGroup") return base;
+				if (group == "huanGroup") return base + 1;
+				if (group == "xueGroup") return base + 2;
+				if (group == "yongGroup") return base + 3;
+				if (group == "shengGroup") return base + 4;
 				return base + 7;
 			};
 			const del = groupSort(a) - groupSort(b);
