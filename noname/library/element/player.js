@@ -9814,11 +9814,12 @@ export class Player extends HTMLDivElement {
 		}
 		if (that === me || this == me._trueMe) return true;
 		if (_status.connectMode) return false;
-		if (lib.config.mode == "versus") {
-			if (_status.mode == "three") return this.side == me.side;
-			if (_status.mode == "standard") return lib.storage.single_control && this.side == me.side;
-			if (_status.mode == "four") return get.config("four_phaseswap") && this.side == me.side;
-			if (_status.mode == "two") return get.config("two_phaseswap") && this.side == me.side;
+		//if (lib.config.mode == "versus") {
+		if (lib.config.mode == "xingBei") {
+			//if (_status.mode == "three") return this.side == me.side;
+			//if (_status.mode == "standard") return lib.storage.single_control && this.side == me.side;
+			//if (_status.mode == "four") return get.config("four_phaseswap") && this.side == me.side;
+			if (_status.mode == "two" || _status.mode=='three') return get.config("phaseswap") && this.side == me.side;
 			return false;
 		} else if (lib.config.mode == "boss") {
 			if (me.side) return false;
