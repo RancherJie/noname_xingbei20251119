@@ -6642,7 +6642,7 @@ export class Library {
 				},
 				connect_avatar: {
 					name: "联机头像",
-					init: "caocao",
+					init: "fengZhiJianSheng",
 					item: {},
 					frequent: true,
 					onclick(item) {
