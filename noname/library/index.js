@@ -4194,6 +4194,7 @@ export class Library {
 						game.saveConfig("show_handcardbutton", bool);
 					},
 				},
+				/*
 				show_giveup: {
 					name: "显示投降按钮",
 					init: true,
@@ -4201,7 +4202,7 @@ export class Library {
 					onclick(bool) {
 						game.saveConfig("show_giveup", bool);
 					},
-				},
+				},*/
 				show_tip: {
 					name: "显示tip标记",
 					init: false,
