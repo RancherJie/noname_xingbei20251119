@@ -2216,6 +2216,7 @@ export class Library {
 						//ol: "手杀",
 						//xinglass: "双鱼",
 						//xinround: "OL",
+						xingBei: "星杯",
 						custom: "自定",
 					},
 					visualBar: function (node, item, create, switcher) {
