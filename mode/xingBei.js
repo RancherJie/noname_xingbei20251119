@@ -232,86 +232,13 @@ export default () => {
 					'step 0'
 					var number=game.players.length;
 					var choose_number=get.config('choose_number');
-					var team_sequence=get.config('team_sequence');
 					ui.arena.classList.add('choose-character');
-					for(var i in lib.skill){
-						if(lib.skill[i].changeSeat){
-							lib.skill[i]={};
-							if(lib.translate[i+'_info']){
-								lib.translate[i+'_info']='此模式下不可用';
-							}
-						}
-					}
+					
+					var list=game.teamSequenceList();
 					var ref=game.players.randomGet();
-					var bool=true;
-					var bool2=false;
-					if(number==4){
-						if(team_sequence=='near'){
-							ref.side=bool;
-							ref.next.side=bool;
-							ref.next.next.side=bool2;
-							ref.previous.side=bool2;
-						}else if(team_sequence=='crossed'){
-							ref.side=bool;
-							ref.next.side=bool2;
-							ref.next.next.side=bool;
-							ref.previous.side=bool2;
-						}else if(team_sequence=='random'){
-							var sideList=[true,true,false,false];
-							sideList.randomSort();
-							for(var i=0;i<number;i++){
-								game.players[i].side=sideList[i];
-							}
-							while(ref.side!=true){
-								ref=game.players.randomGet();
-							}
-						}else if(team_sequence=='CM'){
-							ref.side=bool;
-							ref.next.side=bool2;
-							ref.next.next.side=bool2;
-							ref.next.next.next.side=bool;
-						}
-					}else if(number==6){
-						if(team_sequence=='crossed'){
-							ref.side=bool;
-							ref.next.side=bool2;
-							ref.next.next.side=bool;
-							ref.next.next.next.side=bool2;
-							ref.next.next.next.next.side=bool;
-							ref.next.next.next.next.next.side=bool2;
-						}else if(team_sequence=='near'){
-							ref.side=bool;
-							ref.next.side=bool;
-							ref.next.next.side=bool;
-							ref.next.next.next.side=bool2;
-							ref.next.next.next.next.side=bool2;
-							ref.next.next.next.next.next.side=bool2;
-						}else if(team_sequence=='random'){
-							var sideList=[true,true,false,false,true,false];
-							sideList.randomSort();
-							for(var i=0;i<number;i++){
-								game.players[i].side=sideList[i];
-							}
-							while(ref.side!=true){
-								ref=game.players.randomGet();
-							}
-						}else if(team_sequence=='CM'){
-							ref.side=bool;
-							ref.next.side=bool2;
-							ref.next.next.side=bool2;
-							ref.next.next.next.side=bool;
-							ref.next.next.next.next.side=bool;
-							ref.next.next.next.next.next.side=bool2;
-						}
-					}else if(number==8){
-						var sideList=[true,true,false,false,true,false,true,false];
-						sideList.randomSort();
-						for(var i=0;i<number;i++){
-							game.players[i].side=sideList[i];
-						}
-						while(ref.side!=true){
-							ref=game.players.randomGet();
-						}
+					for(var i=0;i<number;i++){
+						ref.side=list[i];
+						ref=ref.next;
 					}
 					
 					var firstChoose=ref;
@@ -676,43 +603,60 @@ export default () => {
 				}
 				return ref
 			},
+
+			teamSequenceList:function(){
+				var number,team_sequence,mode;
+				if(_status.connectMode){
+					number=lib.configOL.number;
+					team_sequence=lib.configOL.team_sequence;
+					mode=lib.configOL.versus_mode;
+					if(mode=='CM02'){
+						team_sequence='CM';
+					}
+				}else{
+					number=game.players.length;
+					team_sequence=get.config('team_sequence');
+				}
+				
+				var list=[];
+				if(number==4){
+					if(team_sequence=='CM'){
+						list=[true,false,false,true];
+					}else if(team_sequence=='near'){
+						list=[true,true,false,false];
+					}else if(team_sequence=='crossed'){
+						list=[true,false,true,false];
+					}else{
+						list=[true,false,false,true];
+						list.randomSort();
+					}
+				}else if(number==6){
+					if(team_sequence=='CM'){
+						list=[true,false,false,true,true,false];
+					}else if(team_sequence=='near'){
+						list=[true,true,true,false,false,false];
+					}else if(team_sequence=='crossed'){
+						list=[true,false,true,false,true,false];
+					}else{
+						list=[true,true,true,false,false,false];
+						list.randomSort();
+					}
+				}else if(number==8){
+					list=[true,true,true,false,false,false,true,false];
+					list.randomSort();
+				}
+				return list;
+			},
 			
 			chooseCharacterOLDuoXuanYi:function(){
 				var next=game.createEvent('chooseCharacterOL');
 				next.setContent(function(){
 					'step 0'
 					//获取顺位
-					var number=lib.configOL.number;
-					var team_sequence=lib.configOL.team_sequence;
-					if(number==4){
-						if(team_sequence=='CM'){
-							event.list=[true,false,false,true];
-						}else if(team_sequence=='near'){
-							event.list=[true,true,false,false];
-						}else if(team_sequence=='crossed'){
-							event.list=[true,false,true,false];
-						}else{
-							event.list=[true,false,false,true];
-							event.list.randomSort();
-						}
-					}else if(number==6){
-						if(team_sequence=='CM'){
-							event.list=[true,false,false,true,true,false];
-						}else if(team_sequence=='near'){
-							event.list=[true,true,true,false,false,false];
-						}else if(team_sequence=='crossed'){
-							event.list=[true,false,true,false,true,false];
-						}else{
-							event.list=[true,true,true,false,false,false];
-							event.list.randomSort();
-						}
-					}else if(number==8){
-						event.list=[true,true,true,false,false,false,true,false];
-						event.list.randomSort();
-					}
-
-					
 					var chooseSide=lib.configOL.chooseSide;
+
+					event.list=game.teamSequenceList();
+
 					if(chooseSide){//自由选择队伍
 						game.chooseSide();
 					}
@@ -730,9 +674,6 @@ export default () => {
 							ref=ref.next;
 						}
 					}
-					
-					
-
 					
 					var choose_number=parseInt(lib.configOL.choose_number);
 					
@@ -987,40 +928,24 @@ export default () => {
 					event.number=lib.configOL.number;
 					event.choose_number=18;
 
-					if(event.number==4){
-						event.list=[true,false,false,true];
-					}else{
-						event.list=[true,false,false,true,true,false];
-					}
+					event.list=game.teamSequenceList();
 
 					var chooseSide=lib.configOL.chooseSide;
 					if(chooseSide){
 						game.chooseSide();
-					}else{
-						var ref=game.players.randomGet();
-						var bool=true;
-						var bool2=false;
-						if(event.number==4){
-							ref.side=bool;
-							ref.next.side=bool2;
-							ref.next.next.side=bool2;
-							ref.next.next.next.side=bool;
-						}else{
-							ref.side=bool;
-							ref.next.side=bool2;
-							ref.next.next.side=bool2;
-							ref.next.next.next.side=bool;
-							ref.next.next.next.next.side=bool;
-							ref.next.next.next.next.next.side=bool2;
-						}
-						event.ref=ref;
 					}
 					'step 1'
 					var chooseSide=lib.configOL.chooseSide;
-					var ref=event.ref;
 					if(chooseSide){
-						ref=game.getFirstRed();
+						var ref=game.getFirstRed();
 						game.moveSeat(event.list,ref);
+					}else{
+						var ref=game.players.randomGet();
+						console.log(event.list);
+						for(var i=0;i<event.number;i++){
+							ref.side=event.list[i];
+							ref=ref.next;
+						}
 					}
 					
 					if(event.number==4){
@@ -1558,30 +1483,7 @@ export default () => {
 					//var ref=game.players[0];
 					event.number=lib.configOL.number;
 					event.choose_number=parseInt(lib.configOL.BPchoose_number);
-					var team_sequence=lib.configOL.team_sequence;
-					if(event.number==4){
-						if(team_sequence=='CM'){
-							event.list=[true,false,false,true];
-						}else if(team_sequence=='near'){
-							event.list=[true,true,false,false];
-						}else if(team_sequence=='crossed'){
-							event.list=[true,false,true,false];
-						}else{
-							event.list=[true,false,false,true];
-							event.list.randomSort();
-						}
-					}else{
-						if(team_sequence=='CM'){
-							event.list=[true,false,false,true,true,false];
-						}else if(team_sequence=='near'){
-							event.list=[true,true,true,false,false,false];
-						}else if(team_sequence=='crossed'){
-							event.list=[true,false,true,false,true,false];
-						}else{
-							event.list=[true,true,true,false,false,false];
-							event.list.randomSort();
-						}
-					}
+					event.list=game.teamSequenceList();
 
 					var chooseSide=lib.configOL.chooseSide;
 					if(chooseSide){//自由选择队伍
@@ -1928,30 +1830,8 @@ export default () => {
 					//var ref=game.players[0];
 					event.number=lib.configOL.number;
 					event.choose_number=parseInt(lib.configOL.BPchoose_number);
-					var team_sequence=lib.configOL.team_sequence;
-					if(event.number==4){
-						if(team_sequence=='CM'){
-							event.list=[true,false,false,true];
-						}else if(team_sequence=='near'){
-							event.list=[true,true,false,false];
-						}else if(team_sequence=='crossed'){
-							event.list=[true,false,true,false];
-						}else{
-							event.list=[true,false,false,true];
-							event.list.randomSort();
-						}
-					}else{
-						if(team_sequence=='CM'){
-							event.list=[true,false,false,true,true,false];
-						}else if(team_sequence=='near'){
-							event.list=[true,true,true,false,false,false];
-						}else if(team_sequence=='crossed'){
-							event.list=[true,false,true,false,true,false];
-						}else{
-							event.list=[true,true,true,false,false,false];
-							event.list.randomSort();
-						}
-					}
+
+					event.list=game.teamSequenceList();
 
 					var chooseSide=lib.configOL.chooseSide;
 					if(chooseSide){//自由选择队伍
