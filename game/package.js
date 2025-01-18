@@ -18,6 +18,7 @@ window.noname_package = {
 		
 	},
 	background: {
+		xingBei_bg: "星杯传说",
 		noname_bg: "璀璨",
 		wuming_bg: "无名",
 	},
