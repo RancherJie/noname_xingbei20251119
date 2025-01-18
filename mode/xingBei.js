@@ -2342,7 +2342,6 @@ export default () => {
 				game.moDan=2;
 				game.moDanFangXiang='you';
 				game.broadcast(function(){
-					game.moDan=2;
 					game.moDanFangXiang='you';
 				})
 			},
@@ -2956,7 +2955,6 @@ export default () => {
 						}
 					}
 					
-					
 					var name=get.translation(trigger.player);
 					var str='受到'+name+'的魔弹';
 					var next=player.qiTa(str,function(card,player,event){
@@ -2964,20 +2962,16 @@ export default () => {
                         return lib.filter.cardEnabled(card,player,'forceEnable');
 					});
 					next.autodelay=true; 
-					
-                    game.broadcastAll(function(){
-                        game.moDan++;
-                    });
+					game.moDan++;
+
 					"step 1"
 					if(result.bool){
                         trigger.getParent().targets.remove(player);
-						if(get.name(result.used)=='shengGuang') game.resetMoDan();
-                        //trigger.cancel();
+						game.resetMoDan();
 					}else{
-                        game.broadcastAll(function(){
-                            game.moDan--;
-                        });
+						game.moDan--;
                     }
+					
                     player.storage.moDan=false;
 				},
 				ai:{
@@ -4636,7 +4630,6 @@ export default () => {
 						}
 					}
 					"step 11"
-					game.resetMoDan();
 					if(!event.notrigger) event.trigger('damageSource');
 					
 				},

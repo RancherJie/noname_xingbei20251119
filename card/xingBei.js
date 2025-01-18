@@ -331,9 +331,10 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				},
 				content:function(){
 					"step 0"
-					event.baseDamage=game.moDan;
-					var next=target.damage(event.baseDamage);
+					var next=target.damage(game.moDan);
 					next.faShu=true;
+					'step 1'
+					game.resetMoDan();
 				},
 				ai:{
 					basic:{

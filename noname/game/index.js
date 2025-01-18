@@ -37,6 +37,7 @@ export class Game extends GameCompatible {
 	hongXingBei=0;
 	lanXingBei=0;
 
+	moDan=2;
 	moDanFangXiang='you';
 	jiChuXiaoGuo={
 		fengYinShi:['diZhiFengYin_xiaoGuo','shuiZhiFengYin_xiaoGuo','huoZhiFengYin_xiaoGuo','fengZhiFengYin_xiaoGuo','leiZhiFengYin_xiaoGuo'],
