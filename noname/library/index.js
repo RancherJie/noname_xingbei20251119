@@ -2032,7 +2032,7 @@ export class Library {
 				cardback_style: {
 					name: "卡背样式",
 					intro: "设置背面朝上的卡牌的样式",
-					init: "default",
+					init: "xingBei",
 					item: {
 						// wood:'木纹',
 						// music:'音乐',
@@ -2041,6 +2041,7 @@ export class Library {
 						//feicheng: "废城",
 						//liusha: "流沙",
 						//ol: "手杀",
+						xingBei: "星杯",
 						custom: "自定",
 						default: "默认",
 					},
@@ -2107,7 +2108,7 @@ export class Library {
 								node.style.backgroundImage = "none";
 								node.className = "button character dashedmenubutton";
 								break;
-							}
+							}/*
 							case "new":
 								node.className = "button character";
 								node.setBackgroundImage("theme/style/cardback/image/new.png");
@@ -2136,6 +2137,11 @@ export class Library {
 							case "music":
 								node.className = "button card fullskin";
 								node.setBackgroundImage("theme/music/wood3.png");
+								break;
+							*/
+							case "xingBei":
+								node.className = "button card fullskin";
+								node.setBackgroundImage("theme/style/cardback/image/xingBei1.png");
 								break;
 						}
 						if (link == "custom") {

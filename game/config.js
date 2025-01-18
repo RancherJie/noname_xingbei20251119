@@ -77,7 +77,7 @@ window.config = {
 	theme: "woodden",
 	layout: "nova",
 	card_style: "default",
-	cardback_style: "default",
+	cardback_style: "xingBei",
 	hp_style: "default",
 
 	image_character: "default",
