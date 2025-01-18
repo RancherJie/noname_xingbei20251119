@@ -55,11 +55,11 @@ window.noname_asset_list
 	"font/xingkai.woff2",
 	"font/xinwei.woff2",
 	"font/yuanli.woff2",
+
 	"image/background/noname_bg.jpg",
 	"image/background/wuming_bg.jpg",
+	'image/background/xingBei_bg.jpg',
 
-	"image/card/shield.png",
-	"image/card/tiesuo_mark.png",
 
 	"image/card/moDan.png",
 	"image/card/shengDun.png",
@@ -72,6 +72,9 @@ window.noname_asset_list
 	"image/card/fengShenZhan.png",
 	"image/card/huoYanZhan.png",
 	"image/card/leiGuangZhan.png",
+	
+	'image/card/xingShi/baoShi.png',
+	'image/card/xingShi/shuiJing.png',
 
 	'image/character/anShaZhe.jpg',
 	'image/character/cangYanMoNv.jpg',

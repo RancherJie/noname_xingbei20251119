@@ -180,9 +180,16 @@ window.noname_source_list = [
 	"theme/style/cardback/default.css",
 	"theme/style/cardback/music.css",
 	"theme/style/cardback/wood.css",
+	"theme/style/cardback/xingBei.css",
+	'theme/style/cardback/image/xingBei1.png', 
+	'theme/style/cardback/image/xingBei2.png',
 
 	"theme/style/hp/custom.css",
 	"theme/style/hp/default.css",
+	'theme/style/hp/xingBei.css',
+	'theme/style/hp/image/xing.png',
+	'theme/style/hp/image/xingBei1.png',
+	'theme/style/hp/image/xingBei4.png',
 
 
 	"node_modules/options/.npmignore",
