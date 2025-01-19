@@ -2889,7 +2889,12 @@ export class Create {
 			}
 			if (item.duYou) {
 				let duYous = get.duYouList(item.duYou);
-				duYous.forEach(n => node.classList.add(n));
+				//duYous.forEach(n => node.classList.add(n));
+				duYous.forEach(n => {
+					if(n!=''){
+						node.classList.add(n)
+					}
+				});
 			}
 			if (!noclick) {
 				lib.setIntro(node);
