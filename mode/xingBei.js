@@ -2423,56 +2423,23 @@ export default () => {
 
 			_wuFaXingDong:{
 				filterx:function(event,player){
-					if(event.name=='phaseUse'){
-						var next=game.createEvent('wuFaXingDong',false);
-						next.setContent('emptyEvent');
-						next.parent=event;
-					}
-					
 					//console.log('--------------------------------');
 					//拥有挑衅直接false
 					if(player.hasZhiShiWu('tiaoXinX')) return false;
-					//判断是否有可使用技能
-					var skills;
-					skills=player.getSkills('invisible',true,false);
-					skills=game.filterSkills(skills.concat(lib.skill.global),player,player.getSkills('e').concat(lib.skill.global));
-					game.expandSkills(skills);
-
 					//无可启动技跳过启动前后无法行动
 					if(event.name=='phaseUse'){
-						if(player.storage.qiDong==false) return false;
+						if(event.canQiDong==false) return false;
 					}
-					
+					//获取所有技能
+					var skills = game.expandSkills(player.getSkills("invisible").concat(lib.skill.global));
 					//判断是否有可触发的技能
 					for(var i=0;i<skills.length;i++){
-						//排除提炼
-						if(skills[i]=='_tiLian') continue;
-						
-						var info=get.info(skills[i]);
-						if(info.type=='faShu'||info.type=='gongJi'||info.type=='teShu'){
-							var enable=false;
-							if(typeof info.enable=='function') enable=info.enable(event);
-							else if(Array.isArray(info.enable)) enable=info.enable.includes('chooseToUse');
-							else if(info.enable=='phaseUse') enable=(event.type=='phase'||event.name=='phaseUse');
-							else if(typeof info.enable=='string') enable=(info.enable==event.name);
-							if(enable&&event.name!='phaseUse'){
-								if(!game.expandSkills(player.getSkills(false).concat(lib.skill.global)).includes(skills[i])&&info.noHidden) enable=false;
-								if(info.filter&&!info.filter(event,player)) enable=false;
-								if(info.viewAs&&typeof info.viewAs!='function'&&event.filterCard&&!event.filterCard(info.viewAs,player,event)) enable=false;
-								if(info.viewAs&&typeof info.viewAs!='function'&&info.viewAsFilter&&info.viewAsFilter(player)==false) enable=false;
-								if(info.chooseButton&&_status.event.noButton) enable=false;
-							}else if(enable){
-								if(!game.expandSkills(player.getSkills(false).concat(lib.skill.global)).includes(skills[i])&&info.noHidden) enable=false;
-								if(info.filter&&!info.filter(next,player)) enable=false;
-								if(info.viewAs&&typeof info.viewAs!='function'&&next.filterCard&&!next.filterCard(info.viewAs,player,next)) enable=false;
-								if(info.viewAs&&typeof info.viewAs!='function'&&info.viewAsFilter&&info.viewAsFilter(player)==false) enable=false;
-								if(info.chooseButton&&_status.event.noButton) enable=false;
-							}
-							//console.log(skills[i],enable);
-							if(enable) return false;
-						}
-						
+						//排除提炼和无法行动（避免判断可触发时循环嵌套）
+						if(skills[i]=='_tiLian' || skills[i]=='_wuFaXingDong') continue;
+						var enable=lib.filter.filterEnable(event, player, skills[i]);
+						if(enable) return false;
 					}
+
 					//判断是否有可使用手牌
 					var cards=player.getCards('h').concat(player.getCards('e'));
 					for(var i=0;i<cards.length;i++){
@@ -2487,7 +2454,12 @@ export default () => {
 				},
 				content:function(){
 					"step 0"
-					player.storage.wuFaXingDong={'认可':0,'否认':0};
+					player.wuFaXingDong();
+					player.storage.gongJiOrFaShu++;
+				},
+				contentx:function(){
+					"step 0"
+					event.dict={'认可':0,'否认':0};
 					event.targetsx=game.filterPlayer(i=>i!=player).sortBySeat(_status.currentPhase);
 					var name=get.translation(player.name);
 					event.contentx=[name+'宣言无法行动',player.getCards('h').slice()];
@@ -2510,18 +2482,18 @@ export default () => {
 					if(result.control=='认可'){
 						event.target.popup('认可');
 						game.log(event.target,'认可');
-						player.storage.wuFaXingDong[result.control]++;
+						event.dict[result.control]++;
 					}else if(result.control=='否认'){
 						event.target.popup('否认');
 						game.log(event.target,'否认');
-						player.storage.wuFaXingDong[result.control]++;
+						event.dict[result.control]++;
 					}
 					if(event.targetsx.length>0) event.goto(1);
 					"step 3"
-					var dict=player.storage.wuFaXingDong;
-					if(dict['认可']>=dict['否认']){
-						event.getParent('phaseUse').canTeShu=false
-						event.getParent('phaseUse').firstAtion=true;
+					if(event.dict['认可']>=event.dict['否认']){
+						event.getParent('phaseUse').canTeShu=false;
+						event.getParent('phaseUse').firstAction=true;
+						player.storage.gongJiOrFaShu++;
 						var num=player.getCards('h').length;
 						player.discard(player.getCards('h'));
 						player.draw(num);
@@ -2549,51 +2521,7 @@ export default () => {
 						},
 						content:function(){
 							"step 0"
-							player.storage.wuFaXingDong={'认可':0,'否认':0};
-							event.targetsx=game.filterPlayer(i=>i!=player).sortBySeat(_status.currentPhase);
-							var name=get.translation(player.name);
-							event.contentx=[name+'宣言无法行动',player.getCards('h')];
-							event.listx=['认可','否认'];
-							"step 1"
-							event.target=event.targetsx.shift();
-							if(event.contentx[1].length==0){
-								event.target.chooseControl(event.listx).set('dialog',[event.contentx[0]]).set('ai',function(){
-									return 1;
-								});
-							}else{
-								event.target.chooseControl(event.listx).set('dialog',event.contentx).set('ai',function(){
-									if(_status.event.dialog[1].length==0){
-										return 1;
-									}
-									return 0;
-								});
-							}
-							"step 2"
-							if(result.control=='认可'){
-								event.target.popup('认可');
-								game.log(event.target,'认可');
-								player.storage.wuFaXingDong[result.control]++;
-							}else if(result.control=='否认'){
-								event.target.popup('否认');
-								game.log(event.target,'否认');
-								player.storage.wuFaXingDong[result.control]++;
-							}
-							if(event.targetsx.length>0) event.goto(1);
-							"step 3"
-							var dict=player.storage.wuFaXingDong;
-							if(dict['认可']>=dict['否认']){
-								event.getParent('phaseUse').canTeShu=false
-								event.getParent('phaseUse').firstAtion=true;
-								var num=player.getCards('h').length;
-								player.discard(player.getCards('h'));
-								player.draw(num);
-							}else{
-								if(game.players[0].side==player.side){
-									game.over(false);
-								}else{
-									game.over(true);
-								}
-							}
+							player.wuFaXingDong();
 						}
 					},
 					qiDongHou:{
@@ -2604,51 +2532,7 @@ export default () => {
 						priority:-1,
 						content:function(){
 							"step 0"
-							player.storage.wuFaXingDong={'认可':0,'否认':0};
-							event.targetsx=game.filterPlayer(i=>i!=player).sortBySeat(_status.currentPhase);
-							var name=get.translation(player.name);
-							event.contentx=[name+'宣言无法行动',player.getCards('h').slice()];
-							event.listx=['认可','否认'];
-							"step 1"
-							event.target=event.targetsx.shift();
-							if(event.contentx[1].length==0){
-								event.target.chooseControl(event.listx).set('dialog',[event.contentx[0]]).set('ai',function(){
-									return 1;
-								});
-							}else{
-								event.target.chooseControl(event.listx).set('dialog',event.contentx).set('ai',function(){
-									if(_status.event.dialog[1].length==0){
-										return 1;
-									}
-									return 0;
-								});
-							}
-							"step 2"
-							if(result.control=='认可'){
-								event.target.popup('认可');
-								game.log(event.target,'认可');
-								player.storage.wuFaXingDong[result.control]++;
-							}else if(result.control=='否认'){
-								event.target.popup('否认');
-								game.log(event.target,'否认');
-								player.storage.wuFaXingDong[result.control]++;
-							}
-							if(event.targetsx.length>0) event.goto(1);
-							"step 3"
-							var dict=player.storage.wuFaXingDong;
-							if(dict['认可']>=dict['否认']){
-								event.getParent('phaseUse').canTeShu=false
-								event.getParent('phaseUse').firstAtion=true;
-								var num=player.getCards('h').length;
-								player.discard(player.getCards('h'));
-								player.draw(num);
-							}else{
-								if(game.players[0].side==player.side){
-									game.over(false);
-								}else{
-									game.over(true);
-								}
-							}
+							player.wuFaXingDong();
 						}
 					}
 				}
@@ -5004,6 +4888,12 @@ export default () => {
 			},
 			player:{
 				//xingbei
+				wuFaXingDong:function(){
+					var next=game.createEvent('wuFaXingDong');
+					next.player = this;
+					next.setContent(lib.skill._wuFaXingDong.contentx);
+				},
+
 				yingZhan:function(use){
 					var next=game.createEvent('yingZhan');
 					next.player = this;
