@@ -10157,6 +10157,8 @@ export class Library {
 				if (typeof enable === "function") return enable(event);
 				if (Array.isArray(enable)) return enable.some(i => checkEnable(i));
 				if (enable === "phaseUse") return event.type === "phase";
+				if(enable==='wuFaXingDong') return event.firstAction === true;//专门无法行动设置启用参数
+				if(enable==='gongJiOrFaShu') return event.name=='gongJi' || event.name=='faShu' || event.name=='gongJiOrFaShu';//专门攻击或法术设置启用参数
 				if (typeof enable === "string") return enable === event.name;
 				return false;
 			};
