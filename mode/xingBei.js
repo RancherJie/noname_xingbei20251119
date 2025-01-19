@@ -3366,10 +3366,13 @@ export default () => {
 					}
 
 					if(player.storage.gongJiOrFaShu>0){
+						event.name='gongJiOrFaShu';
 						var next=player.gongJiOrFaShu().set('action',true);
 					}else if(player.storage.faShu>0){
+						event.name='faShu';
 						var next=player.faShu().set('action',true).set('prompt','法术行动');
 					}else if(player.storage.gongJi>0){
+						event.name='gongJi';
 						var next=player.gongJi().set('action',true).set('prompt','攻击行动');
 					}
 					if(next){
@@ -3377,18 +3380,18 @@ export default () => {
 							next.set('prompt',false);
 						}
 						if(event.firstAtion){
-							//next.set('type','phase');
+							next.set('type','phase');
 							next.set('firstAtion',event.firstAtion);
 							event.firstAtion=false;
 						}
 					}
 
 					"step 4";
-					if(result.name=='gongJiOrFaShu'){
+					if(event.name=='gongJiOrFaShu'){
 						player.storage.gongJiOrFaShu--;
-					}else if(result.name=='faShu'){
+					}else if(event.name=='faShu'){
 						player.storage.faShu--;
-					}else if(result.name=='gongJi'){
+					}else if(event.name=='gongJi'){
 						player.storage.gongJi--;
 					}
 					if(!event.skipped&&(player.storage.gongJiOrFaShu>0||player.storage.gongJi>0||player.storage.faShu>0)){
