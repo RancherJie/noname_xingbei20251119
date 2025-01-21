@@ -3251,7 +3251,7 @@ export default () => {
 
 					if(player.storage.gongJiOrFaShu>0){
 						event.xingDong='gongJiOrFaShu';
-						var next=player.gongJiOrFaShu().set('action',true);
+						var next=player.gongJiOrFaShu().set('action',true).set('prompt','[攻击行动]或者[法术行动]');
 					}else if(player.storage.faShu>0){
 						event.xingDong='faShu';
 						var next=player.faShu().set('action',true).set('prompt','法术行动');
