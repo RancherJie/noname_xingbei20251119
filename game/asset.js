@@ -307,6 +307,13 @@ window.noname_asset_list
 	"theme/woodden/wood.png",
 	"theme/woodden/wood2.jpg",
 	"theme/woodden/wood2.png",
+
+	"image/splash/style1.jpg",
+	"image/splash/style2.jpg",
+	"image/splash/style1/connect.jpg",
+	"image/splash/style1/xingBei.jpg",
+	"image/splash/style2/connect.jpg",
+	"image/splash/style2/xingBei.jpg",
 ];
 window.noname_skin_list
 =
