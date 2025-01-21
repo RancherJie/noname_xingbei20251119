@@ -542,10 +542,11 @@ export class Card extends HTMLDivElement {
 			this.node.info.innerHTML = info.modinfo;
 		} else {
 			this.node.info.innerHTML =
-				get.translation(card[0]) +
-				'<span style="font-family:xinwei"> </span><span style="font-family:xinwei">' +
-				mingGe +
-				"</span>";
+				//get.translation(card[0]) +
+				//'<span style="font-family:xinwei"> </span><span style="font-family:xinwei">' +
+				//mingGe +
+				//"</span>";
+				'<span>'+get.translation(card[0])+get.translation(mingGe)+'</span>';
 		}
 		if (info.addinfo) {
 			if (!this.node.addinfo) {
