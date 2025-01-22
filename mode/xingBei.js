@@ -2376,42 +2376,40 @@ export default () => {
             shuiJing:'水晶',
 		},
 		skill:{
-			gongJiRiZhi:{
-				trigger:{player:'useCardToTarget'},
-                filter:function(event,player){
-					return get.is.gongJi(event.getParent());
-				},
-				lastDo:true,
+			_gongJiRiZhi:{
+				trigger:{player:'gongJiSheZhi'},
 				direct:true,
+				lastDo:true,
+				filter:function(event,player){
+					return event.canYingZhan==false||event.canShengGuang==false||event.canShengDun==false;
+				},
 				content:function(){
-					var canYingZhan=trigger.getParent().canYingZhan;
-					var canShengGuang=trigger.getParent().canShengGuang;
-					var canShengDun=trigger.getParent().canShengDun;
+					var canYingZhan=trigger.canYingZhan;
+					var canShengGuang=trigger.canShengGuang;
+					var canShengDun=trigger.canShengDun;
 
-					if(canYingZhan==false||canShengGuang==false||canShengDun==false){
-						var str='本次攻击';
-						if(canYingZhan==false&&canShengGuang==false&&canShengDun==false){
-							str+='强制命中';
-						}else{
-							var list=[canYingZhan,canShengGuang,canShengDun];
-							for(var i=0;i<list.length;i++){
-								if(i==0){
-									if(list[i]==false) str+='无法应战';
-								}else if(i==1){
-									if(list[i]==false) str+='无法被圣光抵消';
-								}else{
-									if(list[i]==false) str+='无法被圣盾抵消';
-								}
-								if(i<list.length-1){
-									if(list[i+1]==false) str+='，';
-								}
+					var str='本次攻击';
+					if(canYingZhan==false&&canShengGuang==false&&canShengDun==false){
+						str+='强制命中';
+					}else{
+						var list=[canYingZhan,canShengGuang,canShengDun];
+						for(var i=0;i<list.length;i++){
+							if(i==0){
+								if(list[i]==false) str+='无法应战';
+							}else if(i==1){
+								if(list[i]==false) str+='无法被圣光抵消';
+							}else{
+								if(list[i]==false) str+='无法被圣盾抵消';
+							}
+							if(i<list.length-1){
+								if(list[i+1]==false) str+='，';
 							}
 						}
-						game.log(str);
 					}
+					game.log(str);
 				}
 			},
-			
+		
 			viewHandcard:{
 				ai:{
 					viewHandcard:true,
@@ -2591,7 +2589,7 @@ export default () => {
 					}
                 }
             },
-            _faShu:{
+            _faShuXianZhi:{
                 mod:{
                     cardEnabled:function(card){
                         if(_status.event.name=='faShu'){
@@ -2600,7 +2598,7 @@ export default () => {
                     }
                 },
             },
-            _gongJi:{
+            _gongJiXianZhi:{
                 mod:{
                     cardEnabled:function(card){
                         if(_status.event.name=='gongJi'){
@@ -2689,138 +2687,118 @@ export default () => {
                 intro:{
 					content:'expansion',
 				},
-                trigger:{target:'useCardToPlayered'},
-                forced:true,
+                trigger:{target:['shouDaoGongJi','shouDaoMoDan']},
+				direct:true,
+                lastDo:true,
                 filter:function(event,player){
-                    if(event.getParent().canShengDun==false) return false;
-                    if(get.type(event.card)=='gongJi'||event.card.name=='moDan'){
-                        return player.hasExpansions('_shengDun')&&event.getParent().targets.includes(player);
-                    }
+                    if(event.canShengDun==false) return false;
+					return player.hasExpansions('_shengDun')&&event.targets.includes(player);
                 },
                 content:function(){
 					'step 0'
                     player.loseToDiscardpile(player.getExpansions('_shengDun'));
-                    trigger.getParent().targets.remove(player);
+                    trigger.targets.remove(player);
 					'step 1'
                     if(get.type(trigger.card)=='gongJi'){
 						event.source=trigger.player;
-						event.yingZhan=trigger.getParent().yingZhan;
-						event.source_card=trigger.card;
-						event.storage=trigger.getParent().storage;
+						event.yingZhan=trigger.yingZhan;
+						event.sourceCard=trigger.card;
                         event.trigger('gongJiWeiMingZhong');
                     }else if(trigger.card.name=='moDan') game.resetMoDan();
                     //trigger.cancel();
                 }
             },
             _yingZhan:{
-                trigger:{target:'useCardToPlayered'},
-                forced:true,
-				firstDo:true,
+                trigger:{target:'shouDaoGongJi'},
+                direct:true,
                 filter:function(event,player){
-                    if(event.getParent().canYingZhan==false&&event.getParent().canShengGuang==false) return false;
-					return get.type(event.card)=='gongJi'&&event.getParent().targets.includes(player);
+                    if(event.canYingZhan==false&&event.canShengGuang==false) return false;
+					return event.targets.includes(player);
                 },
                 content:function(){
 					'step 0'
 					event.source=trigger.player;
-					event.yingZhan=trigger.getParent().yingZhan;
-					event.source_card=trigger.card;
-					//event.storage=trigger.getParent().storage;
+					event.yingZhan=trigger.yingZhan;
+					event.sourceCard=trigger.card;
 					var name=get.translation(event.source);
 					var propmt=`受到${name}的`;
+					propmt+=get.translation(get.xiBie(event.sourceCard))+'系';
 					if(event.yingZhan){
 						propmt+='应战攻击，';
 					}else{
 						propmt+='主动攻击，';
 					}
-					propmt+=get.translation(get.xiBie(trigger.card));
 					var next=player.yingZhan(propmt);
                     next.set('filterCard',function(card,player,event){
 						if(get.type(card)=='gongJi'){
 							if(_status.event.canYingZhan==false) return false;//不能应战设置
-							if(get.xiBie(_status.event.trigger_card)=='an') return false;//暗灭不能应战
-							if(card.name!='anMie'&&get.xiBie(card)!=get.xiBie(_status.event.trigger_card)) return false;
-						}else{
+							if(card.name!='anMie'&&get.xiBie(card)!=get.xiBie(_status.event.sourceCard)) return false;
+						}else if(get.type(card)=='faShu'){
 							if(_status.event.canShengGuang==false) return false;
 							if(get.name(card)!='shengGuang') return false;
 						}
 						return lib.filter.cardEnabled(card,player,'forceEnable');
 					});
 					next.set('filterTarget',function(card,player,target){
-						return target!=_status.event.trigger_player&&target.side!=player.side;
+						return target!=_status.event.source&&target.side!=player.side;
                     });
-					next.set('trigger_card',trigger.card);
-                    next.set('trigger_player',event.source);
+					next.set('sourceCard',event.sourceCard);
+                    next.set('source',event.source);
                     next.set('yingZhan',true);
-					next.set('canYingZhan',trigger.getParent().canYingZhan);
-					next.set('canShengGuang',trigger.getParent().canShengGuang);
+					next.set('canYingZhan',trigger.canYingZhan);
+					next.set('canShengGuang',trigger.canShengGuang);
+					next.set('yingZhan',event.yingZhan);
 					'step 1'
                     if(result.bool){
-                        trigger.getParent().targets.remove(player);
+                        trigger.targets.remove(player);
                     }
-                }
+                },
+				ai:{
+					yingZhan:true,
+				}
             },
             _yingZhan_weiMingZhong:{
-                trigger:{player:'useCard2'},
-                forced:true,
+                trigger:{player:'gongJiQian'},
+                direct:true,
 				firstDo:true,
                 filter:function(event,player){
-                    return (event.getParent(2).name=='_yingZhan'||event.getParent(2).name=='shiShenZhouShu')&&event.card.name!='shengGuang';
+                    return event.getParent().name=='yingZhan'&&event.card.name!='shengGuang';
                 },
                 content:function(){
 					'step 0'
-                    event.source=trigger.getParent(2).source;//攻击来源
+					trigger.yingZhan=true;//设置本次攻击为应战攻击
+
+                    event.source=trigger.getParent().source;//攻击来源
                     event.player=trigger.getParent().player;//应战者
-					event.yingZhan=trigger.getParent(2).yingZhan;//判断未命中的攻击是否为应战攻击
-					event.source_card=trigger.getParent().trigger_card;//攻击来源牌
-					//event.storage=trigger.getParent(2).storage;//自定义变量
+					event.yingZhan=trigger.getParent().yingZhan;//判断未命中的攻击是否为应战攻击
+					event.sourceCard=trigger.getParent().sourceCard;//攻击来源牌
 					'step 1'
                     event.trigger('gongJiWeiMingZhong');
                 }
             },
-			_yingZhan_sheZhi:{
-				trigger:{player:'useCardBefore'},
-                forced:true,
-				firstDo:true,
-                filter:function(event,player){
-                    return (event.getParent(2).name=='_yingZhan'||event.getParent(2).name=='shiShenZhouShu')&&event.card.name!='shengGuang';
-                },
-				content:function(){
-					trigger.yingZhan=true;
-				}
-			},
 			_shengGuang:{
-				trigger:{player:'useCard2'},
+				trigger:{player:'shengGuang'},
 				direct:true,
 				firstDo:true,
                 filter:function(event,player){
-                    return (event.getParent(2).name=='_yingZhan'||event.getParent(2).name=='shiShenZhouShu')&&event.card.name=='shengGuang';
+                    return event.getParent().name=='yingZhan'&&event.card.name=='shengGuang';
                 },
 				content:function(){
 					'step 0'
-					event.source=trigger.getParent(2).source;
-                    event.player=trigger.getParent().player;
-					event.yingZhan=trigger.getParent(2).yingZhan;
-					event.source_card=trigger.getParent().trigger_card;
-					event.storage=trigger.getParent(2).storage;
+					event.source=trigger.getParent().source;//攻击来源
+                    event.player=trigger.getParent().player;//应战者
+					event.yingZhan=trigger.getParent().yingZhan;//判断未命中的攻击是否为应战攻击
+					event.sourceCard=trigger.getParent().sourceCard;//攻击来源牌
 					'step 1'
                     event.trigger('gongJiWeiMingZhong');
 				}
 			},
 
             _moDan:{
-                trigger:{target:'useCardToPlayered'},
-				firstDo:true,
-                forced:true,
+                trigger:{target:'shouDaoMoDan'},
+                direct:true,
                 init:function(player){
                     player.storage.moDan=false;
-                },
-                filter:function(event,player){
-                    if(event.card.name=='moDan'){
-                        return true;
-                    }else{
-                        return false;
-                    }
                 },
 				content:function(){
 					"step 0"
@@ -2850,7 +2828,7 @@ export default () => {
 
 					"step 1"
 					if(result.bool){
-                        trigger.getParent().targets.remove(player);
+                        trigger.targets.remove(player);
 						game.resetMoDan();
 					}else{
 						game.moDan--;
@@ -2865,8 +2843,8 @@ export default () => {
 				}
 			},
             _moDan1:{//第一个使用魔弹的角色增加魔弹标记
-                trigger:{player:'useCard'},
-				forced:true,
+                trigger:{player:'faShuQian'},
+				direct:true,
                 filter:function(event,player){
                     if(player.storage.moDan!=true&&event.card.name=='moDan'){
                         return true;
@@ -2879,8 +2857,8 @@ export default () => {
                 }
             },
             _moDan2:{//第一个使用魔弹的角色删除魔弹标记
-                trigger:{player:'useCardEnd'},
-				forced:true,
+                trigger:{player:'faShuHou'},
+				direct:true,
                 filter:function(event,player){
                     if(player.storage.moDan!=false&&event.card.name=='moDan'){
                         return true;
@@ -3175,18 +3153,15 @@ export default () => {
 				}
 			},
 			_gongJiXingShi:{//攻击获得星石
-				trigger:{player:'useCardToTargeted'},
-				forced:true,
+				trigger:{player:'gongJiMingZhong'},
+				direct:true,
 				firstDo:true,
 				filter:function(event,player){
-					if(player.side==true){
-						return game.hongZhanJi.length<game.zhanJiMax&&get.type(event.card)=="gongJi";
-					}else if(player.side==false){
-						return game.lanZhanJi.length<game.zhanJiMax&&get.type(event.card)=="gongJi";
-					}
+					var zhanJi=get.zhanJi(player.side);
+					return zhanJi.length<game.zhanJiMax;
 				},
 				content:function(){
-					if(trigger.getParent().yingZhan==true){
+					if(trigger.yingZhan==true){
 						player.changeZhanJi('shuiJing',1)
 					}else{
 						player.changeZhanJi('baoShi',1)
@@ -3437,7 +3412,7 @@ export default () => {
 							custom: [],
 							useSkill: [],
 						});
-						current.stat.push({ card: {}, skill: {} });
+						current.stat.push({ card: {}, skill: {} ,gongJi: {all:0,zhuDong:0,yingZhan:0} });
 						if (isRound) {
 							current.getHistory().isRound = true;
 							current.getStat().isRound = true;
@@ -3811,493 +3786,482 @@ export default () => {
 					if(event.dialog&&event.dialog.close) event.dialog.close();
 				},
 				useCard:function(){
-					"step 0"
-					if(!card){
-						console.log('err: no card',get.translation(event.player));
+					"step 0";
+					if (!card) {
+						console.log("err: no card", get.translation(event.player));
 						event.finish();
 						return;
 					}
-					if(!get.info(card,false).noForceDie) event.forceDie=true;
-					if(cards.length){
-						var owner=(get.owner(cards[0])||player);
-						var next=owner.lose(cards,'visible',ui.ordering).set('type','use');
-						var directDiscard=[];
-						for(var i=0;i<cards.length;i++){
-							if(!next.cards.includes(cards[i])){
+					if (!get.info(card, false).noForceDie) event.forceDie = true;
+					if (cards.length) {
+						var owner = get.owner(cards[0]) || player;
+						var next = owner.lose(cards, "visible", ui.ordering).set("type", "use");
+						var directDiscard = [];
+						for (var i = 0; i < cards.length; i++) {
+							if (!next.cards.includes(cards[i])) {
 								directDiscard.push(cards[i]);
 							}
 						}
-						if(directDiscard.length) game.cardsGotoOrdering(directDiscard);
+						if (directDiscard.length) game.cardsGotoOrdering(directDiscard);
 					}
 					//player.using=cards;
-					var cardaudio=true;
-					if(event.skill){
-						if(lib.skill[event.skill].audio){
-							cardaudio=false;
+					var cardaudio = true;
+					if (event.skill) {
+						if (lib.skill[event.skill].audio) {
+							cardaudio = false;
 						}
-						if(lib.skill[event.skill].log!=false){
-							player.logSkill(event.skill);
+						if (lib.skill[event.skill].log != false) {
+							player.logSkill(event.skill, false, null, null, [event, event.player]);
 						}
-						if(get.info(event.skill).popname){
-							player.tryCardAnimate(card,event.card.name,'metal',true);
+						if (get.info(event.skill).popname) {
+							player.tryCardAnimate(card, event.card.name, "metal", true);
 						}
-					}
-					else if(!event.nopopup){
-						if(lib.translate[event.card.name+'_pop']){
-							player.tryCardAnimate(card,lib.translate[event.card.name+'_pop'],'metal');
-						}
-						else{
-							player.tryCardAnimate(card,event.card.name,'metal');
-						}
-					}	
-					if(event.audio===false){
-						cardaudio=false;
-					}
-					if(cardaudio) game.broadcastAll((player,card)=>{
-						if(!lib.config.background_audio||get.type(card)=='equip'&&!lib.config.equip_audio) return;
-						const sex=player.sex=='female'?'female':'male';
-	
-						const audio=lib.card[card.name].audio;
-						if(typeof audio=='string'){
-							const audioInfo=audio.split(':');
-							if(audio.startsWith('db:')) game.playAudio(`${audioInfo[0]}:${audioInfo[1]}`,audioInfo[2],`${card.name}_${sex}.${audioInfo[3]||'mp3'}`);
-							else if(audio.startsWith('ext:')) game.playAudio(`${audioInfo[0]}:${audioInfo[1]}`,`${card.name}_${sex}.${audioInfo[2]||'mp3'}`);
-							else game.playAudio('card',sex,`${audioInfo[0]}.${audioInfo[1]||'mp3'}`);
-						}
-						else game.playAudio('card',sex,card.name);
-					},player,card);
-					if(event.animate!=false&&event.line!=false){
-
-						if(event.addedTarget){
-							player.line2(targets.concat(event.addedTargets));
-						}
-						else if(get.info(card,false).multitarget&&targets.length>1&&!get.info(card,false).multiline){
-							player.line2(targets);
-						}
-						else{
-							player.line(targets);
-						}
-
-						if(event.throw!==false) player.$throw(cards);
-						if(lib.config.sync_speed&&cards[0]&&cards[0].clone){
-							var waitingForTransition=get.time();
-							event.waitingForTransition=waitingForTransition;
-							cards[0].clone.listenTransition(function(){
-								if(_status.waitingForTransition==waitingForTransition&&_status.paused){
-									game.resume();
-								}
-								delete event.waitingForTransition;
-							});
+					} else if (!event.nopopup) {
+						if (lib.translate[event.card.name + "_pop"]) {
+							player.tryCardAnimate(card, lib.translate[event.card.name + "_pop"], "metal");
+						} else {
+							player.tryCardAnimate(card, event.card.name, "metal");
 						}
 					}
-					event.id=get.id();
-					if(!Array.isArray(event.excluded)) event.excluded=[];
-					if(!Array.isArray(event.directHit)) event.directHit=[];
-					if(typeof event.customArgs!='object'||typeof event.customArgs.default!='object') event.customArgs={default:{}};
-					if(typeof event.damageNum!='number') event.damageNum=get.info(card,false).damageNum||2;
-
-					if(event.oncard){
-						event.oncard(event.card,event.player);
+					if (event.audio === false) {
+						cardaudio = false;
 					}
-					player.actionHistory[player.actionHistory.length-1].useCard.push(event);
-					game.getGlobalHistory().useCard.push(event);
-					if(event.addCount!==false){
-						if(player.stat[player.stat.length-1].card[card.name]==undefined){
-							player.stat[player.stat.length-1].card[card.name]=1;
-						}
-						else{
-							player.stat[player.stat.length-1].card[card.name]++;
-						}
+					if (cardaudio)
+						game.broadcastAll(
+							(player, card) => {
+								game.playCardAudio(card, player);
+							},
+							player,
+							card
+						);
+					event.id = get.id();
+					if (!Array.isArray(event.excluded)) event.excluded = [];
+					if (!Array.isArray(event.directHit)) event.directHit = [];
+					if (typeof event.customArgs != "object" || typeof event.customArgs.default != "object") event.customArgs = { default: {} };
+					if (typeof event.damageNum != "number") event.damageNum = get.info(card, false).damageNum || 2;
+					if (typeof event.effectCount != "number") event.effectCount = get.info(card, false).effectCount || 1;
+					event.effectedCount = 0;
+					if (event.oncard) {
+						event.oncard(event.card, event.player);
 					}
-					if(event.skill){
-						if(player.stat[player.stat.length-1].skill[event.skill]==undefined){
-							player.stat[player.stat.length-1].skill[event.skill]=1;
-						}
-						else{
-							player.stat[player.stat.length-1].skill[event.skill]++;
-						}
-						var sourceSkill=get.info(event.skill).sourceSkill;
-						if(sourceSkill){
-							if(player.stat[player.stat.length-1].skill[sourceSkill]==undefined){
-								player.stat[player.stat.length-1].skill[sourceSkill]=1;
-							}
-							else{
-								player.stat[player.stat.length-1].skill[sourceSkill]++;
-							}
-						}
-					}
-
-					//xingBei
 					
 
-					if(targets.length){
-						//var str=(targets.length==1&&targets[0]==player)?'#b自己':targets;
-						var str=targets;
-						if(cards.length&&!card.isCard){
-							if(event.addedTarget){
-								game.log(player,'对',str,'使用了',card,'（',cards,'，指向',event.addedTargets,'）');
-							}
-							else{
-								//xingbei
-								var yingZhan_str='';
-								if(get.type(card)=='gognJi'){
-									if(event.yingZhan==true){
-										yingZhan_str='，应战攻击';
-									}else{
-										yingZhan_str='，主动攻击';
-									}
-								}
-								game.log(player,'对',str,'使用了',card,'（',cards,'）',yingZhan_str);
+					player.actionHistory[player.actionHistory.length - 1].useCard.push(event);
+					game.getGlobalHistory().useCard.push(event);
+					if (event.addCount !== false) {
+						if (player.stat[player.stat.length - 1].card[card.name] == undefined) {
+							player.stat[player.stat.length - 1].card[card.name] = 1;
+						} else {
+							player.stat[player.stat.length - 1].card[card.name]++;
+						}
+					}
+					if (event.skill) {
+						if (player.stat[player.stat.length - 1].skill[event.skill] == undefined) {
+							player.stat[player.stat.length - 1].skill[event.skill] = 1;
+						} else {
+							player.stat[player.stat.length - 1].skill[event.skill]++;
+						}
+						var sourceSkill = get.info(event.skill).sourceSkill;
+						if (sourceSkill) {
+							if (player.stat[player.stat.length - 1].skill[sourceSkill] == undefined) {
+								player.stat[player.stat.length - 1].skill[sourceSkill] = 1;
+							} else {
+								player.stat[player.stat.length - 1].skill[sourceSkill]++;
 							}
 						}
-						else{
-							if(event.addedTarget){
-								game.log(player,'对',str,'使用了',card,'（指向',event.addedTargets,'）');
-							}
-							else{
-								var yingZhan_str='';
-								if(get.type(card)=='gongJi'){
-									if(event.yingZhan==true){
-										yingZhan_str='，应战攻击';
-									}else{
-										yingZhan_str='，主动攻击';
-									}
+					}
 
+					if (event.animate != false) {
+						if (event.throw !== false) {
+							player.$throw(cards);
+							if (lib.config.sync_speed && cards[0] && cards[0].clone) {
+								var waitingForTransition = get.time();
+								event.waitingForTransition = waitingForTransition;
+								cards[0].clone.listenTransition(function () {
+									if (_status.waitingForTransition == waitingForTransition && _status.paused) {
+										game.resume();
+									}
+									delete event.waitingForTransition;
+								});
+							}
+						}
+					}
+
+					//记录原始目标，用于后面判断
+					event.oriTargets = targets.slice(0);
+					"step 1";
+					var type=get.type(card);
+					if(type=='gongJi' && event.oriTargets.length>0){
+						event.canYingZhan=true;
+						event.canShengGuang=true;
+						event.canShengDun=true;
+						event.trigger("gongJiQian");
+					}else if(type=='faShu' && event.oriTargets.length>0){
+						event.trigger("faShuQian");
+					}else if(card.name=='shengGuang'){
+						event.trigger("shengGuang");
+					}
+					'step 2';
+					if (event.animate != false && event.line != false && !event.hideTargets) {
+						var config = {};
+						var nature = get.duYouList(card)[0];
+						if (nature || (card.classList && card.classList.contains(nature))) config.color = nature;
+						if (event.addedTarget) {
+							player.line2(targets.concat(event.addedTargets), config);
+						} else if (get.info(card, false).multitarget && targets.length > 1 && !get.info(card, false).multiline) {
+							player.line2(targets, config);
+						} else {
+							player.line(targets, config);
+						}
+					}
+					if (targets.length && !event.hideTargets) {
+						//xingbei
+						var yingZhan_str='';
+						if(get.type(card)=='gongJi'){
+							if(event.yingZhan==true){
+								yingZhan_str='，应战攻击';
+							}else{
+								event.yingZhan=false;
+								yingZhan_str='，主动攻击';
+							}
+							//记录攻击次数
+							player.stat[player.stat.length - 1].gongJi.all++;
+							if (event.yingZhan==true) {
+								player.stat[player.stat.length - 1].gongJi.yingZhan++;
+							} else {
+								player.stat[player.stat.length - 1].gongJi.zhuDong++;
+							}
+						}
+
+						var str=targets;
+						if (cards.length && !card.isCard) {
+							if (event.addedTarget) {
+								game.log(player, "对", str, "使用了", card, "（", cards, "，指向", event.addedTargets, "）");
+							} else {
+								game.log(player, "对", str, "使用了", card, "（", cards, "）");
+							}
+						} else {
+							if (event.addedTarget) {
+								game.log(player, "对", str, "使用了", card, "（指向", event.addedTargets, "）");
+							} else {
+								game.log(player, "对", str, "使用了", card,yingZhan_str);
+							}
+						}
+					} else {
+						if (cards.length && !card.isCard) {
+							if (event.addedTarget) {
+								game.log(player, "使用了", card, "（", cards, "，指向", event.addedTargets, "）");
+							} else {
+								game.log(player, "使用了", card, "（", cards, "）");
+							}
+						} else {
+							if (event.addedTarget) {
+								game.log(player, "使用了", card, "（指向", event.addedTargets, "）");
+							} else {
+								game.log(player, "使用了", card);
+							}
+						}
+					}
+
+					game.logv(player, [card, cards], targets);
+					"step 3";
+					event.trigger("daChuPai");
+					"step 4";
+					event.sortTarget = function (animate, sort) {
+						var info = get.info(card, false);
+						if (num == 0 && targets.length > 1) {
+							if (!info.multitarget) {
+								if (!event.fixedSeat && !sort) {
+									targets.sortBySeat(_status.currentPhase || player);
 								}
-								game.log(player,'对',str,'使用了',card,yingZhan_str);
+								if (animate)
+									for (var i = 0; i < targets.length; i++) {
+										targets[i].addTempClass("target");
+									}
+							} else if (animate) {
+								for (var i = 0; i < targets.length; i++) {
+									targets[i].addTempClass("target");
+								}
 							}
 						}
-					}
-					else{
-						if(cards.length&&!card.isCard){
-							if(event.addedTarget){
-								game.log(player,'使用了',card,'（',cards,'，指向',event.addedTargets,'）');
-							}
-							else{
-								game.log(player,'使用了',card,'（',cards,'）');
-							}
-						}
-						else{
-							if(event.addedTarget){
-								game.log(player,'使用了',card,'（指向',event.addedTargets,'）');
-							}
-							else{
-								game.log(player,'使用了',card);
-							}
-						}
-					}
-					if(card.name=='wuxie'){
-						game.logv(player,[card,cards],[event.getTrigger().card]);
-					}
-					else{
-						game.logv(player,[card,cards],targets);
-					}
-					event.trigger('useCard1');
-					"step 1"
-					event.trigger('useCard2');
-					"step 2"
-					event.trigger('useCard3');
-					"step 3"
-					event.trigger('useCard');
-					event._oncancel=function(){
-						game.broadcastAll(function(id){
-							if(ui.tempnowuxie&&ui.tempnowuxie._origin==id){
-								ui.tempnowuxie.close();
-								delete ui.tempnowuxie;
-							}
-						},event.id);
 					};
-					"step 4"
-					event.sortTarget=function(animate,sort){
-						var info=get.info(card,false);
-						if(num==0&&targets.length>1){
-							if(!info.multitarget){
-								if(!event.fixedSeat&&!sort){
-									targets.sortBySeat((_status.currentPhase||player));
-								}
-								if(animate)	for(var i=0;i<targets.length;i++){
-									targets[i].addTempClass('target');
-								}
-							}
-							else if(animate){
-								for(var i=0;i<targets.length;i++){
-									targets[i].addTempClass('target');
-								}
-							}
-						}
-					}
 					event.sortTarget();
-					event.getTriggerTarget=function(list1,list2){
-						var listx=list1.slice(0).sortBySeat((_status.currentPhase||player));
-						for(var i=0;i<listx.length;i++){
-							if(get.numOf(list2,listx[i])<get.numOf(listx,listx[i])) return listx[i];
+					event.getTriggerTarget = function (list1, list2) {
+						var listx = list1.slice(0).sortBySeat(_status.currentPhase || player);
+						for (var i = 0; i < listx.length; i++) {
+							if (get.numOf(list2, listx[i]) < get.numOf(listx, listx[i])) return listx[i];
 						}
 						return null;
-					}
-					"step 5"
-					if(event.all_excluded) return;
-					if(!event.triggeredTargets1) event.triggeredTargets1=[];
-					var target=event.getTriggerTarget(targets,event.triggeredTargets1);
-					if(target){
-						event.triggeredTargets1.push(target);
-						var next=game.createEvent('useCardToPlayer',false);
-						if(!event.isFirstTarget1){
-							event.isFirstTarget1=true;
-							next.isFirstTarget=true;
+					};
+					"step 5";
+					var type=get.type(card);
+					if(type=='gongJi' && event.oriTargets.length>0){
+						if(!event.gongJiShiTargets) event.gongJiShiTargets=[];
+						var target=event.getTriggerTarget(targets,event.gongJiShiTargets);
+						if(target){
+							event.gongJiShiTargets.push(target);
+							var next=game.createEvent('gongJiShi',false);
+							next.setContent('emptyEvent');
+							next.targets=targets;
+							next.target=target;
+							next.card=card;
+							next.cards=cards;
+							next.player=player;
+							next.skill=event.skill;
+							next.excluded=event.excluded;
+							next.directHit=event.directHit;
+							next.customArgs=event.customArgs;
+							if(event.forceDie) next.forceDie=true;
+							//xingBie
+							next.yingZhan=event.yingZhan;
+							event.redo();
 						}
-						next.setContent('emptyEvent');
-						next.targets=targets;
-						next.target=target;
-						next.card=card;
-						next.cards=cards;
-						next.player=player;
-						next.skill=event.skill;
-						next.excluded=event.excluded;
-						next.directHit=event.directHit;
-						next.customArgs=event.customArgs;
-						if(event.forceDie) next.forceDie=true;
-						//xingBie
-						if(event.yingZhan) next.yingZhan=true;
-						event.redo();
 					}
-					"step 6"
-					if(event.all_excluded) return;
-					if(!event.triggeredTargets2) event.triggeredTargets2=[];
-					var target=event.getTriggerTarget(targets,event.triggeredTargets2);
-					if(target){
-						event.triggeredTargets2.push(target);
-						var next=game.createEvent('useCardToTarget',false);
-						if(!event.isFirstTarget2){
-							event.isFirstTarget2=true;
-							next.isFirstTarget=true;
-						}
-						next.setContent('emptyEvent');
-						next.targets=targets;
-						next.target=target;
-						next.card=card;
-						next.cards=cards;
-						next.player=player;
-						next.skill=event.skill;
-						next.excluded=event.excluded;
-						next.directHit=event.directHit;
-						next.customArgs=event.customArgs;
-						if(event.forceDie) next.forceDie=true;
-						//xingBei
-						if(event.yingZhan) next.yingZhan=true;
-						event.redo();
+					"step 6";
+					var type=get.type(card);
+					if(type=='gongJi' && event.oriTargets.length>0){
+						if(get.xiBie(card)=='an') event.canYingZhan=false;//暗灭无法应战
+						event.trigger("gongJiSheZhi");
 					}
-					"step 7"
-					var info=get.info(card,false);
-					if(!info.nodelay&&event.animate!=false){
-						if(event.delayx!==false){
-							if(event.waitingForTransition){
-								_status.waitingForTransition=event.waitingForTransition;
-								game.pause();
+					"step 7";
+					var type=get.type(card);
+					var name=get.name(card);
+					if((type=='gongJi' || name=='moDan') && event.oriTargets.length>0){
+						if(!event.shouDaoGongJiTargets) event.shouDaoGongJiTargets=[];
+						var target=event.getTriggerTarget(targets,event.shouDaoGongJiTargets);
+						if(target){
+							event.shouDaoGongJiTargets.push(target);
+							if(type=='gongJi'){
+								var next=game.createEvent('shouDaoGongJi',false);
+							}else if(name=='moDan'){
+								var next=game.createEvent('shouDaoMoDan',false);
 							}
-							else{
+							next.setContent('emptyEvent');
+							next.targets=targets;
+							next.target=target;
+							next.card=card;
+							next.cards=cards;
+							next.player=player;
+							next.skill=event.skill;
+							next.excluded=event.excluded;
+							next.directHit=event.directHit;
+							next.customArgs=event.customArgs;
+							if(event.forceDie) next.forceDie=true;
+							//xingBie
+							if(type=='gongJi'){
+								next.yingZhan=event.yingZhan;
+								next.canYingZhan=event.canYingZhan;
+								next.canShengGuang=event.canShengGuang;
+								next.canShengDun=event.canShengDun;
+							}
+							event.redo();
+						}
+					}
+					"step 8";
+					var info = get.info(card, false);
+					if (!info.nodelay && event.animate != false) {
+						if (event.delayx !== false) {
+							if (event.waitingForTransition) {
+								_status.waitingForTransition = event.waitingForTransition;
+								game.pause();
+							} else {
 								game.delayx();
 							}
 						}
 					}
-					"step 8"
-					if(event.all_excluded) return;
-					if(!event.triggeredTargets3) event.triggeredTargets3=[];
-					var target=event.getTriggerTarget(targets,event.triggeredTargets3);
-					if(target){
-						event.triggeredTargets3.push(target);
-						var next=game.createEvent('useCardToPlayered',false);
-						if(!event.isFirstTarget3){
-							event.isFirstTarget3=true;
-							next.isFirstTarget=true;
+					"step 9";
+					var type=get.type(card);
+					if(type=='gongJi' && event.oriTargets.length>0){
+						if(!event.gongJiMingZhongTargets) event.gongJiMingZhongTargets=[];
+						var target=event.getTriggerTarget(targets,event.gongJiMingZhongTargets);
+						if(target){
+							event.gongJiMingZhongTargets.push(target);
+							var next=game.createEvent('gongJiMingZhong',false);
+							next.setContent('emptyEvent');
+							next.targets=targets;
+							next.target=target;
+							next.card=card;
+							next.cards=cards;
+							next.player=player;
+							next.skill=event.skill;
+							next.excluded=event.excluded;
+							next.directHit=event.directHit;
+							next.customArgs=event.customArgs;
+							if(event.forceDie) next.forceDie=true;
+							//xingBie
+							next.yingZhan=event.yingZhan;
+							event.redo();
 						}
-						next.setContent('emptyEvent');
-						next.targets=targets;
-						next.target=target;
-						next.card=card;
-						next.cards=cards;
-						next.player=player;
-						next.skill=event.skill;
-						next.excluded=event.excluded;
-						next.directHit=event.directHit;
-						next.customArgs=event.customArgs;
-						if(event.forceDie) next.forceDie=true;
-						//xingBei
-						if(event.yingZhan) next.yingZhan=true;
-						event.redo();
 					}
-					"step 9"
-					if(event.all_excluded) return;
-					if(!event.triggeredTargets4) event.triggeredTargets4=[];
-					var target=event.getTriggerTarget(targets,event.triggeredTargets4);
-					if(target){
-						event.triggeredTargets4.push(target);
-						var next=game.createEvent('useCardToTargeted',false);
-						if(!event.isFirstTarget4){
-							event.isFirstTarget4=true;
-							next.isFirstTarget=true;
-						}
-						next.setContent('emptyEvent');
-						next.targets=targets;
-						next.target=target;
-						next.card=card;
-						next.cards=cards;
-						next.player=player;
-						next.skill=event.skill;
-						next.excluded=event.excluded;
-						next.directHit=event.directHit;
-						next.customArgs=event.customArgs;
-						if(event.forceDie) next.forceDie=true;
-						if(targets.length==event.triggeredTargets4.length){
-							event.sortTarget();
-						}
-						//xingBei
-						if(event.yingZhan) next.yingZhan=true;
-						event.redo();
-					}
-					"step 10"
-					if(event.all_excluded) return;
+					"step 10";
+					
+					"step 11";
+					if (event.all_excluded) return;
 					event.effectedCount++;
-					event.num=0;
-					var info=get.info(card,false);
-					if(info.contentBefore){
-						var next=game.createEvent(card.name+'ContentBefore');
+					event.num = 0;
+					var info = get.info(card, false);
+					if (info.contentBefore) {
+						var next = game.createEvent(card.name + "ContentBefore");
 						next.setContent(info.contentBefore);
-						next.targets=targets;
-						next.card=card;
-						next.cards=cards;
-						next.player=player;
-						next.skill=event.skill;
-						next.type='precard';
-						if(event.forceDie) next.forceDie=true;
+						next.targets = targets;
+						next.card = card;
+						next.cards = cards;
+						next.player = player;
+						next.skill = event.skill;
+						next.type = "precard";
+						if (event.forceDie) next.forceDie = true;
+					} else if (info.reverseOrder && get.is.versus() && targets.length > 1) {
+						var next = game.createEvent(card.name + "ContentBefore");
+						next.setContent("reverseOrder");
+						next.targets = targets;
+						next.card = card;
+						next.cards = cards;
+						next.player = player;
+						next.skill = event.skill;
+						next.type = "precard";
+						if (event.forceDie) next.forceDie = true;
+					} else if (info.singleCard && info.filterAddedTarget && event.addedTargets && event.addedTargets.length < targets.length) {
+						var next = game.createEvent(card.name + "ContentBefore");
+						next.setContent("addExtraTarget");
+						next.target = target;
+						next.targets = targets;
+						next.card = card;
+						next.cards = cards;
+						next.player = player;
+						next.skill = event.skill;
+						next.type = "precard";
+						next.addedTarget = event.addedTarget;
+						next.addedTargets = event.addedTargets;
+						if (event.forceDie) next.forceDie = true;
 					}
-					else if(info.reverseOrder&&get.is.versus()&&targets.length>1){
-						var next=game.createEvent(card.name+'ContentBefore');
-						next.setContent('reverseOrder');
-						next.targets=targets;
-						next.card=card;
-						next.cards=cards;
-						next.player=player;
-						next.skill=event.skill;
-						next.type='precard';
-						if(event.forceDie) next.forceDie=true;
+					"step 12";
+					if (event.all_excluded) return;
+					var info = get.info(card, false);
+					if (num == 0 && targets.length > 1) {
+						event.sortTarget(true, true);
 					}
-					else if(info.singleCard&&info.filterAddedTarget&&event.addedTargets&&event.addedTargets.length<targets.length){
-						var next=game.createEvent(card.name+'ContentBefore');
-						next.setContent('addExtraTarget');
-						next.target=target;
-						next.targets=targets;
-						next.card=card;
-						next.cards=cards;
-						next.player=player;
-						next.skill=event.skill;
-						next.type='precard';
-						next.addedTarget=event.addedTarget;
-						next.addedTargets=event.addedTargets;
-						if(event.forceDie) next.forceDie=true;
-					}
-					"step 11"
-					if(event.all_excluded) return;
-					var info=get.info(card,false);
-					if(num==0&&targets.length>1){
-						event.sortTarget(true,true);
-					}
-					if(targets[num]&&targets[num].isDead()) return;
-					if(targets[num]&&targets[num].isOut()) return;
-					if(targets[num]&&targets[num].removed) return;
-					if(targets[num]&&info.ignoreTarget&&info.ignoreTarget(card,player,targets[num])) return;
-					if(targets.length==0&&!info.notarget) return;
-					if(targets[num]&&event.excluded.includes(targets[num])){
-					var next=game.createEvent('useCardToExcluded',false);
-						next.setContent('emptyEvent');
-						next.targets=targets;
-						next.target=targets[num];
-						next.num=num;
-						next.card=card;
-						next.cards=cards;
-						next.player=player;
+					if (targets[num] && targets[num].isDead()) return;
+					if (targets[num] && targets[num].isOut()) return;
+					if (targets[num] && targets[num].removed) return;
+					if (targets[num] && info.ignoreTarget && info.ignoreTarget(card, player, targets[num])) {
+						var next = game.createEvent("useCardToIgnored", false);
+						next.setContent("emptyEvent");
+						next.targets = targets;
+						next.target = targets[num];
+						next.num = num;
+						next.card = card;
+						next.cards = cards;
+						next.player = player;
 						return;
-					};
-					var next=game.createEvent(card.name);
+					}
+					if (targets.length == 0 && !info.notarget) return;
+					if (targets[num] && event.excluded.includes(targets[num])) {
+						var next = game.createEvent("useCardToExcluded", false);
+						next.setContent("emptyEvent");
+						next.targets = targets;
+						next.target = targets[num];
+						next.num = num;
+						next.card = card;
+						next.cards = cards;
+						next.player = player;
+						return;
+					}
+					var next = game.createEvent(card.name);
 					next.setContent(info.content);
-					next.targets=targets;
-					next.card=card;
-					next.cards=cards;
-					next.player=player;
-					next.num=num;
-					next.type='card';
-					next.skill=event.skill;
-					next.multitarget=info.multitarget;
-					next.preResult=event.preResult;
-					next.damageNum=event.damageNum;
-					if(event.forceDie) next.forceDie=true;
-					if(event.addedTargets){
-						next.addedTargets=event.addedTargets;
-						next.addedTarget=event.addedTargets[num];
-						next._targets=event._targets;
+					next.targets = targets;
+					next.card = card;
+					next.cards = cards;
+					next.player = player;
+					next.num = num;
+					next.type = "card";
+					next.skill = event.skill;
+					next.multitarget = info.multitarget;
+					next.preResult = event.preResult;
+					next.damageNum = event.damageNum;
+					if (event.forceDie) next.forceDie = true;
+					if (event.addedTargets) {
+						next.addedTargets = event.addedTargets;
+						next.addedTarget = event.addedTargets[num];
+						next._targets = event._targets;
 					}
-					if(info.targetDelay===false){
-						event.targetDelay=false;
+					if (info.targetDelay === false) {
+						event.targetDelay = false;
 					}
-					next.target=targets[num];
-					for(var i in event.customArgs.default) next[i]=event.customArgs.default[i];
-					if(next.target&&event.customArgs[next.target.playerid]){
-						var customArgs=event.customArgs[next.target.playerid];
-						for(var i in customArgs) next[i]=customArgs[i];
+					next.target = targets[num];
+					for (var i in event.customArgs.default) next[i] = event.customArgs.default[i];
+					if (next.target && event.customArgs[next.target.playerid]) {
+						var customArgs = event.customArgs[next.target.playerid];
+						for (var i in customArgs) next[i] = customArgs[i];
 					}
-					if(next.target&&event.directHit.includes(next.target)) next.directHit=true;
-					if(next.target&&!info.multitarget){
-						if(num==0&&targets.length>1){
+					if (next.target && event.directHit.includes(next.target)) next.directHit = true;
+					if (next.target && !info.multitarget) {
+						if (num == 0 && targets.length > 1) {
 							// var ttt=next.target;
-							// setTimeout(function(){ttt.animate('target');},0.5*lib.config.duration);
-						}
-						else{
-							next.target.addTempClass('target');
+							// setTimeout(function(){ttt.addTempClass('target');},0.5*lib.config.duration);
+						} else {
+							next.target.addTempClass("target");
 						}
 					}
-					if(!info.nodelay&&num>0){
-						if(event.targetDelay!==false){
+					if (!info.nodelay && num > 0) {
+						if (event.targetDelay !== false) {
 							game.delayx(0.5);
 						}
 					}
-					"step 12"
-					if(event.all_excluded) return;
-					if(!get.info(event.card,false).multitarget&&num<targets.length-1&&!event.cancelled){
+					"step 13";
+					if (event.all_excluded) return;
+					if (!get.info(event.card, false).multitarget && num < targets.length - 1 && !event.cancelled) {
 						event.num++;
+						event.goto(12);
+					}
+					"step 14";
+					if (event.all_excluded) return;
+					if (get.info(card, false).contentAfter) {
+						var next = game.createEvent(card.name + "ContentAfter");
+						next.setContent(get.info(card, false).contentAfter);
+						next.targets = targets;
+						next.card = card;
+						next.cards = cards;
+						next.player = player;
+						next.skill = event.skill;
+						next.preResult = event.preResult;
+						next.type = "postcard";
+						if (event.forceDie) next.forceDie = true;
+					}
+					"step 15";
+					if (event.all_excluded) return;
+					if (event.effectedCount < event.effectCount) {
+						if (document.getElementsByClassName("thrown").length) {
+							if (event.delayx !== false && get.info(event.card, false).finalDelay !== false) game.delayx();
+						}
 						event.goto(11);
 					}
-					"step 13"
-					if(event.all_excluded) return;
-					if(get.info(card,false).contentAfter){
-						var next=game.createEvent(card.name+'ContentAfter');
-						next.setContent(get.info(card,false).contentAfter);
-						next.targets=targets;
-						next.card=card;
-						next.cards=cards;
-						next.player=player;
-						next.skill=event.skill;
-						next.preResult=event.preResult;
-						next.type='postcard';
-						if(event.forceDie) next.forceDie=true;
+					"step 16";
+					var type=get.type(card);
+					if(type=='gongJi' && event.oriTargets.length>0){
+						event.trigger("gongJiJieShu");
+					}else if(type=='faShu' && event.oriTargets.length>0){
+						event.trigger("faShuJieShu");
 					}
-					"step 14"
-					if(event.all_excluded) return;
-
-					"step 15"
-					if(event.postAi){
-						event.player.logAi(event.targets,event.card);
+					"step 17";
+					var type=get.type(card);
+					if(type=='gongJi' && event.oriTargets.length>0){
+						event.trigger("gongJiHou");
+					}else if(type=='faShu' && event.oriTargets.length>0){
+						event.trigger("faShuHou");
 					}
-					if(event._result){
-						event.result=event._result;
+					"step 18";
+					if (event.postAi) {
+						event.player.logAi(event.targets, event.card);
+					}
+					if (event._result) {
+						event.result = event._result;
 					}
 					//delete player.using;
-					if(document.getElementsByClassName('thrown').length){
-						if(event.delayx!==false&&get.info(event.card,false).finalDelay!==false) game.delayx();
-					}
-					else{
+					if (document.getElementsByClassName("thrown").length) {
+						if (event.delayx !== false && get.info(event.card, false).finalDelay !== false) game.delayx();
+					} else {
 						event.finish();
 					}
-					"step 16"
-					event._oncancel();
 				},
 				useSkill:function(){
 					"step 0"
@@ -5871,7 +5835,39 @@ export default () => {
 					return this.getHandcardLimit()-this.countCards('h');
 				},
 				
-			}
+			},
+			event:{
+				/**
+				 * @param {num} num 伤害改变量 
+				 */
+				changeDamageNum(num){
+					if(typeof num != 'number') return;
+					if(typeof this.damageNum == 'number'){
+						this.damageNum += num;
+						if(this.damageNum < 0) this.damageNum = 0;
+					}else if(this.getParent().damageNum){
+						this.getParent().damageNum += num;
+						if(this.getParent().damageNum < 0) this.getParent().damageNum = 0;
+					}
+				},
+				/** 
+				 * 设置攻击效果 在攻击设置/攻击前时机调用
+				*/
+				qingZhiMingZhong:function(){
+					event.canYingZhan=false;
+					event.canShengGuang=false;
+					event.canShengDun=false;
+				},
+				wuFaYingZhan:function(){
+					event.canYingZhan=false;
+				},
+				wuFaShengGuang:function(){
+					event.canShengGuang=false;
+				},
+				wuFaShengDun:function(){
+					event.canShengDun=false;
+				},
+			},
 		},
 		get:{
 			characterGets:function(list,num){
