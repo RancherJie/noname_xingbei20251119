@@ -5617,6 +5617,14 @@ export default () => {
 					num=game.checkMod(this,num,'maxNengLiang',this);
 					return Math.max(0,num);
 				},
+				getHandcardLimit() {
+					var num=game.handcardLimit;
+					num=game.checkMod(this,num,'maxHandcardBase',this);
+					num=game.checkMod(this,num,'maxHandcard',this);
+					num=game.checkMod(this,num,'maxHandcardFinal',this);
+					num=game.checkMod(this,num,'maxHandcardWuShi',this);
+					return Math.max(0,num);
+				},
 
 
 				canBiShaShuiJing:function(){//能够使用必杀星石

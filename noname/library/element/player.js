@@ -9446,12 +9446,11 @@ export class Player extends HTMLDivElement {
 	 * @returns { number }
 	 */
 	getHandcardLimit() {
-		var num=game.handcardLimit;
-		num=game.checkMod(this,num,'maxHandcardBase',this);
-		num=game.checkMod(this,num,'maxHandcard',this);
-		num=game.checkMod(this,num,'maxHandcardFinal',this);
-		num=game.checkMod(this,num,'maxHandcardWuShi',this);
-		return Math.max(0,num);
+		var num = Math.max(this.hp, 0);
+		num = game.checkMod(this, num, "maxHandcardBase", this);
+		num = game.checkMod(this, num, "maxHandcard", this);
+		num = game.checkMod(this, num, "maxHandcardFinal", this);
+		return Math.max(0, num);
 	}
 	getEnemies(func, includeDie) {
 		var player = this;
