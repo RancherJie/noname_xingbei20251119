@@ -3171,6 +3171,67 @@ export default () => {
 		},
 		element:{
 			content:{
+				showCards: function () {
+					"step 0";
+					if (get.itemtype(cards) != "cards") {
+						event.finish();
+						return;
+					}
+					if (!event.str) {
+						event.str = get.translation(player.name) + "展示的牌";
+					}
+					event.dialog = ui.create.dialog(event.str, cards);
+					event.dialogid = lib.status.videoId++;
+					event.dialog.videoId = event.dialogid;
+			
+					if (event.hiddencards) {
+						for (var i = 0; i < event.dialog.buttons.length; i++) {
+							if (event.hiddencards.includes(event.dialog.buttons[i].link)) {
+								event.dialog.buttons[i].className = "button card";
+								event.dialog.buttons[i].innerHTML = "";
+							}
+						}
+					}
+					game.broadcast(
+						function (str, cards, cards2, id) {
+							var dialog = ui.create.dialog(str, cards);
+							dialog.forcebutton = true;
+							dialog.videoId = id;
+							if (cards2) {
+								for (var i = 0; i < dialog.buttons.length; i++) {
+									if (cards2.includes(dialog.buttons[i].link)) {
+										dialog.buttons[i].className = "button card";
+										dialog.buttons[i].innerHTML = "";
+									}
+								}
+							}
+						},
+						event.str,
+						cards,
+						event.hiddencards,
+						event.dialogid
+					);
+					if (event.hiddencards) {
+						var cards2 = cards.slice(0);
+						for (var i = 0; i < event.hiddencards.length; i++) {
+							cards2.remove(event.hiddencards[i]);
+						}
+						game.log(player, "展示了", cards2);
+					} else {
+						game.log(player, "展示了", cards);
+					}
+					game.addCardKnower(cards, "everyone");
+					game.delayx(event.delay_time || 2.5);
+					game.addVideo("showCards", player, [event.str, get.cardsInfo(cards)]);
+					"step 1";
+					game.broadcast("closeDialog", event.dialogid);
+					event.dialog.close();
+					'step 2'
+					event.trigger('showCardsJieShu');
+					'step 3'
+					event.trigger('showCardsHou');
+				},
+
 				link: function () {
 					const isLinked = player.isLinked();
 					game.log(player, (isLinked ? "重置" : "横置"));
