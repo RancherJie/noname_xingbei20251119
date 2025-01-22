@@ -2632,8 +2632,6 @@ export default () => {
 					content:'expansion',
 				},
                 filter:function(event,player){
-					if(player.hasZhiShiWu('jueJieX')) return false;
-					
                     return player.hasExpansions('_xuRuo');
                 },
                 content:function(){
@@ -2673,11 +2671,9 @@ export default () => {
                 trigger:{player:'phaseUseBefore'},
                 forced:true,
                 filter:function(event,player){
-					if(player.hasZhiShiWu('jueJieX')) return false;
-
                     return player.hasExpansions('_zhongDu');
                 },
-                content:function(event){
+                content:function(){
                     var target;
                     while(player.storage.zhongDu.length){
                         target=player.storage.zhongDu.pop();
@@ -2697,8 +2693,6 @@ export default () => {
                 forced:true,
                 filter:function(event,player){
                     if(event.getParent().canShengDun==false) return false;
-					if(player.hasZhiShiWu('jueJieX')) return false;
-
                     if(get.type(event.card)=='gongJi'||event.card.name=='moDan'){
                         return player.hasExpansions('_shengDun')&&event.getParent().targets.includes(player);
                     }
