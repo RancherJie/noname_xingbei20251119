@@ -3412,7 +3412,8 @@ export default () => {
 					"step 0";
 					//规则集中的“回合开始后③（处理“游戏开始时”的时机）”
 					//提前phaseBefore时机解决“游戏开始时”时机和“一轮开始时”先后
-					event.trigger("phaseBefore");
+					//event.trigger("phaseBefore");
+					event.trigger("huiHeQain");
 					"step 1";
 					game.phaseNumber++;
 					//初始化阶段列表
@@ -3548,7 +3549,8 @@ export default () => {
 					"step 7";
 					//规则集中的“回合开始后⑨”，进行当先，化身等操作
 					//没有⑧ 因为⑧用不到
-					event.trigger("phaseBegin");
+					//event.trigger("phaseBegin");
+					event.trigger("huiHeKaiShi");
 					//阶段部分
 					"step 8";
 					if (num < event.phaseList.length) {
@@ -3590,11 +3592,13 @@ export default () => {
 						event.goto(8);
 					} else if (!event._phaseEndTriggered) {
 						event._phaseEndTriggered = true;
-						event.trigger("phaseEnd");
+						//event.trigger("phaseEnd");
+						event.trigger("huiHeJieShu");
 						event.redo();
 					}
 					"step 12";
-					event.trigger("phaseAfter");
+					//event.trigger("phaseAfter");
+					event.trigger("huiHeHou");
 					"step 13";
 					//删除当前回合角色 此时处于“不属于任何角色的回合”的阶段
 					game.broadcastAll(function (player) {
@@ -3640,9 +3644,11 @@ export default () => {
 						if (info.updateUsable == "phaseUse") stat.card[i] = 0;
 					}
 					"step 1";
-					event.trigger("phaseUseBefore");
+					//event.trigger("phaseUseBefore");
+					event.trigger("xingDongQian");
 					"step 2";
-					event.trigger("phaseUseBegin");
+					//event.trigger("phaseUseBegin");
+					event.trigger("xingDongKaiShi");
 					"step 3";
 					if (!event.logged) {
 						game.log(player, "进入了出牌阶段");
@@ -3682,9 +3688,11 @@ export default () => {
 						event.goto(3);
 					}
 					"step 5";
-					event.trigger("phaseUseEnd");
+					//event.trigger("phaseUseEnd");
+					event.trigger("xingDongJieShu");
 					"step 6";
-					event.trigger("phaseUseAfter");
+					//event.trigger("phaseUseAfter");
+					event.trigger("xingDongHou");
 				},
 				chooseToDiscard:function(){
 					"step 0"
