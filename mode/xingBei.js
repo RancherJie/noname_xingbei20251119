@@ -5211,14 +5211,24 @@ export default () => {
 				},
 				
 				addZhiShiWu:function(){
-					if(event.num>0){
-						player.addMark(event.zhiShiWu,event.num);
-					}
+					'step 0'
+					event.trigger('addZhiShiWuQian');
+					'step 1'
+					player.addMark(event.zhiShiWu,event.num);
+					'step 2'
+					event.trigger('addZhiShiWuJieShu');
+					'step 3'
+					event.trigger('addZhiShiWuHou');
 				},
 				removeZhiShiWu:function(){
-					if(event.num>0){
-						player.removeMark(event.zhiShiWu,event.num);
-					}
+					'step 0'
+					event.trigger('removeZhiShiWuQian');
+					'step 1'
+					player.removeMark(event.zhiShiWu,event.num);
+					'step 2'
+					event.trigger('removeZhiShiWuJieShu');
+					'step 3'
+					event.trigger('removeZhiShiWuHou');
 				},
 
 			},
@@ -5713,6 +5723,14 @@ export default () => {
 					};
 					return next;
 				},
+				/**
+				 * 
+				 * @param {*} zhiShiWu 指示物名
+				 * @param {*} num 数量
+				 * @param {*} max 临时最大值
+				 * @param {*} forced 是否强制
+				 * @returns 
+				 */
 				addZhiShiWu:function(zhiShiWu,num,max,forced){//添加指示物
 					if(!this.hasSkill(zhiShiWu)&&!forced) return;
 
@@ -5729,6 +5747,7 @@ export default () => {
 					if(current+num>max){
 						num=max-current;
 					}
+					if(num<=0) return;
 					var next=game.createEvent('addZhiShiWu');
 					next.player=this;
 					next.zhiShiWu=zhiShiWu;
@@ -5743,6 +5762,7 @@ export default () => {
 					if(typeof num!='number'||!num) num=1;
 					var current=this.countMark(zhiShiWu);
 					if(num>current) num=current;
+					if(num<=0) return;
 					var next=game.createEvent('removeZhiShiWu');
 					next.player=this;
 					next.zhiShiWu=zhiShiWu;
