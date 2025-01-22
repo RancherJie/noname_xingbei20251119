@@ -4330,7 +4330,14 @@ export default () => {
 					}
 				},
 				useSkill:function(){
-					"step 0"
+					'step 0'
+					var info=get.info(event.skill);
+					if(info.type=='faShu'){
+						event.trigger("faShuQian");
+					}else if(info.type=='teShu'){
+						event.trigger("teShuQian");
+					}
+					"step 1"
 					var info=get.info(event.skill);
 					if(!info.noForceDie) event.forceDie=true;
 					if(!info.noForceOut) event.includeOut=true;
@@ -4392,17 +4399,7 @@ export default () => {
 							player.line(targets,config);
 						}
 					}
-					/*
-					var str='';
-					if(targets&&targets.length&&info.log!='notarget'){
-						str+='对<span class="bluetext">'+(targets[0]==player?'自己':get.translation(targets[0]));
-						for(var i=1;i<targets.length;i++){
-							str+='、'+(targets[i]==player?'自己':get.translation(targets[i]));
-						}
-						str+='</span>'
-					}
-					str+='发动了';
-					*/
+
 					if(!info.direct&&info.log!==false){
 						if(targets.length){
 							game.log(player,'对',targets,'发动了','【'+get.skillTranslation(skill,player)+'】');
@@ -4435,7 +4432,6 @@ export default () => {
 					else{
 						player.stat[player.stat.length-1].allSkills++;
 					}
-
 
 					if(info.prepare){
 						switch(info.prepare){
@@ -4517,7 +4513,7 @@ export default () => {
 					event.type=logInfo.type;
 					player.getHistory('useSkill').push(logInfo);
 					event.trigger('useSkill');
-					"step 1"
+					"step 2"
 					var info=get.info(event.skill);
 					if(info&&info.contentBefore){
 						var next=game.createEvent(event.skill+'ContentBefore');
@@ -4528,7 +4524,7 @@ export default () => {
 						if(event.forceDie) next.forceDie=true;
 						if(event.includeOut) next.includeOut=true;
 					}
-					"step 2"
+					"step 3"
 					if(!event.skill){
 						console.log('error: no skill',get.translation(event.player),event.player.getSkills());
 						if(event._skill){
@@ -4596,7 +4592,7 @@ export default () => {
 						event.num++;
 						event.redo();
 					}
-					"step 3"
+					"step 4"
 					var info=get.info(event.skill);
 					if(info&&info.contentAfter){
 						var next=game.createEvent(event.skill+'ContentAfter');
@@ -4607,7 +4603,7 @@ export default () => {
 						if(event.forceDie) next.forceDie=true;
 						if(event.includeOut) next.includeOut=true;
 					}
-					"step 4"
+					"step 5"
 					if(player.getStat().allSkills>200){
 						player._noSkill=true;
 						console.log(player.name,event.skill);
@@ -4618,8 +4614,22 @@ export default () => {
 					else{
 						event.finish();
 					}
-					"step 5"
+					"step 6"
 					ui.clear();
+					'step 7'
+					var info=get.info(event.skill);
+					if(info.type=='faShu'){
+						event.trigger("faShuJieShu");
+					}else if(info.type=='teShu'){
+						event.trigger("teShuJieShu");
+					}
+					'step 8'
+					var info=get.info(event.skill);
+					if(info.type=='faShu'){
+						event.trigger("faShuHou");
+					}else if(info.type=='teShu'){
+						event.trigger("teShuHou");
+					}
 				},
 				draw:function(){
 					'step 0'
