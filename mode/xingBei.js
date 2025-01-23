@@ -2402,7 +2402,6 @@ export default () => {
 				filterx:function(event,player){
 					//console.log('--------------------------------');
 					//拥有挑衅直接false
-					if(player.hasZhiShiWu('tiaoXinX')) return false;
 					//无可启动技跳过启动前后无法行动
 					if(event.name=='phaseUse'){
 						if(event.canQiDong==false) return false;
@@ -2491,7 +2490,7 @@ export default () => {
 				group:['_wuFaXingDong_qiDongQian','_wuFaXingDong_qiDongHou'],
 				subSkill:{
 					qiDongQian:{
-						trigger:{player:'phaseUseBegin'},
+						trigger:{player:'qiDong'},
 						priority:2,
 						filter:function(event,player){
 							return lib.skill._wuFaXingDong.filterx(event,player);
@@ -2502,7 +2501,7 @@ export default () => {
 						}
 					},
 					qiDongHou:{
-						trigger:{player:'phaseUseBegin'},
+						trigger:{player:'qiDong'},
 						filter:function(event,player){
 							return lib.skill._wuFaXingDong.filterx(event,player);
 						},
@@ -3632,7 +3631,9 @@ export default () => {
 					"step 2";
 					//event.trigger("phaseUseBegin");
 					event.trigger("xingDongKaiShi");
-					"step 3";
+					'step 3';
+					event.trigger("qiDong");
+					"step 4";
 					if (!event.logged) {
 						game.log(player, "进入了出牌阶段");
 						event.logged = true;
@@ -3662,7 +3663,7 @@ export default () => {
 						}
 					}
 
-					"step 4";
+					"step 5";
 					if(event.xingDong=='gongJiOrFaShu'){
 						player.storage.gongJiOrFaShu--;
 					}else if(event.xingDong=='faShu'){
@@ -3671,12 +3672,12 @@ export default () => {
 						player.storage.gongJi--;
 					}
 					if(!event.skipped&&(player.storage.gongJiOrFaShu>0||player.storage.gongJi>0||player.storage.faShu>0)){
-						event.goto(3);
+						event.goto(4);
 					}
-					"step 5";
+					"step 6";
 					//event.trigger("phaseUseEnd");
 					event.trigger("xingDongJieShu");
-					"step 6";
+					"step 7";
 					//event.trigger("phaseUseAfter");
 					event.trigger("xingDongHou");
 				},
