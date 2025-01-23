@@ -3063,7 +3063,14 @@ export default () => {
 								event.links=lib.skill._tiLian_backup.links;
 								event.trigger('tiLian');
 								'step 1'
+								event.dict={"baoShi":0,"shuiJing":0};
 								for(var i=0;i<event.links.length;i++){
+									if(event.links[i]=='baoShi'){
+										event.dict['baoShi']=event.dict['baoShi']+1;
+									}else if(event.links[i]=='shuiJing'){
+										event.dict['shuiJing']=event.dict['shuiJing']+1;
+									}
+
 									if(event.links[i]=='baoShi'){
 										player.addMark('_tiLian_baoShi');
 										player.changeZhanJi('baoShi',-1);
@@ -3071,6 +3078,20 @@ export default () => {
 										player.addMark('_tiLian_shuiJing');
 										player.changeZhanJi('shuiJing',-1);
 									}
+								}
+								'step 2'
+								if(event.dict['baoShi']>0){
+									player.removeZhanJi('baoShi',event.dict['baoShi']);
+								}
+								if(event.dict['shuiJing']>0){
+									player.removeZhanJi('shuiJing',event.dict['shuiJing']);
+								}
+								'step 3'
+								if(event.dict['baoShi']>0){
+									player.addNengLiang('baoShi',event.dict['baoShi']);
+								}
+								if(event.dict['shuiJing']>0){
+									player.addNengLiang('shuiJing',event.dict['shuiJing']);
 								}
 							},
 						}
