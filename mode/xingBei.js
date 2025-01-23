@@ -3689,6 +3689,9 @@ export default () => {
 							next.set('firstAction',event.firstAction);
 							event.firstAction=false;
 						}
+						if(event.canTeShu==false){
+							next.set('canTeShu',false);
+						}
 					}
 
 					"step 4";
