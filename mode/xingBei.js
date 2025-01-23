@@ -2632,7 +2632,7 @@ export default () => {
                     });
                     'step 1'
 					if(result.control=='选项二'){
-						player.addTempSkill('xuRuo_xiaoGuo');
+						trigger.xuRuo=true;
 					}else if(result.control=="选项一"){
 						player.draw(3);
 					}
@@ -2644,6 +2644,9 @@ export default () => {
 						priority:-1,
 						lastDo:true,
 						trigger:{player:'xingDongQian'},
+						filter:function(event,player){
+							return event.xuRuo==true;
+						},
 						content:function(){
 							trigger.cancel();
 						}
