@@ -2888,7 +2888,6 @@ export default () => {
 				enable:'phaseUse',
 				type:'teShu',
 				filter:function(event,player){
-					if(event.getParent('phaseUse').canTeShu==false) return false;
 					return player.countCards('h')+3<=player.getHandcardLimit();
 				},
 				content:function(){
@@ -2896,7 +2895,6 @@ export default () => {
 					player.draw(3).set('yuanYin','teShuXingDong');
 					event.trigger('gouMai');
 					'step 1'
-					var side=player.side;
 					var num=0;
 					var emptyZhanJi=get.emptyZhanJi(player.side);
 					if(emptyZhanJi>=2){
@@ -2946,21 +2944,13 @@ export default () => {
 				enable:'phaseUse',
 				type:'teShu',
 				filter:function(event,player){
-					if(event.getParent('phaseUse').canTeShu==false) return false;
-					if(player.side==true){
-						return game.hongZhanJi.length>=3&&player.countCards('h')+3<=player.getHandcardLimit();
-					}else if(player.side==false){
-						return game.lanZhanJi.length>=3&&player.countCards('h')+3<=player.getHandcardLimit();
-					}
+					var xingShi=get.zhanJi(player.side);
+					return xingShi.length>=3&&player.countCards('h')+3<=player.getHandcardLimit();
 				},
 				chooseButton:{
 					dialog:function(event,player){
 						var dialog=ui.create.dialog('合成：选择星石','hidden');
-						if(player.side==true){
-							var list=game.hongZhanJi;
-						}else if(player.side==false){
-							var list=game.lanZhanJi;
-						}
+						var list=get.zhanJi(player.side);
 						var listx=[];
 						for(var i=0;i<list.length;i++){
 							listx.push([list[i],get.translation(list[i])]);
@@ -3066,23 +3056,15 @@ export default () => {
 				enable:'phaseUse',
 				type:'teShu',
 				filter:function(event,player){
-					if(event.getParent('phaseUse').canTeShu==false) return false;
                     var nengLiang_num=player.countMark('_tiLian_baoShi')+player.countMark('_tiLian_shuiJing');
-                    var empty_nengliang=player.getNengLiangLimit()-nengLiang_num;
-					if(player.side==true){
-						return game.hongZhanJi.length>=1&&empty_nengliang>=1;
-					}else if(player.side==false){
-						return game.lanZhanJi.length>=1&&empty_nengliang>=1;
-					}
+                    var empty_nengLiang=player.getNengLiangLimit()-nengLiang_num;
+					var zhanJi=get.zhanJi(player.side);
+					return zhanJi.length>=1&&empty_nengLiang>=1;
 				},
 				chooseButton:{
 					dialog:function(event,player){
 						var dialog=ui.create.dialog('提炼：选择星石','hidden');
-						if(player.side==true){
-							var list=game.hongZhanJi;
-						}else if(player.side==false){
-							var list=game.lanZhanJi;
-						}
+						var list=get.zhanJi(player.side);
 						var listx=[];
 						for(var i=0;i<list.length;i++){
 							listx.push([list[i],get.translation(list[i])]);
