@@ -3786,7 +3786,7 @@ export default () => {
 					event.trigger("qiDong");
 					"step 4";
 					if (!event.logged) {
-						game.log(player, "进入了出牌阶段");
+						game.log(player, "进入了行动阶段");
 						event.logged = true;
 					}
 
