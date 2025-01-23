@@ -3190,7 +3190,7 @@ export default () => {
 								if(event.losing_map[id][0].contains(cards[i])){
 									var source=(_status.connectMode?lib.playerOL:game.playerMap)[id];
 									var hs=source.getCards('hejsx');
-									if(hs.contains(cards[i])){
+									if(hs.includes(cards[i])){
 										cards.splice(i--,1);
 									}
 								}
@@ -3204,7 +3204,7 @@ export default () => {
 					"step 2"
 					var hs=player.getCards('x');
 					for(var i=0;i<cards.length;i++){
-						if(hs.contains(cards[i])){
+						if(hs.includes(cards[i])){
 							cards.splice(i--,1);
 						}
 					}
