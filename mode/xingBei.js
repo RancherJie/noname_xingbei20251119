@@ -2376,6 +2376,19 @@ export default () => {
             shuiJing:'水晶',
 		},
 		skill:{
+			_qiDong:{
+				trigger:{player:'triggerEnd'},
+				direct:true,
+				filter:function(event,player){
+					if(event.skill=='_qiDong') return false;
+					return true;
+				},
+				content:function(){
+					trigger.getParent('phaseUse').canTeShu=false;
+					trigger.getParent('phaseUse').qiDongGuo=true;
+				},
+			},
+
 			_gongJiRiZhi:{
 				trigger:{player:'gongJiSheZhi'},
 				direct:true,
