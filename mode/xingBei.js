@@ -5851,9 +5851,9 @@ export default () => {
 					}else{
 						sidex=side;
 					}
-					var zhanJi=get.zhanJi(sidex).length;
-					if(num>0&&(zhanJi+num>game.zhanJiMax)){
-						num=Math.max(0,game.zhanJiMax-zhanJi);
+					var zhanJi=get.zhanJi(sidex);
+					if(num>0&&(zhanJi.length+num>game.zhanJiMax)){
+						num=Math.max(0,game.zhanJiMax-zhanJi.length);
 					}
 					if(num<0){
 						num = zhanJi.filter(function(item) {
