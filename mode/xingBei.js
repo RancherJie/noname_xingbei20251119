@@ -5715,38 +5715,38 @@ export default () => {
 				removeBiShaBaoShi:function(){//移除宝石
 					this.removeMark('_tiLian_baoShi');
 				},
-				changeNengLiang:function(color,num){//改变能量
+				changeNengLiang:function(xingShi,num){//改变能量
 					if(typeof num!='number'||!num) num=1;
 					if(num>0){
-						this.addMark('_tiLian_'+color,num)
+						this.addMark('_tiLian_'+xingShi,num)
 					}else if(num<0){
-						this.removeMark('_tiLian_'+color,-num)
+						this.removeMark('_tiLian_'+xingShi,-num)
 					}
 				},
-				addNengLiang:function(color,num){//添加能量
+				addNengLiang:function(xingShi,num){//添加能量
 					if(typeof num!='number'||!num) num=1;
 					var max=this.getNengLiangLimit();
-					var current=this.countNengLiang('r')+this.countNengLiang('b');
+					var current=this.countNengLiangAll();
 					if(current+num>max){
 						num=max-current;
 					}
 					if(num>0){
-						this.addMark('_tiLian_'+color,num)
+						this.addMark('_tiLian_'+xingShi,num)
 					}
 				},
-				removeNengLiang:function(color,num){//移除能量
+				removeNengLiang:function(xingShi,num){//移除能量
 					if(typeof num!='number'||!num) num=-1;
 					if(num>0) num=-num;
-					var current=this.countNengLiang(color);
+					var current=this.countNengLiang(xingShi);
 					if(current+num<0){
 						num=-current;
 					}
 					if(num<0){
-						this.removeMark('_tiLian_'+color,-num)
+						this.removeMark('_tiLian_'+xingShi,-num)
 					}
 				},
-				countNengLiang:function(color){//统计某个能量数
-					return this.countMark('_tiLian_'+color);
+				countNengLiang:function(xingShi){//统计某个能量数
+					return this.countMark('_tiLian_'+xingShi);
 				},
 				countNengLiangAll:function(){//统计所有能量数
 					return this.countMark('_tiLian_baoShi')+this.countMark('_tiLian_shuiJing');
