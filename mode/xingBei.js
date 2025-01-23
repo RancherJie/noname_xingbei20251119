@@ -3151,6 +3151,162 @@ export default () => {
 		},
 		element:{
 			content:{
+				addToExpansion:function(){
+					"step 0"
+					if(event.animate=='give') event.visible=true;
+					//xingbei
+					var bool=player.hasSkill(event.gaintag[0]);
+					if(lib.skill.global.includes(event.gaintag[0])) bool=true;
+					//if(cards){
+					if(cards&&bool){
+						var map={};
+						for(var i of cards){
+							var owner=get.owner(i,'judge');
+							if(owner&&(owner!=player||get.position(i)!='x')){
+								var id=owner.playerid;
+								if(!map[id]) map[id]=[[],[],[]];
+								map[id][0].push(i);
+								var position=get.position(i);
+								if(position=='h') map[id][1].push(i);
+								else map[id][2].push(i);
+							}
+							else if(!event.updatePile&&get.position(i)=='c') event.updatePile=true;
+						}
+						event.losing_map=map;
+						for(var i in map){
+							var owner=(_status.connectMode?lib.playerOL:game.playerMap)[i];
+							var next=owner.lose(map[i][0],ui.special).set('type','loseToExpansion').set('forceDie',true).set('getlx',false);
+							if(event.visible==true) next.visible=true;
+							event.relatedLose=next;
+						}
+					}
+					else{
+						event.finish();
+					}
+					"step 1"
+					for(var i=0;i<cards.length;i++){
+						if(cards[i].destroyed){
+							if(player.hasSkill(cards[i].destroyed)){
+								delete cards[i].destroyed;
+							}
+							else{
+								cards.splice(i--,1);
+							}
+						}
+						else if(event.losing_map){
+							for(var id in event.losing_map){
+								if(event.losing_map[id][0].contains(cards[i])){
+									var source=(_status.connectMode?lib.playerOL:game.playerMap)[id];
+									var hs=source.getCards('hejsx');
+									if(hs.contains(cards[i])){
+										cards.splice(i--,1);
+									}
+								}
+							}
+						}
+					}
+					if(cards.length==0){
+						event.finish();
+						return;
+					}
+					"step 2"
+					var hs=player.getCards('x');
+					for(var i=0;i<cards.length;i++){
+						if(hs.contains(cards[i])){
+							cards.splice(i--,1);
+						}
+					}
+					for(var num=0;num<cards.length;num++){
+						if(_status.discarded){
+							_status.discarded.remove(cards[num]);
+						}
+						for(var num2=0;num2<cards[num].vanishtag.length;num2++){
+							if(cards[num].vanishtag[num2][0]!='_'){
+								cards[num].vanishtag.splice(num2--,1);
+							}
+						}
+					}
+					if(event.animate=='draw'){
+						player.$draw(cards.length);
+						//if(event.log) game.log(player,'将',get.cnNumber(cards.length),'张牌置于了角色牌上');
+						if(event.log) game.log(player,'将',cards.length,'张牌置于了角色牌上');
+						game.pause();
+						setTimeout(function(){
+							player.$addToExpansion(cards,null,event.gaintag);
+							for(var i of event.gaintag) player.markSkill(i);
+							game.resume();
+						},get.delayx(500,500));
+					}
+					else if(event.animate=='gain'){
+						player.$gain(cards,false);
+						game.pause();
+						setTimeout(function(){
+							player.$addToExpansion(cards,null,event.gaintag);
+							for(var i of event.gaintag) player.markSkill(i);
+							game.resume();
+						},get.delayx(700,700));
+					}
+					else if(event.animate=='gain2'||event.animate=='draw2'){
+						var gain2t=300;
+						if(player.$gain2(cards)&&player==game.me){
+							gain2t=500;
+						}
+						game.pause();
+						setTimeout(function(){
+							player.$addToExpansion(cards,null,event.gaintag);
+							for(var i of event.gaintag) player.markSkill(i);
+							game.resume();
+						},get.delayx(gain2t,gain2t));
+					}
+					else if(event.animate=='give'||event.animate=='giveAuto'){
+						var evtmap=event.losing_map;
+						if(event.animate=='give'){
+							for(var i in evtmap){
+								var source=(_status.connectMode?lib.playerOL:game.playerMap)[i];
+								source.$give(evtmap[i][0],player,false);
+								if(event.log) game.log(player,'将',evtmap[i][0],'置于了角色牌上');
+							}
+						}
+						else{
+							for(var i in evtmap){
+								var source=(_status.connectMode?lib.playerOL:game.playerMap)[i];
+								if(evtmap[i][1].length){
+									source.$giveAuto(evtmap[i][1],player,false);
+									//if(event.log) game.log(player,'将',get.cnNumber(evtmap[i][1].length),'张牌置于了角色牌上');
+									if(event.log) game.log(player,'将',evtmap[i][1].length,'张牌置于了角色牌上');
+								}
+								if(evtmap[i][2].length){
+									source.$give(evtmap[i][2],player,false);
+									if(event.log) game.log(player,'将',evtmap[i][2],'置于了角色牌上');
+								}
+							}
+						}
+						game.pause();
+						setTimeout(function(){
+							player.$addToExpansion(cards,null,event.gaintag);
+							for(var i of event.gaintag) player.markSkill(i);
+							game.resume();
+						},get.delayx(500,500));
+					}
+					else if(typeof event.animate=='function'){
+						var time=event.animate(event);
+						game.pause();
+						setTimeout(function(){
+							player.$addToExpansion(cards,null,event.gaintag);
+							for(var i of event.gaintag) player.markSkill(i);
+							game.resume();
+						},get.delayx(time,time));
+					}
+					else{
+						player.$addToExpansion(cards,null,event.gaintag);
+						for(var i of event.gaintag) player.markSkill(i);
+						event.finish();
+					}
+					"step 4"
+					game.delayx();
+					if(event.updatePile) game.updateRoundNumber();
+				},
+
 				showCards: function () {
 					"step 0";
 					if (get.itemtype(cards) != "cards") {
