@@ -3069,14 +3069,6 @@ export default () => {
 									}else if(event.links[i]=='shuiJing'){
 										event.dict['shuiJing']=event.dict['shuiJing']+1;
 									}
-
-									if(event.links[i]=='baoShi'){
-										player.addMark('_tiLian_baoShi');
-										player.changeZhanJi('baoShi',-1);
-									}else if(event.links[i]=='shuiJing'){
-										player.addMark('_tiLian_shuiJing');
-										player.changeZhanJi('shuiJing',-1);
-									}
 								}
 								'step 2'
 								if(event.dict['baoShi']>0){
