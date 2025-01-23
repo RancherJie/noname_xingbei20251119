@@ -5427,27 +5427,6 @@ export default () => {
                     }
 				},
 				
-				addZhiShiWu:function(){
-					'step 0'
-					event.trigger('addZhiShiWuQian');
-					'step 1'
-					player.addMark(event.zhiShiWu,event.num);
-					'step 2'
-					event.trigger('addZhiShiWuJieShu');
-					'step 3'
-					event.trigger('addZhiShiWuHou');
-				},
-				removeZhiShiWu:function(){
-					'step 0'
-					event.trigger('removeZhiShiWuQian');
-					'step 1'
-					player.removeMark(event.zhiShiWu,event.num);
-					'step 2'
-					event.trigger('removeZhiShiWuJieShu');
-					'step 3'
-					event.trigger('removeZhiShiWuHou');
-				},
-
 				changeNengLiang:function(){
 					'step 0'
 					event.trigger('changeNengLiangQian');
@@ -5463,6 +5442,23 @@ export default () => {
 					event.trigger('changeNengLiangJieShu');
 					'step 3'
 					event.trigger('changeNengLiangHou');
+				},
+
+				changeZhiShiWu:function(){
+					'step 0'
+					event.trigger('changeZhiShiWuQian');
+					'step 1'
+					var num=event.num;
+					var zhiShiWu=event.zhiShiWu;
+					if(num>0){
+						player.addMark(zhiShiWu,num)
+					}else if(num<0){
+						player.removeMark(zhiShiWu,-num)
+					}
+					'step 2'
+					event.trigger('changeZhiShiWuShu');
+					'step 3'
+					event.trigger('changeZhiShiWuHou');
 				},
 
 				chooseDraw:function(){
@@ -6008,6 +6004,7 @@ export default () => {
 					};
 					return next;
 				},
+
 				/**
 				 * 
 				 * @param {*} zhiShiWu 指示物名
@@ -6015,49 +6012,56 @@ export default () => {
 				 * @param {*} max 临时最大值
 				 * @param {*} forced 是否强制
 				 * @returns 
-				 */
-				addZhiShiWu:function(zhiShiWu,num,max,forced){//添加指示物
+				*/
+				changeZhiShiWu: function (zhiShiWu,num,max,forced) {
 					if(!this.hasSkill(zhiShiWu)&&!forced) return;
-
 					if(typeof num!='number'||!num) num=1;
 					var info=get.info(zhiShiWu);
-					if(typeof max=='number'){
-						var max=max;
-					}else if(info&&info.intro&&info.intro.max){
-						var max=info.intro.max;
-					}else{
-						var max=Infinity;
+					if(num>0){
+						if(typeof max=='number'){
+							var max=max;
+						}else if(info&&info.intro&&info.intro.max){
+							var max=info.intro.max;
+						}else{
+							var max=Infinity;
+						}
+						var current=this.countMark(zhiShiWu);
+						if(current+num>max){
+							num=Math.max(0,max-current);
+						}
+					}else if(num<0){
+						var current=this.countMark(zhiShiWu);
+						if(current+num<0){
+							num=-current;
+						}
 					}
-					var current=this.countMark(zhiShiWu);
-					if(current+num>max){
-						num=max-current;
+					if(num!=0){
+						var next=game.createEvent('changeZhiShiWu');
+						next.player=this;
+						next.zhiShiWu=zhiShiWu;
+						next.num=num;
+						next.setContent('changeZhiShiWu');
+						return next;
 					}
-					if(num<=0) return;
-					var next=game.createEvent('addZhiShiWu');
-					next.player=this;
-					next.zhiShiWu=zhiShiWu;
-					next.num=num;
-					next.setContent('addZhiShiWu');
-					return next;
+				},
+				addZhiShiWu:function(zhiShiWu,num,max,forced){//添加指示物
+					if(!this.hasSkill(zhiShiWu)&&!forced) return;
+					if(typeof num!='number'||!num) num=1;
+					this.changeZhiShiWu(zhiShiWu,num,max,forced);
 				},
 				countZhiShiWu:function(zhiShiWu){//统计指示物
 					return this.countMark(zhiShiWu);
 				},
 				removeZhiShiWu:function(zhiShiWu,num){//移除指示物
+					if(!this.hasSkill(zhiShiWu)&&!forced) return;
 					if(typeof num!='number'||!num) num=1;
-					var current=this.countMark(zhiShiWu);
-					if(num>current) num=current;
-					if(num<=0) return;
-					var next=game.createEvent('removeZhiShiWu');
-					next.player=this;
-					next.zhiShiWu=zhiShiWu;
-					next.num=num;
-					next.setContent('removeZhiShiWu');
-					return next;
+					if(num>0) num=-num;
+					this.changeZhiShiWu(zhiShiWu,num,Infinity,true);
 				},
 				hasZhiShiWu:function(zhiShiWu){//是否拥有指示物
 					return this.hasMark(zhiShiWu);
 				},
+
 				addZhanJi:function(xingShi,num){//增加战绩
 					if(typeof num!='number'||!num) num=1;
 					this.changeZhanJi(xingShi,num);
@@ -6120,31 +6124,47 @@ export default () => {
 					return this.countSkill(skill)>0;
 				},
 
-				changeHong:function(num){//改变红点
+				changeHong:function(num,max){//改变红点
 					if(typeof num!='number'||!num) num=1;
 					var skills=this.getSkills();
 					for(var i=0;i<skills.length;i++){
 						var skill=skills[i];
 						var info=get.info(skill);
-						if(info.intro&&info.markimage=='image/card/hong.png'){
-							if(num>0) this.addZhiShiWu(skill,num);
-							if(num<0) this.removeZhiShiWu(skill,-num);
+						if(info.intro&&info.markimage=='image/card/zhiShiWU/hong.png'){
+							this.changeZhiShiWu(skill,num,max);
 							break;
 						}
 					}
 				},
-				changeLan:function(num){//改变蓝点
+				changeLan:function(num,max){//改变蓝点
 					if(typeof num!='number'||!num) num=1;
 					var skills=this.getSkills();
 					for(var i=0;i<skills.length;i++){
 						var skill=skills[i];
 						var info=get.info(skill);
-						if(info.intro&&info.markimage=='image/card/lan.png'){
-							if(num>0) this.addZhiShiWu(skill,num);
-							if(num<0) this.removeZhiShiWu(skill,-num);
+						if(info.intro&&info.markimage=='image/card/zhiShiWu/lan.png'){
+							this.changeZhiShiWu(skill,num,max);
 							break;
 						}
 					}
+				},
+				addHong:function(num,max){//添加红点
+					if(typeof num!='number'||!num) num=1;
+					this.changeHong(num,max);
+				},
+				removeHong:function(num){//移除红点
+					if(typeof num!='number'||!num) num=-1;
+					if(num>0) num=-num;
+					this.changeHong(num);
+				},
+				addLan:function(num,max){//添加蓝点
+					if(typeof num!='number'||!num) num=1;
+					this.changeLan(num,max);
+				},
+				removeLan:function(num){//移除蓝点
+					if(typeof num!='number'||!num) num=-1;
+					if(num>0) num=-num;
+					this.changeLan(num);
 				},
 				countEmptyCards:function(){
 					return this.getHandcardLimit()-this.countCards('h');
