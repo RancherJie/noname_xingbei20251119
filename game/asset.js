@@ -1,7 +1,7 @@
-window.noname_asset_list
-=
+window.noname_asset_list =
 [
 	"v1.0.0",
+	"audio/background/music_default.mp3",
 	"audio/card/default.mp3",
 	"audio/voice/female/0.mp3",
 	"audio/voice/female/1.mp3",
@@ -315,6 +315,5 @@ window.noname_asset_list
 	"image/splash/style2/connect.jpg",
 	"image/splash/style2/xingBei.jpg",
 ];
-window.noname_skin_list
-=
+window.noname_skin_list =
 {};
