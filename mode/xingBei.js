@@ -2390,7 +2390,7 @@ export default () => {
 				direct:true,
 				filter:function(event,player){
 					if(event.skill=='_qiDong') return false;
-					return true;
+					return get.info(event.skill).type='qiDong';
 				},
 				content:function(){
 					trigger.getParent('phaseUse').canTeShu=false;
