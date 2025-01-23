@@ -3747,9 +3747,9 @@ export default () => {
 					player.storage.gongJi=0;
 					//判断是否有可启动技
 					var skills=player.skills;
+					var flag=false;
 					for(var i=0;i<skills.length;i++){
 						var info=get.info(skills[i]);
-						var flag=false;
 						if(info.type=='qiDong'){
 							if(info.filter(event,player)) flag=true;
 							if(flag) break;
