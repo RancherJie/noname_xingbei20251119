@@ -5359,6 +5359,8 @@ export default () => {
 				},
 				changeZhanJi:function(){
 					'step 0'
+					event.trigger('changeZhanJiQian');
+					'step 1'
 					num=event.num;
 					xingShi=event.xingShi;
 					side=event.side;
@@ -5413,6 +5415,10 @@ export default () => {
 				
 					game.addVideo('changeZhanJi',null,[numx,xingShi,side]);
 					//game.checkResult();
+					'step 2'
+					event.trigger('changeZhanJiJieShu');
+					'step 3'
+					event.trigger('changeZhanJiHou');
 				},
 
 				removeBiShaShuiJing:function(){
