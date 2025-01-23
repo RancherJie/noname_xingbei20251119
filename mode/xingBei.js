@@ -5521,6 +5521,41 @@ export default () => {
 
 			},
 			player:{
+				trySkillAnimate(name, popname, checkShow) {
+					if (!game.online && lib.config.skill_animation_type != "off" && lib.skill[name] && lib.skill[name].skillAnimation) {
+						if (lib.config.skill_animation_type == "default") {
+							checkShow = checkShow || "main";
+						} else {
+							checkShow = false;
+						}
+						if (lib.skill[name].textAnimation) {
+							checkShow = false;
+						}
+						this.$skill(lib.skill[name].animationStr || lib.translate[name], lib.skill[name].skillAnimation, lib.skill[name].animationColor, checkShow);
+						return;
+					}
+					var player = this;
+					game.broadcast(
+						function (player, name, popname) {
+							player.trySkillAnimate(name, popname);
+						},
+						player,
+						name,
+						popname
+					);
+					if (lib.animate.skill[name]) lib.animate.skill[name].apply(this, arguments);
+					else {
+						var skillName=get.skillTranslation(name,this);
+						var reg=new RegExp(/[\[\(\)].{1,5}[\]\)]/g,'g');
+						if(skillName.replace){
+							skillName=skillName.replace(reg,'');
+						}
+						if(popname!=name) this.popup(popname,'water',false);
+						else this.popup(skillName,'water',false);
+
+					}
+				},
+
 				//xingbei
 				wuFaXingDong:function(){
 					var next=game.createEvent('wuFaXingDong');
