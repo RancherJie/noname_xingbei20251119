@@ -2639,16 +2639,19 @@ export default () => {
 					}
                     player.loseToDiscardpile(player.getExpansions('_xuRuo'));
                 },
-            },
-			xuRuo_xiaoGuo:{
-				direct:true,
-                priority:-1,
-				lastDo:true,
-				trigger:{player:'phaseUseBefore'},
-				content:function(){
-					trigger.cancel();
+				subSkill:{
+					xiaoGuo:{
+						direct:true,
+						priority:-1,
+						lastDo:true,
+						trigger:{player:'phaseUseBefore'},
+						content:function(){
+							trigger.cancel();
+						}
+					},
 				}
-			},
+            },
+
             _zhongDu:{
                 priority:3,
                 //marktext:"毒",
