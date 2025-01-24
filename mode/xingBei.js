@@ -3993,6 +3993,7 @@ export default () => {
 								}
 							}
 						}
+						if(event.zhanShi==true) next.set('zhanShi',true);
 						event.done.discarder=player;
 					}
 					if(event.dialog&&event.dialog.close) event.dialog.close();
@@ -4870,8 +4871,6 @@ export default () => {
 					event.done.type='discard';
 					if(event.discarder) event.done.discarder=event.discarder;
 					"step 1"
-					event.trigger('discard');
-					'step 2'
 					if(event.baoPai==true){
 						if(event.shiQiXiaJiang!=false){
 							var next=player.changeShiQi(-cards.length).set('baoPai',true).set('cards',cards);
@@ -4891,7 +4890,12 @@ export default () => {
 								next.set('source',event.source);
 							}
 						}
+					}else if(event.zhanShi==true){
+						var next=player.showCards(cards);
 					}
+					'step 2'
+					event.trigger('discard');
+					
 				},
 				loseToDiscardpile:function(){
 					"step 0"
