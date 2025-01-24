@@ -4911,6 +4911,7 @@ export default () => {
 					event.trigger('zaoChengShangHai');
 					'step 1'
 					event.trigger('shouDaoShangHai');
+					event.numx=num;
 					var str=`${num}点${event.faShu?'法术':'攻击'}伤害`;
 					game.log(player,'受到',source,str);
 					"step 2"
@@ -4936,9 +4937,10 @@ export default () => {
 					game.broadcastAll(function(num){
                         if(lib.config.background_audio) game.playAudio('effect','damage'+(num>2?'2':''));
                     },num);
-
-					var str=`${num}点${event.faShu?'法术':'攻击'}伤害`;
-					game.log(player,'承受',source,str);
+					if(event.numx!=num){
+						var str=`${num}点${event.faShu?'法术':'攻击'}伤害`;
+						game.log(player,'承受',source,str);
+					}
 					if(player.stat[player.stat.length-1].damaged==undefined){
 						player.stat[player.stat.length-1].damaged=num;
 					}
