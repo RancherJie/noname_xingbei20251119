@@ -5471,15 +5471,19 @@ export default () => {
 					event.trigger('changeZhiLiaoQian');
 					'step 1'
 					player.zhiLiao+=num;
+
 					if(num>=0){
 						if(event.yiChu==true){
-							game.log(player,'获得了'+num+'点','[治疗]','，','[治疗]','溢出');
+							if(event.source) game.log(event.source,'使',player,'获得了'+num+'点','[治疗]','，','[治疗]','溢出');
+							else game.log(player,'获得了'+num+'点','[治疗]','，','[治疗]','溢出');
 						}else{
-							game.log(player,'获得了'+num+'点','[治疗]');
+							if(event.source) game.log(event.source,'使',player,'获得了'+num+'点','[治疗]');
+							else game.log(player,'获得了'+num+'点','[治疗]');
 						}
 					}else if(num<0){
 						num=-num;
-						game.log(player,'移除了'+num+'点','[治疗]')
+						if(event.source) game.log(event.source,'使',player,'移除了'+num+'点','[治疗]');
+						else game.log(player,'移除了'+num+'点','[治疗]');
 					}
 					'step 2'
 					if(player.zhiLiao<0){
@@ -6273,31 +6277,45 @@ export default () => {
 				 * 
 				 * @param {*} num 治疗改变量
 				 * @param {*} limit 临时最大值
+				 * @param {*} source 治疗来源
 				 * @returns 
 				 */
-				changeZhiLiao:function(num,limit){
+				changeZhiLiao:function(){
+					var num,limit,source;
+					var numBool=true;
+					for (const argument of arguments) {
+						if (typeof argument == "number"){
+							if(numBool){
+								num=argument;
+								numBool=false;
+							}else{
+								limit=argument;
+							}
+						}
+						else if (get.itemtype(argument) == "player") source = argument;
+					}
+
 					var next=game.createEvent('changeZhiLiao');
 					if(typeof num!='number'){
 						num=1;
 					}
-					next.num=num;
 					next.player=this;
 					next.setContent('changeZhiLiao');
-					if(typeof limit=='number'){
-						var limit=limit;
-					}else{
-						var limit=this.getZhiLiaoLimit();
+					if(typeof limit!='number'){
+						limit=this.getZhiLiaoLimit();
 					}
-					if(num>0&&this.zhiLiao+num>parseInt(limit)){
-						if(this.zhiLiao>=parseInt(limit)){
-							next.num=0;
+					if(source!=undefined) next.source=source;
+					if(num>0&&this.zhiLiao+num>limit){
+						if(this.zhiLiao>=limit){
+							num=0;
 						}else{
-							next.num=parseInt(limit)-this.zhiLiao;
+							num=limit-this.zhiLiao;
 						}
 						next.yiChu=true;
 					}else{
 						next.yiChu=false;
 					}
+					next.num=num;
 					return next;
 				},
 				addZhiLiao:function(num,limit){
