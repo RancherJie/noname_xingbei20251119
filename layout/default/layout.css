@@ -2706,8 +2706,8 @@ div:not(.handcards) > .card > .info > span,
 }
 .judges > div,
 .marks > div {
-	width: 24px;
-	height: 24px;
+	width: 26px;
+	height: 26px;
 	margin: 0;
 	left: 0;
 	top: 0;
