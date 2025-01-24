@@ -14,7 +14,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
         },
 		character:{
 			fengZhiJianSheng:['male','jiGroup',3,['fengNuZhuiJi','shengJian','lieFengJi','jiFengJi','jianYing'],],
-            kuangZhanShi:['male','xueGroup',3,[],],
+            kuangZhanShi:['male','xueGroup',3,['kuangHua','xueYingKuangDao','xueXingPaoXiao','siLie'],],
             shenJianShou:['female','jiGroup',3,[],],
             fengYinShi:['female','huanGroup',3,[],],
             anShaZhe:['male','jiGroup',3,[],],
@@ -232,6 +232,83 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     tag:{
                         shuiJing:true,
                     }
+                }
+            },
+            //狂战士
+            kuangHua:{
+                trigger:{player:'gongJiSheZhi'},
+                forced:true,
+                group:['kuangHua_gongJiMingZhong'],
+                content:function(){
+                    'step 0'
+                    trigger.changeDamageNum(1);
+                },
+                subSkill:{
+                    gongJiMingZhong:{
+                        trigger:{player:'gongJiMingZhong'},
+                        forced:true,
+                        filter:function(event,player){
+                            return player.countCards('h')>3;
+                        },
+                        content:function(){
+                            'step 0'
+                            trigger.changeDamageNum(1);
+                        }
+                    }
+                }
+            },
+            xueYingKuangDao:{
+                trigger:{player:'gongJiShi'},
+                frequent:true,
+                group:['xueYingKuangDao_gongJiMingZhong'],
+                filter:function(event,player){
+                    return event.yingZhan!=true&&event.card.hasDuYou('xueYingKuangDao');
+                },
+                content:function(){
+                    'step 0'
+                    trigger.customArgs.xueYingKuangDao=true;
+                },
+                subSkill:{
+                    gongJiMingZhong:{
+                        trigger:{player:'gongJiMingZhong'},
+                        forced:true,
+                        filter:function(event,player){
+                            return event.customArgs.xueYingKuangDao==true&&(event.target.countCards('h')==2||event.target.countCards('h')==3);
+                        },
+                        content:function(){
+                            'step 0'
+                            if(trigger.target.countCards('h')==2){
+                                trigger.changeDamageNum(2);
+                            }else if(trigger.target.countCards('h')==3){
+                                trigger.changeDamageNum(1);
+                            }
+                        }
+                    }
+                },
+            },
+            xueXingPaoXiao:{
+                trigger:{player:'gongJiShi'},
+                frequent:true,
+                filter:function(event,player){
+                    return event.card.hasDuYou('xueXingPaoXiao')&&event.yingZhan!=true&&event.target.zhiLiao==2;
+                },
+                content:function(){
+                    'step 0'
+                    trigger.qiangZhiMingZhong();
+                }
+            },
+            siLie:{
+                trigger:{player:'gongJiMingZhong'},
+                frequent:true,
+                priority:-1,
+                filter:function(event,player){
+                    return player.canBiShaBaoShi();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaBaoShi();
+                    'step 1'
+                    trigger.changeDamageNum(2);
                 }
             },
         },
