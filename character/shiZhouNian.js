@@ -13,7 +13,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             }
         },
 		character:{
-			fengZhiJianSheng:['male','jiGroup',3,[],],
+			fengZhiJianSheng:['male','jiGroup',3,['fengNuZhuiJi','shengJian','lieFengJi','jiFengJi','jianYing'],],
             kuangZhanShi:['male','xueGroup',3,[],],
             shenJianShou:['female','jiGroup',3,[],],
             fengYinShi:['female','huanGroup',3,[],],
@@ -121,7 +121,120 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shengGong:"\u5929\u4e4b\u4f7f\u5f92\uff0c\u4f46\u56e0\u4e3a\u662f\u4eba\u9020\u7684\u6545\u6ca1\u6709\u7fbd\u65cf\u7684\u7fc5\u8180\uff0c\u4e8e\u662f\u5236\u4f5c\u4e86\u4e00\u5bf9\u7fc5\u8180\uff08\u4e5f\u53ef\u4ee5\u4f5c\u4e3a\u6b66\u5668\u4f7f\u7528\uff09",
 		},
 		
-		skill:{},
+		skill:{
+            //风之剑圣
+            fengNuZhuiJi:{
+                usable:1,
+                trigger:{player:"gongJiHou"},
+                filter:function(event,player){
+                    return event.yingZhan!=true;
+                },
+                content:function(){
+                    "step 0"
+                    trigger.getParent().insertAfter(function(){
+                        var str='风怒追击：风系[攻击行动]';
+                        var next=player.gongJi(function(card,player,event){
+                            if(get.xiBie(card)!='feng') return false;
+                            return lib.filter.cardEnabled(card,player,'forceEnable');
+                        },str);
+                        next.autodelay=true;
+                    },{
+                        player:player,
+                    });
+					
+                },
+                check:function(event,player){
+                    var num=player.countCards('h',card=>get.xiBie(card)=='feng'&&get.type(card)=='gongJi');
+                    return num>0
+                },
+            },
+            shengJian:{
+                forced:true,
+                trigger:{player:"gongJiSheZhi"},
+                group:['shengJian_drawAndDiscard'],
+                priority:1,
+                filter:function(event,player){
+                    return event.yingZhan!=true&&player.getStat('gongJi').zhuDong==3;
+                },
+                content:function(){
+                    trigger.qiangZhiMingZhong();
+                    trigger.shengJian=true;
+                },
+                subSkill:{
+                    drawAndDiscard:{
+                        direct:true,
+                        trigger:{player:'gongJiJieShu'},
+                        filter:function(event,player){
+                            return event.shengJian==true;
+                        },
+                        content:function(){
+                            "step 0"
+                            var list=[0,1,2,3];
+                            player.chooseControl(list).set('prompt','圣剑：摸X张牌并弃置X张牌').set('ai',function(){
+                                var player=_status.event.player;
+                                var num=player.getHandcardLimit()-player.countCards('h');
+                                if(num>3) num=3;
+                                return num;
+                            });
+                            "step 1"
+                            if(result.control==0){
+                                event.finish();
+                            }else{
+                                event.number=result.control;
+                            }
+                            "step 2"
+                            player.draw(event.number);
+                            "step 3"
+                            player.chooseToDiscard(event.number,true);
+                        }
+                    }
+                },
+            },
+            lieFengJi:{
+                trigger:{player:'gongJiShi'},
+                frequent:true,
+                filter:function(event,player){
+                    return event.card.hasDuYou('lieFengJi')&&event.target.hasExpansions('_shengDun');
+                },
+                content:function(){
+                    'step 0'
+                    trigger.wuFaShengDun();
+                    trigger.wuFaYingZhan();
+                },
+            },
+            jiFengJi:{
+                trigger:{player:'gongJiShi'},
+                frequent:true,
+                filter:function(event,player){
+                    return event.card.hasDuYou('jiFengJi')&&event.yingZhan!=true;
+                },
+                content:function(){
+                    'step 0'
+                    player.addGongJi();
+                },
+            },
+            jianYing:{
+                trigger:{player:'gongJiHou'},
+                filter:function(event,player){
+                    return event.yingZhan!=true&&player.canBiShaShuiJing();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaShuiJing();
+                    'step 1'
+                    player.addGongJi();
+                },
+                check:function(event,player){
+                    var num=player.countCards('h',card=>get.xiBie(card)=='feng'&&get.type(card)=='gongJi');
+                    return num>0
+                },
+                ai:{
+                    tag:{
+                        shuiJing:true,
+                    }
+                }
+            },
+        },
 		
 		translate:{
             //角色名字
