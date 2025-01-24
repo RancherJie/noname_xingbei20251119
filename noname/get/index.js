@@ -3444,6 +3444,9 @@ export class Get extends GetCompatible {
 		switch (type) {
 			case "mark": {
 				if (content > 0) {
+					let info=get.info(skill);
+					let str="共有" + content + "个标记"
+					if(info.max&&info.max>0) str+="，上限为"+info.max;
 					return "共有" + content + "个标记";
 				}
 				return false;
