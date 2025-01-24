@@ -4491,8 +4491,10 @@ export default () => {
 					event._skill=event.skill;
 					game.trySkillAudio(event.skill,player);
 					var checkShow=player.checkShow(event.skill);
-					if(info.useCard&&!info.viewAs){
+					if(info.useCard&&!info.viewAs){//针对独有法术技能
 						player.useCard(cards);
+					}else if(info.discard&&info.showCards&&!info.viewAs){//针对弃牌展示牌法术技能
+						player.discard(cards).set('zhanShi',true);
 					}else if(info.discard!=false&&info.lose!=false&&!info.viewAs){
 						player.discard(cards).delay=false;
 						if(lib.config.low_performance){
