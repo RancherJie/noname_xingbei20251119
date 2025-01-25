@@ -6350,6 +6350,7 @@ export default () => {
 				 * @returns 
 				 */
 				chooseDraw:function(num,bool){
+					if(typeof num!='number' || !num) num=1;
 					var next=game.createEvent('chooseDraw');
 					next.player=this;
 					next.num=num;
