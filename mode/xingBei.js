@@ -2842,35 +2842,39 @@ export default () => {
 					
                     player.storage.moDan=false;
 				},
+				subSkill:{
+					qian:{//第一个使用魔弹的角色增加魔弹标记
+						trigger:{player:'faShuQian'},
+						direct:true,
+						filter:function(event,player){
+							if(player.storage.moDan!=true&&(event.card&&event.card.name=='moDan')){
+								return true;
+							}else{
+								return false;
+							}
+						},
+						content:function(){
+							player.storage.moDan=true;
+						}
+					},
+					hou:{//第一个使用魔弹的角色删除魔弹标记
+						trigger:{player:'faShuHou'},
+						direct:true,
+						filter:function(event,player){
+							if(player.storage.moDan!=false&&(event.card&&event.card.name=='moDan')){
+								return true;
+							}else{
+								return false;
+							}
+						},
+						content:function(){
+							player.storage.moDan=false;
+						}
+					},
+				}
 			},
-            _moDan1:{//第一个使用魔弹的角色增加魔弹标记
-                trigger:{player:'faShuQian'},
-				direct:true,
-                filter:function(event,player){
-                    if(player.storage.moDan!=true&&(event.card&&event.card.name=='moDan')){
-                        return true;
-                    }else{
-                        return false;
-                    }
-                },
-                content:function(){
-                    player.storage.moDan=true;
-                }
-            },
-            _moDan2:{//第一个使用魔弹的角色删除魔弹标记
-                trigger:{player:'faShuHou'},
-				direct:true,
-                filter:function(event,player){
-                    if(player.storage.moDan!=false&&(event.card&&event.card.name=='moDan')){
-                        return true;
-                    }else{
-                        return false;
-                    }
-                },
-                content:function(){
-                    player.storage.moDan=false;
-                }
-            },
+            
+            
 
             _gouMai:{
 				enable:'phaseUse',
