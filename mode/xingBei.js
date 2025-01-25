@@ -3996,7 +3996,7 @@ export default () => {
 								}
 							}
 						}
-						if(event.zhanShi==true) next.set('zhanShi',true);
+						if(event.zhanShi==true) event.done.set('zhanShi',true);
 						event.done.discarder=player;
 					}
 					if(event.dialog&&event.dialog.close) event.dialog.close();
