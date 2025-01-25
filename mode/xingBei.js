@@ -2405,6 +2405,13 @@ export default () => {
 					//无可启动技跳过启动前后无法行动
 					if(event.name=='phaseUse'){
 						if(event.canQiDong==false) return false;
+						var next=game.createEvent('gongJiOrFaShu',false);
+						next.setContent('emptyEvent');
+						if(event.firstAction){
+							next.set('type','phase');
+							next.set('firstAction',event.firstAction)
+						}
+						next.set('canTeShu',event.canTeShu);
 					}
 					//获取所有技能
 					var skills = game.expandSkills(player.getSkills("invisible").concat(lib.skill.global));
@@ -2412,7 +2419,8 @@ export default () => {
 					for(var i=0;i<skills.length;i++){
 						//排除提炼和无法行动（避免判断可触发时循环嵌套）
 						if(skills[i]=='_tiLian' || skills[i]=='_wuFaXingDong') continue;
-						var enable=lib.filter.filterEnable(event, player, skills[i]);
+						if(event.name=='phaseUse') var enable=lib.filter.filterEnable(next, player, skills[i]);
+						else var enable=lib.filter.filterEnable(event, player, skills[i]);
 						if(enable) return false;
 					}
 
