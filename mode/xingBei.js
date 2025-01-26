@@ -3565,7 +3565,7 @@ export default () => {
 					//规则集中的“回合开始后③（处理“游戏开始时”的时机）”
 					//提前phaseBefore时机解决“游戏开始时”时机和“一轮开始时”先后
 					//event.trigger("phaseBefore");
-					event.trigger("huiHeQain");
+					event.trigger("huiHeQian");
 					"step 1";
 					game.phaseNumber++;
 					//初始化阶段列表
