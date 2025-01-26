@@ -337,12 +337,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 filterTarget:true,
                 prompt:'目标角色+2[治疗]',
                 position:'h',
-                selectCard:function(card){
+                filterCard:function(card){
                     return card.hasDuYou('zhiLiaoShu');
                 },
                 filter:function(event,player){
                     return player.hasCard(function(card){
-                        return card.hasDuYou('zhiLiaoShu');
+                        return lib.skill.zhiLiaoShu.filterCard(card);
                     });
 				},
                 content:function(){
@@ -366,7 +366,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 				position:'h',
 				filter:function(event,player){
                     return player.hasCard(function(card){
-                        return card.hasDuYou('zhiYuZhiGuang');
+                        return lib.skill.zhiYuZhiGuang.filterCard(card);
                     });
 				},
 				prompt:'指定最多3名角色各+1[治疗]。',
