@@ -16,7 +16,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 			fengZhiJianSheng:['male','jiGroup',3,['fengNuZhuiJi','shengJian','lieFengJi','jiFengJi','jianYing'],],
             kuangZhanShi:['male','xueGroup',3,['kuangHua','xueYingKuangDao','xueXingPaoXiao','siLie'],],
             shenJianShou:['female','jiGroup',3,[],],
-            fengYinShi:['female','huanGroup',3,[],],
+            fengYinShi:['female','huanGroup',3,['faShuJiDang','diZhiFengYin','shuiZhiFengYin','huoZhiFengYin','fengZhiFengYin','leiZhiFengYin','wuXiShuFu','fengYinPoSui'],],
             anShaZhe:['male','jiGroup',3,['fanShi','shuiYing','qianXing'],],
             shengNv:['female','shengGroup',3,['bingShuangDaoYan','zhiLiaoShu','zhiYuZhiGuang','lianMin','shengLiao'],],
             tianShi:['female','shengGroup',3,[],],
@@ -569,6 +569,527 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return true;
                 },
             },
+            //封印师
+            faShuJiDang:{
+                trigger:{player:'faShuHou'},
+                frequent:true,
+                content:function(){
+                    player.addGongJi();
+                }
+            },
+            diZhiFengYin:{
+                type:'faShu',
+                enable:'faShu',
+				position:'h',
+				filter:function(event,player){
+                    var bool1=player.hasCard(function(card){
+                        return lib.skill.diZhiFengYin.filterCard(card);
+                    });
+                    var bool2=game.filterPlayer(function(current){
+                        return lib.skill.diZhiFengYin.filterTarget('',player,current);
+                    }).length>0;
+                    return bool1&&bool2
+				},
+                filterCard:function(card){
+                    return card.hasDuYou('diZhiFengYin');
+				},
+                filterTarget:function(card,player,target){
+                    return target.side!=player.side&&!target.hasExpansions('diZhiFengYin_xiaoGuo')
+                },
+                useCard:true,
+                content:function(){
+                    'step 0'
+                    if(!target.hasSkill('diZhiFengYin_xiaoGuo')){
+                        target.addSkill('diZhiFengYin_xiaoGuo');
+                    }
+                    'step 1'
+                    target.storage.fengYin=player;
+                    target.addToExpansion(cards,'gain2',player).gaintag.add('diZhiFengYin_xiaoGuo');
+                },
+                subSkill:{
+                    xiaoGuo:{
+                        marktext:"地",
+                        intro:{
+                            content:'expansion',
+                        },
+                        onremove:function(player, skill) {
+                            const cards = player.getExpansions(skill);
+                            if (cards.length) player.loseToDiscardpile(cards);
+                        },
+                        trigger:{player:['daChuPai','showCardsEnd']},
+                        forced:true,
+                        firstDo:true,
+                        priority:1,
+                        filter:function(event,player){
+                            if(!player.hasExpansions('diZhiFengYin_xiaoGuo')){
+                                return false
+                            }
+                            for(var card of event.cards){
+                                if(event.name!='showCards'){
+                                    if(card.original != "h") continue;
+                                }
+                                if(get.xiBie(card)=='di'){
+                                    return true;
+                                }
+                            }
+                            return false;
+                        },
+                        content:function(){
+                            'step 0'
+                            player.faShuDamage(player.storage.fengYin,3);
+                            'step 1'
+                            player.loseToDiscardpile(player.getExpansions('diZhiFengYin_xiaoGuo'));
+                            'step 2'
+                            player.removeSkill('diZhiFengYin_xiaoGuo')
+                        }
+                    },
+                },
+                ai:{
+                    order:4,
+                    result:{
+                        target:function(player,target){
+                            if(target.countCards('h')>3) return -3;
+                            return -1;
+                        }
+                    }
+                }
+            },
+            shuiZhiFengYin:{
+                type:'faShu',
+                enable:'faShu',
+				filterCard:function(card){
+                    return card.hasDuYou('shuiZhiFengYin');
+				},
+				position:'h',
+				filter:function(event,player){
+                    var bool1=player.hasCard(function(card){
+                        return lib.skill.shuiZhiFengYin.filterCard(card);
+                    });
+                    var bool2=game.filterPlayer(function(current){
+                        return lib.skill.shuiZhiFengYin.filterTarget('',player,current);
+                    }).length>0;
+                    return bool1&&bool2
+				},
+                filterTarget:function(card,player,target){
+                    return target.side!=player.side&&!target.hasExpansions('shuiZhiFengYin_xiaoGuo')
+                },
+                useCard:true,
+                content:function(){
+                    'step 0'
+                    if(!target.hasSkill('shuiZhiFengYin_xiaoGuo')){
+                        target.addSkill('shuiZhiFengYin_xiaoGuo');
+                    }
+                    'step 1'
+                    target.storage.fengYin=player;
+                    target.addToExpansion(cards,'gain2',player).gaintag.add('shuiZhiFengYin_xiaoGuo');
+                },
+                subSkill:{
+                    xiaoGuo:{
+                        marktext:"水",
+                        intro:{
+                            content:'expansion',
+                        },
+                        onremove:function(player, skill) {
+                            const cards = player.getExpansions(skill);
+                            if (cards.length) player.loseToDiscardpile(cards);
+                        },
+                        trigger:{player:['daChuPai','showCardsEnd']},
+                        forced:true,
+                        priority:1,
+                        filter:function(event,player){
+                            if(!player.hasExpansions('shuiZhiFengYin_xiaoGuo')){
+                                return false
+                            }
+                            for(var card of event.cards){
+                                if(event.name!='showCards'){
+                                    if(card.original != "h") continue;
+                                }
+                                if(get.xiBie(card)=='shui'){
+                                    return true;
+                                };
+                            }
+                            return false;
+                        },
+                        content:function(){
+                            'step 0'
+                            player.faShuDamage(player.storage.fengYin,3);
+                            'step 1'
+                            player.loseToDiscardpile(player.getExpansions('shuiZhiFengYin_xiaoGuo'));
+                            'step 2'
+                            player.removeSkill('shuiZhiFengYin_xiaoGuo')
+                        }
+                    },
+                },
+                ai:{
+                    order:4,
+                    result:{
+                        target:function(player,target){
+                            if(target.countCards('h')>3) return -3;
+                            return -1;
+                        }
+                    }
+                }
+            },
+            huoZhiFengYin:{
+                type:'faShu',
+                enable:'faShu',
+				filterCard:function(card){
+                    return card.hasDuYou('huoZhiFengYin');
+				},
+				position:'h',
+				filter:function(event,player){
+                    var bool1=player.hasCard(function(card){
+                        return lib.skill.huoZhiFengYin.filterCard(card);
+                    });
+                    var bool2=game.filterPlayer(function(current){
+                        return lib.skill.huoZhiFengYin.filterTarget('',player,current);
+                    }).length>0;
+                    return bool1&&bool2
+				},
+                filterTarget:function(card,player,target){
+                    return target.side!=player.side&&!target.hasExpansions('huoZhiFengYin_xiaoGuo')
+                },
+                useCard:true,
+                content:function(){
+                    'step 0'
+                    if(!target.hasSkill('huoZhiFengYin_xiaoGuo')){
+                        target.addSkill('huoZhiFengYin_xiaoGuo');
+                    }
+                    'step 1'
+                    target.storage.fengYin=player;
+                    target.addToExpansion(cards,'gain2',player).gaintag.add('huoZhiFengYin_xiaoGuo');
+                },
+                subSkill:{
+                    xiaoGuo:{
+                        marktext:"火",
+                        intro:{
+                            content:'expansion',
+                        },
+                        trigger:{player:['daChuPai','showCardsEnd']},
+                        forced:true,
+                        priority:1,
+                        filter:function(event,player){
+                            if(!player.hasExpansions('huoZhiFengYin_xiaoGuo')){
+                                return false
+                            }
+
+                            for(var card of event.cards){
+                                if(event.name!='showCards'){
+                                    if(card.original != "h") continue;
+                                }
+                                if(get.xiBie(card)=='huo'){
+                                    return true;
+                                };
+                            }
+                            return false;
+                        },
+                        content:function(){
+                            'step 0'
+                            player.faShuDamage(player.storage.fengYin,3);
+                            'step 1'
+                            player.loseToDiscardpile(player.getExpansions('huoZhiFengYin_xiaoGuo'));
+                            'step 2'
+                            player.removeSkill('huoZhiFengYin_xiaoGuo')
+                        }
+                    },
+                },
+                ai:{
+                    order:4,
+                    result:{
+                        target:function(player,target){
+                            if(target.countCards('h')>3) return -3;
+                            return -1;
+                        }
+                    }
+                }
+            },
+            fengZhiFengYin:{
+                type:'faShu',
+                enable:'faShu',
+				filterCard:function(card){
+                    return card.hasDuYou('fengZhiFengYin');
+				},
+				position:'h',
+				filter:function(event,player){
+                    var bool1=player.hasCard(function(card){
+                        return lib.skill.fengZhiFengYin.filterCard(card);
+                    });
+                    var bool2=game.filterPlayer(function(current){
+                        return lib.skill.fengZhiFengYin.filterTarget('',player,current);
+                    }).length>0;
+                    return bool1&&bool2
+				},
+                filterTarget:function(card,player,target){
+                    return target.side!=player.side&&!target.hasExpansions('fengZhiFengYin_xiaoGuo')
+                },
+                useCard:true,
+                content:function(){
+                    'step 0'
+                    if(!target.hasSkill('fengZhiFengYin_xiaoGuo')){
+                        target.addSkill('fengZhiFengYin_xiaoGuo');
+                    }
+                    'step 1'
+                    target.storage.fengYin=player;
+                    target.addToExpansion(cards,'gain2',player).gaintag.add('fengZhiFengYin_xiaoGuo');
+                },
+                subSkill:{
+                    xiaoGuo:{
+                        marktext:"风",
+                        intro:{
+                            content:'expansion',
+                        },
+                        onremove:function(player, skill) {
+                            const cards = player.getExpansions(skill);
+                            if (cards.length) player.loseToDiscardpile(cards);
+                        },
+                        trigger:{player:['daChuPai','showCardsEnd']},
+                        forced:true,
+                        priority:1,
+                        filter:function(event,player){
+                            if(!player.hasExpansions('fengZhiFengYin_xiaoGuo')){
+                                return false
+                            }
+   
+                            for(var card of event.cards){
+                                if(event.name!='showCards'){
+                                    if(card.original != "h") continue;
+                                }
+                                if(get.xiBie(card)=='feng'){
+                                    return true;
+                                };
+                            }
+                            return false;
+                        },
+                        content:function(){
+                            'step 0'
+                            player.faShuDamage(player.storage.fengYin,3);
+                            'step 1'
+                            player.loseToDiscardpile(player.getExpansions('fengZhiFengYin_xiaoGuo'));
+                            'step 2'
+                            player.removeSkill('fengZhiFengYin_xiaoGuo')
+                        }
+                    },
+                },
+                ai:{
+                    order:4,
+                    result:{
+                        target:function(player,target){
+                            if(target.countCards('h')>3) return -3;
+                            return -1;
+                        }
+                    }
+                }
+            },
+            leiZhiFengYin:{
+                type:'faShu',
+                enable:'faShu',
+				filterCard:function(card){
+                    return card.hasDuYou('leiZhiFengYin');
+				},
+				position:'h',
+				filter:function(event,player){
+                    var bool1=player.hasCard(function(card){
+                        return lib.skill.leiZhiFengYin.filterCard(card);
+                    });
+                    var bool2=game.filterPlayer(function(current){
+                        return lib.skill.leiZhiFengYin.filterTarget('',player,current);
+                    }).length>0;
+                    return bool1&&bool2
+				},
+                filterTarget:function(card,player,target){
+                    return target.side!=player.side&&!target.hasExpansions('leiZhiFengYin_xiaoGuo')
+                },
+                prepare:'useCard',
+                discard:false,
+                content:function(){
+                    'step 0'
+                    if(!target.hasSkill('leiZhiFengYin_xiaoGuo')){
+                        target.addSkill('leiZhiFengYin_xiaoGuo');
+                    }
+                    'step 1'
+                    target.storage.fengYin=player;
+                    target.addToExpansion(cards,'gain2',player).gaintag.add('leiZhiFengYin_xiaoGuo');
+                },
+                subSkill:{
+                    xiaoGuo:{
+                        marktext:"雷",
+                        intro:{
+                            content:'expansion',
+                        },
+                        onremove:function(player, skill) {
+                            const cards = player.getExpansions(skill);
+                            if (cards.length) player.loseToDiscardpile(cards);
+                        },
+                        trigger:{player:['daChuPai','showCardsEnd']},
+                        forced:true,
+                        priority:1,
+                        filter:function(event,player){
+                            if(!player.hasExpansions('leiZhiFengYin_xiaoGuo')){
+                                return false
+                            }
+
+                            for(var card of event.cards){
+                                if(event.name!='showCards'){
+                                    if(card.original != "h") continue;
+                                }
+                                if(get.xiBie(card)=='lei'){
+                                    return true;
+                                };
+                            }
+                            return false;
+                        },
+                        content:function(){
+                            'stpe 0'
+                            player.faShuDamage(player.storage.fengYin,3);
+                            'step 1'
+                            player.loseToDiscardpile(player.getExpansions('leiZhiFengYin_xiaoGuo'));
+                            'step 2'
+                            player.removeSkill('leiZhiFengYin_xiaoGuo')
+                        }
+                    },
+                },
+                ai:{
+                    order:4,
+                    result:{
+                        target:function(player,target){
+                            if(target.countCards('h')>3) return -3;
+                            return -1;
+                        }
+                    }
+                }
+            },
+            wuXiShuFu:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    var bool1=player.canBiShaShuiJing();
+                    var bool2=game.filterPlayer(function(current){
+                        return lib.skill.wuXiShuFu.filterTarget('',player,current);
+                    }).length>0;
+                    return bool1&&bool2
+                },
+                filterTarget:function(card,player,target){
+                    return target.side!=player.side;
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaShuiJing();
+                    'step 1'
+                    target.addSkill('wuXiShuFu_xiaoGuo')
+                    'step 2'
+					target.addMark('wuXiShuFu_xiaoGuo');
+                },
+                subSkill:{
+                    xiaoGuo:{
+                        priority:2,
+                        trigger:{player:'xingDongQian'},
+                        forced:true,
+                        markimage:'image/card/zhuanShu/wuXiShuFu.png',
+                        intro:{
+                            content:'(将【五系束缚】放置于目标对手面前)该对手跳过其下个行动阶段。在其下个行动阶段开始前他可以选择摸(2+X)张牌来取消【五系束缚】的效果。X为场上封印的数量，X最高为2。无论效果是否发动，触发后移除此牌。',
+                            nocount:true,
+                        },
+                        onremove:'storage',
+                        filter:function(event,player){
+                            return player.hasZhiShiWu('wuXiShuFu_xiaoGuo');
+                        },
+                        content:function(){
+                            'step 0'
+                            var x=0;
+                            for(var p of game.players){
+                                for(var xiaoGuo of game.jiChuXiaoGuo.fengYinShi){
+                                    if(p.hasExpansions(xiaoGuo)){
+                                        x++;
+                                    }
+                                }
+                                if(x>=2){
+                                    x=2;
+                                    break;
+                                }
+                            }
+                            event.num;
+                            event.num=2+x;
+
+                            var list=[`摸2+${x}张牌`,'跳过行动阶段'];
+                            if(player.hasExpansions('_xuRuo')){
+                                list[0]=`摸2+3+${x}张牌`;
+                                event.num+=3;
+                            }
+                            player.chooseControl().set('choiceList',list).set('prompt','五系束缚：选择一项').set('ai',function(){
+                                var player=_status.event.player;
+                                var num=_status.event.num;
+                                if(player.countCards('h')+num>player.getHandcardLimit()){
+                                    return 1;
+                                }else{
+                                    return 0;
+                                }
+                            }).set('num',event.num);
+                            'step 1'
+                            if(result.index==1){
+                                trigger.xuRuo=true;
+                            }else if(result.index==0){
+                                player.draw(event.num); 
+                            }
+                            'step 2'
+                            player.removeZhiShiWu('wuXiShuFu_xiaoGuo');
+                            'step 3'
+                            if(player.hasExpansions('_xuRuo')){
+                                player.loseToDiscardpile(player.getExpansions('_xuRuo')); 
+                            }
+                            'step 4'
+                            player.removeSkill('wuXiShuFu_xiaoGuo');
+                        },
+                    }
+                },
+                ai:{
+                    shuiJing:true,
+                    order:4,
+                    result:{
+                        target:function(player,target){
+                            if(target.countCards('h')>4) return -3;
+                            return -1;
+                        }
+                    }
+                }
+            },
+            fengYinPoSui:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    var bool1=player.canBiShaShuiJing();
+                    var bool2=game.filterPlayer(function(current){
+                        return lib.skill.fengYinPoSui.filterTarget('','',current)
+                    }).length>0;
+                    return bool1&&bool2;
+                },
+                filterTarget:function(card,player,target){
+                    for(var xiaoGuoList in game.jiChuXiaoGuo){
+                        for(var xiaoGuo of game.jiChuXiaoGuo[xiaoGuoList]){
+                            if(target.hasExpansions(xiaoGuo)){
+                                return true;
+                            }
+                        }
+                    }
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaShuiJing();
+                    'step 1'
+                    player.gainJiChuXiaoGuo(target);
+                },
+                ai:{
+                    shuiJing:true,
+                    order:3.5,
+                    result:{
+                        target:function(player,target){
+                            var shiQi=get.shiQi(player.side);
+                            if(shiQi<=5&&player.countEmptyCards<=0) return false; 
+
+                            return get.jiChuXiaoGuoEffect(target);
+                        }
+                    }
+                }
+            },
         },
 		
 		translate:{
@@ -660,16 +1181,22 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             faShuJiDang:"[响应]法术激荡",
             faShuJiDang_info:"<span class='tiaoJian'>([法术行动]结束后发动)</span>额外+1[攻击行动]。",
             diZhiFengYin:"(独)[法术]地之封印",
+            diZhiFengYin_xiaoGuo:'地之封印',
             diZhiFengYin_info:"<span class='tiaoJian'>(将【地之封印】放置于目标对手面前)</span>该对手获得(直到他从手中打出或展示出地系牌时强制触发)：对他造成3点法术伤害③，触发后移除此牌。",
             shuiZhiFengYin:"(独)[法术]水之封印",
+            shuiZhiFengYin_xiaoGuo:"水之封印",
             shuiZhiFengYin_info:"<span class='tiaoJian'>(将【水之封印】放置于目标对手面前)</span>该对手获得(直到他从手中打出或展示出水系牌时强制触发)：对他造成3点法术伤害③，触发后移除此牌。",
             huoZhiFengYin:"(独)[法术]火之封印",
+            huoZhiFengYin_xiaoGuo:"火之封印",
             huoZhiFengYin_info:"<span class='tiaoJian'>(将【火之封印】放置于目标对手面前)</span>该对手获得(直到他从手中打出或展示出火系牌时强制触发)：对他造成3点法术伤害③，触发后移除此牌。",
             fengZhiFengYin:"(独)[法术]风之封印",
+            fengZhiFengYin_xiaoGuo:'风之封印',
             fengZhiFengYin_info:"<span class='tiaoJian'>(将【风之封印】放置于目标对手面前)</span>该对手获得(直到他从手中打出或展示出风系牌时强制触发)：对他造成3点法术伤害③，触发后移除此牌。",
             leiZhiFengYin:"(独)[法术]雷之封印",
+            leiZhiFengYin_xiaoGuo:'雷之封印',
             leiZhiFengYin_info:"<span class='tiaoJian'>(将【雷之封印】放置于目标对手面前)</span>该对手获得(直到他从手中打出或展示出雷系牌时强制触发)：对他造成3点法术伤害③，触发后移除此牌。",
             wuXiShuFu:"(专)[法术]五系束缚",
+            wuXiShuFu_xiaoGuo:"五系束缚",
             wuXiShuFu_info:"[水晶]<span class='tiaoJian'>(将【五系束缚】放置于目标对手面前)</span>该对手跳过其下个行动阶段。在其下个行动阶段开始前他可以选择摸(2+X)张牌来取消【五系束缚】的效果。X为场上封印的数量，X最高为2。无论效果是否发动，触发后移除此牌。",
             fengYinPoSui:"[法术]封印破碎",
             fengYinPoSui_info:"[水晶]将场上任意一张基础效果牌收入自己手中。",
