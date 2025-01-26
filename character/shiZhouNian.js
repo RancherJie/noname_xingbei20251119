@@ -341,7 +341,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return card.hasDuYou('zhiLiaoShu');
                 },
                 filter:function(event,player){
-                    return player.hasCard('h',function(card){
+                    return player.hasCard(function(card){
                         return card.hasDuYou('zhiLiaoShu');
                     });
 				},
@@ -365,7 +365,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 				},
 				position:'h',
 				filter:function(event,player){
-                    return player.hasCard('h',function(card){
+                    return player.hasCard(function(card){
                         return card.hasDuYou('zhiYuZhiGuang');
                     });
 				},
