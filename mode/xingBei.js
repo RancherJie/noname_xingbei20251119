@@ -6089,9 +6089,8 @@ export default () => {
 				countNengLiangAll:function(){//统计所有能量数
 					return this.countMark('_tiLian_baoShi')+this.countMark('_tiLian_shuiJing');
 				},
-				faShuDamage:function(){//法术伤害
+				damage() {
 					const next = game.createEvent("damage");
-					next.faShu = true;
 					next.player = this;
 					let noCard, noSource;
 					const event = _status.event;
@@ -6132,6 +6131,11 @@ export default () => {
 							return true;
 						}
 					};
+					return next;
+				},
+				faShuDamage:function(){//法术伤害
+					var next=this.damage(arguments);
+					next.set('faShu',true);
 					return next;
 				},
 
