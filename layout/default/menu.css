@@ -314,13 +314,15 @@
 	overflow-y: auto; /* 添加 overflow-y 以允许垂直滚动 */
 	border-radius: 4px;
 	box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px;
+	height: 100px;
+	width: 380px;
 }
 
 .menubg.charactercard > .characterskill > .menubutton.large {
 	height: 20px;
 	line-height: 20px;
 	padding: 5px;
-	margin-top: 10px;
+	margin-top: 5px;
 	position: relative;
 	font-size: 20px;
 	margin-right: 10px;
