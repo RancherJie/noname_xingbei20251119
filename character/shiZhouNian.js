@@ -37,7 +37,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             lingHunShuShi:['lingHunShuShi_name','huanGroup','4/5',[],],
             xueZhiWuNv:['xueZhiWuNv_name','xueGroup',5,[],],
             dieWuZhe:['dieWuZhe_name','yongGroup',5,[],],
-            nvWuShen:['nvWuShen_name','shengGroup','3/4',[],],
+            nvWuShen:['nvWuShen_name','shengGroup','3/4',['shenShengZhuiJi','zhiXuZhiYin','hePingXingZhe','junShenWeiGuan','yingLingZhaoHuan'],],
             moGong:['moGong_name','huanGroup',4,[],],
             hongLianQiShi:['hongLianQiShi_name','xueGroup',4,[],],
             yingLingRenXing:['yingLingRenXing_name','yongGroup',4,[],],
@@ -1526,6 +1526,167 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                 }
             },
+            //女武神
+            shenShengZhuiJi:{
+                trigger:{player:['gongJiHou','faShuHou']},
+                filter:function(event,player){
+                    return player.zhiLiao>0&&event.yingZhan!=true;
+                },
+                content:function(){
+                    player.changeZhiLiao(-1);
+                    player.addGongJi();
+                }
+            },
+            zhiXuZhiYin:{
+                type:'faShu',
+                enable:'faShu',
+                content:function(){
+                    'step 0'
+                    player.draw(2);
+                    'step 1'
+                    player.changeZhiLiao(1);
+                    player.addNengLiang('shuiJing');
+                },
+                ai:{
+                    order:4,
+                    result:{
+                        player:function(player, target){
+                            if(player.isHengZhi()) return -1;
+                            if(player.countCards('h')+2>player.getHandcardLimit()) return -1;
+                            else return 1;
+                        },
+                    }
+                }
+            },
+            hePingXingZhe:{
+                group:'hePingXingZhe_chongZhi',
+                forced:true,
+                trigger:{player:"yingLingZhaoHuan"},
+                filter:function(event,player){
+                    if(_status.currentPhase!=player) return false;
+                    return !player.isHengZhi();
+                },
+                content:function(){
+                    player.hengZhi();
+                },
+                subSkill:{
+                    chongZhi:{
+                        forced:true,
+                        trigger:{player:'gongJiShi'},
+                        filter:function(event,player){
+                            if(!player.isHengZhi()) return false;
+                            if(event.yingZhan==true) return false;
+                            return true;
+                        },
+                        content:function(){
+                            player.chongZhi();
+                            
+                        }
+                    }
+                }
+            },
+            junShenWeiGuan:{
+                forced:true,
+                trigger:{player:'huiHeKaiShi'},
+                filter:function(event,player){
+                    return player.isLinked();
+                },
+                content:function(){
+                    'step 0'
+                    var choiceList=['你+1[治疗]，[重置]脱离【英灵形态】','(移除我方【战绩区】X个星石，X<3)目标角色+X[治疗]'];
+                    var choices=['选项一'];
+                    var list=get.zhanJi(player.side);
+                    if(list.length>=1){
+                        choices.push('选项二');
+                    }
+                    player.chooseControl(choices).set('prompt','军光神威：选择一项').set('choiceList',choiceList);
+                    'step 1'
+                    if(result.index==0){
+                        player.changeZhiLiao(1);
+                        player.chongZhi();
+                        event.finish();
+                    }else if(result.index==1){
+                        var list=get.zhanJi(player.side);
+                        var listx=[];
+                        for(var i=0;i<list.length;i++){
+                            listx.push([list[i],get.translation(list[i])]);
+                        }
+                        var next=player.chooseButton([
+                            '移除X个星石，X<3',
+                            [listx,'tdnodes'],
+                        ]);
+                        next.set('forced',true);
+                        next.set('selectButton',[1,2]);
+                    }
+                    'step 2'
+                    event.number=result.links.length;
+                    var number=event.number;
+                    var dict={baoShi:0,shuiJing:0};
+                    for(var i=0;i<result.links.length;i++){
+						if(result.links[i]=='baoShi'){
+                            dict['baoShi']++;
+						}else if(result.links[i]=='shuiJing'){
+                            dict['shuiJing']++;
+						}
+					}
+                    if(dict['baoShi']>0){
+                        var next=player.removeZhanJi('baoShi',dict['baoShi']);
+                    }
+                    if(dict['shuiJing']>0){
+                        var next=player.removeZhanJi('shuiJing',dict['shuiJing']);
+                    }
+                    'step 3'
+                    var number=event.number;
+                    player.chooseTarget(1,true,'选择一个目标角色+'+number+'点[治疗]').set('ai',function(target){
+                        var player=_status.event.player;
+                        var number=_status.event.number;
+                        return get.zhiLiaoEffect2(target,player,number);
+                    }).set('number',number);
+                    'step 4'
+                    result.targets[0].changeZhiLiao(event.number,player);
+                }
+            },
+            yingLingZhaoHuan:{
+                trigger:{player:'gongJiMingZhong'},
+                filter:function(event,player){
+                    return player.canBiShaShuiJing();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaShuiJing();
+                    'step 1'
+                    trigger.changeDamageNum(1);
+                    'step 2'
+                    player.chooseCardTarget({
+                        filterCard:function(card){
+                            return get.type(card)=='faShu';
+                        },
+                        filterTarget:true,
+                        prompt:"<span class='tiaoJian'>(若你额外弃置1张法术牌[展示])</span>目标角色+1[治疗]",
+                        ai1(card) {
+                            return 6- get.value(card);
+                        },
+                        ai2(target) {
+                            return get.zhiLiaoEffect2(target,player,1);
+                        },
+                    });
+                    'step 3'
+                    if(result.bool){
+                        player.discard(result.cards).set('showCards',true);
+                        event.target=result.targets[0];
+                    }else{
+                        event.goto(5);
+                    }
+                    'step 4'
+                    event.target.changeZhiLiao(1);
+                    'step 5'
+                    event.trigger('yingLingZhaoHuan')
+                },
+                ai:{
+                    shuiJing:true,
+
+                }
+            },
         },
 		
 		translate:{
@@ -1714,7 +1875,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 
             //女武神
             shenShengZhuiJi:"[响应]神圣追击",
-            shenShengZhuiJi_info:"<span class='tiaoJian'>(攻击或[法术行动]结束后，移除你的1[治疗])</span>额外+1[攻击行动]。",
+            shenShengZhuiJi_info:"<span class='tiaoJian'>([攻击行动]或[法术行动]结束后，移除你的1[治疗])</span>额外+1[攻击行动]。",
             zhiXuZhiYin:"[法术]秩序之印",
             zhiXuZhiYin_info:"<span class='tiaoJian'>(摸2张牌[强制])</span>你加+1[治疗]并+1[水晶]。",
             hePingXingZhe:"[被动]和平行者",
