@@ -20,7 +20,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             anShaZhe:['anShaZhe_name','jiGroup',3,['fanShi','shuiYing','qianXing'],],
             shengNv:['shengNv_name','shengGroup',3,['bingShuangDaoYan','zhiLiaoShu','zhiYuZhiGuang','lianMin','shengLiao'],],
             tianShi:['tianShi_name','shengGroup',3,['fengZhiJieJing','tianShiZhuFu','tianShiJiBan','tianShiZhiQiang','tianShiZhiGe','shenZhiBiHu'],],
-            moFaShaoNv:['moFaShaoNv_name','yongGroup',3,[],],
+            moFaShaoNv:['moFaShaoNv_name','yongGroup',3,['moBaoChongJi','moDanZhangWo','moDanRongHe','huiMieFengBao'],],
             moJianShi:['moJianShi_name','huanGroup','3/4',[],],
             shengQiangQiShi:['shengQiangQiShi_name','shengGroup','3/4',[],],
             yuanSuShi:['yuanSuShi_name','yongGroup','3/4',[],],
@@ -1392,6 +1392,140 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                 }
             },
+            //魔法少女
+            moBaoChongJi:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    return player.hasCard(card=>lib.skill.moBaoChongJi.filterCard(card));
+                },
+                selectTarget:2,
+                filterTarget:function(card,player,target){
+                    return target.side!=player.side;
+                },
+                filterCard:function(card){
+                    return get.type(card)=='faShu';
+                },
+                discard:true,
+                showCards:true,
+                contentBefore:function(){
+                    player.changeZhanJi('baoShi',1);
+                },
+                content:function(){
+                    'step 0'
+                    var name=get.translation(player);
+                    target.chooseToDiscard(`弃置1张法术牌，否则${name}对你造成2点法术伤害③、${name}弃一张牌`,1,function(card){
+                        return get.type(card)=='faShu';
+                    })
+                    .set('showCards',true)
+                    .set('ai',function(){
+                        return 1;
+                    });
+                    'step 1'
+                    if(!result.bool){
+                        target.faShuDamage(2,player);
+                        if(player.countCards('h')>=1){
+                            player.chooseToDiscard(1,true);
+                        }
+                    }
+                },
+                ai:{
+                    order:3.5,
+                    result:{
+                        target:function(player,target){
+                            var chaZhi=target.getHandcardLimit()-target.countCards('h');
+                            if(chaZhi<=1) return -2;
+                            else return -0.1;
+                        }
+                    }
+                }
+            },
+            moDanZhangWo:{
+                trigger:{player:'useCardBefore'},
+                forced:true,
+                filter:function(event,player){
+                    if(player.storage.moDan==true) return false;
+                    if(get.name(event.card)!='moDan') return false;
+                    var range_l=0,range_r=0;
+                    var target=player;
+                    while(target!=event.targets[0]){
+                        target=target.getPrevious();
+                        range_l++;
+                    }
+                    target=player;
+                    while(target!=event.targets[0]){
+                        target=target.getNext();
+                        range_r++;
+                    }
+                    if(range_l==range_r){
+                        return !(player.side==player.getNext().side);
+                    }
+                    return range_l<range_r;
+                },
+                content:function(){
+                    game.broadcastAll(function(){
+                        game.moDanFangXiang='zuo';
+                    });
+                    game.zhanJiList['moDanFangXiang']='zuo';
+                },
+                mod:{
+                    playerEnabled:function(card,player,target){
+                        if(player.storage.moDan==true) return;
+                        if(get.name(card)=='moDan'){
+                            var mubiao=player.getPrevious();
+                            while(mubiao.side==player.side){
+                                mubiao=mubiao.getPrevious();
+                                while(mubiao.storage.moDan==true){
+                                    mubiao=mubiao.getPrevious();
+                                }
+                            }
+						    if(target==mubiao) return true;
+                        }
+                    }
+                }
+            },
+            moDanRongHe:{
+                enable:['faShu','moDan'],
+				filterCard:function(card){
+                    return get.xiBie(card)=='di'||get.xiBie(card)=='huo';
+				},
+				position:'h',
+				viewAs:{name:'moDan'},
+				viewAsFilter:function(player){
+                    return player.hasCard(function(card){
+                        return lib.skill.moDanRongHe.filterCard(card);
+                    });
+				},
+                ai:{
+                    order:3.5,
+                }
+            },
+            huiMieFengBao:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    return player.canBiShaBaoShi();
+                },
+                selectTarget:2,
+                filterTarget:function(card,player,target){
+                    return target.side!=player.side;
+                },
+                contentBefore:function(){
+                    player.removeBiShaBaoShi();
+                },
+                content:function(){
+                    target.faShuDamage(2,player);
+                },
+                ai:{
+                    baoShi:true,
+                    order:3.8,
+                    result:{
+                        target:function(player,target){
+                            return get.damageEffect(target,player,2);
+                        }
+                    }
+                }
+            },
         },
 		
 		translate:{
@@ -1570,7 +1704,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 
             //魔法少女
             moBaoChongJi:'[法术]魔爆冲击',
-            moBaoChongJi_info:'<span class="tiaoJian">(弃1张法术牌[展示])</span>我方【战绩区】+1[宝石]。2名目标对手各弃一张法术牌[展示]，每有人不如此做，你对他造成2点法术伤害③，你弃一张牌。',
+            moBaoChongJi_info:'<span class="tiaoJian">(弃1张法术牌[展示])</span>我方【战绩区】+1[宝石]。2名目标对手各弃一张法术牌[展示]，每有人不如此做，你对他造成2点法术伤害③、你弃一张牌。',
             moDanZhangWo:'[响应]魔弹掌握',
             moDanZhangWo_info:'你主动使用【魔弹】时可以选择逆向传递。',
             moDanRongHe:'[响应]魔弹融合',
