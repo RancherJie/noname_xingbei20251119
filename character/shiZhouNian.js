@@ -19,7 +19,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             fengYinShi:['female','huanGroup',3,['faShuJiDang','diZhiFengYin','shuiZhiFengYin','huoZhiFengYin','fengZhiFengYin','leiZhiFengYin','wuXiShuFu','fengYinPoSui'],],
             anShaZhe:['male','jiGroup',3,['fanShi','shuiYing','qianXing'],],
             shengNv:['female','shengGroup',3,['bingShuangDaoYan','zhiLiaoShu','zhiYuZhiGuang','lianMin','shengLiao'],],
-            tianShi:['female','shengGroup',3,[],],
+            tianShi:['female','shengGroup',3,['fengZhiJieJing','tianShiZhuFu','tianShiJiBan','tianShiZhiQiang','tianShiZhiGe','shenZhiBiHu'],],
             moFaShaoNv:['female','yongGroup',3,[],],
             moJianShi:['female','huanGroup','3/4',[],],
             shengQiangQiShi:['female','shengGroup','3/4',[],],
@@ -1091,6 +1091,226 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             return get.jiChuXiaoGuoEffect(target);
                         }
                     }
+                }
+            },
+            //天使
+            fengZhiJieJing:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    var bool1=player.hasCard(function(card){
+                        return lib.skill.fengZhiJieJing.filterCard(card);
+                    });
+                    var bool2=game.filterPlayer(function(current){
+                        return lib.skill.fengZhiJieJing.filterTarget('','',current);
+                    }).length>0;
+                    return bool1&&bool2;
+                },
+                filterCard:function(card){
+                    return get.xiBie(card)=='feng';
+                },
+                discard:true,
+                showCards:true,
+                filterTarget:function(card,player,target){
+                    for(var xiaoGuoList in game.jiChuXiaoGuo){
+                        for(var xiaoGuo of game.jiChuXiaoGuo[xiaoGuoList]){
+                            if(target.hasExpansions(xiaoGuo)){
+                                return true;
+                            }
+                        }
+                    }
+                },
+                content:function(){
+                    'step 0'
+                    player.removeJiChuXiaoGuo(target);
+                },
+                ai:{
+                    order:3.5,
+                    result:{
+                        target:function(player,target){
+                            return get.jiChuXiaoGuoEffect(target);
+                        }
+                    }
+                }
+            },
+            tianShiZhuFu:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    return player.hasCard(function(card){
+                        return lib.skill.tianShiZhuFu.filterCard(card);
+                    });
+                },
+                filterCard:function(card){
+                    return get.xiBie(card)=='shui';
+                },
+                discard:true,
+                showCards:true,
+                selectTarget:[1,2],
+                filterTarget:true,
+                content:function(){
+                    'step 0'
+                    if(targets.length==1){
+                        if(target.countCards('h')>=2){
+                            target.chooseToGive('交给守护天使2张牌',true,2,player).set('visibleMove',true);
+                        }else if(target.countCards('h')==1){
+                            target.chooseToGive('交给守护天使1张牌',true,1,player).set('visibleMove',true);
+                        }else if(target.countCards('h')==0){
+                            event.finish();
+                        }
+                    }else if(targets.length==2){
+                        if(target.countCards('h')>=1){
+                            target.chooseToGive('交给守护天使1张牌',true,1,player).set('visibleMove',true);
+                        }else{
+                            event.finish();
+                        }
+                    }
+                },
+                ai:{
+                    order:3,
+                    result:{
+                        target:function(player,target){
+                            return 1;
+                        },
+                        player:0,
+                    }
+                }
+            },
+            tianShiJiBan:{
+                trigger:{player:['removeJiChuXiaoGuo','daChuPai']},
+                forced:true,
+                filter:function(event,player){
+                    if(event.name == 'useCard') return event.card.name=='shengDun';
+                    else return true;
+                },
+                content:function(){
+                    'step 0'
+                    player.chooseTarget('天使羁绊：选择一名角色+1[治疗]',true).set('ai',function(target){
+                        var player=_status.event.player;
+                        return get.zhiLiaoEffect2(target,player,1);
+                    });
+                    'step 1'
+                    if(result.bool){
+                        var target=result.targets[0];
+                        target.changeZhiLiao(1,player);
+                    }
+                },
+            },
+            tianShiZhiQiang:{
+                type:'faShu',
+                enable:'faShu',
+				filterCard:function(card){
+                    return card.hasDuYou('tianShiZhiQiang');
+				},
+				position:'h',
+				viewAs:{name:'shengDun'},
+				viewAsFilter:function(player){
+                    return player.hasCard(function(card){
+                        return lib.skill.tianShiZhiQiang.filterCard(card);
+                    });
+				},
+                ai:{
+                    order:3.8,
+                }
+            },
+            tianShiZhiGe:{
+                trigger:{player:'huiHeQian'},
+                filter:function(event,player){
+                    if(!player.canBiShaShuiJing()){
+                        return false;
+                    }
+                    for(var p of game.players){
+                        for(var xiaoGuoList in game.jiChuXiaoGuo){
+                            for(var xiaoGuo of game.jiChuXiaoGuo[xiaoGuoList]){
+                                if(p.hasExpansions(xiaoGuo)){
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    return false;
+                },
+                async cost(event, trigger, player) {
+                    event.result = await player.chooseTarget(function(card,player,target){
+                        for(var xiaoGuoList in game.jiChuXiaoGuo){
+                            for(var xiaoGuo of game.jiChuXiaoGuo[xiaoGuoList]){
+                                if(target.hasExpansions(xiaoGuo)){
+                                    return true;
+                                }
+                            }
+                        }
+                    })
+                    .set('ai',function(target){
+                        var player=_status.event.player;
+                        if(target.side==player.side){
+                            return get.jiChuXiaoGuoEffect(target);
+                        }else{
+                            return -get.jiChuXiaoGuoEffect(target);
+                        }
+                    })
+                    .set('prompt',get.prompt('tianShiZhiGe'))
+                    .set('prompt2',lib.translate.tianShiZhiGe_info)
+                    .forResult();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaShuiJing();
+                    'step 1'
+                    player.removeJiChuXiaoGuo(event.targets[0]);
+                },
+                check:function(event,player){
+                    var players=game.filterPlayer(function(current){
+                        if(player.side==current.side) return get.jiChuXiaoGuoEffect(target)>0;
+                        else return -get.jiChuXiaoGuoEffect()>0;
+                    });
+                    return players.length>0;
+                },
+                ai:{
+                    shuiJing:true,
+                }
+            },
+            shenZhiBiHu:{
+                trigger:{global:'changeShiQiQian'},
+                filter:function(event,player){
+                    if(event.side!=player.side) return false;
+                    return player.canBiShaShuiJing()&&event.num<0&&event.yuanYin=='damage'&&event.faShu==true;
+                },
+                async cost(event, trigger, player) {
+                    var list=[];
+                    for(var i=0;i<player.countNengLiang('baoShi');i++){
+                        list.push(['baoShi','宝石']);
+                    }
+                    for(var i=0;i<player.countNengLiang('shuiJing');i++){
+                        list.push('shuiJing','水晶');
+                    }
+                    var result = await player.chooseButton(['是否发动【神之庇护】<br>'+lib.translate.shenZhiBiHu_info,[list,'tdnodes']])
+                    .set('selectButton',[1,-trigger.num])
+                    .forResult();
+                    event.result = {
+						bool: result.bool,
+						cost_data: result.links,
+					};
+                },
+                content:function(){
+                    'step 0'
+                    var links=event.cost_data;
+                    var num=links.length;
+                    if(num>0){
+                        trigger.num+=num;
+                        var dict={baoShi:0,shuiJing:0};
+                        for(var i=0;i<links.length;i++){
+                            if(links[i]=='baoShi'){
+                                dict['baoShi']++;
+                            }else if(links[i]=='shuiJing'){
+                                dict['shuiJing']++;
+                            }
+                        }
+                        if(dict['baoShi']>0) player.changeNengLiang('baoShi',-dict['baoShi']);
+                        if(dict['shuiJing']>0) player.changeNengLiang('shuiJing',-dict['shuiJing']);
+                    }
+                },
+                ai:{
+                    shuiJing:true,
                 }
             },
         },
