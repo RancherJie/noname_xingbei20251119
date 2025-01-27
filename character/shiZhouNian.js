@@ -570,6 +570,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return card.hasDuYou('diZhiFengYin');
 				},
                 filterTarget:function(card,player,target){
+                    if(target.hasSkillTag('noJiChuXiaoGuo')) return false;
                     return target.side!=player.side&&!target.hasExpansions('diZhiFengYin_xiaoGuo')
                 },
                 useCard:true,
@@ -647,6 +648,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return bool1&&bool2
 				},
                 filterTarget:function(card,player,target){
+                    if(target.hasSkillTag('noJiChuXiaoGuo')) return false;
                     return target.side!=player.side&&!target.hasExpansions('shuiZhiFengYin_xiaoGuo')
                 },
                 useCard:true,
@@ -723,6 +725,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return bool1&&bool2
 				},
                 filterTarget:function(card,player,target){
+                    if(target.hasSkillTag('noJiChuXiaoGuo')) return false;
                     return target.side!=player.side&&!target.hasExpansions('huoZhiFengYin_xiaoGuo')
                 },
                 useCard:true,
@@ -796,6 +799,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return bool1&&bool2
 				},
                 filterTarget:function(card,player,target){
+                    if(target.hasSkillTag('noJiChuXiaoGuo')) return false;
                     return target.side!=player.side&&!target.hasExpansions('fengZhiFengYin_xiaoGuo')
                 },
                 useCard:true,
@@ -873,6 +877,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return bool1&&bool2
 				},
                 filterTarget:function(card,player,target){
+                    if(target.hasSkillTag('noJiChuXiaoGuo')) return false;
                     return target.side!=player.side&&!target.hasExpansions('leiZhiFengYin_xiaoGuo')
                 },
                 prepare:'useCard',
