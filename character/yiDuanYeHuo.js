@@ -12,11 +12,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             }
         },
 		character:{
-            zhanDouFaShi:['路尔莉嘉','yongGroup',3,[],],
-            xingZhuiNvWu:['蕾娜','yongGroup','4/5',[],],
-            shengTingJianChaShi:['克里斯玛','shengGroup',4,[],],
-            lieWuRen:['白狼卡拉马','jiGroup','3/4',[],],
-            shengDianQiShi:['斯卡雷特','shengGroup',4,[],],
+            zhanDouFaShi:['zhanDouFaShi_name','yongGroup',3,[],],
+            xingZhuiNvWu:['xingZhuiNvWu_name','yongGroup','4/5',[],],
+            shengTingJianChaShi:['shengTingJianChaShi_name','shengGroup',4,[],],
+            lieWuRen:['lieWuRen_name','jiGroup','3/4',[],],
+            shengDianQiShi:['shengDianQiShi_name','shengGroup',4,[],],
 		},
         characterIntro:{
             zhanDouFaShi:`路尔莉嘉不擅长高深莫测的魔法，归因于她对战斗的直觉和创造性。但你如果因此小看她，则她会用符文法术的小把戏让你吃尽苦头`,
@@ -34,6 +34,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shengTingJianChaShi:"圣庭检察士",
             lieWuRen:"猎巫人",
             shengDianQiShi:"圣殿骑士",
+
+            zhanDouFaShi_name:"路尔莉嘉",
+            xingZhuiNvWu_name:"蕾娜",
+            shengTingJianChaShi_name:"克里斯玛",
+            lieWuRen_name:"白狼卡拉马",
+            shengDianQiShi_name:"斯卡雷特",
 
 
             //圣殿骑士

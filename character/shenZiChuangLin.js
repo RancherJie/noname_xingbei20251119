@@ -13,11 +13,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             }
         },
 		character:{
-            jinGuiZhiNv:['艾丽卡','yongGroup',3,[],],
-            nvPuZhang:['时音','jiGroup',5,[],],
-            jieJieShi:['婕姬海德','huanGroup',5,[],],
-            shenMiXueZhe:['梅丽珊卓','yongGroup',4,[],],
-            ranWuZhe:['婕姬海德','xueGroup',4,[],],
+            jinGuiZhiNv:['jinGuiZhiNv_name','yongGroup',3,[],],
+            nvPuZhang:['nvPuZhang_name','jiGroup',5,[],],
+            jieJieShi:['jieJieShi_name','huanGroup',5,[],],
+            shenMiXueZhe:['shenMiXueZhe_name','yongGroup',4,[],],
+            ranWuZhe:['ranWuZhe_name','xueGroup',4,[],],
 		},
         characterIntro:{
             jinGuiZhiNv:`身为一位魔法的初学者，艾丽卡施法总是让人提心吊胆，因为连她自己也不知道会发生什么事情。然而她似乎无法体会身旁人的种种暗示，依然我行我素。这样的大小姐，需要队友的多多包容与帮忙`,
@@ -35,6 +35,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             jieJieShi:'结界师',
             shenMiXueZhe:'神秘学者',
             ranWuZhe:'染污者',
+
+            jinGuiZhiNv_name:'艾丽卡',
+            nvPuZhang_name:'千代（胧）',
+            jieJieShi_name:'时音',
+            shenMiXueZhe_name:'梅丽珊卓',
+            ranWuZhe_name:'婕姬海德',
 
             //矜贵之女
             gaoLingZhiHua:"[被动]高岭之花",
