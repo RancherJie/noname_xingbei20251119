@@ -12,11 +12,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             }
         },
 		character:{
-            zhanDouFaShi:['female','yongGroup',3,[],],
-            xingZhuiNvWu:['female','yongGroup','4/5',[],],
-            shengTingJianChaShi:['female','shengGroup',4,[],],
-            lieWuRen:['male','jiGroup','3/4',[],],
-            shengDianQiShi:['female','shengGroup',4,[],],
+            zhanDouFaShi:['路尔莉嘉','yongGroup',3,[],],
+            xingZhuiNvWu:['蕾娜','yongGroup','4/5',[],],
+            shengTingJianChaShi:['克里斯玛','shengGroup',4,[],],
+            lieWuRen:['白狼卡拉马','jiGroup','3/4',[],],
+            shengDianQiShi:['斯卡雷特','shengGroup',4,[],],
 		},
         characterIntro:{
             zhanDouFaShi:`为寻找魔法的真理，带着符文之石辗转来到昔日好友（真CP）蕾娜所在的村庄，一场风暴即将来临。原住址详见“世界地图”<br>

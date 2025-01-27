@@ -13,11 +13,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             }
         },
 		character:{
-            jinGuiZhiNv:['female','yongGroup',3,[],],
-            nvPuZhang:['female','jiGroup',5,[],],
-            jieJieShi:['female','huanGroup',5,[],],
-            shenMiXueZhe:['female','yongGroup',4,[],],
-            ranWuZhe:['female','xueGroup',4,[],],
+            jinGuiZhiNv:['艾丽卡','yongGroup',3,[],],
+            nvPuZhang:['时音','jiGroup',5,[],],
+            jieJieShi:['婕姬海德','huanGroup',5,[],],
+            shenMiXueZhe:['梅丽珊卓','yongGroup',4,[],],
+            ranWuZhe:['婕姬海德','xueGroup',4,[],],
 		},
         characterIntro:{
             jinGuiZhiNv:`是一个还在学习魔法的贵族大小姐~。平时人缘还不错，但过于单纯，很容易被利用；本身就是一个傻白甜，只有单纯的同情之心<br>
