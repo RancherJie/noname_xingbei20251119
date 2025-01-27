@@ -2344,7 +2344,7 @@ export default () => {
 				game.broadcastAll(function(){
 					game.moDanFangXiang='you';
 				});
-				game.zhanJiList['moDanFangXiang']='you';
+				if(game.zhanJiList) game.zhanJiList['moDanFangXiang']='you';
 			},
 		},
 		
