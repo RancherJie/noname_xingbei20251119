@@ -466,12 +466,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 						.set("ai",function(card){
 							return 6 - get.value(card);
 						})
-                        .set('zhanShi',true)
+                        .set('showCards',true)
 						.forResult();
 				},
                 content:function(){
                     'step 0'
-                    player.discard(event.cards).set('zhanShi',true);
+                    player.discard(event.cards).set('showCards',true);
                     'step 2'
                     if(!player.isHengZhi()) event.finish();
                     'step 3'
@@ -481,7 +481,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     next.set('ai',function(card){
                         return 6 - get.value(card);
                     });
-                    next.set('zhanShi',true);
+                    next.set('showCards',true);
                 }
             },
             qianXing:{

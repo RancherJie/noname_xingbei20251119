@@ -4012,7 +4012,7 @@ export default () => {
 								}
 							}
 						}
-						if(event.zhanShi==true) event.done.set('zhanShi',true);
+						if(event.showCards==true) event.done.set('showCards',true);
 						event.done.discarder=player;
 					}
 					if(event.dialog&&event.dialog.close) event.dialog.close();
@@ -4513,7 +4513,7 @@ export default () => {
 					if(info.useCard&&!info.viewAs){//针对独有法术技能
 						player.useCard(cards);
 					}else if(info.discard&&info.showCards&&!info.viewAs){//针对弃牌展示牌法术技能
-						player.discard(cards).set('zhanShi',true);
+						player.discard(cards).set('showCards',true);
 					}else if(info.discard!=false&&info.lose!=false&&!info.viewAs){
 						player.discard(cards).delay=false;
 						if(lib.config.low_performance){
@@ -4911,7 +4911,7 @@ export default () => {
 								next.set('source',event.source);
 							}
 						}
-					}else if(event.zhanShi==true){
+					}else if(event.showCards==true){
 						var next=player.showCards(cards);
 					}
 					'step 2'
