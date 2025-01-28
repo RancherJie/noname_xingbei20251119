@@ -4916,6 +4916,8 @@ export default () => {
 						}
 					}else if(event.showCards==true){
 						var next=player.showCards(cards);
+					}else if(event.showHiddenCards==true){
+						var next=player.showHiddenCards(cards);
 					}
 					'step 2'
 					event.trigger('discard');
