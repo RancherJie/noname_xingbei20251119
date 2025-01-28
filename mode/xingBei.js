@@ -6063,8 +6063,15 @@ export default () => {
 						num=Math.max(0,game.shiQiMax-shiQi);
 					}
 					next.num=num;
-
 					next.setContent('changeShiQi');
+					next.filterStop=function(){
+						if (this.num == 0) {
+							delete this.filterStop;
+							this.finish();
+							this._triggered = null;
+							return true;
+						}
+					};
 					return next;
 				},
 				changeZhanJi:function(xingShi,num,side){//xingbei
