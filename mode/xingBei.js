@@ -6730,6 +6730,94 @@ export default () => {
 			},
 		},
 		get:{
+			translation(str, arg) {
+				if (str && typeof str == "object" && (str.name || str._tempTranslate)) {
+					if (str._tempTranslate) return str._tempTranslate;
+					var str2;
+					if (arg == "viewAs" && str.viewAs) {
+						str2 = get.translation(str.viewAs);
+					} else {
+						str2 = get.translation(str.name);
+					}
+					if (get.itemtype(str) == "card" || str.isCard) {
+						if (_status.cardtag && str.cardid) {
+							var tagstr = "";
+							for (var i in _status.cardtag) {
+								if (_status.cardtag[i].includes(str.cardid)) {
+									tagstr += lib.translate[i + "_tag"];
+								}
+							}
+							if (tagstr) {
+								str2 += "·" + tagstr;
+							}
+						}
+						var mingGe = get.translation(get.mingGe(str, false)) || "";
+						var xiBie = get.translation(get.xiBie(str, false)) || "";
+						if (arg == "viewAs" && str.viewAs != str.name && str.viewAs) {
+							str2 += "（" + get.translation(str)+ xiBie + mingGe + "）";
+						} else {
+							str2 += "【" + xiBie + mingGe + "】";
+						}
+						/*
+						if ((str.suit && str.number) || str.isCard) {
+							var mingGe = get.translation(get.mingGe(str, false)) || "";
+							var xiBie = get.translation(get.xiBie(str, false)) || "";
+							if (arg == "viewAs" && str.viewAs != str.name && str.viewAs) {
+								str2 += "（" + get.translation(str)+ xiBie + mingGe + "）";
+							} else {
+								str2 += "【" + xiBie + mingGe + "】";
+							}
+						}*/
+					}
+					return str2;
+				}
+				if (Array.isArray(str)) {
+					var str2 = get.translation(str[0], arg);
+					for (var i = 1; i < str.length; i++) {
+						str2 += "、" + get.translation(str[i], arg);
+					}
+					return str2;
+				}
+				if (get.itemtype(str) == "natures") {
+					let natures = str.split(lib.natureSeparator).sort(lib.sort.nature);
+					var str2 = "";
+					for (var nature of natures) {
+						str2 += lib.translate["nature_" + nature] || lib.translate[nature] || "";
+					}
+					return str2;
+				}
+				if (arg == "skill") {
+					if (lib.translate[str + "_ab"]) return lib.translate[str + "_ab"];
+					if (lib.translate[str]) return lib.translate[str];
+					return str;
+				} else if (arg == "info") {
+					if (lib.translate[str + "_info"]) return lib.translate[str + "_info"];
+					var str2 = str.slice(0, str.length - 1);
+					if (lib.translate[str2 + "_info"]) return lib.translate[str2 + "_info"];
+					if (str.lastIndexOf("_") > 0) {
+						str2 = str.slice(0, str.lastIndexOf("_"));
+						if (lib.translate[str2 + "_info"]) return lib.translate[str2 + "_info"];
+					}
+					str2 = str.slice(0, str.length - 2);
+					if (lib.translate[str2 + "_info"]) return lib.translate[str2 + "_info"];
+					if (lib.skill[str] && lib.skill[str].prompt) return lib.skill[str].prompt;
+				}
+				if (lib.translate[str]) {
+					return lib.translate[str];
+				}
+				if (typeof str == "string") {
+					if (lib.translate["nature_" + str]) return lib.translate["nature_" + str];
+					return str;
+				}
+				if (typeof str == "number" || typeof str == "boolean") {
+					return str.toString();
+				}
+				if (str && str.toString) {
+					return str.toString();
+				}
+				return "";
+			},
+
 			characterGets:function(list,num){
 				var result=[];
 				if(!num){
