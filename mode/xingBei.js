@@ -5674,6 +5674,38 @@ export default () => {
 				},
 			},
 			player:{
+				discard:function(){
+					var next=game.createEvent('discard');
+					next.player=this;
+					next.num=0;
+					for(var i=0;i<arguments.length;i++){
+						if(get.itemtype(arguments[i])=='player'){
+							next.source=arguments[i];
+						}
+						else if(get.itemtype(arguments[i])=='cards'){
+							next.cards=arguments[i].slice(0);
+						}
+						else if(get.itemtype(arguments[i])=='card'){
+							next.cards=[arguments[i]];
+						}
+						else if(typeof arguments[i]=='boolean'){
+							next.animate=arguments[i];
+						}
+						else if(get.objtype(arguments[i])=='div'){
+							next.position=arguments[i];
+						}
+						else if(arguments[i]=='notBySelf'){
+							next.notBySelf=true;
+						}
+						else if(typeof arguments[i]=='string'){
+							next.gaiPai=arguments[i];
+						}
+					}
+					if(next.cards==undefined) _status.event.next.remove(next);
+					next.setContent('discard');
+					return next;
+				},
+
 				isHengZhi:function(){
 					return this.isLinked();
 				},
