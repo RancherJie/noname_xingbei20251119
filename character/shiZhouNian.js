@@ -370,7 +370,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             lianMin:{
                 type:'qiDong',
                 trigger:{player:'qiDong'},
-                frequent:true,
                 filter:function(event,player){
                     return player.canBiShaBaoShi();
                 },
