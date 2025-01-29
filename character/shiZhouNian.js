@@ -26,7 +26,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             yuanSuShi:['yuanSuShi_name','yongGroup','3/4',['yuanSuXiShou','yuanSuDianRan','yunShi','bingDong','huoQou','fengRen','leiJi','yueGuang','yuanSu'],],
             maoXianJia:['maoXianJia_name','huanGroup','3/4',[],],
             wenYiFaShi:['wenYiFaShi_name','huanGroup','3/4',[],],
-            zhongCaiZhe:['zhongCaiZhe_name','xueGroup','3/4',[],],
+            zhongCaiZhe:['zhongCaiZhe_name','xueGroup','3/4',['zhongCaiFaZe','yiShiZhongDuan','moRiShenPan','shenPanLangChao','zhongCaiYiShi','panJueTianPing','shenPan'],],
             shenGuan:['shenGuan_name','shengGroup',4,[],],
             qiDaoShi:['qiDaoShi_name','yongGroup',4,[],],
             xianZhe:['xianZhe_name','yongGroup',4,[],],
@@ -2303,6 +2303,174 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
             },
+            //仲裁者
+            zhongCaiFaZe:{
+                trigger:{global:"gameStart"},
+                forced:true,
+                content:function(){
+                    player.changeNengLiang('shuiJing',2);
+                }
+            },
+            yiShiZhongDuan:{
+                type:'qiDong',
+                trigger:{player:'qiDong'},
+                filter:function(event,player){
+                    return player.isLinked();
+                },
+                content:function(){
+                    'step 0'
+                    player.chongZhi();
+                    'step 1'
+                    player.addZhanJi('baoShi',1)
+                },
+                check:function(event,player){
+                    return player.countZhiShiWu('shenPan')>=3;
+                }
+            },
+            moRiShenPan:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    return player.countZhiShiWu('shenPan')>0;
+                },
+                filterTarget:true,
+                content:function(){
+                    'step 0'
+                    event.num=player.countZhiShiWu('shenPan');
+                    player.removeZhiShiWu('shenPan',event.num);
+                    'step 1'
+                    target.faShuDamage(event.num,player);
+                },
+                group:'moRiShenPan_sheZhi',
+                subSkill:{
+                    sheZhi:{
+                        trigger:{player:'xingDongKaiShi'},
+                        direct:true,
+                        priority:1,
+                        filter:function(event,player){
+                            return player.countZhiShiWu('shenPan')>=get.info('shenPan').intro.max;
+                        },
+                        content:function(){
+                            trigger.canTeShu=false;
+                            player.addTempSkill('moRiShenPan_biXu',{player:'useSkill'});
+                        }
+                    },
+                    biXu:{
+                        init:function(player,skill){
+                            player.addSkillBlocker(skill);
+                        },
+                        onremove:function(player,skill){
+                            player.removeSkillBlocker(skill);
+                        },
+                        skillBlocker:function(skill,player){
+                            var info=get.info(skill);
+                            return skill!='moRiShenPan'&&info.type=='faShu';
+                        },
+                        mod:{
+                            cardEnabled:function(card,player){
+                                return false;
+                            }
+                        },
+
+                    }
+                },
+                ai:{
+					order:function(item,player){
+						return 1.5+player.countZhiShiWu('shenPan');
+					},
+					result:{
+						target:function(player,target){
+							return get.damageEffect(target,player.countZhiShiWu('shenPan'));
+						}
+					},
+				},
+            },
+            shenPanLangChao:{
+                forced:true,
+                trigger:{player:'chengShouShangHai'},
+                content:function(){
+                    player.addZhiShiWu('shenPan',1);
+                },
+            },
+            zhongCaiYiShi:{
+                type:'qiDong',
+                trigger:{player:'qiDong'},
+                filter:function(event,player){
+                    if(event.qiDong==true) return false;
+                    return player.canBiShaBaoShi()&&!player.isLinked();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaBaoShi();
+                    'step 1'
+                    player.hengZhi();
+                },
+                mod:{
+                    maxHandcardFinal:function(player,num){
+                        if(player.isLinked()) return 5;
+                    }
+                },
+                group:'zhongCaiYiShi_shenPan',
+                subSkill:{
+                    shenPan:{
+                        trigger:{player:'huiHeKaiShi'},
+                        forced:true,
+                        filter:function(event,player){
+                            return player.isLinked();
+                        },
+                        content:function(){
+                            player.addZhiShiWu('shenPan',1);
+                        }
+                    }
+                },
+                ai:{
+                    baoShi:true,
+                }
+            },
+            panJueTianPing:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    return player.canBiShaShuiJing();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaShuiJing();
+                    'step 1'
+                    player.addZhiShiWu('shenPan',1);
+                    var list=['弃掉所有手牌','将你的手牌补到上限[强制]，我方【战绩区】+1[宝石]'];
+                    player.chooseControl().set('prompt','判决天平：选择一项').set('choiceList',list).set('ai',function(){
+                        var player=_status.event.player;
+                        if(player.countCards('h')>3) return '选项一';
+                        return '选项二';
+                    });
+                    'step 2'
+                    if(result.control=='选项一'){
+                        player.discard(player.getCards('h'));
+                    }
+                    else if(result.control=='选项二'){
+                        var num=player.getHandcardLimit();
+                        player.drawTo(num);
+                        player.addZhanJi('baoShi',1);
+                    }
+                },
+                ai:{
+                    shuiJing:true,
+                    order:3.6,
+                    result:{
+                        player:1,
+                    }
+                }
+            },
+            shenPan:{
+                intro:{
+                    name:'审判',
+                    content:'mark',
+                    max:4,
+                },
+                onremove:'storage',
+                markimage:'image/card/zhiShiWu/hong.png',
+            },
         },
 		
 		translate:{
@@ -2548,16 +2716,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             zhongCaiFaZe_info:"游戏初始时。你加+2[水晶]。",
             yiShiZhongDuan:"[启动]仪式中断",
             yiShiZhongDuan_info:"<span class='tiaoJian'>(仅【审判形态】下发动)</span>[重置]脱离【审判形态】，我方【战绩区】+1[宝石]。",
-            moRiShenPan:"[\u6cd5\u672f]\u672b\u65e5\u5ba1\u5224",
-            moRiShenPan_info:"<span class='tiaojian'>(\u79fb\u9664\u6240\u6709</span><span class='hong'>\u3010</span>\u5ba1\u5224<span class='hong'>\u3011</span><span class='tiaojian'>)</span>\u5bf9\u76ee\u6807\u89d2\u8272\u9020\u6210\u7b49\u91cf\u7684\u6cd5\u672f\u4f24\u5bb3\u2462\uff1b\u5728\u8bb0\u5f97\u884c\u52a8\u9636\u6bb5\u5f00\u59cb\u65f6\uff0c\u82e5\u4f60\u7684<span class='hong'>\u3010</span>\u5ba1\u5224<span class='hong'>\u3011</span>\u5df2\u8fbe\u5230\u4e0a\u9650\uff0c\u8be5\u884c\u52a8\u9636\u6bb5\u4f60\u5fc5\u987b\u53d1\u52a8\u3010\u672b\u65e5\u5ba1\u5224\u3011\u3002",
+            moRiShenPan:"[法术]末日审判",
+            moRiShenPan_info:"<span class='tiaojian'>(移除所有</span><span class='hong'>【审判】</span><span class='tiaojian'>)</span>对目标角色造成等量的法术伤害③；在你的行动阶段开始时，若<span class='hong'>【审判】</span>已达到上限，该行动阶段你必须发动【末日审判】。",
             shenPanLangChao:"[被动]审判浪潮",
-            shenPanLangChao_info:"<span class='tiaoJian'>(你每承受一次伤害⑥)</span>你+1<span class='hong'>【</span>审判<span class='hong'>】</span>。",
+            shenPanLangChao_info:"<span class='tiaoJian'>(你每承受一次伤害⑥)</span>你+1<span class='hong'>【审判】</span>。",
             zhongCaiYiShi:"[启动]仲裁仪式[持续]",
-            zhongCaiYiShi_info:"[宝石][横置]转为【审判形态】，你的手牌上限恒定为5[恒定]；每次你的回合开始时，你+1<span class='hong'>【</span>审判<span class='hong'>】</span>。",
+            zhongCaiYiShi_info:"[宝石][横置]转为【审判形态】，你的手牌上限恒定为5[恒定]；每次你的回合开始时，你+1<span class='hong'>【审判】</span>。",
             panJueTianPing:"[法术]判决天平",
-            panJueTianPing_info:"[水晶]你+1<span class='hong'>【</span>审判<span class='hong'>】</span>，再选择一下一项发动：<br>·弃掉所有手牌。<br>·将你的手牌补到上限[强制]，我方【战绩区】+1[宝石]。",
+            panJueTianPing_info:"[水晶]你+1<span class='hong'>【审判】</span>，再选择一下一项发动：<br>·弃掉所有手牌。<br>·将你的手牌补到上限[强制]，我方【战绩区】+1[宝石]。",
             shenPan:"审判",
-            shenPan_info:"<span class='hong'>【</span>审判<span class='hong'>】</span>为仲裁者专有指示物，上限为4。",
+            shenPan_info:"<span class='hong'>【审判】</span>为仲裁者专有指示物，上限为4。",
 
             //冒险家
             qiZha:"[响应]欺诈",
