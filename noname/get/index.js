@@ -607,9 +607,9 @@ export class Get extends GetCompatible {
 			if (card.isCard || get.itemtype(card) == "card") {
 				var next = {
 					name: get.name(card),
-					suit: get.xiBie(card),
-					number: get.mingGe(card),
-					nature: get.duYou(card),
+					xiBie: get.xiBie(card),
+					mingGe: get.mingGe(card),
+					duYou: get.duYou(card),
 					isCard: true,
 					cardid: card.cardid,
 					wunature: card.wunature,
