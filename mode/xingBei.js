@@ -6973,6 +6973,7 @@ export default () => {
 				var dict={};
 				for(var i=0;i<cards.length;i++){
 					var xiBie=get.xiBie(cards[i]);
+					if(!xiBie) continue;
 					if(!dict[xiBie]) dict[xiBie]=0;
 					dict[xiBie]++;
 				}
@@ -6988,6 +6989,7 @@ export default () => {
 				var dict={};
 				for(var i=0;i<cards.length;i++){
 					var xiBie=get.xiBie(cards[i]);
+					if(!xiBie) continue;
 					if(!dict[xiBie]) dict[xiBie]=0;
 					dict[xiBie]++;
 				}
