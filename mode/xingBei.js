@@ -3565,19 +3565,7 @@ export default () => {
 
 				phase: function () {
 					"step 0";
-					//规则集中的“回合开始后③（处理“游戏开始时”的时机）”
-					//提前phaseBefore时机解决“游戏开始时”时机和“一轮开始时”先后
-					//event.trigger("phaseBefore");
-					event.trigger("huiHeQian");
-					"step 1";
 					game.phaseNumber++;
-					//初始化阶段列表
-					if (!event.phaseList) {
-						event.phaseList = [ "phaseUse"];
-					}
-					if (typeof event.num != "number") {
-						event.num = 0;
-					}
 					//规则集中的“回合开始后①”，更新游戏轮数，触发“一轮游戏开始时”
 					var isRound = false;
 					if (lib.onround.every(i => i(event, player))) {
@@ -3638,13 +3626,7 @@ export default () => {
 					if (isRound) {
 						game.getGlobalHistory().isRound = true;
 					}
-					"step 2";
-					//规则集中的“回合开始后②（1v1武将登场专用）”
-					event.trigger("phaseBeforeStart");
-					"step 3";
-					//规则集中的“回合开始后④（卑弥呼〖纵傀〗的时机）”
-					event.trigger("phaseBeforeEnd");
-					"step 4";
+					"step 1";
 					//规则集中的“回合开始后⑤”，进行翻面检测
 					if (player.isTurnedOver() && !event._noTurnOver) {
 						player.turnOver();
@@ -3661,7 +3643,9 @@ export default () => {
 						player.getHistory().isMe = true;
 						player.getStat().isMe = true;
 					}
-					"step 5";
+					'step 2';
+					event.trigger("huiHeQian");
+					"step 3";
 					//规则集中的“回合开始后⑥”，更新“当前回合角色”
 					while (ui.dialogs.length) {
 						ui.dialogs[0].close();
@@ -3698,63 +3682,17 @@ export default () => {
 						game.addVideo("destroyLand");
 						ui.land.destroy();
 					}
-					"step 6";
-					//规则集中的“回合开始后⑦”，国战武将明置武将牌
-					event.trigger("phaseBeginStart");
-					"step 7";
-					//规则集中的“回合开始后⑨”，进行当先，化身等操作
-					//没有⑧ 因为⑧用不到
-					//event.trigger("phaseBegin");
+					"step 4";
 					event.trigger("huiHeKaiShi");
-					//阶段部分
+					"step 5";
+					player.phaseUse();
+					"step 6";
+					event.trigger("huiHeJieShuQian");
+					'step 7';
+					event.trigger("huiHeJieShu");
 					"step 8";
-					if (num < event.phaseList.length) {
-						//规则集中没有的新时机 可以用来插入额外阶段啥的
-						if (player.isIn()) event.trigger("phaseChange");
-					} else event.goto(11);
-					"step 9";
-					if (player.isIn() && num < event.phaseList.length) {
-						var phase = event.phaseList[num].split("|");
-						event.currentPhase = phase[0];
-						var next = player[event.currentPhase]();
-						next.phaseIndex = num;
-						if (phase.length > 1) {
-							next._extraPhaseReason = phase[1];
-						}
-						if (event.currentPhase == "phaseDraw" || event.currentPhase == "phaseDiscard") {
-							if (!player.noPhaseDelay) {
-								if (player == game.me) {
-									game.delay();
-								} else {
-									game.delayx();
-								}
-							}
-						}
-					}
-					"step 10";
-					if (event.currentPhase == "phaseUse") {
-						game.broadcastAll(function () {
-							if (ui.tempnowuxie) {
-								ui.tempnowuxie.close();
-								delete ui.tempnowuxie;
-							}
-						});
-						delete player._noSkill;
-					}
-					event.num++;
-					"step 11";
-					if (event.num < event.phaseList.length) {
-						event.goto(8);
-					} else if (!event._phaseEndTriggered) {
-						event._phaseEndTriggered = true;
-						//event.trigger("phaseEnd");
-						event.trigger("huiHeJieShu");
-						event.redo();
-					}
-					"step 12";
-					//event.trigger("phaseAfter");
 					event.trigger("huiHeHou");
-					"step 13";
+					"step 9";
 					//删除当前回合角色 此时处于“不属于任何角色的回合”的阶段
 					game.broadcastAll(function (player) {
 						player.classList.remove("glow_phase");
