@@ -44,7 +44,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             moQiang:['moQiang_name','huanGroup',4,[],],
             cangYanMoNv:['cangYanMoNv_name','xueGroup',4,[],],
             yinYouShiRen:['yinYouShiRen_name','huanGroup','4/5',[],],
-            jingLingSheShou:['jingLingSheShou_name','jiGroup','3/4',[],],
+            jingLingSheShou:['jingLingSheShou_name','jiGroup','3/4',['yuanSuSheJi','dongWuHuoBan','jingLingMiYi','chongWuQiangHua','zhuFu'],],
             yinYangShi:['yinYangShi_name','huanGroup',4,[],],
             xueSeJianLing:['xueSeJianLing_name','xueGroup',4,[],],
             yueZhiNvShen:['yueZhiNvShen_name','shengGroup',5,['xinYueBiHu','anYueZuZhou','meiDuShaZhiYan','yueZhiLunHui','yueDu','anYueZhan','cangBaiZhiYue','xinYue','shiHua','anYue'],],
@@ -2872,6 +2872,232 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                 }
             },
+            //精灵射手
+            yuanSuSheJi:{
+                trigger:{player:'gongJiShi'},
+                usable:1,
+                filter:function(event,player){
+                    if(event.yingZhan==true) return false;
+                    if(get.xiBie(event.card)=='an') return false;
+                    return player.countCards('h')>0||player.getCards('s',card=>card.hasGaintag('zhuFu')).length>0;
+                },
+                async cost(event, trigger, player) {
+                    var prompt2="弃1张法术牌[展示]或移除1个【祝福】";
+                    switch(get.xiBie(trigger.card)){
+                        case 'huo':
+                            prompt2+='本次攻击伤害额外+1';
+                            break;
+                        case'shui':
+                            prompt2+="<span class='tiaoJian'>(主动攻击命中时)</span>目标角色+1[治疗]";
+                            break;
+                        case 'feng':
+                            prompt2+="<span class='tiaoJian'>([攻击行动]结束后)</span>额外+1[攻击行动]";
+                            break;
+                        case 'lei':
+                            prompt2+="本次攻击无法应战";
+                            break;
+                        case 'di':
+                            prompt2+="<span class='tiaoJian'>(主动攻击命中时②)</span>对目标角色造成1点法术伤害③";
+                            break;
+                    }
+                    event.result=await player.chooseCard('hs',function(card){
+                        if(get.position(card)=='h'){
+                            return get.type(card)=='faShu';
+                        }else if(get.position(card)=='s'){
+                            return card.hasGaintag('zhuFu');
+                        }
+                    })
+                    .set('prompt',get.prompt('yuanSuSheJi'))
+                    .set('prompt2',prompt2)
+                    .forResult();
+                },
+                content:function(){
+                    'step 0'
+                    trigger.customArgs.yuanSuSheJi=true;
+                    if(get.position(event.cards[0])=='h'){
+                        var flag=true;
+                    }    
+                    if(flag){
+                        player.discard(event.cards).set('showCards',true);
+                    }else{
+                        player.discard(event.cards,'zhuFu');
+                    }
+                    switch(get.xiBie(trigger.card)){
+                        case 'huo':
+                            trigger.changeDamageNum(1);
+                            break;
+                        case'shui':
+                            player.addTempSkill('yuanSuSheJi_shui');
+                            break;
+                        case 'feng':
+                            player.addTempSkill('yuanSuSheJi_feng');
+                            break;
+                        case 'lei':
+                            trigger.wuFaYingZhan();
+                            break;
+                        case 'di':
+                            player.addTempSkill('yuanSuSheJi_di');
+                            break;
+                    }
+
+                },
+                subSkill:{
+                    shui:{
+                        trigger:{player:'gongJiMingZhong'},
+                        direct:true,
+                        filter:function(event,player){
+                            return event.customArgs.yuanSuSheJi==true&&event.yingZhan!=true;
+                        },
+                        content:function(){
+                            'step 0'
+                            player.chooseTarget('目标角色+1[治疗]',true).set('ai',function(target){
+                                var player=_status.event.player;
+                                return get.zhiLiaoEffect2(target,player,1);
+                            });
+                            'step 1'
+                            result.targets[0].changeZhiLiao(1,player);
+                        }
+                    },
+                    feng:{
+                        trigger:{player:'gongJiHou'},
+                        direct:true,
+                        filter:function(event,player){
+                            return event.customArgs.yuanSuSheJi==true;
+                        },
+                        content:function(){
+                            player.addGongJi();
+                        }
+                    },
+                    di:{
+                        trigger:{player:'gongJiMingZhong'},
+                        direct:true,
+                        filter:function(event,player){
+                            return event.customArgs.yuanSuSheJi==true&&event.yingZhan!=true;
+                        },
+                        content:function(){
+                            'step 0'
+                            var next=player.chooseTarget('对目标角色造成1点法术伤害',true);
+                            next.ai=function(target){
+                                return target.side!=player.side;
+                            }
+                            'step 1'
+                            result.targets[0].faShuDamage(1,player);
+                        }
+                    }
+                }
+
+            },
+            dongWuHuoBan:{
+                trigger:{source:'chengShouShangHaiHou'},
+                filter:function(event,player){
+                    return _status.currentPhase==player;
+                },
+                content:async function(event, trigger, player){
+                    await event.trigger('dongWuHuoBan');
+                    var target=player;
+                    if(event.chongWuQiangHua){
+                        var targets=await player.chooseTarget('目标角色摸1张牌[强制]，弃1张牌',true).set('ai',function(target){
+                            var player=_status.event.player;
+                            var num=target.countCards('h')-target.getHandcardLimit();
+                            return target.side!=player.side&&num>=0;
+                        }).forResult('targets');
+                        target=targets[0];
+                    }
+                    await target.draw(1);
+                    await target.chooseToDiscard(1,'h',true);
+                },
+                check:function(event,player){
+                    var num=player.getHandcardLimit()-player.countCards('h');
+                    return num>0;
+                }
+            },
+            jingLingMiYi:{
+                type:'qiDong',
+                trigger:{player:'qiDong'},
+                filter:function(event,player){
+                    return player.canBiShaBaoShi()&&!player.isLinked(); 
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaBaoShi();
+                    'step 1'
+                    player.hengZhi();
+                    'step 2'
+                    var cards=get.cards(3);
+                    player.loseToSpecial(cards,'zhuFu',player);
+                    player.markSkill('zhuFu');
+                },
+                group:'jingLingMiYi_chongZhi',
+                subSkill:{
+                    chongZhi:{
+                        trigger:{player:'huiHeJieShu'},
+                        forced:true,
+                        filter:function(event,player){
+                            if(!player.isLinked()) return false;
+                            var cards=player.getCards('s',function(card){
+                                return card.hasGaintag('zhuFu');
+                            });
+                            return cards.length==0;
+                        },
+                        content:function(){
+                            'step 0'
+                            player.chongZhi();
+                            player.unmarkSkill('zhuFu');
+                            player.chooseTarget('对目标角色造成2点法术伤害',true).set('ai',function(target){
+                                var player=_status.event.player;
+                                return get.damageEffect2(target,player,2);
+                            });
+                            'step 1'
+                            result.targets[0].faShuDamage(2,player); 
+                        }
+                    }
+                },
+                ai:{
+                    baoShi:true,
+                }
+            },
+            chongWuQiangHua:{
+                trigger:{player:'dongWuHuoBan'},
+                filter:function(event,player){
+                    return player.canBiShaShuiJing();
+                },
+                content:async function(event, trigger, player){
+                    await player.removeBiShaShuiJing();
+                    trigger.chongWuQiangHua=true;
+                },
+                check:function(event,player){
+                    var target=game.filterPlayer(function(current){
+                        var num=current.countCards('h')-current.getHandcardLimit();
+                        return current.side!=player.side&&num>=0;
+                    })
+                    return target.length>0;
+                }
+            },
+            zhuFu:{
+                intro:{
+                    mark:function(dialog,storage,player){
+						var cards=player.getCards('s',function(card){
+							return card.hasGaintag('zhuFu');
+						});
+                        if(!cards||!cards.length) return ;
+						if(player.isUnderControl(true)) dialog.addAuto(cards);
+						else return '共有'+cards.length+'张牌';
+					},
+					markcount:function(storage,player){
+						var cards=player.getCards('s',function(card){
+							return card.hasGaintag('zhuFu');
+						});
+                        return cards.length;
+					},
+                    
+                },
+                onremove:function(player, skill) {
+                    const cards = player.getCards('s',function(card){
+                        return card.hasGaintag('zhuFu');
+                    });
+                    if (cards.length) player.loseToDiscardpile(cards);
+                },
+            },
         },
 		
 		translate:{
@@ -3159,7 +3385,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             
             //精灵射手
             yuanSuSheJi:"[响应]元素射击[回合限定]",
-            yuanSuSheJi_info:"<span class='tiaoJian'>(主动攻击时①，若攻击牌非暗系，弃1张法术牌[展示]或移除1个【祝福】)</span>根据攻击牌类别附加以下【元素箭】效果：<br>【火之矢】：本次攻击伤害额外+1。<br>【水之矢】：<span class='tiaoJian'>(主动攻击命中时)</span>目标角色+1[治疗]。<br>【风之矢】：<span class='tiaoJian'>([攻击行动]结束后)</span>额外+1[攻击行动]。<br>【雷之矢】：本次攻击无法应战。<br>【地之矢】：<span class='tiaoJian'>(主动攻击命中时②)</span>对目标角色造成1点法术伤害③。",
+            yuanSuSheJi_info:"<span class='tiaoJian'>(主动攻击时①，若攻击牌非暗系，弃1张法术牌[展示]或移除1个【祝福】)</span>根据攻击牌类别附加以下【元素箭】效果：<br>【火之矢】：本次攻击伤害额外+1。<br>【水之矢】：<span class='tiaoJian'>(主动攻击命中时②)</span>目标角色+1[治疗]。<br>【风之矢】：<span class='tiaoJian'>([攻击行动]结束后)</span>额外+1[攻击行动]。<br>【雷之矢】：本次攻击无法应战。<br>【地之矢】：<span class='tiaoJian'>(主动攻击命中时②)</span>对目标角色造成1点法术伤害③。",
             dongWuHuoBan:"[响应]动物伙伴",
             dongWuHuoBan_info:"<span class='tiaoJian'>(你的回合内，目标角色承受你造成的伤害⑥后)</span>你摸1张牌[强制]，你弃1张牌。",
             jingLingMiYi:"[启动]精灵秘仪[持续]",
