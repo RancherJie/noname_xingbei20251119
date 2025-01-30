@@ -22,7 +22,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             tianShi:['tianShi_name','shengGroup',3,['fengZhiJieJing','tianShiZhuFu','tianShiJiBan','tianShiZhiQiang','tianShiZhiGe','shenZhiBiHu'],],
             moFaShaoNv:['moFaShaoNv_name','yongGroup',3,['moBaoChongJi','moDanZhangWo','moDanRongHe','huiMieFengBao'],],
             moJianShi:['moJianShi_name','huanGroup','3/4',[],],
-            shengQiangQiShi:['shengQiangQiShi_name','shengGroup','3/4',[],],
+            shengQiangQiShi:['shengQiangQiShi_name','shengGroup','3/4',['shenShengXinYang','huiYao','chengJie','shengJi','tianQiang','diQiang','shengGuangQiYu'],],
             yuanSuShi:['yuanSuShi_name','yongGroup','3/4',['yuanSuXiShou','yuanSuDianRan','yunShi','bingDong','huoQou','fengRen','leiJi','yueGuang','yuanSu'],],
             maoXianJia:['maoXianJia_name','huanGroup','3/4',['qiZha','qiangYun','diXiaFaZe','maoXianJiaTianTang','touTianHuanRi'],],
             wenYiFaShi:['wenYiFaShi_name','huanGroup','3/4',[],],
@@ -2716,6 +2716,162 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 }
 
             },
+            //圣枪骑士
+            shenShengXinYang:{
+                mod:{
+                    maxZhiLiao:function(player,num){
+                        var side=player.side;
+                        if(side==true){
+                            if(game.hongXingBei>=game.lanXingBei) return num+1;
+                        }else if(side==false){
+                            if(game.lanXingBei>=game.hongXingBei) return num+1;
+                        }
+                    }
+                }
+            },
+            huiYao:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    return player.hasCard(card=>lib.skill.huiYao.filterCard(card));
+                },
+                filterCard:function(card){
+                    return get.xiBie(card)=='shui';
+                },
+                discard:true,
+                showCards:true,
+                selectTarget:-1,
+                filterTarget:true,
+                content:function(){
+                    target.changeZhiLiao(1);
+                },
+                contentAfter:function(){
+                    player.addGongJi();
+                },
+                ai:{
+                    order:3.6,
+                    result:{
+                        target:1,
+                    }
+                }
+            },
+            chengJie:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    if(!player.hasCard(card=>lib.skill.chengJie.filterCard(card))) return false;
+                    var bool=game.filterPlayer(current=>lib.skill.chengJie.filterTarget('',player,current)).length>1;
+                    return bool;
+                },
+                filterCard:function(card){
+                    return get.type(card)=='faShu';
+                },
+                discard:true,
+                showCards:true,
+                selectTarget:1,
+				filterTarget:function(card,player,target){
+                    if(target.zhiLiao<1) return false;
+					return target!=player;
+				},
+                content:function(){
+                    'step 0'
+                    target.changeZhiLiao(-1);
+                    'step 1'
+                    player.changeZhiLiao(1);
+                },
+                contentAfter:function(){
+                    player.addGongJi();
+                },
+                ai:{
+                    order:3.8,
+                    result:{
+                        target:-1,
+                        player:2,
+                    }
+                }
+            },
+            shengJi:{
+                trigger:{player:'gongJiMingZhong'},
+                forced:true,
+                filter:function(event,player){
+                    return event.customArgs.shengJi!=false;
+                },
+                content:function(){
+                    player.changeZhiLiao(1);
+                }
+            },
+            tianQiang:{
+                trigger:{player:'gongJiQian'},
+                filter:function(event,player){
+                    if(event.getParent('phaseUse').tianQiang===false) return false;
+                    return event.yingZhan!=true&&player.zhiLiao>=2;
+                },
+                content:function(){
+                    'step 0'
+                    player.changeZhiLiao(-2);
+                    'step 1'
+                    trigger.wuFaYingZhan();
+                    trigger.customArgs.shengJi=false;
+                },
+                check:function(event,player){
+                    var num=Math.random();
+                    return num>0.25;
+                }
+            },
+            diQiang:{
+                trigger:{player:'gongJiMingZhong'},
+                filter:function(event,player){
+                    return event.yingZhan!=true&&player.zhiLiao>=1;
+                },
+                priority:1,
+                async cost(event, trigger, player) {
+                    var zhiLiao=player.zhiLiao;
+                    var list=[];
+                    for(var i=1;i<=zhiLiao;i++){
+                        if(i>4) break;
+                        list.push(i);
+                    }
+                    list.push('cancel2');
+                    var result=await player.chooseControl(list).set('prompt',"是否发动【地枪】<br>"+lib.translate.diQiang_info).set('ai',function(){
+                        var num=_status.event.num;
+                        if(num==2) return 'cancel2';
+                        else return num-2;
+                    }).set('num',list.length).forResult();
+                    event.result = {
+                        bool: result.control!='cancel2',
+                        cost_data: result.control,
+                    }
+                },
+                content:function(){
+                    'step 0'
+                    player.changeZhiLiao(-event.cost_data);
+                    trigger.changeDamageNum(event.cost_data);
+                    trigger.customArgs.shengJi=false;
+                },
+            },
+            shengGuangQiYu:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    return player.canBiShaBaoShi();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaBaoShi();
+                    'step 1'
+                    player.changeZhiLiao(2,5);
+                    event.getParent('phaseUse').tianQiang=false;
+                    'step 2'
+                    player.addGongJi();
+                },
+                ai:{
+                    baoShi:true,
+                    order:4,
+                    result:{
+                        player:2.5,
+                    }
+                }
+            },
         },
 		
 		translate:{
@@ -2999,7 +3155,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             diQiang:"[响应]地枪",
             diQiang_info:"<span class='tiaoJian'>(主动攻击命中后发动②，移除你的X[治疗])</span>本次攻击伤害额外+X，X最高为4；不能和【圣击】同时发动。",
             shengGuangQiYu:"[法术]圣光祈愈",
-            shengGuangQiYu_info:"[宝石]无视你的[治疗]上限为你+2[治疗]，但你的[治疗]最高为5，额外+1[攻击行动]；本回合你不能再发动天枪。",
+            shengGuangQiYu_info:"[宝石]无视你的[治疗]上限为你+2[治疗]，但你的[治疗]最高为5，额外+1[攻击行动]；本回合你不能再发动【天枪】。",
             
             //精灵射手
             yuanSuSheJi:"[响应]元素射击[回合限定]",
