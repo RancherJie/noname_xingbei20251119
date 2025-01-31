@@ -1595,7 +1595,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 forced:true,
                 trigger:{player:'huiHeKaiShi'},
                 filter:function(event,player){
-                    return player.isLinked();
+                    return player.isHengZhi();
                 },
                 content:function(){
                     'step 0'
@@ -2035,7 +2035,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             xinYueBiHu:{
                 trigger:{global:'changeShiQiQian'},
                 filter:function(event,player){
-                    if(player.isLinked()) return false;
+                    if(player.isHengZhi()) return false;
                     if(event.side!=player.side) return false;
                     if(event.num>=0) return false;
                     if(event.yuanYin!='damage') return false;
@@ -2180,7 +2180,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 trigger:{player:'gongJiMingZhong'},
                 filter:function(event,player){
                     if(event.yingZhan==true) return false;
-                    return player.isLinked()&&player.canBiShaShuiJing()&&player.getExpansions('anYue').length>0;
+                    return player.isHengZhi()&&player.canBiShaShuiJing()&&player.getExpansions('anYue').length>0;
                 },
                 async cost(event, trigger, player) {
                     var result=await player.chooseCardButton(player.getExpansions('anYue'),true,'是否发动【暗月斩】<br>'+lib.translate.anYueZhan_info).forResult();
@@ -2314,7 +2314,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 type:'qiDong',
                 trigger:{player:'qiDong'},
                 filter:function(event,player){
-                    return player.isLinked();
+                    return player.isHengZhi();
                 },
                 content:function(){
                     'step 0'
@@ -2396,7 +2396,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 trigger:{player:'qiDong'},
                 filter:function(event,player){
                     if(event.qiDong==true) return false;
-                    return player.canBiShaBaoShi()&&!player.isLinked();
+                    return player.canBiShaBaoShi()&&!player.isHengZhi();
                 },
                 content:function(){
                     'step 0'
@@ -2406,7 +2406,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 mod:{
                     maxHandcardFinal:function(player,num){
-                        if(player.isLinked()) return 5;
+                        if(player.isHengZhi()) return 5;
                     }
                 },
                 group:'zhongCaiYiShi_shenPan',
@@ -2415,7 +2415,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         trigger:{player:'huiHeKaiShi'},
                         forced:true,
                         filter:function(event,player){
-                            return player.isLinked();
+                            return player.isHengZhi();
                         },
                         content:function(){
                             player.addZhiShiWu('shenPan',1);
@@ -3015,7 +3015,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 type:'qiDong',
                 trigger:{player:'qiDong'},
                 filter:function(event,player){
-                    return player.canBiShaBaoShi()&&!player.isLinked(); 
+                    return player.canBiShaBaoShi()&&!player.isHengZhi(); 
                 },
                 content:function(){
                     'step 0'
@@ -3033,7 +3033,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         trigger:{player:'huiHeJieShu'},
                         forced:true,
                         filter:function(event,player){
-                            if(!player.isLinked()) return false;
+                            if(!player.isHengZhi()) return false;
                             var cards=player.getCards('s',function(card){
                                 return card.hasGaintag('zhuFu');
                             });
