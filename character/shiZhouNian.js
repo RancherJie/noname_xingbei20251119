@@ -3111,7 +3111,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             shengDu:{
                 trigger:{player:'zhiLiao'},
-                firstDo:true,
                 filter:function(event,player){
                     return !event.faShu;
                 },
