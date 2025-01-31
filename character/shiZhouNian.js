@@ -46,7 +46,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             yinYouShiRen:['yinYouShiRen_name','huanGroup','4/5',[],],
             jingLingSheShou:['jingLingSheShou_name','jiGroup','3/4',['yuanSuSheJi','dongWuHuoBan','jingLingMiYi','chongWuQiangHua','zhuFu'],],
             yinYangShi:['yinYangShi_name','huanGroup',4,[],],
-            xueSeJianLing:['xueSeJianLing_name','xueGroup',4,[],],
+            xueSeJianLing:['xueSeJianLing_name','xueGroup',4,['xueSeJingJi','chiSeYiShan','xueRanQiangWei','xueQiPingZhang','xueQiangWeiTingYuan','sanHuaLunWu','xianXue'],],
             yueZhiNvShen:['yueZhiNvShen_name','shengGroup',5,['xinYueBiHu','anYueZuZhou','meiDuShaZhiYan','yueZhiLunHui','yueDu','anYueZhan','cangBaiZhiYue','xinYue','shiHua','anYue'],],
             shouLingWuShi:['shouLingWuShi_name','jiGroup','4/5',[],],
             shengGong:['shengGong_name','shengGroup','4/5',[],],
@@ -3434,6 +3434,192 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 ai:{
                     baoShi:true,
                 }
+            },
+            //血色剑灵
+            xueSeJingJi:{
+                trigger:{player:'gongJiMingZhong'},
+                forced:true,
+                content:function(){
+                    player.addZhiShiWu('xianXue');
+                }
+            },
+            chiSeYiShan:{
+                trigger:{player:'gongJiHou'},
+                filter:function(event,player){
+                    return player.countZhiShiWu('xianXue')>=1&&event.yingZhan!=true;
+                },
+                content:async function(event, trigger, player){
+                    await player.removeZhiShiWu('xianXue');
+                    await player.faShuDamage(2,player);
+                    player.addGongJi();
+                },
+                check:function(event,player){
+                    var shiQi=get.shiQi(player.side);
+                    return shiQi>5;
+                }
+
+            },
+            xueRanQiangWei:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    return player.countZhiShiWu('xianXue')>=2;
+                },
+                filterTarget:true,
+                contentBefore:function(){
+                    player.removeZhiShiWu('xianXue',2);
+                },
+                content:function(){
+                    'step 0'
+                    target.changeZhiLiao(-2);
+                    'step 1'
+                    player.chooseTarget('将我方角色[能量区]的1[水晶]翻面为[宝石]',true,function(card,player,target){
+                        return player.side==target.side;
+                    }).set('ai',function(target){
+                        if(target.countNengLiang('shuiJing')>0) return 2;
+                        else return 1;
+                    });
+                    'step 2'
+                    if(result.bool){
+                        event.target=result.targets[0];
+                        if(result.targets[0].countNengLiang('shuiJing')){
+                            event.target.removeNengLiang('shuiJing');
+                        }
+                    }else event.finish()
+                    'step 3'
+                    event.target.addNengLiang('baoShi');
+                },
+                contentAfter:function(){
+                    'step 0'
+                    if(player.hasMark('xueQiangWeiTingYuan')){
+                        event.flag=true;
+                        event.num=0;
+                        event.targets=game.filterPlayer().sortBySeat(player);
+                    }
+                    'step 1'
+                    if(event.flag){
+                        if(event.num<event.targets.length){
+                            event.targets[event.num].faShuDamage(1,player);
+                            event.num++;
+                            event.redo();
+					    }
+                    }
+                },
+                ai:{
+                    order:function(item,player){
+                        return 6-player.countCards('h');
+                    },
+                    result:{
+                        target:function(player,target){
+                            if(target.zhiLiao) return -target.zhiLiao;
+                            return -0.1;
+                        }
+                    }
+                }
+            },
+            xueQiPingZhang:{
+                trigger:{player:'zaoChengShangHai'},
+                filter:function(event,player){
+                    if(event.faShu!=true) return false;
+                    return player.countZhiShiWu('xianXue')>=1;
+                },
+                content:function(){
+                    'step 0'
+                    player.removeZhiShiWu('xianXue');
+                    trigger.num--;
+                    'step 1'
+                    player.chooseTarget('对目标对手造成1点法术伤害③',true,function(card,player,target){
+                        return target.side!=player.side;
+                    }).set('ai',function(target){
+                        return -get.damageEffect(target,1);
+                    })
+                    'step 2'
+                    if(result.bool){
+                        result.targets[0].faShuDamage(1,player);
+                    }
+                },
+                check:function(event,player){
+                    return player.countZhiShiWu('xianXue')>1;
+                }
+            },
+            xueQiangWeiTingYuan:{
+                intro:{
+                    content:"<span class='tiaoJian'>(此卡在场时)</span>所有角色的[治疗]无法用于抵御伤害；<span class='tiaoJian'>(血色剑灵的回合结束时)</span>移除此卡。",
+                    nocount:true,
+                },
+                onremove:'storage',
+                markimage:'image/card/zhuanShu/xueQiangWeiTingYuan.png',
+                trigger:{global:'zhiLiao'},
+                filter:function(event,player){
+                    return player.hasZhiShiWu('xueQiangWeiTingYuan');
+                },
+                forced:true,
+                firstDo:true,
+                content:function(){
+                    trigger.cancel();
+                },
+                group:'xueQiangWeiTingYuan_yiChu',
+                subSkill:{
+                    yiChu:{
+                        trigger:{player:'huiHeJieShu'},
+                        direct:true,
+                        filter:function(event,player){
+                            return player.hasZhiShiWu('xueQiangWeiTingYuan');
+                        },
+                        content:function(){
+                            player.removeZhiShiWu('xueQiangWeiTingYuan');
+                        },
+                    }
+                }
+            },
+            sanHuaLunWu:{
+                type:'qiDong',
+                trigger:{player:'qiDong'},
+                filter:function(event,player){
+                    return player.canBiShaShuiJing();
+                },
+                content:async function(event, trigger, player){
+                    var list=["[水晶]将【血蔷薇庭院】放置于场上，你+2<span class='hong'>【</span>鲜血<span class='hong'>】</span>","[宝石]将【血蔷薇庭院】放置于场上，无视你的<span class='hong'>【</span>鲜血<span class='hong'>】</span>上限为你+2<span class='hong'>【</span>鲜血<span class='hong'>】</span>但你的<span class='hong'>【</span>鲜血<span class='hong'>】</span>数最高为4，你弃到4张牌。"];
+                    var choices=['选项一'];
+                    if(player.canBiShaBaoShi()){
+                        choices.push('选项二');
+                    }
+                    var result=await player.chooseControl(choices).set('choiceList',list).set('ai',function(){
+                        var player=_status.event.player;
+                        if(player.canBiShaBaoShi()) return '选项二';
+                        return '选项一';
+                    }).forResult();
+                    if(result.control=='选项一'){
+                        await player.removeBiShaShuiJing();
+                        await player.addZhiShiWu('xueQiangWeiTingYuan');
+                        await player.addZhiShiWu('xianXue',2);
+                    }else if(result.control=='选项二'){
+                        await player.removeBiShaBaoShi();
+                        await player.addZhiShiWu('xueQiangWeiTingYuan');
+                        await player.addZhiShiWu('xianXue',2,4);
+                        if(player.countCards('h')>4){
+                            var num=player.countCards('h')-4;
+                            await player.chooseToDiscard('h',true,num);
+                        }
+                    }
+                },
+                check:function(event,player){
+                    if(player.countZhiShiWu('xianXue')+2>=3&&!player.canBiShaBaoShi()) return false;
+                    return true;
+                },
+                ai:{
+                    baoShi:true,
+                    shuiJing:true,
+                }
+            },
+            xianXue:{
+                intro:{
+                    name:'鲜血',
+                    content:'mark',
+                    max:3,
+                },
+                onremove:'storage',
+                markimage:'image/card/zhiShiWu/hong.png',
             },
         },
 		

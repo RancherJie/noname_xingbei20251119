@@ -77,6 +77,7 @@ window.noname_asset_list =
 	'image/card/xingShi/shuiJing.png',
 
 	'image/card/zhuanShu/wuXiShuFu.png',
+	'image/card/zhuanShu/xueQiangWeiTingYuan.png',
 
 	'image/character/anShaZhe.jpg',
 	'image/character/cangYanMoNv.jpg',
