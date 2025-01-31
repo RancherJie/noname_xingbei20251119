@@ -2608,7 +2608,13 @@ export default () => {
                         if(i>num) break;
                         list.push(i);
                     }
-                    player.chooseControl(list).set('prompt','使用的[治疗]数量，目前伤害量'+num).set('ai',function(){return _status.event.num;}).set('num',list.length-1);
+					var  zhiLiao=list.length-1;//使用几点治疗，默认取最大值
+					var chaZhi=player.getHandcardLimit()-player.countCards('h');
+					if(chaZhi>=num+1) zhiLiao=0;
+                    player.chooseControl(list).set('prompt','选择使用多少[治疗]，目前伤害量'+num).set('ai',function(){
+						var num=_status.event.num;
+						return num;
+					}).set('num',zhiLiao);
 					"step 1"
 					var zhiLiaonum=result.control;
 					if(zhiLiaonum>0){
