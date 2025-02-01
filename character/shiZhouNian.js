@@ -429,6 +429,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 ai:{
                     baoShi:true,
                     draw:false,
+                    skillTagFilter:function(player,tag,arg){
+                        if(tag=='baoShi'&&player.isHengZhi()) return false;
+                    }
                 }
             },
             shengLiao:{
