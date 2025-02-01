@@ -6648,6 +6648,39 @@ export default () => {
 					next.setContent('removeJiChuXiaoGuo');
 					return next;
 				},
+
+				canFaShu:function(){
+					return this.canXingDong('faShu');
+				},
+				canGongJi:function(){
+					return this.canXingDong('gongJi');
+				},
+				canXingDong:function(type){
+					var player=this;
+					if(!type) return player.canXingDong('gongJi')||player.canXingDong('faShu')||player.canXingDong('teShu');
+					//获取所有技能
+					var skills = game.expandSkills(player.getSkills("invisible").concat(lib.skill.global));
+					//判断是否有可触发的技能
+					for(var i=0;i<skills.length;i++){
+						let info = get.info(skills[i]);
+						if(!info) continue;
+						if(info.type==type){
+							var enable=lib.skill[skills[i]].filter(event, player);
+						}else continue;
+						if(enable) return true;
+					}
+					//判断是否有可使用的卡牌
+					var cards=player.getCards('h').concat(player.getCards('e'));
+					for(var i=0;i<cards.length;i++){
+						let info = get.info(cards[i]);
+						if(!info) continue;
+						if(info.type==type){
+							if(player.hasUseTarget(cards[i])) var enable=true;
+						}else continue;
+						if(enable) return true;
+					}
+					return false;
+				}
 			},
 			event:{
 				trigger(name) {
