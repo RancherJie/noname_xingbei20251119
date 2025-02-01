@@ -607,9 +607,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var bool1=player.hasCard(function(card){
                         return lib.skill.diZhiFengYin.filterCard(card);
                     });
-                    var bool2=game.filterPlayer(function(current){
+                    var bool2=game.hasPlayer(function(current){
                         return lib.skill.diZhiFengYin.filterTarget('',player,current);
-                    }).length>0;
+                    });
                     return bool1&&bool2
 				},
                 filterCard:function(card){
@@ -688,9 +688,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var bool1=player.hasCard(function(card){
                         return lib.skill.shuiZhiFengYin.filterCard(card);
                     });
-                    var bool2=game.filterPlayer(function(current){
+                    var bool2=game.hasPlayer(function(current){
                         return lib.skill.shuiZhiFengYin.filterTarget('',player,current);
-                    }).length>0;
+                    });
                     return bool1&&bool2
 				},
                 filterTarget:function(card,player,target){
@@ -765,9 +765,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var bool1=player.hasCard(function(card){
                         return lib.skill.huoZhiFengYin.filterCard(card);
                     });
-                    var bool2=game.filterPlayer(function(current){
+                    var bool2=game.hasPlayer(function(current){
                         return lib.skill.huoZhiFengYin.filterTarget('',player,current);
-                    }).length>0;
+                    });
                     return bool1&&bool2
 				},
                 filterTarget:function(card,player,target){
@@ -839,9 +839,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var bool1=player.hasCard(function(card){
                         return lib.skill.fengZhiFengYin.filterCard(card);
                     });
-                    var bool2=game.filterPlayer(function(current){
+                    var bool2=game.hasPlayer(function(current){
                         return lib.skill.fengZhiFengYin.filterTarget('',player,current);
-                    }).length>0;
+                    });
                     return bool1&&bool2
 				},
                 filterTarget:function(card,player,target){
@@ -917,9 +917,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var bool1=player.hasCard(function(card){
                         return lib.skill.leiZhiFengYin.filterCard(card);
                     });
-                    var bool2=game.filterPlayer(function(current){
+                    var bool2=game.hasPlayer(function(current){
                         return lib.skill.leiZhiFengYin.filterTarget('',player,current);
-                    }).length>0;
+                    });
                     return bool1&&bool2
 				},
                 filterTarget:function(card,player,target){
@@ -991,9 +991,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 enable:'faShu',
                 filter:function(event,player){
                     var bool1=player.canBiShaShuiJing();
-                    var bool2=game.filterPlayer(function(current){
+                    var bool2=game.hasPlayer(function(current){
                         return lib.skill.wuXiShuFu.filterTarget('',player,current);
-                    }).length>0;
+                    });
                     return bool1&&bool2
                 },
                 filterTarget:function(card,player,target){
@@ -1085,9 +1085,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 enable:'faShu',
                 filter:function(event,player){
                     var bool1=player.canBiShaShuiJing();
-                    var bool2=game.filterPlayer(function(current){
+                    var bool2=game.hasPlayer(function(current){
                         return lib.skill.fengYinPoSui.filterTarget('','',current)
-                    }).length>0;
+                    });
                     return bool1&&bool2;
                 },
                 filterTarget:function(card,player,target){
@@ -1126,9 +1126,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var bool1=player.hasCard(function(card){
                         return lib.skill.fengZhiJieJing.filterCard(card);
                     });
-                    var bool2=game.filterPlayer(function(current){
+                    var bool2=game.hasPlayer(function(current){
                         return lib.skill.fengZhiJieJing.filterTarget('','',current);
-                    }).length>0;
+                    });
                     return bool1&&bool2;
                 },
                 filterCard:function(card){
@@ -1284,11 +1284,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.removeJiChuXiaoGuo(event.targets[0]);
                 },
                 check:function(event,player){
-                    var players=game.filterPlayer(function(current){
+                    var hasPlayer=game.hasPlayer(function(current){
                         if(player.side==current.side) return get.jiChuXiaoGuoEffect(target)>0;
                         else return -get.jiChuXiaoGuoEffect()>0;
                     });
-                    return players.length>0;
+                    return hasPlayer;
                 },
                 ai:{
                     shuiJing:true,
@@ -2515,7 +2515,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 enable:'gongJi',
                 filter:function(event,player){
                     var bool1=player.countTongXiPai()>=2;
-                    var bool2=game.filterPlayer(current=>lib.skill.qiZha.filterTarget('',player,current)).length>1;
+                    var bool2=game.hasPlayer(current=>lib.skill.qiZha.filterTarget('',player,current));
                     return bool1&&bool2;
                 },
                 selectCard:[2,3],
@@ -2800,7 +2800,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 enable:'faShu',
                 filter:function(event,player){
                     if(!player.hasCard(card=>lib.skill.chengJie.filterCard(card))) return false;
-                    var bool=game.filterPlayer(current=>lib.skill.chengJie.filterTarget('',player,current)).length>1;
+                    var bool=game.hasPlayer(current=>lib.skill.chengJie.filterTarget('',player,current));
                     return bool;
                 },
                 filterCard:function(card){
@@ -3744,7 +3744,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 enable:'faShu',
                 filter:function(event,player){
                     var bool1=player.hasCard(card=>lib.skill.weiLiCiFu.filterCard(card));
-                    var bool2=game.filterPlayer(current=>lib.skill.weiLiCiFu.filterTarget("",player,current)).length>0;
+                    var bool2=game.hasPlayer(current=>lib.skill.weiLiCiFu.filterTarget("",player,current));
                     return bool1&&bool2;
                 },
                 selectCard:1,
@@ -3800,7 +3800,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 enable:'faShu',
                 filter:function(event,player){
                     var bool1=player.hasCard(card=>lib.skill.xunJieCiFu.filterCard(card));
-                    var bool2=game.filterPlayer(current=>lib.skill.xunJieCiFu.filterTarget("",player,current)).length>0;
+                    var bool2=game.hasPlayer(current=>lib.skill.xunJieCiFu.filterTarget("",player,current));
                     return bool1&&bool2;
                 },
                 filterCard:function(card){
