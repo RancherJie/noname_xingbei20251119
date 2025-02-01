@@ -2743,7 +2743,7 @@ export default () => {
                     next.set('filterCard',function(card,player,event){
 						if(get.type(card)=='gongJi'){
 							if(_status.event.canYingZhan==false) return false;//不能应战设置
-							if(card.name!='anMie'&&get.xiBie(card)!=get.xiBie(_status.event.sourceCard)) return false;
+							if(get.name(card)!='anMie'&&get.xiBie(card)!=get.xiBie(_status.event.sourceCard)) return false;
 						}else if(get.type(card)=='faShu'){
 							if(_status.event.canShengGuang==false) return false;
 							if(get.name(card)!='shengGuang') return false;
@@ -2833,7 +2833,7 @@ export default () => {
 					var name=get.translation(trigger.player);
 					var str='受到'+name+'的魔弹';
 					var next=player.moDan(str,function(card,player,event){
-						if(!(card.name=='moDan'||card.name=='shengGuang')) return false;
+						if(!(get.name(card)=='moDan'||get.name(card)=='shengGuang')) return false;
                         return lib.filter.cardEnabled(card,player,'forceEnable');
 					});
 					next.autodelay=true; 
