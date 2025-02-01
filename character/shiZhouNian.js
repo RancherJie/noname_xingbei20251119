@@ -1394,8 +1394,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     order:3.6,
                     result:{
                         target:function(player,target){
-                            if(target.countCards('h')+2>target.getHandcardLimit()) return -1;
-                            return -0.1;
+                            return get.damageEffect(target,2);
                         }
                     }
                 }
@@ -3048,6 +3047,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     await target.chooseToDiscard(1,'h',true);
                 },
                 check:function(event,player){
+                    if(player.canBiShaShuiJing()){
+                        var bool=game.hasPlayer(function(current){
+                            if(current.side==player.side) return false;
+                            let num=current.countCards('h')-current.getHandcardLimit();
+                            return num>=0;
+                        });
+                        if(bool) return true;
+                    }
                     var num=player.getHandcardLimit()-player.countCards('h');
                     return num>0;
                 }
@@ -3107,11 +3114,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     trigger.chongWuQiangHua=true;
                 },
                 check:function(event,player){
-                    var target=game.filterPlayer(function(current){
+                    var bool=game.hasPlayer(function(current){
                         var num=current.countCards('h')-current.getHandcardLimit();
                         return current.side!=player.side&&num>=0;
-                    })
-                    return target.length>0;
+                    });
+                    return bool;
                 }
             },
             zhuFu:{
@@ -3726,7 +3733,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             return get.damageEffect(target,2);
                         },
                         player:function(player){
-                            if(player.countCards('h')+2-player.zhiLiao>=6) return -1;
+                            if(player.countCards('h')+2-player.zhiLiao>=player.getHandcardLimit()) return -1;
                             else return 1;
                         }
                     }
