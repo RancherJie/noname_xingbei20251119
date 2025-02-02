@@ -7235,10 +7235,13 @@ export default () => {
 			xuanZeYiXiPai:function(card){
 				if(ui.selected.cards.length==0) return true;
 				else{
-					var xiBie=get.xiBie(card);
-					if(!xiBie) return false;
-					if(get.xiBie(ui.selected.cards[0])!=xiBie) return true;
-					else return false;
+					var xiBie1=get.xiBie(card);
+					if(!xiBie1) return false;
+					for(var i=0;i<ui.selected.cards.length;i++){
+						var xiBie2=get.xiBie(ui.selected.cards[i]);
+						if(xiBie1==xiBie2) return false;
+					}
+					return true;
 				}
 			},
 		},
