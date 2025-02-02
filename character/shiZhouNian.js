@@ -40,7 +40,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             nvWuShen:['nvWuShen_name','shengGroup','3/4',['shenShengZhuiJi','zhiXuZhiYin','hePingXingZhe','junShenWeiGuan','yingLingZhaoHuan'],],
             moGong:['moGong_name','huanGroup',4,[],],
             hongLianQiShi:['hongLianQiShi_name','xueGroup',4,['xingHongShengYue','xingHongXinYang','xueXingDaoYan','shaLuShengYan','reXueFeiTeng','jieJiaoJieZao','xingHongShiZi','xueYin'],],
-            yingLingRenXing:['yingLingRenXing_name','yongGroup',4,[],],
+            yingLingRenXing:['yingLingRenXing_name','yongGroup',4,['zhanWenZhangWo','nuHuoYaZhi','zhanWenSuiJi','moWenRongHe','fuWenGaiZao','shuangChongHuiXiang','zhanWen','moWen'],],
             moQiang:['moQiang_name','huanGroup',4,[],],
             cangYanMoNv:['cangYanMoNv_name','xueGroup',4,[],],
             yinYouShiRen:['yinYouShiRen_name','huanGroup','4/5',[],],
@@ -4137,6 +4137,246 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 onremove:'storage',
                 markimage:'image/card/zhiShiWu/hong.png',
+            },
+            //英灵人形
+            zhanWenZhangWo:{
+                trigger:{global:'gameStart'},
+                forced:true,
+                content:function(){
+                    player.addZhiShiWu('zhanWen',3);
+                },
+                fanZhuanZhanWen:function(player,num){
+                    var num=num||1;
+                    var next=game.createEvent('fanZhuanZhanWen');
+                    next.player=player;
+                    if(num>player.countZhiShiWu('zhanWen')) num=player.countZhiShiWu('zhanWen');
+                    next.num=num;
+                    next.setContent(function(){
+                        'step 0'
+                        player.removeZhiShiWu('zhanWen',event.num);
+                        'step 1'
+                        player.addZhiShiWu('moWen',event.num);
+                    });
+                    return next;
+                },
+                fanZhuanMoWen:function(player,num){
+                    var num=num||1;
+                    var next=game.createEvent('fanZhuanMoWen');
+                    next.player=player;
+                    if(num>player.countZhiShiWu('moWen')) num=player.countZhiShiWu('moWen');
+                    next.num=num;
+                    next.setContent(function(){
+                        'step 0'
+                        player.removeZhiShiWu('moWen',event.num);
+                        'step 1'
+                        player.addZhiShiWu('zhanWen',event.num);
+                    });
+                    return next;
+                }
+
+            },
+            nuHuoYaZhi:{
+                trigger:{source:'gongJiWeiMingZhong'},
+                filter:function(event,player){
+                    if(event.yingZhan==true) return false;
+                    return player.countZhiShiWu('zhanWen')>=1;
+                },
+                priority:1,
+                content:function(){
+                    lib.skill.zhanWenZhangWo.fanZhuanZhanWen(player,1);
+                    trigger.moWenRongHe=false
+                },
+                check:function(event,player){
+                    var moWen=player.countZhiShiWu('moWen');
+                    if(moWen==0) return true;
+                    if(player.countYiXiPai()>=1) return false;
+                    var zhanWen=player.countZhiShiWu('zhanWen');
+                    if(zhanWen==1) return false;
+                    return true;
+                }
+            },
+            zhanWenSuiJi:{
+                trigger:{player:'gongJiMingZhong'},
+                filter:function(event,player){
+                    if(player.countZhiShiWu('zhanWen')<1) return false;
+                    if(event.yingZhan==true) return false;
+                    return player.countCards('h')>1;
+                },
+                async cost(event,trigger,player){
+                    event.result=await player.chooseCard('h',[2,Infinity],card=>get.xuanZeTongXiPai(card))
+                        .set('complexCard',true)
+                        .set('prompt',get.prompt('zhanWenSuiJi'))
+                        .set('prompt2',lib.translate.zhanWenSuiJi_info)
+                        .set('ai',function(card){
+                            return 1;
+                        })
+                        .forResult();
+                },
+                content:async function(event, trigger, player){
+                    'step 0'
+                    var num=event.cards.length-1;
+                    await player.discard(event.cards).set('showCards',true);
+                    await lib.skill.zhanWenZhangWo.fanZhuanZhanWen(player,1);
+                    if(player.isHengZhi()&&player.countZhiShiWu('zhanWen')>0){
+                        var list=[];
+                        for(var i=0;i<=player.countZhiShiWu('zhanWen');i++){
+                            list.push(i);
+                        }
+                        var control=await player.chooseControl(list).set('prompt','额外翻转【战纹】数量').set('ai',function(){
+                            return list.length;
+                        }).set('num',list.length).forResultControl();
+                        if(control>0){
+                            num+=control;
+                            await lib.skill.zhanWenZhangWo.fanZhuanZhanWen(player,control);
+                        }
+                    }
+                    trigger.changeDamageNum(num);
+                }
+            },
+            moWenRongHe:{
+                trigger:{source:'gongJiWeiMingZhong'},
+                filter:function(event,player){
+                    if(event.moWenRongHe==false) return false;
+                    if(player.countZhiShiWu('moWen')<1) return false;
+                    if(event.yingZhan==true) return false;
+                    return player.countCards('h')>1;
+                },
+                async cost(event,trigger,player){
+                    event.result=await player.chooseCard('h',[2,Infinity],card=>get.xuanZeYiXiPai(card))
+                        .set('complexCard',true)
+                        .set('prompt',get.prompt('moWenRongHe'))
+                        .set('prompt2',lib.translate.moWenRongHe_info)
+                        .set('ai',function(card){
+                            return 1;
+                        })
+                        .forResult();
+                },
+                content:async function(event, trigger, player){
+                    await lib.skill.zhanWenZhangWo.fanZhuanMoWen(player,1);
+                    await player.discard(event.cards).set('showCards',true);
+                    var num=event.cards.length-1;
+                    if(player.isHengZhi()&&player.countZhiShiWu('moWen')>0){
+                        var list=[];
+                        for(var i=0;i<=player.countZhiShiWu('moWen');i++){
+                            list.push(i);
+                        }
+                        var control=await player.chooseControl(list).set('prompt','额外翻转【魔纹】数量').set('ai',function(){
+                            return list.length;
+                        }).set('num',list.length).forResultControl();
+                        if(control>0){
+                            num+=control;
+                            await lib.skill.zhanWenZhangWo.fanZhuanMoWen(player,control);
+                        }
+                    }
+                    'step 4'
+                    trigger.player.faShuDamage(num,player);
+                }
+            },
+            fuWenGaiZao:{
+                type:'qiDong',
+                trigger:{player:'qiDong'},
+                filter:function(event,player){
+                    if(player.isHengZhi()) return false;
+                    return player.canBiShaBaoShi();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaBaoShi();
+                    'step 1'
+                    player.hengZhi();
+                    'step 2'
+                    player.draw(1);
+                    'step 3'
+                    var list=[];
+                    for(var i=0;i<=3;i++){
+                        list.push(i);
+                    }
+                    player.chooseControl(list).set('prompt','选择【战纹】数量').set('ai',function(){
+                        var num=Math.random();
+                        if(num>0.5) return 1;
+                        else return 2;
+                    });
+                    'step 4'
+                    var num=result.control;
+                    if(player.countZhiShiWu('zhanWen')>num){
+                        lib.skill.zhanWenZhangWo.fanZhuanZhanWen(player,player.countZhiShiWu('zhanWen')-num);
+                    }else if(player.countZhiShiWu('zhanWen')<num){
+                        lib.skill.zhanWenZhangWo.fanZhuanMoWen(player,num-player.countZhiShiWu('zhanWen'));
+                    }
+                },
+                group:['fuWenGaiZao_chongZhi'],
+                mod:{
+                    maxHandcard:function(player,num){
+                        if(player.isHengZhi()) return num+1;
+                    },
+                    aiOrder:function(player,card,num){
+                        if(get.type(card)=='gongJi'&&player.isHengZhi()) return num+1;
+                    }
+                },
+                subSkill:{
+                    chongZhi:{
+                        trigger:{player:'huiHeJieShu'},
+                        direct:true,
+                        filter:function(event,player){
+                            return player.isHengZhi();
+                        },
+                        content:function(){
+                            'step 0'
+                            player.chongZhi();
+                        }
+                    },
+                },
+                ai:{
+                    baoShi:true,
+                }
+            },
+            shuangChongHuiXiang:{
+                usable:1,
+                trigger:{source:'zaoChengShangHai'},
+                filter:function(event,player){
+                    return player.canBiShaShuiJing();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaShuiJing();
+                    'step 1'
+                    if(trigger.num>3){
+                        event.num=3;
+                    }else{
+                        event.num=trigger.num;
+                    }
+                    'step 2'
+                    var str='对另一名目标角色造成'+event.num+'点法术伤害';
+                    player.chooseTarget(str,true,function(card,player,target){
+                        return target!=_status.event.trigger_player;
+                    }).set('trigger_player',trigger.player).set('ai',function(target){
+                        return -get.attitude(player, target);
+                    });
+                    'step 3'
+                    if(result.bool){
+                        var next=result.targets[0].faShuDamage(event.num,player);
+                        next.set('shiQiXiaJiang',false);
+                    }
+                },
+                ai:{
+                    shuiJing:true,
+                }
+            },
+            zhanWen:{
+                intro:{
+                    name:'战纹',
+                    content:'mark',
+                },
+                onremove:'storage',
+                markimage:'image/card/zhuanShu/zhanWen.png',
+            },
+            moWen:{
+                intro:{
+                    name:'魔纹',
+                    content:'mark',
+                },
+                onremove:'storage',
+                markimage:'image/card/zhuanShu/moWen.png',
             },
         },
 		
