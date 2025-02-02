@@ -1432,7 +1432,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     result:{
                         target:function(player,target){
                             var num=target.countCards('h');
-                            if(target.getHandcardLimit()<5) return -5;
+                            if(num<5) return -5;
                             else return 0;
                         }
                     }
