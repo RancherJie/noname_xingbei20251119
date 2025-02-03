@@ -2738,9 +2738,9 @@ export default () => {
 					var propmt=`受到${name}的`;
 					propmt+=get.translation(get.xiBie(event.sourceCard))+'系';
 					if(event.yingZhan){
-						propmt+='应战攻击，';
+						propmt+='应战攻击';
 					}else{
-						propmt+='主动攻击，';
+						propmt+='主动攻击';
 					}
 					var next=player.yingZhan(propmt);
                     next.set('filterCard',function(card,player,event){
