@@ -3220,7 +3220,7 @@ export default () => {
 						}
 						else if(event.losing_map){
 							for(var id in event.losing_map){
-								if(event.losing_map[id][0].contains(cards[i])){
+								if(event.losing_map[id][0].includes(cards[i])){
 									var source=(_status.connectMode?lib.playerOL:game.playerMap)[id];
 									var hs=source.getCards('hejsx');
 									if(hs.includes(cards[i])){
