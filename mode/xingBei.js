@@ -942,7 +942,7 @@ export default () => {
 						game.moveSeat(event.list,ref);
 					}else{
 						var ref=game.players.randomGet();
-						console.log(event.list);
+						//console.log(event.list);
 						for(var i=0;i<event.number;i++){
 							ref.side=event.list[i];
 							ref=ref.next;
