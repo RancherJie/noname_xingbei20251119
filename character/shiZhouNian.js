@@ -30,7 +30,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shenGuan:['shenGuan_name','shengGroup',4,['shenShengQiShi','shenShengQiFu','shuiZhiShenLi','shengShiShouHu','shenShengQiYue','shenShengLingYu'],],
             qiDaoShi:['qiDaoShi_name','yongGroup',4,['guangHuiXinYang','heiAnZuZhou','weiLiCiFu','xunJieCiFu','qiDao','faLiChaoXi','qiDaoFuWen'],],
             xianZhe:['xianZhe_name','yongGroup',4,['zhiHuiFaDian','faShuFanTan','moDaoFaDian','shengJieFaDian'],],
-            lingFuShi:['lingFuShi_name','yongGroup',4,[],],
+            lingFuShi:['lingFuShi_name','yongGroup',4,['lingFu_leiMing','lingFu_fengXing','nianZhou','baiGuiYeXing','lingLiBengJie','yaoLi'],],
             jianDi:['jianDi_name','jiGroup','4/5',[],],
             geDouJia:['geDouJia_name','jiGroup','4/5',[],],
             yongZhe:['yongZhe_name','xueGroup','4/5',[],],
@@ -5853,6 +5853,173 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 ai:{
                     shuiJing:true,
                 }
+            },
+            //灵符师
+            lingFu_leiMing:{
+                type:'faShu',
+                enable:['chooseToUse','faShu'],
+                filter:function(event,player){
+                    return player.countCards('h',card=>lib.skill.lingFu_leiMing.filterCard(card))>0;
+                },
+                selectCard:1,
+                filterCard:function(card){
+                    return get.xiBie(card)=='lei';
+                },
+                selectTarget:2,
+                filterTarget:true,
+                discard:true,
+                showCards:true,
+                contentBefore:function(){
+                    'step 0'
+                    player.storage.lingFu_leiMing=1;
+                    'step 1'
+                    event.trigger('lingFu');
+                    'step 2'
+                    event.trigger('lingFu_leiMing');
+                },
+                content:function(){
+                    target.faShuDamage(player.storage.lingFu_leiMing,player);
+                },
+                ai:{
+                    order:function(item,player){
+                        var num=2.5;
+                        num+=player.countCards('h',card=>get.xiBie(card)=='lei')*0.4;
+                        if(player.countCards('h')>2) num+=0.3;
+                        return num;
+                    },
+                    result:{
+                        target:function(player,target){
+                            return get.damageEffect(target,1);
+                        },
+                    }
+                }
+            },
+            lingFu_fengXing:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    return player.countCards('h',card=>lib.skill.lingFu_fengXing.filterCard(card))>0;
+                },
+                selectCard:1,
+                filterCard:function(card){
+                    return get.xiBie(card)=='feng';
+                },
+                selectTarget:2,
+                filterTarget:true,
+                discard:true,
+                showCards:true,
+                contentBefore:function(){
+                    event.trigger('lingFu');
+                },
+                content:function(){
+                    target.chooseToDiscard('h',true);
+                },
+                ai:{
+                    order:function(item,player){
+                        var num=2.5;
+                        num+=player.countCards('h',card=>get.xiBie(card)=='feng')*0.4;
+                        if(player.countCards('h')>3) num+=0.3;
+                        return num;
+                    },
+                    result:{
+                        target:1,
+                    }
+                }
+            },
+            nianZhou:{
+                trigger:{player:'lingFu'},
+                filter:function(event,player){
+                    return player.countCards('h')>0&&player.getExpansions('yaoLi').length<2;
+                },
+                async cost(event,trigger,player){
+                    event.result=await player.chooseCard('h')
+                        .set('ai',function(card){
+                            var xiBie=get.xiBie(card);
+                            if(xiBie=='huo') return 2;
+                            else return 1;
+                        }).forResult();
+                },
+                content:function(){
+                    player.addToExpansion('draw',event.cards,'log').gaintag.add('yaoLi');
+                }
+            },
+            baiGuiYeXing:{
+                trigger:{player:'gongJiMingZhong'},
+                filter:function(event,player){
+                    if(event.yingZhan==true) return false;
+                    return player.getExpansions('yaoLi').length>0;
+                },
+                async cost(event,trigger,player){
+                    var result=await player.chooseCardButton(player.getExpansions('yaoLi'),'是否发动【百鬼夜行】，移除1张【妖力】,对目标角色造成1点法术伤害③').forResult();
+                    event.result={
+                        bool:result.bool,
+                        cost_data:result.links,
+                    };
+                },
+                content:async function(event,trigger,player){
+                    var card=event.cost_data[0];
+                    await player.discard(card,'yaoLi');
+
+                    player.storage.baiGuiYeXing=1;
+                    await event.trigger('baiGuiYeXing');
+
+                    var bool=await player.chooseCardButton([card],`是否展示火系【妖力】,改为指定2名角色，对除他们以外的其他所有角色各造成${player.storage.baiGuiYeXing}点法术伤害③`,1).set('filterButton',function(button){
+                        return get.xiBie(button.link)=='huo';
+                    }).set('ai',function(){
+                        return 1;
+                    }).forResultBool();
+                    if(bool){
+                        await player.showHiddenCards(card);
+                        var targets=await player.chooseTarget('选取不受伤害的2名角色',2,true).set('ai',function(target){
+                            var player=_status.event.player;
+                            var num=_status.event.num;
+                            return -get.damageEffect2(target,player,num);
+                        }).set('num',player.storage.baiGuiYeXing).forResultTargets();
+                        targets=game.filterPlayer(function(current){
+                            return !targets.includes(current);
+                        }).sortBySeat(player);
+                    }else{
+                        var targets=await  player.chooseTarget(`对目标角色造成${player.storage.baiGuiYeXing}点法术伤害③`,1,true).set('ai',function(target){
+                            var player=_status.event.player;
+                            var num=_status.event.num;
+                            return get.damageEffect2(target,player,num);
+                        }).set('num',player.storage.baiGuiYeXing).forResultTargets();
+                    }
+                    for(var target of targets){
+                        target.faShuDamage(player.storage.baiGuiYeXing,player);
+                    }
+                }
+            },
+            lingLiBengJie:{
+                trigger:{player:['baiGuiYeXing','lingFu_leiMing']},
+                filter:function(event,player){
+                    return player.canBiShaShuiJing();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaShuiJing();
+                    'step 1'
+                    player.storage.baiGuiYeXing++;
+                    player.storage.lingFu_leiMing++;
+                },
+                ai:{
+                    shuiJing:true,
+                }
+            },
+            yaoLi:{
+                intro:{
+                    name:'妖力',
+                    markcount:'expansion',
+                    mark:function(dialog,storage,player){
+						var cards=player.getExpansions('yaoLi');
+						if(player.isUnderControl(true)) dialog.addAuto(cards);
+						else return '共有'+cards.length+'张牌';
+					},
+                },
+                onremove:function(player, skill) {
+                    const cards = player.getExpansions(skill);
+                    if (cards.length) player.loseToDiscardpile(cards);
+                },
             },
         },
 		
