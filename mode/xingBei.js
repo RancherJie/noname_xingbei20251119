@@ -6449,6 +6449,16 @@ export default () => {
 					if(num>0) num=-num;
 					this.changeZhiShiWu(zhiShiWu,num,Infinity,true);
 				},
+				//指示物是否到达上限
+				isZhiShiWuMax:function(zhiShiWu){
+					if(!zhiShiWu) return false;
+					var info=get.info(zhiShiWu);
+					if(info&&info.intro&&info.intro.max){
+						return this.countMark(zhiShiWu)>=info.intro.max;
+					}
+					return false;
+				},	
+
 				setZhiShiWu(zhiShiWu, num, log) {
 					const count = this.countMark(zhiShiWu);
 					if (count > num) this.removeMark(zhiShiWu, count - num, log);
