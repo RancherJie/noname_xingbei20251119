@@ -2787,7 +2787,7 @@ export default () => {
 					event.customArgs=trigger.getParent(5).customArgs;
                     event.source=trigger.getParent().source;//攻击来源
                     event.player=trigger.getParent().player;//应战者
-					event.yingZhan=trigger.getParent().yingZhan;//判断未命中的攻击是否为应战攻击
+					event.yingZhan=trigger.getParent(2).yingZhan;//判断未命中的攻击是否为应战攻击
 					event.sourceCard=trigger.getParent().sourceCard;//攻击来源牌
 					'step 1'
                     event.trigger('gongJiWeiMingZhong');
@@ -2805,7 +2805,7 @@ export default () => {
 					event.customArgs=trigger.getParent(5).customArgs;
 					event.source=trigger.getParent().source;//攻击来源
                     event.player=trigger.getParent().player;//应战者
-					event.yingZhan=trigger.getParent().yingZhan;//判断未命中的攻击是否为应战攻击
+					event.yingZhan=trigger.getParent(2).yingZhan;//判断未命中的攻击是否为应战攻击
 					event.sourceCard=trigger.getParent().sourceCard;//攻击来源牌
 					'step 1'
                     event.trigger('gongJiWeiMingZhong');
