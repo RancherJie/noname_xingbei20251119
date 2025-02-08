@@ -32,7 +32,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             xianZhe:['xianZhe_name','yongGroup',4,['zhiHuiFaDian','faShuFanTan','moDaoFaDian','shengJieFaDian'],],
             lingFuShi:['lingFuShi_name','yongGroup',4,['lingFu_leiMing','lingFu_fengXing','nianZhou','baiGuiYeXing','lingLiBengJie','yaoLi'],],
             jianDi:['jianDi_name','jiGroup','4/5',[],],
-            geDouJia:['geDouJia_name','jiGroup','4/5',[],],
+            geDouJia:['geDouJia_name','jiGroup','4/5',['nianQiLiChang','xuLiYiji','nianDan','baiShiHuanLongQuan','qiJueBengJi','douShenTianQu','douQi'],],
             yongZhe:['yongZhe_name','xueGroup','4/5',['yongZheZhiXin','nuHou','jinPiLiJin','mingJingZhiShui','tiaoXin','jinDuanZhiLi','siDou','nuQi','zhiXing'],],
             lingHunShuShi:['lingHunShuShi_name','huanGroup','4/5',[],],
             xueZhiWuNv:['xueZhiWuNv_name','xueGroup',5,[],],
@@ -6744,6 +6744,213 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 onremove:'storage',
                 markimage:'image/card/zhiShiWu/lan.png',
             },
+            //格斗家
+            nianQiLiChang:{
+                trigger:{player:"zaoChengShangHai"},
+                filter:function(event,player){
+                    return event.num>4;
+                },
+                forced:true,
+                content:function(){
+                    trigger.num=4
+                }
+            },
+            xuLiYiji:{
+                trigger:{player:"gongJiQian"},
+                filter:function(event,player){
+                    if(player.countZhiShiWu('douQi')>=lib.skill.douQi.intro.max) return false;
+                    if(event.customArgs.qiJueBengJi) return false;
+                    return event.yingZhan!=true;
+                },
+                content:function(){
+                    player.addZhiShiWu('douQi');
+                    trigger.changeDamageNum(1);
+                    trigger.customArgs.xuLiYiji=true;
+                },
+                check:function(event,player){
+                    if(!player.isHengZhi()) return true;
+                    var num=Math.random();
+                    return num>0.9;
+                },
+                group:'xuLiYiji_weiMingZhong',
+                subSkill:{
+                    weiMingZhong:{
+                        trigger:{source:'gongJiWeiMingZhong'},
+                        direct:true,
+                        filter:function(event,player){
+                            return event.customArgs.xuLiYiji;
+                        },
+                        content:function(){
+                            player.faShuDamage(player.countZhiShiWu('douQi'),player);
+                        }
+                    },
+                    
+                }
+            },
+            nianDan:{
+                trigger:{player:['faShuJieShu']},
+                filter:function(event,player){
+                    if(player.countZhiShiWu('douQi')>=lib.skill.douQi.intro.max) return false;
+                    return true;
+                },
+                content:function(){
+                    'step 0'
+                    player.addZhiShiWu('douQi');
+                    'step 1'
+                    player.chooseTarget('对目标对手造成1点法术伤害③',true,function(card,player,target){
+                        return target.side!=player.side;
+                    });
+                    'step 2'
+                    event.target=result.targets[0];
+                    if(event.target.zhiLiao==0){
+                        event.flag=true;
+                    }
+                    'step 3'
+                    event.target.faShuDamage(1,player);
+                    'step 4'
+                    if(event.flag){
+                        player.faShuDamage(player.countZhiShiWu('douQi'),player);
+                    }
+                    
+                },
+                check:function(event,player){
+                    return player.countZhiShiWu('douQi')<=3;
+                },
+            },
+            baiShiHuanLongQuan:{
+                type:'qiDong',
+                trigger:{player:'qiDong'},
+                filter:function(event,player){
+                    return player.countZhiShiWu('douQi')>=3;
+                },
+                content:function(){
+                    'step 0'
+                    player.removeZhiShiWu('douQi',3);
+                    'step 1'
+                    if(!player.isHengZhi()) player.storage.baiShiHuanLongQuan=[];
+                    player.hengZhi();
+                },
+                group:['baiShiHuanLongQuan_zhuDong','baiShiHuanLongQuan_yingZhan','baiShiHuanLongQuan_faShuAndTeShu','baiShiHuanLongQuan_gongJi','baiShiHuanLongQuan_xuLiYiji'],
+                subSkill:{
+                    zhuDong:{
+                        trigger:{player:'gongJiQian'},
+                        filter:function(event,player){
+                            if(!player.isHengZhi()) return false;
+                            return event.yingZhan!=true;
+                        },
+                        priority:-1,
+                        direct:true,
+                        content:function(){
+                            trigger.changeDamageNum(2);
+                        }
+                    },
+                    yingZhan:{
+                        trigger:{player:'gongJiQian'},
+                        filter:function(event,player){
+                            if(!player.isHengZhi()) return false;
+                            return event.yingZhan==true;
+                        },
+                        priority:-1,
+                        direct:true,
+                        content:function(){
+                            trigger.changeDamageNum(1);
+                        }
+                    },
+                    faShuAndTeShu:{
+                        trigger:{player:['faShuQian','teShuQian']},
+                        filter:function(event,player){
+                            if(!player.isHengZhi()) return false;
+                            return true;
+                        }, 
+                        direct:true,
+                        content:function(){
+                            player.chongZhi();
+                            player.storage.baiShiHuanLongQuan=[];
+                        }
+                    },
+                    gongJi:{
+                        trigger:{player:'gongJiQian'},
+                        direct:true,
+                        priority:1,
+                        filter:function(event,player){
+                            if(!player.isHengZhi()) return false;
+                            return event.yingZhan!=true;
+                        },
+                        content:function(){
+                            if(player.storage.baiShiHuanLongQuan.length==0){
+                                player.storage.baiShiHuanLongQuan.push(trigger.targets[0]);
+                            }else{
+                                if(!player.storage.baiShiHuanLongQuan.includes(trigger.targets[0])){
+                                    player.chongZhi();
+                                    player.storage.baiShiHuanLongQuan=[];
+                                }
+                            }
+                        }
+                    },
+                    xuLiYiji:{
+                        trigger:{player:"xuLiYijiBegin"},
+                        direct:true,
+                        content:function(){
+                            player.chongZhi();
+                            player.storage.baiShiHuanLongQuan=[];
+                        }
+                    }
+                },
+                check:function(event,player){
+                    return player.canGongJi();
+                }
+
+
+            },
+            qiJueBengJi:{
+                trigger:{player:"gongJiQian"},
+                filter:function(event,player){
+                    if(!player.hasZhiShiWu('douQi')) return false;
+                    if(event.customArgs.xuLiYiji) return false;
+                    return event.yingZhan!=true;
+                },
+                content:function(){
+                    'step 0'
+                    trigger.customArgs.qiJueBengJi=true;
+                    player.removeZhiShiWu('douQi');
+                    trigger.wuFaYingZhan();
+                    'step 1'
+                    player.faShuDamage(player.countZhiShiWu('douQi'),player);
+                },
+            },
+            douShenTianQu:{
+                type:'qiDong',
+                trigger:{player:'qiDong'},
+                filter:function(event,player){
+                    return player.canBiShaShuiJing();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaShuiJing();
+                    'step 1'
+                    if(player.countCards('h')>3){
+                        player.chooseToDiscard(true,'h',player.countCards('h')-3);
+                    };
+                    'step 2'
+                    player.changeZhiLiao(2);
+                },
+                ai:{
+                    shuiJing:true,
+                },
+                check:function(event,player){
+                    if(player.zhiLiao>=player.getZhiLiaoLimit()) return false;
+                    if(player.countCards('h')<=4) return false;
+                    return player.canXingDong();
+                }
+            },
+            douQi:{
+                intro:{
+                    content:'mark',
+                    max:6,
+                },
+                onremove:'storage',
+                markimage:'image/card/zhiShiWu/hong.png',
+            },
         },
 		
 		translate:{
@@ -7292,7 +7499,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             xuLiYiji_info:"<span class='tiaoJian'>(主动攻击前发动①，+1【斗气】)</span>本次攻击伤害额外+1；<span class='tiaoJian'>(若未命中②)</span>对自己造成X点法术伤害③，X为你所拥有的【斗气】数；<span class='tiaoJian'>(若【斗气】已经达到上限)</span>你不能发动【蓄力一击】。",
             nianDan_info:"<span class='tiaoJian'>([法术行动]结束时发动，+1【斗气】)</span>，对目标对手造成1点法术伤害③，<span class='tiaoJian'>(若发动前对方的[治疗]为0)</span>对自己造成X点法术伤害③，X为你拥有的【斗气】数；<span class='tiaoJian'>(若【斗气】已达到上限)</span>你不能发动【念弹】。",
             baiShiHuanLongQuan_info:"[持续]<span class='tiaoJian'>(移除3点【斗气】)</span>[横置]你的所有主动攻击伤害额外+2，所有应战攻击伤害额外+1 ；在你接下来的行动阶段，你不能执行[法术行动]和[特殊行动]；你的主动攻击必须以同一名角色为目标，并且不能发动【蓄力一击】；若不如此做，则取消【百式幻龙拳】的效果并[重置]。",
-            qiJueBengJi_info:"<span class='tiaoJian'>(主动攻击前发动①，移除1点【斗气】)</span>本次攻击对方无法应战，然后对自己造成X点法术伤害③，X为你的【斗气】数；不能和蓄力一击同时发动。",
+            qiJueBengJi_info:"<span class='tiaoJian'>(主动攻击前发动①，移除1点【斗气】)</span>本次攻击对方无法应战，然后对自己造成X点法术伤害③，X为你的【斗气】数；不能和【蓄力一击】同时发动。",
             douShenTianQu_info:"[水晶]你弃到3张牌，+2[治疗]。",
             douQi_info:"【斗气】为格斗家专有指示物，上限为6",
 
