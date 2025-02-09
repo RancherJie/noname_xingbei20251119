@@ -4781,7 +4781,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 chooseButton:{
                     dialog:function(event,player){
                         var dialog=ui.create.dialog('生命结界','hidden');
-                        var list=[['1',"目标队友+1[宝石]并+1[治疗]；然后对自己造成X点法术伤害③，X为你的<span class='hong'>【</span>鬼火<span class='hong'>】</span>数。(若X为3)本次法术伤害③不会造成我方士气下降"],['2',"<span class='tiaoJian'>(仅【式神形态】下，弃2张命格相同的手牌[展示])</span>[重置]脱离【式神形态】目标队友弃1张牌"]]
+                        var list=[['1',"目标队友+1[宝石]并+1[治疗]；然后对自己造成X点法术伤害③，X为你的<span class='hong'>【鬼火】</span>数。(若X为3)本次法术伤害③不会造成我方士气下降"],['2',"<span class='tiaoJian'>(仅【式神形态】下，弃2张命格相同的手牌[展示])</span>[重置]脱离【式神形态】目标队友弃1张牌"]]
 						dialog.add([list,'textbutton']);
 						return dialog;
                     },
@@ -6115,7 +6115,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     },
 
                     dialog:function(event,player){
-						var dialog=ui.create.dialog('不谐和弦：移除X点【灵感】,摸/弃(X-1)张牌','hidden');
+						var dialog=ui.create.dialog(`不谐和弦：移除X点<span class='hong'>【灵感】</span>,摸/弃(X-1)张牌`,'hidden');
                         var list=[];
                         for(var i=2;i<=player.countZhiShiWu('lingGan');i++){
                             list.push(i);
@@ -6255,10 +6255,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         if(player.countCards('h')>0){
                             await player.chooseToDiscard(1,true);
                         }
-                        var list=['治疗','灵感'];
-                        var control=await player.chooseControl(list).set('prompt','选择+1[治疗]或[灵感]').forResultControl();
-                        if(control=='治疗') await player.changeZhiLiao();
-                        else if(control=='灵感') await player.addZhiShiWu('lingGan');
+                        var list=['zhiLiao','lingGan'];
+                        var control=await player.chooseControl(list).set('prompt',`选择+1[治疗]或<span class='hong'>【灵感】</span>`).forResultControl();
+                        if(control=='zhiLiao') await player.changeZhiLiao();
+                        else if(control=='lingGan') await player.addZhiShiWu('lingGan');
                     }
                 },
                 ai:{
@@ -7885,19 +7885,19 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             cangYanFaDian:"[法术]苍炎法典",
             cangYanFaDian_info:"<span class='tiaoJian'>(弃1张火系牌[展示])</span>对目标角色和自己造成2点法术伤害③。",
             tianHuoDianKong:"[法术]天火断空",
-            tianHuoDianKong_info:"<span class='tiaoJian'>(弃2张火系牌[展示]，移除1点【重生】)</span>对目标角色和自己造成3点火焰伤害③，<span class='tiaoJian'>(若我方士气落后于该目标)</span>本次法术伤害额外+1[强制]。",
+            tianHuoDianKong_info:"<span class='tiaoJian'>(弃2张火系牌[展示]，移除1点</span><span class='hong'>【重生】</span><span class='tiaoJian'>)</span>对目标角色和自己造成3点火焰伤害③，<span class='tiaoJian'>(若我方士气落后于该目标)</span>本次法术伤害额外+1[强制]。",
             moNvZhiNu:"[启动]魔女之怒",
-            moNvZhiNu_info:"<span class='tiaoJian'>(手牌<4张时)</span>[横置]摸0-2张牌，数值由你决定，持续到你的下个行动阶段开始前，你都处于【烈焰形态】，在此形态下你的所有除水系和暗系外的攻击牌均视为火系[强制]，你释放【天火断空】时无需消耗【重生】，你的手牌上限+(X-2)(X为你的【重生】数量)；脱离【烈焰形态】时[重置]。",
+            moNvZhiNu_info:"<span class='tiaoJian'>(手牌<4张时)</span>[横置]摸0-2张牌，数值由你决定，持续到你的下个行动阶段开始前，你都处于【烈焰形态】，在此形态下你的所有除水系和暗系外的攻击牌均视为火系[强制]，你释放【天火断空】时无需消耗<span class='hong'>【重生】</span>，你的手牌上限+(X-2)(X为你的<span class='hong'>【重生】</span>数量)；脱离【烈焰形态】时[重置]。",
             tiShenWanOu:"[响应]替身玩偶",
             tiShenWanOu_info:"<span class='tiaoJian'>(任何人对你造成攻击伤害时③，弃1张法术牌[展示])</span>，目标队友摸1张牌[强制]。",
             yongShengYinShiJi:"[被动]永生银时计",
-            yongShengYinShiJi_info:"<span class='tiaoJian'>(当你因承受法术伤害而造成士气下降时)</span>，你+1【重生】",
+            yongShengYinShiJi_info:"<span class='tiaoJian'>(当你因承受法术伤害而造成士气下降时)</span>，你+1<span class='hong'>【重生】</span>",
             tongKuLianJie:"[法术]痛苦链接",
             tongKuLianJie_info:"[水晶]对目标对手和自己各造成1点法术伤害③，然后你弃到3张牌。",
             moNengFanZhuan:"[响应]魔能反转",
             moNengFanZhuan_info:"[水晶]<span class='tiaoJian'>(任何人对你造成法术伤害时③，弃X张法术牌[展示](X>1))</span>，对目标对手造成(X-1)点法术伤害。",
             chongSheng:"重生",
-            chongSheng_info:"<span class='hong'>【</span>重生<span class='hong'>】</span>为苍炎魔女专有指示物，上限为4。",
+            chongSheng_info:"<span class='hong'>【重生】</span>为苍炎魔女专有指示物，上限为4。",
 
             //贤者
             zhiHuiFaDian:"[被动]智慧法典",
@@ -7954,12 +7954,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 
             //吟游诗人
             chenLunXieZouQu:"[响应]沉沦协奏曲[回合限定]",
-            chenLunXieZouQu_info:"<span class='tiaoJian'>(仅【普通形态】下，一回合内我方对至少2名对手造成法术伤害③且结算之后，弃2张同系牌[展示])</span>你+1【灵感】。<span class='tiaoJian'>(若弃牌中有法术牌)</span>对目标对手造成1点法术伤害③。",
+            chenLunXieZouQu_info:"<span class='tiaoJian'>(仅【普通形态】下，一回合内我方对至少2名对手造成法术伤害③且结算之后，弃2张同系牌[展示])</span>你+1<span class='hong'>【灵感】</span>。<span class='tiaoJian'>(若弃牌中有法术牌)</span>对目标对手造成1点法术伤害③。",
             buXieHeXian:"[法术]不谐和弦",
             buXieHeXian_backup:"[法术]不谐和弦",
-            buXieHeXian_info:"<span class='tiaoJian'>(移除X点【灵感】，X>1)(若你处于【永恒囚徒形态】，[重置]脱离【永恒囚徒形态】)</span>你选择以下一项发动：<br>·你和目标角色各摸(X-1)张牌[强制]。<br>·你和目标角色各弃(X-1)张牌。",
+            buXieHeXian_info:"<span class='tiaoJian'>(移除X点</span><span class='hong'>【灵感】</span><span class='tiaoJian'>，X>1)(若你处于【永恒囚徒形态】，[重置]脱离【永恒囚徒形态】)</span>你选择以下一项发动：<br>·你和目标角色各摸(X-1)张牌[强制]。<br>·你和目标角色各弃(X-1)张牌。",
             jinJiShiPian:"[被动]禁忌诗篇",
-            jinJiShiPian_info:"<span class='tiaoJian'>(【激昂狂想曲】或【胜利交响诗】的效果结算完后)</span>根据【灵感】数量：<br>·(【灵感】未达上限)你+1【灵感】，移除【永恒乐章】。<br> ·(【灵感】已达上限)对自己造成3点法术伤害③。<span class='tiaoJian'>(若你处于【普通形态】)</span>[横置]转为【永恒囚徒形态】。",
+            jinJiShiPian_info:"<span class='tiaoJian'>(【激昂狂想曲】或【胜利交响诗】的效果结算完后)</span>根据<span class='hong'>【灵感】</span>数量：<br>·(<span class='hong'>【灵感】</span>未达上限)你+1<span class='hong'>【灵感】</span>，移除【永恒乐章】。<br> ·(<span class='hong'>【灵感】</span>已达上限)对自己造成3点法术伤害③。<span class='tiaoJian'>(若你处于【普通形态】)</span>[横置]转为【永恒囚徒形态】。",
             yongHengYueZhang:"(专)永恒乐章",
             yongHengYueZhang_info:`
             <span class="greentext">[响应]激昂狂想曲</span><br>
@@ -7970,9 +7970,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             yongHengYueZhang_jiAngKuangXiangQu:"[响应]激昂狂想曲",
             yongHengYueZhang_shengLiJiaoXiangShi:"[响应]胜利交响诗",
             xiWangFuGeQu:"[启动]希望赋格曲",
-            xiWangFuGeQu_info:"[水晶]你可以选择摸1张牌，如果【永恒乐章】不在场，则将【永恒乐章】放置于目标队友面前；否则将【永恒乐章】转移给我方另一名目标角色，你弃1张牌，+1[治疗]或+1【灵感】。",
+            xiWangFuGeQu_info:"[水晶]你可以选择摸1张牌，如果【永恒乐章】不在场，则将【永恒乐章】放置于目标队友面前；否则将【永恒乐章】转移给我方另一名目标角色，你弃1张牌，+1[治疗]或+1<span class='hong'>【灵感】</span>。",
             lingGan:"灵感",
-            lingGan_info:"【灵感】为吟游诗人的专有指示物，上限为3。",
+            lingGan_info:"<span class='hong'>【灵感】</span>为吟游诗人的专有指示物，上限为3。",
 
             //勇者
             yongZheZhiXin:"[被动]勇者之心",
@@ -7989,14 +7989,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             nuQi:"怒气",
             zhiXing:"知性",
             yongZheZhiXin_info:"游戏初始时，你+2[水晶]。",
-            nuHou_info:"<span class='tiaoJian'>(主动攻击前发动①，移除1点【怒气】)</span>你可以摸1张牌，本次攻击伤害额外+2；<span class='tiaoJian'>(若未命中②)</span>你+1【知性】。",
+            nuHou_info:"<span class='tiaoJian'>(主动攻击前发动①，移除1点</span><span class='hong'>【怒气】</span><span class='tiaoJian'>)</span>你可以摸1张牌，本次攻击伤害额外+2；<span class='tiaoJian'>(若未命中②)</span>你+1<span class='lan'>【知性】</span>。",
             jinPiLiJin_info:"<span class='tiaoJian'>(发动【禁断之力】后强制触发[强制])</span>[横置]额外+1[攻击行动]；持续到你的下个行动阶段开始，你的手牌上限恒定为4[恒定]。 【精疲力竭】的效果结束时[重置]，并对自己造成3点法术伤害③。",
-            mingJingZhiShui_info:"<span class='tiaoJian'>(主动攻击前发动①，移除4点【知性】)</span>本次攻击对手无法应战。<span class='tiaoJian'>(本次攻击结束时)</span>你+1[水晶]",
-            tiaoXin_info:"<span class='tiaoJian'>(移除1点【怒气】)</span>将【挑衅】放置于目标对手面前，你+1【知性】；该对手在其下个行动阶段必须且只能主动攻击你，否则他跳过该行动阶段，触发后移除此牌。",
-            jinDuanZhiLi_info:"[水晶]<span class='tiaoJian'>(主动攻击命中或未命中后发动②)</span>弃掉你所有手牌[展示]，其中每有1张法术牌，你+1【怒气】；<span class='tiaoJian'>(若未命中②)</span>其中每有1张水系牌，你+1【知性】；<span class='tiaoJian'>(若命中②)</span>其中每有1张火系牌，本次攻击伤害额外+1，并对自己造成等同于火系牌数量的法术伤害③。",
-            siDou_info:"[宝石](每当你承受法术伤害时发动⑥)你+3【怒气】；<span class='tiaoJian'>(若此伤害造成士气实际下降)</span>本次的士气下降值恒定为1[强制]。",
-            nuQi_info:"【怒气】为勇者专有指示物，上限为4。",
-            zhiXing_info:"【知性】为勇者专有指示物，上限为4。",
+            mingJingZhiShui_info:"<span class='tiaoJian'>(主动攻击前发动①，移除4点</span><span class='lan'>【知性】</span><span class='tiaoJian'>)</span>本次攻击对手无法应战。<span class='tiaoJian'>(本次攻击结束时)</span>你+1[水晶]",
+            tiaoXin_info:"<span class='tiaoJian'>(移除1点</span><span class='hong'>【怒气】</span><span class='tiaoJian'>)</span>将【挑衅】放置于目标对手面前，你+1<span class='lan'>【知性】</span>；该对手在其下个行动阶段必须且只能主动攻击你，否则他跳过该行动阶段，触发后移除此牌。",
+            jinDuanZhiLi_info:"[水晶]<span class='tiaoJian'>(主动攻击命中或未命中后发动②)</span>弃掉你所有手牌[展示]，其中每有1张法术牌，你+1<span class='hong'>【怒气】</span>；<span class='tiaoJian'>(若未命中②)</span>其中每有1张水系牌，你+1<span class='lan'>【知性】</span>；<span class='tiaoJian'>(若命中②)</span>其中每有1张火系牌，本次攻击伤害额外+1，并对自己造成等同于火系牌数量的法术伤害③。",
+            siDou_info:"[宝石](每当你承受法术伤害时发动⑥)你+3<span class='hong'>【怒气】</span>；<span class='tiaoJian'>(若此伤害造成士气实际下降)</span>本次的士气下降值恒定为1[强制]。",
+            nuQi_info:"<span class='hong'>【怒气】</span>为勇者专有指示物，上限为4。",
+            zhiXing_info:"<span class='lan'>【知性】</span>为勇者专有指示物，上限为4。",
 
             //格斗家
             nianQiLiChang:"[被动]念气立场",
@@ -8007,12 +8007,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             douShenTianQu:"[启动]斗神天驱",
             douQi:"斗气",
             nianQiLiChang_info:"所有对你造成的伤害每次最高为4点③。",
-            xuLiYiji_info:"<span class='tiaoJian'>(主动攻击前发动①，+1【斗气】)</span>本次攻击伤害额外+1；<span class='tiaoJian'>(若未命中②)</span>对自己造成X点法术伤害③，X为你所拥有的【斗气】数；<span class='tiaoJian'>(若【斗气】已经达到上限)</span>你不能发动【蓄力一击】。",
-            nianDan_info:"<span class='tiaoJian'>([法术行动]结束时发动，+1【斗气】)</span>，对目标对手造成1点法术伤害③，<span class='tiaoJian'>(若发动前对方的[治疗]为0)</span>对自己造成X点法术伤害③，X为你拥有的【斗气】数；<span class='tiaoJian'>(若【斗气】已达到上限)</span>你不能发动【念弹】。",
-            baiShiHuanLongQuan_info:"[持续]<span class='tiaoJian'>(移除3点【斗气】)</span>[横置]你的所有主动攻击伤害额外+2，所有应战攻击伤害额外+1 ；在你接下来的行动阶段，你不能执行[法术行动]和[特殊行动]；你的主动攻击必须以同一名角色为目标，并且不能发动【蓄力一击】；若不如此做，则取消【百式幻龙拳】的效果并[重置]。",
-            qiJueBengJi_info:"<span class='tiaoJian'>(主动攻击前发动①，移除1点【斗气】)</span>本次攻击对方无法应战，然后对自己造成X点法术伤害③，X为你的【斗气】数；不能和【蓄力一击】同时发动。",
+            xuLiYiji_info:"<span class='tiaoJian'>(主动攻击前发动①，+1</span><span class='hong'>【斗气】</span><span class='tiaoJian'>)</span>本次攻击伤害额外+1；<span class='tiaoJian'>(若未命中②)</span>对自己造成X点法术伤害③，X为你所拥有的<span class='hong'>【斗气】</span>数；<span class='tiaoJian'>(若</span><span class='hong'>【斗气】</span><span class='tiaoJian'>已经达到上限)</span>你不能发动【蓄力一击】。",
+            nianDan_info:"<span class='tiaoJian'>([法术行动]结束时发动，+1</span><span class='hong'>【斗气】</span><span class='tiaoJian'>)</span>，对目标对手造成1点法术伤害③，<span class='tiaoJian'>(若发动前对方的[治疗]为0)</span>对自己造成X点法术伤害③，X为你拥有的<span class='hong'>【斗气】</span>数；<span class='tiaoJian'>(若</span><span class='hong'>【斗气】</span><span class='tiaoJian'>已达到上限)</span>你不能发动【念弹】。",
+            baiShiHuanLongQuan_info:"[持续]<span class='tiaoJian'>(移除3点</span><span class='hong'>【斗气】</span><span class='tiaoJian'>)</span>[横置]你的所有主动攻击伤害额外+2，所有应战攻击伤害额外+1 ；在你接下来的行动阶段，你不能执行[法术行动]和[特殊行动]；你的主动攻击必须以同一名角色为目标，并且不能发动【蓄力一击】；若不如此做，则取消【百式幻龙拳】的效果并[重置]。",
+            qiJueBengJi_info:"<span class='tiaoJian'>(主动攻击前发动①，移除1点</span><span class='hong'>【斗气】</span><span class='tiaoJian'>)</span>本次攻击对方无法应战，然后对自己造成X点法术伤害③，X为你的<span class='hong'>【斗气】</span>数；不能和【蓄力一击】同时发动。",
             douShenTianQu_info:"[水晶]你弃到3张牌，+2[治疗]。",
-            douQi_info:"【斗气】为格斗家专有指示物，上限为6",
+            douQi_info:"<span class='hong'>【斗气】</span>为格斗家专有指示物，上限为6",
 
             //圣弓
             tianZhiGong:"[被动]天之弓",
