@@ -224,7 +224,7 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 							return current.side==player.side&&current.countCards('h')+2>=current.getHandcardLimit();
 						});
 						if(num.length>=1){
-							return 3.5;
+							return 3.4;
 						}else{
 							return 3;
 						}
@@ -262,7 +262,7 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 							return current.side!=player.side&&current.countCards('h')+3>=current.getHandcardLimit();
 						});
 						if(num.length>=1){
-							return 4;
+							return 3.4;
 						}else{
 							return 3;
 						}
@@ -273,7 +273,7 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 					},
 					result:{
 						target:function(player,target){
-							return -1;
+							return -target.countCards('h');
 						}
 					},
 				}
