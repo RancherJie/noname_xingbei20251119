@@ -552,6 +552,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         if(get.type(card)=='gongJi'&&target.isHengZhi()){
                             if(_status.event.yingZhan!=true) return false;
                         }
+                    },
+                    aiOrder:function(player,card,num){
+                        if(player.isHengZhi()&&get.type(card)=='gongJi') return num+0.5;
                     }
                 },
                 group:['qianXing_chongZhi','qianXing_xiaoGuo'],
