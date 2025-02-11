@@ -5443,7 +5443,7 @@ export default () => {
 						player.removeMark(zhiShiWu,-num)
 					}
 					'step 2'
-					event.trigger('changeZhiShiWuShu');
+					event.trigger('changeZhiShiWuJieShu');
 					'step 3'
 					event.trigger('changeZhiShiWuHou');
 				},
