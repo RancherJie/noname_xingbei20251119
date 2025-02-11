@@ -16,19 +16,16 @@ export class Is {
 		return get.type(event.card)=='gongJi'&&event.targets_x.length>0	;
 	}
 	yingZhanGongJi(event){
-		if(!get.is.gongJi(event)) return false;
-		if(get.is.xingDong(event)) return false;
-		return true;
+		//if(!get.is.gongJi(event)) return false;
+		//if(get.is.xingDong(event)) return false;
+		//return true;
+		return event.yingZhan==true;
 	}
 	zhuDongGongJi(event){
-		if(!get.is.gongJi(event)) return false;
-		if(!get.is.xingDong(event)) return false;
-		return true;
+		return event.yingZhan!=true;
 	}
 	gongJiXingDong(event){
-		if(!get.is.gongJi(event)) return false;
-		if(!get.is.xingDong(event)) return false;
-		return true;
+		return event.yingZhan!=true;
 	}
 	faShuXingDong(event){
 		if(event.name=='useSkill'){
@@ -48,11 +45,7 @@ export class Is {
 		return !event.faShu;
 	}
 	faShuShangHai(event){
-		if(event.faShu==true){
-			return true;
-		}else{
-			return false;
-		}
+		return event.faShu;
 	}
 
 	/**
