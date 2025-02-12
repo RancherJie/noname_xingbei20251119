@@ -4245,17 +4245,7 @@ export default () => {
 						}
 					}
 					"step 8";
-					var info = get.info(card, false);
-					if (!info.nodelay && event.animate != false) {
-						if (event.delayx !== false) {
-							if (event.waitingForTransition) {
-								_status.waitingForTransition = event.waitingForTransition;
-								game.pause();
-							} else {
-								game.delayx();
-							}
-						}
-					}
+
 					"step 9";
 					var type=get.type(card);
 					if(type=='gongJi' && event.oriTargets.length>0){
@@ -4389,11 +4379,6 @@ export default () => {
 							next.target.addTempClass("target");
 						}
 					}
-					if (!info.nodelay && num > 0) {
-						if (event.targetDelay !== false) {
-							game.delayx(0.5);
-						}
-					}
 					"step 13";
 					if (event.all_excluded) return;
 					if (!get.info(event.card, false).multitarget && num < targets.length - 1 && !event.cancelled) {
@@ -4416,12 +4401,6 @@ export default () => {
 					}
 					"step 15";
 					if (event.all_excluded) return;
-					if (event.effectedCount < event.effectCount) {
-						if (document.getElementsByClassName("thrown").length) {
-							if (event.delayx !== false && get.info(event.card, false).finalDelay !== false) game.delayx();
-						}
-						event.goto(11);
-					}
 					"step 16";
 					var type=get.type(card);
 					if(type=='gongJi' && event.oriTargets.length>0){
