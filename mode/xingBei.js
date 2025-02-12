@@ -4081,6 +4081,7 @@ export default () => {
 						event.canYingZhan=true;
 						event.canShengGuang=true;
 						event.canShengDun=true;
+						event.target=event.oriTargets[0];
 						event.trigger("gongJiQian");
 					}else if(type=='faShu'&&get.is.xingDong(event)){//防止传递魔弹时触发该时机
 						event.trigger("faShuQian");
