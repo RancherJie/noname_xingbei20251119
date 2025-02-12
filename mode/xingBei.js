@@ -4025,8 +4025,6 @@ export default () => {
 					if (!Array.isArray(event.directHit)) event.directHit = [];
 					if (typeof event.customArgs != "object" || typeof event.customArgs.default != "object") event.customArgs = { default: {} };
 					if (typeof event.damageNum != "number") event.damageNum = get.info(card, false).damageNum || 2;
-					if (typeof event.effectCount != "number") event.effectCount = get.info(card, false).effectCount || 1;
-					event.effectedCount = 0;
 					if (event.oncard) {
 						event.oncard(event.card, event.player);
 					}
@@ -4274,7 +4272,6 @@ export default () => {
 					
 					"step 11";
 					if (event.all_excluded) return;
-					event.effectedCount++;
 					event.num = 0;
 					var info = get.info(card, false);
 					if (info.contentBefore) {
@@ -4416,13 +4413,7 @@ export default () => {
 						event.trigger("faShuHou");
 					}
 					"step 18";
-					if (event.postAi) {
-						event.player.logAi(event.targets, event.card);
-					}
-					if (event._result) {
-						event.result = event._result;
-					}
-					//delete player.using;
+
 					if (document.getElementsByClassName("thrown").length) {
 						if (event.delayx !== false && get.info(event.card, false).finalDelay !== false) game.delayx();
 					} else {
