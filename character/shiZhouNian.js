@@ -4722,8 +4722,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     .forResult();
                 },
                 content:function(){
-                    trigger.targets.remove(trigger.target);
-                    trigger.cancel();
+                    trigger.weiMingZhong();
                 },
                 group:'shiShenZhouShu_tiaoJian',
                 subSkill:{
@@ -5458,14 +5457,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.discard(event.cost_data,'chongNengPai').set('showHiddenCards',true);
                     trigger.getParent('phaseUse').moGuanChongJi=false;
                     var bool=game.hasPlayer(function(current){
-                        if(current==trigger.oriTargets[0]) return false;
+                        if(current==trigger.oriTarget) return false;
                         return player.canUse('anMie',current);
                     });
                     if(bool){
                         player.chooseTarget(true,function(card,player,target){
                             if(target==_status.event.trigger_target) return false;
                             return player.canUse('anMie',target);
-                        }).set('trigger_target',trigger.oriTargets[0]);
+                        }).set('trigger_target',trigger.oriTarget);
                     }else event.finish();
                     'step 1'
                     if(result.targets){

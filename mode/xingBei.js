@@ -2706,12 +2706,12 @@ export default () => {
                 lastDo:true,
                 filter:function(event,player){
                     if(event.canShengDun==false) return false;
-					return player.hasExpansions('_shengDun')&&event.targets.includes(player);
+					return player.hasExpansions('_shengDun');
                 },
                 content:function(){
 					'step 0'
                     player.loseToDiscardpile(player.getExpansions('_shengDun'));
-                    trigger.targets.remove(player);
+                    trigger.weiMingZhong();
 					'step 1'
                     if(get.type(trigger.card)=='gongJi'){
 						event.source=trigger.player;
@@ -2720,7 +2720,6 @@ export default () => {
 						event.customArgs=trigger.customArgs;
                         event.trigger('gongJiWeiMingZhong');
                     }else if(trigger.card.name=='moDan') game.resetMoDan();
-                    //trigger.cancel();
                 }
             },
             _yingZhan:{
@@ -2766,7 +2765,7 @@ export default () => {
 					next.set('canShengGuang',trigger.canShengGuang);
 					'step 1'
                     if(result.bool){
-                        trigger.targets.remove(player);
+                        trigger.weiMingZhong();
                     }
                 },
 				ai:{
@@ -2846,7 +2845,7 @@ export default () => {
 
 					"step 1"
 					if(result.bool){
-                        trigger.targets.remove(player);
+                        trigger.weiMingZhong();
 						game.resetMoDan();
 					}else{
 						game.moDan--;
@@ -4021,15 +4020,12 @@ export default () => {
 							card
 						);
 					event.id = get.id();
-					if (!Array.isArray(event.excluded)) event.excluded = [];
-					if (!Array.isArray(event.directHit)) event.directHit = [];
-					if (typeof event.customArgs != "object" || typeof event.customArgs.default != "object") event.customArgs = { default: {} };
+					if (typeof event.customArgs != "object") event.customArgs = { };
 					if (typeof event.damageNum != "number") event.damageNum = get.info(card, false).damageNum || 2;
 					if (event.oncard) {
 						event.oncard(event.card, event.player);
 					}
 					
-
 					player.actionHistory[player.actionHistory.length - 1].useCard.push(event);
 					game.getGlobalHistory().useCard.push(event);
 					if (event.addCount !== false) {
@@ -4071,33 +4067,30 @@ export default () => {
 						}
 					}
 
-					//记录原始目标，用于后面判断
-					event.oriTargets = targets.slice(0);
-					"step 1";
+					if(event.targets.length>0){
+						event.target=event.targets[0];
+						event.oriTargets=event.target;
+					}
 					var type=get.type(card);
-					if(type=='gongJi' && event.oriTargets.length>0){
+					if(type=='gongJi' && event.targets.length>0){
+						event.type='gongJi';
 						event.canYingZhan=true;
 						event.canShengGuang=true;
 						event.canShengDun=true;
-						event.target=event.oriTargets[0];
-						event.trigger("gongJiQian");
 					}else if(type=='faShu'&&get.is.xingDong(event)){//防止传递魔弹时触发该时机
-						event.trigger("faShuQian");
+						event.type='faShu';
 					}else if(card.name=='shengGuang'){
+						event.type='shengGuang';
+					}
+					"step 1";
+					if(event.type=='gongJi' || event.type=='faShu'){
+						event.trigger(event.type+"Qian");
+					}else if(event.type=='shengGuang'){
 						event.trigger("shengGuang");
 					}
 					'step 2';
 					if (event.animate != false && event.line != false && !event.hideTargets) {
-						var config = {};
-						var nature = get.duYouList(card)[0];
-						if (nature || (card.classList && card.classList.contains(nature))) config.color = nature;
-						if (event.addedTarget) {
-							player.line2(targets.concat(event.addedTargets), config);
-						} else if (get.info(card, false).multitarget && targets.length > 1 && !get.info(card, false).multiline) {
-							player.line2(targets, config);
-						} else {
-							player.line(targets, config);
-						}
+						player.line(targets);
 					}
 					if (targets.length && !event.hideTargets) {
 						//xingbei
@@ -4120,304 +4113,81 @@ export default () => {
 
 						var str=targets;
 						if (cards.length && !card.isCard) {
-							if (event.addedTarget) {
-								game.log(player, "对", str, "使用了", card, "（", cards, "，指向", event.addedTargets, "）");
-							} else {
-								game.log(player, "对", str, "使用了", card, "（", cards, "）");
-							}
+							game.log(player, "对", str, "使用了", card, "（", cards, "）");
 						} else {
-							if (event.addedTarget) {
-								game.log(player, "对", str, "使用了", card, "（指向", event.addedTargets, "）");
-							} else {
-								game.log(player, "对", str, "使用了", card,yingZhan_str);
-							}
+							game.log(player, "对", str, "使用了", card,yingZhan_str);
 						}
 					} else {
 						if (cards.length && !card.isCard) {
-							if (event.addedTarget) {
-								game.log(player, "使用了", card, "（", cards, "，指向", event.addedTargets, "）");
-							} else {
-								game.log(player, "使用了", card, "（", cards, "）");
-							}
+							game.log(player, "使用了", card, "（", cards, "）");
 						} else {
-							if (event.addedTarget) {
-								game.log(player, "使用了", card, "（指向", event.addedTargets, "）");
-							} else {
-								game.log(player, "使用了", card);
-							}
+							game.log(player, "使用了", card);
 						}
 					}
 
 					game.logv(player, [card, cards], targets);
 					"step 3";
+					game.delayx();
 					event.trigger("daChuPai");
 					"step 4";
-					event.sortTarget = function (animate, sort) {
-						var info = get.info(card, false);
-						if (num == 0 && targets.length > 1) {
-							if (!info.multitarget) {
-								if (!event.fixedSeat && !sort) {
-									targets.sortBySeat(_status.currentPhase || player);
-								}
-								if (animate)
-									for (var i = 0; i < targets.length; i++) {
-										targets[i].addTempClass("target");
-									}
-							} else if (animate) {
-								for (var i = 0; i < targets.length; i++) {
-									targets[i].addTempClass("target");
-								}
-							}
-						}
-					};
-					event.sortTarget();
-					event.getTriggerTarget = function (list1, list2) {
-						var listx = list1.slice(0).sortBySeat(_status.currentPhase || player);
-						for (var i = 0; i < listx.length; i++) {
-							if (get.numOf(list2, listx[i]) < get.numOf(listx, listx[i])) return listx[i];
-						}
-						return null;
-					};
+
+
 					"step 5";
-					var type=get.type(card);
-					if(type=='gongJi' && event.oriTargets.length>0){
-						if(!event.gongJiShiTargets) event.gongJiShiTargets=[];
-						var target=event.getTriggerTarget(targets,event.gongJiShiTargets);
-						if(target){
-							event.gongJiShiTargets.push(target);
-							var next=game.createEvent('gongJiShi',false);
-							next.setContent('emptyEvent');
-							next.targets=targets;
-							next.target=target;
-							next.card=card;
-							next.cards=cards;
-							next.player=player;
-							next.skill=event.skill;
-							next.excluded=event.excluded;
-							next.directHit=event.directHit;
-							next.customArgs=event.customArgs;
-							if(event.forceDie) next.forceDie=true;
-							//xingBie
-							next.yingZhan=event.yingZhan;
-							event.redo();
-						}
+					if(event.type=='gongJi'){
+						event.trigger("gongJiShi");
 					}
 					"step 6";
-					var type=get.type(card);
-					if(type=='gongJi' && event.oriTargets.length>0){
+					if(event.type=='gongJi'){
 						if(get.xiBie(card)=='an') event.canYingZhan=false;//暗灭无法应战
 						event.trigger("gongJiSheZhi");
 					}
 					"step 7";
-					var type=get.type(card);
 					var name=get.name(card);
-					if((type=='gongJi' || name=='moDan') && event.oriTargets.length>0){
-						if(!event.shouDaoGongJiTargets) event.shouDaoGongJiTargets=[];
-						var target=event.getTriggerTarget(targets,event.shouDaoGongJiTargets);
-						if(target){
-							event.shouDaoGongJiTargets.push(target);
-							if(type=='gongJi'){
-								var next=game.createEvent('shouDaoGongJi',false);
-							}else if(name=='moDan'){
-								var next=game.createEvent('shouDaoMoDan',false);
-							}
-							next.setContent('emptyEvent');
-							next.targets=targets;
-							next.target=target;
-							next.card=card;
-							next.cards=cards;
-							next.player=player;
-							next.skill=event.skill;
-							next.excluded=event.excluded;
-							next.directHit=event.directHit;
-							next.customArgs=event.customArgs;
-							if(event.forceDie) next.forceDie=true;
-							//xingBie
-							if(type=='gongJi'){
-								next.yingZhan=event.yingZhan;
-								next.canYingZhan=event.canYingZhan;
-								next.canShengGuang=event.canShengGuang;
-								next.canShengDun=event.canShengDun;
-							}
-							event.redo();
-						}
+					if((event.type=='gongJi' || name=='moDan')){
+						if(event.type=='gongJi') event.trigger("shouDaoGongJi");
+						else if(name=='moDan') event.trigger("shouDaoMoDan");
 					}
 					"step 8";
 
 					"step 9";
-					var type=get.type(card);
-					if(type=='gongJi' && event.oriTargets.length>0){
-						if(!event.gongJiMingZhongTargets) event.gongJiMingZhongTargets=[];
-						var target=event.getTriggerTarget(targets,event.gongJiMingZhongTargets);
-						if(target){
-							event.gongJiMingZhongTargets.push(target);
-							var next=game.createEvent('gongJiMingZhong',false);
-							next.setContent('emptyEvent');
-							next.targets=targets;
-							next.target=target;
-							next.card=card;
-							next.cards=cards;
-							next.player=player;
-							next.skill=event.skill;
-							next.excluded=event.excluded;
-							next.directHit=event.directHit;
-							next.customArgs=event.customArgs;
-							if(event.forceDie) next.forceDie=true;
-							//xingBie
-							next.yingZhan=event.yingZhan;
-							event.redo();
-						}
+					if(event.type=='gongJi' && event.target){
+						event.trigger("gongJiMingZhong");
 					}
 					"step 10";
 					
 					"step 11";
-					if (event.all_excluded) return;
-					event.num = 0;
-					var info = get.info(card, false);
-					if (info.contentBefore) {
-						var next = game.createEvent(card.name + "ContentBefore");
-						next.setContent(info.contentBefore);
-						next.targets = targets;
-						next.card = card;
-						next.cards = cards;
-						next.player = player;
-						next.skill = event.skill;
-						next.type = "precard";
-						if (event.forceDie) next.forceDie = true;
-					} else if (info.reverseOrder && get.is.versus() && targets.length > 1) {
-						var next = game.createEvent(card.name + "ContentBefore");
-						next.setContent("reverseOrder");
-						next.targets = targets;
-						next.card = card;
-						next.cards = cards;
-						next.player = player;
-						next.skill = event.skill;
-						next.type = "precard";
-						if (event.forceDie) next.forceDie = true;
-					} else if (info.singleCard && info.filterAddedTarget && event.addedTargets && event.addedTargets.length < targets.length) {
-						var next = game.createEvent(card.name + "ContentBefore");
-						next.setContent("addExtraTarget");
-						next.target = target;
-						next.targets = targets;
-						next.card = card;
-						next.cards = cards;
-						next.player = player;
-						next.skill = event.skill;
-						next.type = "precard";
-						next.addedTarget = event.addedTarget;
-						next.addedTargets = event.addedTargets;
-						if (event.forceDie) next.forceDie = true;
-					}
+
 					"step 12";
-					if (event.all_excluded) return;
 					var info = get.info(card, false);
-					if (num == 0 && targets.length > 1) {
-						event.sortTarget(true, true);
-					}
-					if (targets[num] && targets[num].isDead()) return;
-					if (targets[num] && targets[num].isOut()) return;
-					if (targets[num] && targets[num].removed) return;
-					if (targets[num] && info.ignoreTarget && info.ignoreTarget(card, player, targets[num])) {
-						var next = game.createEvent("useCardToIgnored", false);
-						next.setContent("emptyEvent");
-						next.targets = targets;
-						next.target = targets[num];
-						next.num = num;
+					if(event.target || info.notarget){
+						var next = game.createEvent(card.name);
+						next.setContent(info.content);
 						next.card = card;
 						next.cards = cards;
 						next.player = player;
-						return;
-					}
-					if (targets.length == 0 && !info.notarget) return;
-					if (targets[num] && event.excluded.includes(targets[num])) {
-						var next = game.createEvent("useCardToExcluded", false);
-						next.setContent("emptyEvent");
-						next.targets = targets;
-						next.target = targets[num];
 						next.num = num;
-						next.card = card;
-						next.cards = cards;
-						next.player = player;
-						return;
-					}
-					var next = game.createEvent(card.name);
-					next.setContent(info.content);
-					next.targets = targets;
-					next.card = card;
-					next.cards = cards;
-					next.player = player;
-					next.num = num;
-					next.type = "card";
-					next.skill = event.skill;
-					next.multitarget = info.multitarget;
-					next.preResult = event.preResult;
-					next.damageNum = event.damageNum;
-					if (event.forceDie) next.forceDie = true;
-					if (event.addedTargets) {
-						next.addedTargets = event.addedTargets;
-						next.addedTarget = event.addedTargets[num];
-						next._targets = event._targets;
-					}
-					if (info.targetDelay === false) {
-						event.targetDelay = false;
-					}
-					next.target = targets[num];
-					for (var i in event.customArgs.default) next[i] = event.customArgs.default[i];
-					if (next.target && event.customArgs[next.target.playerid]) {
-						var customArgs = event.customArgs[next.target.playerid];
-						for (var i in customArgs) next[i] = customArgs[i];
-					}
-					if (next.target && event.directHit.includes(next.target)) next.directHit = true;
-					if (next.target && !info.multitarget) {
-						if (num == 0 && targets.length > 1) {
-							// var ttt=next.target;
-							// setTimeout(function(){ttt.addTempClass('target');},0.5*lib.config.duration);
-						} else {
-							next.target.addTempClass("target");
+						next.type = "card";
+						next.skill = event.skill;
+						next.damageNum = event.damageNum;
+						next.customArgs = event.customArgs;
+						next.target = event.target;
+						if (next.target) {
+								next.target.addTempClass("target");
 						}
 					}
 					"step 13";
-					if (event.all_excluded) return;
-					if (!get.info(event.card, false).multitarget && num < targets.length - 1 && !event.cancelled) {
-						event.num++;
-						event.goto(12);
-					}
+
 					"step 14";
-					if (event.all_excluded) return;
-					if (get.info(card, false).contentAfter) {
-						var next = game.createEvent(card.name + "ContentAfter");
-						next.setContent(get.info(card, false).contentAfter);
-						next.targets = targets;
-						next.card = card;
-						next.cards = cards;
-						next.player = player;
-						next.skill = event.skill;
-						next.preResult = event.preResult;
-						next.type = "postcard";
-						if (event.forceDie) next.forceDie = true;
-					}
+
 					"step 15";
-					if (event.all_excluded) return;
+
 					"step 16";
-					var type=get.type(card);
-					if(type=='gongJi' && event.oriTargets.length>0){
-						event.trigger("gongJiJieShu");
-					}else if(type=='faShu' && get.is.xingDong(event)){
-						event.trigger("faShuJieShu");
+					if(event.type=='gongJi' || event.type=='faShu'){
+						event.trigger(event.type+"JieShu");
 					}
 					"step 17";
-					var type=get.type(card);
-					if(type=='gongJi' && event.oriTargets.length>0){
-						event.trigger("gongJiHou");
-					}else if(type=='faShu' && get.is.xingDong(event)){
-						event.trigger("faShuHou");
-					}
-					"step 18";
-
-					if (document.getElementsByClassName("thrown").length) {
-						if (event.delayx !== false && get.info(event.card, false).finalDelay !== false) game.delayx();
-					} else {
-						event.finish();
+					if(event.type=='gongJi' || event.type=='faShu'){
+						event.trigger(event.type+"Hou");
 					}
 				},
 				useSkill:function(){
@@ -6848,6 +6618,9 @@ export default () => {
 					return null;
 				},
 
+				weiMingZhong(){
+					this.target=undefined;
+				},
 				/**
 				 * @param {num} num 伤害改变量 
 				 */
