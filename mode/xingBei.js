@@ -4148,7 +4148,11 @@ export default () => {
 					if(event.type=='gongJi' && event.target){
 						event.trigger("gongJiMingZhong");
 					}
-					"step 8";
+					'step 8';
+					if(event.type=='gongJi' && event.target){
+						event.trigger("gongJiMingZhongHou");
+					}
+					"step 9";
 					var info = get.info(card, false);
 					if(event.target || info.notarget){
 						var next = game.createEvent(card.name);
@@ -4166,11 +4170,11 @@ export default () => {
 							next.target.addTempClass("target");
 						}
 					}
-					"step 9";
+					"step 10";
 					if(event.type=='gongJi' || event.type=='faShu'){
 						event.trigger(event.type+"JieShu");
 					}
-					"step 10";
+					"step 11";
 					if(event.type=='gongJi' || event.type=='faShu'){
 						event.trigger(event.type+"Hou");
 					}
