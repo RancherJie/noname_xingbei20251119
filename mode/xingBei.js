@@ -1,3 +1,4 @@
+import { after, before } from "node:test";
 import { lib, game, ui, get, ai, _status } from "../noname.js";
 export const type = "mode";
 /**
@@ -2630,7 +2631,7 @@ export default () => {
 
             _xuRuo:{
                 priority:1,//优先级大的先执行
-                trigger:{player:'xingDongQian'},
+                trigger:{player:'xingDongBefore'},
                 forced:true,
                 //marktext:"虚",
                 markimage:'image/card/xuRuo.png',
@@ -2661,7 +2662,7 @@ export default () => {
 						direct:true,
 						priority:-1,
 						lastDo:true,
-						trigger:{player:'xingDongQian'},
+						trigger:{player:'xingDongBefore'},
 						filter:function(event,player){
 							return event.xuRuo==true;
 						},
@@ -2680,7 +2681,7 @@ export default () => {
 					content:'expansion',
 					markcount:'expansion',
 				},
-                trigger:{player:'xingDongQian'},
+                trigger:{player:'xingDongBefore'},
                 forced:true,
                 filter:function(event,player){
                     return player.hasExpansions('_zhongDu');
@@ -2773,7 +2774,7 @@ export default () => {
 				}
             },
             _yingZhan_weiMingZhong:{
-                trigger:{player:'gongJiQian'},
+                trigger:{player:'gongJiBefore'},
                 direct:true,
 				firstDo:true,
                 filter:function(event,player){
@@ -2854,7 +2855,7 @@ export default () => {
                     player.storage.moDan=false;
 				},
 				subSkill:{
-					qian:{//第一个使用魔弹的角色增加魔弹标记
+					before:{//第一个使用魔弹的角色增加魔弹标记
 						trigger:{player:'useCardBefore'},
 						direct:true,
 						lastDo:true,
@@ -2869,7 +2870,7 @@ export default () => {
 							player.storage.moDan=true;
 						}
 					},
-					hou:{//第一个使用魔弹的角色删除魔弹标记
+					after:{//第一个使用魔弹的角色删除魔弹标记
 						trigger:{player:'useCardAfter'},
 						direct:true,
 						lastDo:true,
@@ -3389,10 +3390,6 @@ export default () => {
 					"step 1";
 					game.broadcast("closeDialog", event.dialogid);
 					event.dialog.close();
-					'step 2'
-					if(event.name=='showCards') event.trigger('showCardsJieShu');
-					'step 3'
-					if(event.name=='showCards') event.trigger('showCardsHou');
 				},
 
 				link: function () {
@@ -3654,9 +3651,11 @@ export default () => {
 						player.getStat().isMe = true;
 					}
 					'step 2';
-					event.trigger("huiHeQian");
+					event.trigger("phaseBefore");
+					'step 3';
+					//回合开始后
 					event.trigger("phaseBeforeStart");//addTempSkill删除技能默认时机
-					"step 3";
+					"step 4";
 					//规则集中的“回合开始后⑥”，更新“当前回合角色”
 					while (ui.dialogs.length) {
 						ui.dialogs[0].close();
@@ -3694,15 +3693,16 @@ export default () => {
 						ui.land.destroy();
 					}
 					"step 4";
-					event.trigger("huiHeKaiShi");
+					event.trigger("phaseBegin");
 					"step 5";
 					player.phaseUse();
 					"step 6";
-					event.trigger("huiHeJieShuQian");
+					//回合结束前
+					event.trigger("phaseEndBefore");
 					'step 7';
-					event.trigger("huiHeJieShu");
+					event.trigger("phaseEnd");
 					"step 8";
-					event.trigger("huiHeHou");
+					//回合结束后
 					event.trigger("phaseAfter");//addTempSkill删除技能默认时机
 					"step 9";
 					//删除当前回合角色 此时处于“不属于任何角色的回合”的阶段
@@ -3750,10 +3750,10 @@ export default () => {
 					}
 					"step 1";
 					//event.trigger("phaseUseBefore");
-					event.trigger("xingDongQian");
+					event.trigger("xingDongBefore");
 					"step 2";
 					//event.trigger("phaseUseBegin");
-					event.trigger("xingDongKaiShi");
+					event.trigger("xingDongBegin");
 					'step 3';
 					event.trigger("qiDong");
 					"step 4";
@@ -3799,10 +3799,10 @@ export default () => {
 					}
 					"step 6";
 					//event.trigger("phaseUseEnd");
-					event.trigger("xingDongJieShu");
+					event.trigger("xingDongEnd");
 					"step 7";
 					//event.trigger("phaseUseAfter");
-					event.trigger("xingDongHou");
+					event.trigger("xingDongAfter");
 				},
 				chooseToDiscard:function(){
 					"step 0"
@@ -4084,7 +4084,7 @@ export default () => {
 					}
 					"step 1";
 					if(event.type=='gongJi' || event.type=='faShu'){
-						event.trigger(event.type+"Qian");
+						event.trigger(event.type+"Before");
 					}else if(event.type=='shengGuang'){
 						event.trigger("shengGuang");
 					}
@@ -4150,7 +4150,7 @@ export default () => {
 					}
 					'step 8';
 					if(event.type=='gongJi' && event.target){
-						event.trigger("gongJiMingZhongHou");
+						event.trigger("gongJiMingZhongAfter");
 					}
 					"step 9";
 					var info = get.info(card, false);
@@ -4172,20 +4172,18 @@ export default () => {
 					}
 					"step 10";
 					if(event.type=='gongJi' || event.type=='faShu'){
-						event.trigger(event.type+"JieShu");
+						event.trigger(event.type+"End");
 					}
 					"step 11";
 					if(event.type=='gongJi' || event.type=='faShu'){
-						event.trigger(event.type+"Hou");
+						event.trigger(event.type+"After");
 					}
 				},
 				useSkill:function(){
 					'step 0'
 					var info=get.info(event.skill);
-					if(info.type=='faShu'){
-						event.trigger("faShuQian");
-					}else if(info.type=='teShu'){
-						event.trigger("teShuQian");
+					if(info.type=='faShu' || info.type=='teShu'){
+						event.trigger(info.type+"Before");
 					}
 					"step 1"
 					var info=get.info(event.skill);
@@ -4471,23 +4469,17 @@ export default () => {
 					ui.clear();
 					'step 7'
 					var info=get.info(event.skill);
-					if(info.type=='faShu'){
-						event.trigger("faShuJieShu");
-					}else if(info.type=='teShu'){
-						event.trigger("teShuJieShu");
+					if(info.type=='faShu' || info.type=='teShu'){
+						event.trigger(info.type+"End");
 					}
 					'step 8'
 					var info=get.info(event.skill);
-					if(info.type=='faShu'){
-						event.trigger("faShuHou");
-					}else if(info.type=='teShu'){
-						event.trigger("teShuHou");
+					if(info.type=='faShu' || info.type=='teShu'){
+						event.trigger(info.type+"After");
 					}
 				},
 				draw:function(){
 					'step 0'
-					event.trigger('moPaiQian');
-					'step 1'
 					if(typeof event.minnum=='number'&&num<event.minnum){
 						num=event.minnum;
 					}
@@ -4558,10 +4550,6 @@ export default () => {
 					}
 					if(event.gaintag) next.gaintag.addArray(event.gaintag);
 					event.result=cards;
-					'step 2'
-					event.trigger('moPaiJiShu');
-					'step 3'
-					event.trigger('moPaiHou');
 				},
 				discard:function(){
 					"step 0"
@@ -4733,11 +4721,9 @@ export default () => {
 						}
 					}
 					"step 7"
-					event.trigger('chengShouShangHaiHou');
+					event.trigger('chengShouShangHaiAftrer');
 					'step 8'
-					event.trigger('shouDaoShangHaiHou');
-					'step 9'
-					event.trigger('shangHaiJieSuanHou');
+					event.trigger('shouDaoShangHaiAfter');
 				},
 				gain:function(){
 					"step 0"
@@ -4966,8 +4952,6 @@ export default () => {
 				//xingbei
 				changeXingBei:function(){
 					'step 0'
-					event.trigger('changeXingBeiQian');
-					'step 1'
 					num=event.num;
 					side=event.side;
 					var numx=num;
@@ -5004,16 +4988,12 @@ export default () => {
 					game.addVideo('changeXingBei',null,[numx,side]);
 					'step 2'
 					game.checkResult();
-					'step 3'
-					event.trigger('changeXingBeiJieShu');
-					'step 4'
-					event.trigger('changeXingBeiHou');
 				},
 				changeShiQi:function(){
 					'step 0'
-					event.trigger('changeShiQiPanDuan');
+					event.trigger('changeShiQiJudge');
 					'step 1'
-					event.trigger('changeShiQiQian');
+					event.trigger('changeShiQiBefore');
 					'step 2'
 					num=event.num;
 					side=event.side;
@@ -5062,14 +5042,12 @@ export default () => {
 					'step 3'
 					game.checkResult();
 					'step 4'
-					event.trigger('changeShiQiJieShu');
+					event.trigger('changeShiQiEnd');
 					'step 5'
-					event.trigger('changeShiQiHou');
+					event.trigger('changeShiQiAfter');
 				},
 				changeZhanJi:function(){
 					'step 0'
-					event.trigger('changeZhanJiQian');
-					'step 1'
 					num=event.num;
 					xingShi=event.xingShi;
 					side=event.side;
@@ -5124,10 +5102,6 @@ export default () => {
 				
 					game.addVideo('changeZhanJi',null,[numx,xingShi,side]);
 					//game.checkResult();
-					'step 2'
-					event.trigger('changeZhanJiJieShu');
-					'step 3'
-					event.trigger('changeZhanJiHou');
 				},
 
 				removeBiShaShuiJing:function(){
@@ -5146,8 +5120,6 @@ export default () => {
 				
 				changeNengLiang:function(){
 					'step 0'
-					event.trigger('changeNengLiangQian');
-					'step 1'
 					var num=event.num;
 					var xingShi=event.xingShi;
 					if(num>0){
@@ -5155,16 +5127,10 @@ export default () => {
 					}else if(num<0){
 						player.removeMark('_tiLian_'+xingShi,-num)
 					}
-					'step 2'
-					event.trigger('changeNengLiangJieShu');
-					'step 3'
-					event.trigger('changeNengLiangHou');
 				},
 
 				changeZhiShiWu:function(){
 					'step 0'
-					event.trigger('changeZhiShiWuQian');
-					'step 1'
 					var num=event.num;
 					var zhiShiWu=event.zhiShiWu;
 					if(num>0){
@@ -5172,16 +5138,10 @@ export default () => {
 					}else if(num<0){
 						player.removeMark(zhiShiWu,-num)
 					}
-					'step 2'
-					event.trigger('changeZhiShiWuJieShu');
-					'step 3'
-					event.trigger('changeZhiShiWuHou');
 				},
 
 				changeZhiLiao:function(){
 					'step 0'
-					event.trigger('changeZhiLiaoQian');
-					'step 1'
 					player.zhiLiao+=num;
 
 					if(num>=0){
@@ -5205,10 +5165,6 @@ export default () => {
 						event.trigger('zhiLiaoYiChu');
 					}
 					player.update();
-					'step 3'
-					event.trigger('changeZhiLiaoJieShu');
-					'step 4'
-					event.trigger('changeZhiLiaoHou');
 				},
 
 				chooseDraw:function(){
@@ -5897,7 +5853,7 @@ export default () => {
 				},
 
 				changeShiQi:function(num,side){//xingbei
-					var next=game.createEvent('changeShiQi');
+					var next=game.createEvent('changeShiQi',false);
 					next.player=this;
 					if(side==undefined){
 						next.side=this.side;
