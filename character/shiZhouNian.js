@@ -1296,7 +1296,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 }
             },
             shenZhiBiHu:{
-                trigger:{global:'changeShiQiAfter'},
+                trigger:{global:'changeShiQiBefore'},
                 filter:function(event,player){
                     if(event.side!=player.side) return false;
                     return player.canBiShaShuiJing()&&event.num<0&&event.yuanYin=='damage'&&event.faShu==true;
@@ -2078,7 +2078,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             //月之女神
             xinYueBiHu:{
-                trigger:{global:'changeShiQiAfter'},
+                trigger:{global:'changeShiQiBefore'},
                 filter:function(event,player){
                     if(player.isHengZhi()) return false;
                     if(event.side!=player.side) return false;
@@ -3877,7 +3877,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 subSkill:{
                     xiaoGuo:{
                         forced:true,
-                        trigger:{player:'gongJiAfter'},
+                        trigger:{player:'gongJiBefore'},
                         filter:function(event,player){
                             if(!player.isHengZhi()) return false;
                             return event.yingZhan!=true;
@@ -4613,29 +4613,29 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     order:5,
                 },
                 subSkill:{
-                   xiaoGuo:{
-                    trigger:{player:'gongJiAfter'},
-                    firstDo:true,
-                    direct:true,
-                    priority:1,
-                    filter:function(event,player){
-                        return event.skill=='yinYangZhanHuan';
-                    },
-                    content:function(){
-                        'step 0'
-                        player.addZhiShiWu('guiHuo');
-                        game.setXiBie(trigger.card,get.xiBie(trigger.cards[0]));
-                        'step 1'
-                        event.trigger('yinYangZhanHuan');
-                        'step 2'
-                        if(player.isHengZhi()){
-                            player.chongZhi();
-                        }else{
-                            event.finish();
+                    xiaoGuo:{
+                        trigger:{player:'gongJiBefore'},
+                        firstDo:true,
+                        direct:true,
+                        priority:1,
+                        filter:function(event,player){
+                            return event.skill=='yinYangZhanHuan';
+                        },
+                        content:function(){
+                            'step 0'
+                            player.addZhiShiWu('guiHuo');
+                            game.setXiBie(trigger.card,get.xiBie(trigger.cards[0]));
+                            'step 1'
+                            event.trigger('yinYangZhanHuan');
+                            'step 2'
+                            if(player.isHengZhi()){
+                                player.chongZhi();
+                            }else{
+                                event.finish();
+                            }
+                            'step 3'
+                            trigger.damageNum=player.countZhiShiWu('guiHuo');
                         }
-                        'step 3'
-                        trigger.damageNum=player.countZhiShiWu('guiHuo');
-                    }
                    } 
                 }
             },
@@ -5798,7 +5798,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 subSkill:{
                     shangHai:{
-                        trigger:{player:"gongJiAfter"},
+                        trigger:{player:"gongJiBefore"},
                         direct:true,
                         filter:function(event,player){
                             if(player.storage.chongYing_use) return false;
@@ -6068,7 +6068,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 group:['chenLunXieZouQu_chongZhi','chenLunXieZouQu_jiShu'],
                 subSkill:{
                     chongZhi:{
-                        trigger:{global:'phaseAfter'},
+                        trigger:{global:'phaseBefore'},
                         direct:true,
                         firstDo:true,
                         content:function(){
@@ -6835,7 +6835,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 group:['baiShiHuanLongQuan_zhuDong','baiShiHuanLongQuan_yingZhan','baiShiHuanLongQuan_faShuAndTeShu','baiShiHuanLongQuan_gongJi','baiShiHuanLongQuan_xuLiYiji'],
                 subSkill:{
                     zhuDong:{
-                        trigger:{player:'gongJiAfter'},
+                        trigger:{player:'gongJiBefore'},
                         filter:function(event,player){
                             if(!player.isHengZhi()) return false;
                             return event.yingZhan!=true;
@@ -6847,7 +6847,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         }
                     },
                     yingZhan:{
-                        trigger:{player:'gongJiAfter'},
+                        trigger:{player:'gongJiBefore'},
                         filter:function(event,player){
                             if(!player.isHengZhi()) return false;
                             return event.yingZhan==true;
@@ -6859,7 +6859,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         }
                     },
                     faShuAndTeShu:{
-                        trigger:{player:['faShuAfter','teShuAfter']},
+                        trigger:{player:['faShuBefore','teShuBefore']},
                         filter:function(event,player){
                             if(!player.isHengZhi()) return false;
                             return true;
@@ -6871,7 +6871,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         }
                     },
                     gongJi:{
-                        trigger:{player:'gongJiAfter'},
+                        trigger:{player:'gongJiBefore'},
                         direct:true,
                         priority:1,
                         filter:function(event,player){
@@ -7114,7 +7114,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 group:"shengHuangJiangLin_chongZhi",
                 subSkill:{
                     chongZhi:{
-                        trigger:{player:'teShuAfter'},
+                        trigger:{player:'teShuBefore'},
                         direct:true,
                         filter:function(event,player){
                             if(!player.isHengZhi()) return false;
