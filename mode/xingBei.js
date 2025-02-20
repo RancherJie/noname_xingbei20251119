@@ -2727,7 +2727,7 @@ export default () => {
                 direct:true,
                 filter:function(event,player){
                     if(event.canYingZhan==false&&event.canShengGuang==false) return false;
-					return event.targets.includes(player);
+					return true;
                 },
                 content:function(){
 					'step 0'
