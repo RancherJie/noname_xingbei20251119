@@ -6089,7 +6089,24 @@ export default () => {
 				 * @param {*} forced 是否强制
 				 * @returns 
 				*/
-				changeZhiShiWu: function (zhiShiWu,num,max,forced) {
+				changeZhiShiWu: function () {
+					var num_flag=0;
+					for(var i=0;i<arguments.length;i++){
+						if(typeof arguments[i]=='number'){
+							if(num_flag==0){
+								var num=arguments[i];
+								var num_flag=1;
+							}else if(num_flag==1){
+								var max=arguments[i];
+							}
+						}
+						else if(typeof arguments[i]=='string'){
+							var zhiShiWu=arguments[i];
+						}
+						else if(typeof arguments[i]=='boolean'){
+							var forced=arguments[i];
+						}
+					}
 					if(!this.hasSkill(zhiShiWu)&&!forced) return;
 					if(typeof num!='number'||!num) num=1;
 					var info=get.info(zhiShiWu);
@@ -6120,19 +6137,23 @@ export default () => {
 						return next;
 					}
 				},
-				addZhiShiWu:function(zhiShiWu,num,max,forced){//添加指示物
-					if(!this.hasSkill(zhiShiWu)&&!forced) return;
-					if(typeof num!='number'||!num) num=1;
-					this.changeZhiShiWu(zhiShiWu,num,max,forced);
+				addZhiShiWu:function(...args){//添加指示物
+					this.changeZhiShiWu(...args);
 				},
 				countZhiShiWu:function(zhiShiWu){//统计指示物
 					return this.countMark(zhiShiWu);
 				},
-				removeZhiShiWu:function(zhiShiWu,num){//移除指示物
-					if(!this.hasSkill(zhiShiWu)&&!forced) return;
-					if(typeof num!='number'||!num) num=1;
+				removeZhiShiWu:function(){//移除指示物
+					for(var i=0;i<arguments.length;i++){
+						if(typeof arguments[i]=='number'){
+							var num=arguments[i];
+						}else if(typeof arguments[i]=='string'){
+							var zhiShiWu=arguments[i];
+						}
+					}
+					if(!num) num=-1;
 					if(num>0) num=-num;
-					this.changeZhiShiWu(zhiShiWu,num,Infinity,true);
+					this.changeZhiShiWu(zhiShiWu,num,true);
 				},
 				//指示物是否到达上限
 				isZhiShiWuMax:function(zhiShiWu){
