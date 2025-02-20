@@ -4702,7 +4702,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 						if(get.type(card)=='gongJi'){
 							if(_status.event.canYingZhan==false) return false;//不能应战设置
 							if(get.name(card)!='anMie'&&get.xiBie(card)!=get.xiBie(_status.event.sourceCard)) return false;
-						}
+						}else if(get.type(card)=='faShu'){
+                            return false;
+                        }
 						return lib.filter.cardEnabled(card,player,'forceEnable');
 					})
 					.set('filterTarget',function(card,player,target){
