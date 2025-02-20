@@ -5794,19 +5794,17 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 contentAfter:function(){
                     player.addTempSkill('chongYing_shangHai');
                     player.addGongJi();
-                    player.storage.chongYing_use=false;
                 },
                 subSkill:{
                     shangHai:{
                         trigger:{player:"gongJiBefore"},
                         direct:true,
                         filter:function(event,player){
-                            if(player.storage.chongYing_use) return false;
                             return event.yingZhan!=true;
                         },
                         content:function(){
                             trigger.changeDamageNum(player.storage.chongYing);
-                            player.storage.chongYing_use=true;
+                            player.removeSkill('chongYing_shangHai');
                         }   
                     }
                 },
