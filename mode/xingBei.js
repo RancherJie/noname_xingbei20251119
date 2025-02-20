@@ -1,4 +1,3 @@
-import { after, before } from "node:test";
 import { lib, game, ui, get, ai, _status } from "../noname.js";
 export const type = "mode";
 /**
