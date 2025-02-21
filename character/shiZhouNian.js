@@ -3718,7 +3718,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 type:'faShu',
                 enable:'faShu',
                 filter:function(event,player){
-                    if(!player.isLinked()) return false;
+                    if(!player.isHengZhi()) return false;
                     if(!player.countZhiShiWu('qiDaoFuWen')>0) return false;
                     return true;
                 },
@@ -4566,7 +4566,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 type:'faShu',
                 enable:['chooseToUse','faShu'],
                 filter:function(event,player){
-                    if(player.isLinked()) return false;
+                    if(player.isHengZhi()) return false;
                     return player.countTongMingPai()>=2;
                 },
                 discard:true,
@@ -4961,7 +4961,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 type:'qiDong',
                 trigger:{player:'qiDong'},
                 filter:function(event,player){
-                    if(player.isLinked()) return false;
+                    if(player.isHengZhi()) return false;
                     return player.countCards('h')<4;
                 },
                 content:function(){
@@ -7732,7 +7732,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 trigger:{global:'hengZhiAfter'},
                 filter:function(event,player){
                     if(player.storage.shouHunJingJie_insert==true) return false;
-                    return event.player!=player&&player.countZhiShiWu('shouHun')>0&&(!player.isLinked());
+                    return event.player!=player&&player.countZhiShiWu('shouHun')>0&&(!player.isHengZhi());
                 },
                 content:function(){
                     'step 0'
