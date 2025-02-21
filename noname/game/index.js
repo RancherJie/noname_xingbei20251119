@@ -7806,7 +7806,7 @@ export class Game extends GameCompatible {
 			["r", "fire"],
 			["y", "yellow"],
 			["g", "green"],
-			["b", "blue"],
+			["b", "lightblue"],
 		]);
 		Array.from(arguments).forEach(value => {
 			const itemtype = get.itemtype(value);
@@ -7828,7 +7828,7 @@ export class Game extends GameCompatible {
 						if(value[i].side==true){
 							var c='red';
 						}else{
-							var c='blue'
+							var c='lightblue'
 						}
 						str+=`<span style="color:${c};">${get.translation(value[i])}</span>`;
 						str2+=get.translation(value[i]);
