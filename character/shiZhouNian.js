@@ -7474,6 +7474,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             yangGong:{
                 trigger:{source:'gongJiWeiMingZhong'},
                 forced:true,
+                priority:-1,
                 filter:function(event,player){
                     return !event.yingZhan;
                 },
