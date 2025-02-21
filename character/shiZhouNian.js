@@ -569,7 +569,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         }
                     },
                     xiaoGuo:{
-                        forced:true,
+                        direct:true,
                         trigger:{player:"gongJiSheZhi"},
                         filter:function(event,player){
                             return event.yingZhan!=true&&player.isHengZhi();
@@ -8893,7 +8893,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shuiYing_info:"<span class='tiaoJian'>(除【特殊行动】外，当你摸牌前发动)</span>弃X张水系牌[展示]；<span class='tiaoJian'>(若你处于【潜行】效果下)</span>你可额外弃1张法术牌[展示]。",
             qianXing:"[启动]潜行",
             qianXing_info:"[宝石]你可选择摸1张牌，[横置]持续到你的下个行动阶段开始，你的手牌上限-1；你不能成为主动攻击的目标；你的主动攻击对手无法应战且伤害额外+X，X为你剩余的【能量】数。【潜行】的效果结束时[重置]。",
-            qianXing_xiaoGuo:'潜行',
 
             //封印师
             faShuJiDang:"[响应]法术激荡",
