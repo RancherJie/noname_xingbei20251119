@@ -7034,6 +7034,17 @@ export default () => {
 					return true;
 				}
 			},
+			colorName:function(player){
+				if(player.side==true){
+					var c='red';
+				}else{
+					var c='lightblue'
+				}
+				var name=player.name;
+				var str=`<span style="color:${c};">${get.translation(name)}</span>`;
+				return str;
+			}
+
 		},
 		help:{
 			
