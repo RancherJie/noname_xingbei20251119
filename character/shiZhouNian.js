@@ -7256,7 +7256,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 ai:{
                     order:function(item,player){
-                        return 10-player.countCards('h');
+                        return 8-player.countCards('h');
                     },
                     result:{
                         player:1,
