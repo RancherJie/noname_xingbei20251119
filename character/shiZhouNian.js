@@ -341,7 +341,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 1'
 					if(result.bool){
 						var target=result.targets[0];
-						player.line(target,'blue');
 						target.changeZhiLiao(1,player);
 					}
                 }
