@@ -6624,7 +6624,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             return get.info('_wuFaXingDong').group.includes(event.skill);
                         },
                         content:function(){
-                            trigger.cancelled==true;
+                            trigger.cancelled=true;
                         }
                     }
                 }, 
