@@ -3,6 +3,8 @@ window.noname_package = {
 		shiZhouNian:"十周年",
 		yiDuanYeHuo:"异端业火",
 		shenZiChuangLin:"神子创临",
+		sanBan:'三版',
+		siBan:'四版',
 	},
 	card: {
 		xingBei:'星杯传说',
