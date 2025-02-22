@@ -6320,49 +6320,43 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         filter:function(event,player){
                             return player.hasZhiShiWu('yongHengYueZhang');
                         },
-                        content:function(){
-                            'step 0'
-                            var choiceList=['将我方【战绩区】的1个星石提炼成为你的能量','为我方【战绩区】+1[宝石]，你+1[治疗]'];
-                            var list=['选项二'];
+                        content:async function(event,trigger,player){
                             var zhanJi=get.zhanJi(player.side);
-                            if(player.countNengLiangAll()<player.getNengLiangLimit()&&zhanJi.length>0){
-                                list.unshift('选项一');
-                            }
-                            var next=player.chooseControl(list).set('choiceList',choiceList).set("ai",function(){
-                                var num=Math.random();
-                                if(num<0.5) return '选项一';
-                                return '选项二';
-                            });
-                            'step 1'
-                            if(result.control=='选项一'){
-                                event.goto(2);
-                            }else{
-                                event.goto(4);
-                            }
-                            'step 2'
-                            var list=get.zhanJi(player.side);
-                            var listx=[];
-                            for(var i=0;i<list.length;i++){
-                                listx.push([list[i],get.translation(list[i])]);
-                            }
-                            var next=player.chooseButton(['将我方【战绩区】的1个星石提炼成为你的能量',[listx,'tdnodes']],true);
-                            next.set('forced',true);
-                            'step 3'
-                            for(var i=0;i<result.links.length;i++){
-                                if(result.links[i]=='baoShi'){
-                                    player.changeZhanJi('baoShi',-1);
-                                    player.addNengLiang('baoShi');
-                                }else if(result.links[i]=='shuiJing'){
-                                    player.changeZhanJi('shuiJing',-1);
-                                    player.addNengLiang('shuiJing');
+                            if(zhanJi.length>0&&player.countEmptyNengLiang()>0){
+                                var list=[];
+                                for(var i=0;i<zhanJi.length;i++){
+                                    list.push([zhanJi[i],get.translation(zhanJi[i])]);
                                 }
+                                var result=await player.chooseButton([
+                                    '提炼我方【战绩区】的1个星石或者为我方【战绩区】+1[宝石]、你+1[治疗]',
+                                    [list,'tdnodes'],
+                                ]).set('selectButton',[1,1]).set('ai',function(button){
+                                    var player=_status.event.player;
+                                    var zhanJi=get.zhanJi(player.side);
+                                    if(zhanJi.length>3){
+                                        if(player.hasSkillTag('baoShi')&&!player.hasSkillTag('shuiJing')){
+                                            if(button.link=='baoShi') return 5;
+                                            else return -1;
+                                        }else if(player.hasSkillTag('shuiJing')&&!player.hasSkillTag('baoShi')){
+                                            if(button.link=='shuiJing') return 5;
+                                            else return 2;
+                                        }else if(player.hasSkillTag('shuiJing')&&player.hasSkillTag('baoShi')){
+                                            return 2;
+                                        }
+                                    }else{
+                                        return -1;
+                                    }
+                                }).forResult();
+                            }else var result={bool:false};
+
+                            if(result.bool){
+                                await player.changeZhanJi(result.links,-1);
+                                await player.addNengLiang(result.links,1);
+                            }else{
+                                await player.addZhanJi('baoShi');
+                                await player.changeZhiLiao(1);
                             }
-                            event.goto(5);
-                            'step 4'
-                            player.addZhanJi('baoShi',1);
-                            player.changeZhiLiao(1);
-                            'step 5'
-                            event.trigger('yongHengYueZhang');
+                            await event.trigger('yongHengYueZhang');
                         }
                     }
                 }
