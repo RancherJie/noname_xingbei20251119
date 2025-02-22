@@ -6183,7 +6183,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         if(action=='摸'){
                             return `你和目标角色各摸${num}张牌[强制]`
                         }else{
-                            return `你和目标角色各弃${num}张牌`
+                            return `你和目标角色各弃${num}张牌[强制]`
                         }
                     }
                 },
