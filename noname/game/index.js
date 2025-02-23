@@ -5551,41 +5551,37 @@ export class Game extends GameCompatible {
 	}
 	/**
 	 * @param { Card | VCard | object | string } name
-	 * @param { string } [suit]
-	 * @param { number | string } [number]
-	 * @param { string } [nature]
+	 * @param { string } [xiBie]
+	 * @param { number | string } [mingGe]
+	 * @param { string } [duYou]
 	 * @returns { Card }
 	 */
-	createCard(name, suit, number, nature) {
+	createCard(name, xiBie, mingGe, duYou) {
 		if (typeof name == "object") {
-			nature = name.nature;
-			number = name.number;
-			suit = name.suit;
+			duYou = name.duYou;
+			mingGe = name.mingGe;
+			xiBie = name.xiBie;
 			name = name.name;
 		}
 		if (typeof name != "string") {
-			name = "sha";
+			name = "shengGuang";
 		}
 		let noclick = false;
-		if (suit == "noclick") {
+		if (xiBie == "noclick") {
 			noclick = true;
-			suit = null;
+			xiBie = null;
 		}
-		if (!suit && lib.card[name].cardcolor) {
-			suit = lib.card[name].cardcolor;
+		if (!xiBie && lib.card[name].cardXiBie) {
+			xiBie = lib.card[name].cardXiBie;
 		}
-		if (!nature && lib.card[name].cardnature) {
-			nature = lib.card[name].cardnature;
+		if (!duYou && lib.card[name].cardDuYou) {
+			duYou = lib.card[name].cardDuYou;
 		}
-		if (typeof suit != "string") {
-			suit = "none";
-		} else if (suit == "black") {
-			suit = Math.random() < 0.5 ? "club" : "spade";
-		} else if (suit == "red") {
-			suit = Math.random() < 0.5 ? "diamond" : "heart";
+		if (typeof xiBie != "string") {
+			xiBie = "none";
 		}
-		if (typeof number != "number" && typeof number != "string") {
-			number = 0;
+		if (typeof number != "string") {
+			number = 'none';
 		}
 		let card;
 		if (noclick) {
