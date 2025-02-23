@@ -6757,7 +6757,7 @@ export default () => {
 					} else {
 						str2 = get.translation(str.name);
 					}
-					if (get.itemtype(str) == "card" || str.isCard) {
+					if (get.itemtype(str) == "card" || str.isCard || str.mingGe || str.xiBie) {
 						if (_status.cardtag && str.cardid) {
 							var tagstr = "";
 							for (var i in _status.cardtag) {
@@ -6776,17 +6776,8 @@ export default () => {
 						} else {
 							str2 += "【" + xiBie + mingGe + "】";
 						}
-						/*
-						if ((str.suit && str.number) || str.isCard) {
-							var mingGe = get.translation(get.mingGe(str, false)) || "";
-							var xiBie = get.translation(get.xiBie(str, false)) || "";
-							if (arg == "viewAs" && str.viewAs != str.name && str.viewAs) {
-								str2 += "（" + get.translation(str)+ xiBie + mingGe + "）";
-							} else {
-								str2 += "【" + xiBie + mingGe + "】";
-							}
-						}*/
 					}
+
 					return str2;
 				}
 				if (Array.isArray(str)) {
