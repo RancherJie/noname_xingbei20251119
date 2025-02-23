@@ -5520,7 +5520,9 @@ export default () => {
 							next.notBySelf=true;
 						}
 						else if(typeof arguments[i]=='string'){
-							next.gaiPai=arguments[i];
+							if(arguments[i]=='showCards') next.showCards=true;
+							else if(arguments[i]=='showHiddenCards') next.showHiddenCards=true;
+							else next.gaiPai=arguments[i];
 						}
 					}
 					if(next.cards==undefined) _status.event.next.remove(next);
