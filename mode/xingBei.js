@@ -6051,6 +6051,7 @@ export default () => {
 							next._triggered = null;
 							next.notrigger = true;
 						} else if (argument == "unreal") next.unreal = true;
+						else if (argument == "noZhiLiao") next.canZhiLiao = true;
 					}
 					if (!next.card && !noCard) next.card = event.card;
 					if (!next.cards && !noCard) next.cards = event.cards;
