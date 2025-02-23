@@ -1667,8 +1667,8 @@ export class Create {
 			// @ts-ignore
 			const buttons = dialog.content.querySelector(".buttons");
 			const array = dialog.buttons.filter(item => !item.classList.contains("nodisplay") && item.style.display !== 'none');
-			// 传入初始配置
-			const p = new Pagination({
+			// 传入初始配置 + 渲染元素
+			dialog.addPagination({
 				// 数据
 				data: array,
 				// 总页数(向上取整)
@@ -1693,9 +1693,6 @@ export class Create {
 				// 触发什么事件来更改当前页数，默认为click
 				changePageEvent: "click",
 			});
-			dialog.paginationMap.set(buttons, p);
-			// 渲染元素
-			p.renderPageDOM();
 		}
 
 		return dialog;

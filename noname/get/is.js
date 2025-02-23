@@ -1,4 +1,4 @@
-import { userAgent } from "../util/index.js";
+import { userAgentLowerCase } from "../util/index.js";
 import { game } from "../game/index.js";
 import { lib } from "../library/index.js";
 import { _status } from "../status/index.js";
@@ -334,7 +334,7 @@ export class Is {
 		return !(event.card && event.card.isCard);
 	}
 	safari() {
-		return userAgent.indexOf("safari") != -1 && userAgent.indexOf("chrome") == -1;
+		return userAgentLowerCase.indexOf("safari") != -1 && userAgentLowerCase.indexOf("chrome") == -1;
 	}
 	/**
 	 * @param { (Card | VCard)[]} cards
@@ -518,7 +518,7 @@ export class Is {
 	 * @returns
 	 */
 	zhuanhuanji(skill, player) {
-		const info = lib.skill[skill],
+		const info = get.info(skill),
 			{ zhuanhuanji } = info;
 		if ("zhuanhuanji2" in info) {
 			const { zhuanhuanji2 } = info;
