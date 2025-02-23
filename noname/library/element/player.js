@@ -2110,18 +2110,18 @@ export class Player extends HTMLDivElement {
 	/**
 	 * @param { Card } card
 	 * @param { string } name
-	 * @param { string } [nature]
+	 * @param { string } [duYou]
 	 * @param { string } [popname]
 	 */
-	tryCardAnimate(card, name, nature, popname) {
+	tryCardAnimate(card, name, duYou, popname) {
 		game.broadcast(
-			function (player, card, name, nature, popname) {
-				player.tryCardAnimate(card, name, nature, popname);
+			function (player, card, name, duYou, popname) {
+				player.tryCardAnimate(card, name, duYou, popname);
 			},
 			this,
 			card,
 			name,
-			nature,
+			duYou,
 			popname
 		);
 		if (lib.animate.card[card.name]) lib.animate.card[card.name].apply(this, arguments);
@@ -2129,8 +2129,8 @@ export class Player extends HTMLDivElement {
 			if (!lib.config.show_card_prompt) return;
 			if (get.type(card) == "equip" && lib.config.hide_card_prompt_equip) return;
 			if (get.type(card) == "basic" && lib.config.hide_card_prompt_basic) return;
-			if (popname) this.popup({ name: card.name, nature: card.nature }, nature, false);
-			else this.popup(name, nature, false);
+			if (popname) this.popup({ name: card.name, duYou: card.duYou }, duYou, false);
+			else this.popup(name, duYou, false);
 		}
 	}
 	/**

@@ -136,8 +136,8 @@ export class Card extends HTMLDivElement {
 		}
 		return destroyed;
 	}
-	hasDuYou(nature, player) {
-		return game.hasDuYou(this, nature, player);
+	hasDuYou(duYou, player) {
+		return game.hasDuYou(this, duYou, player);
 	}
 	//只针对【杀】起效果
 	addNature(nature) {
@@ -521,13 +521,13 @@ export class Card extends HTMLDivElement {
 			natures.forEach(n => {
 				if (n) this.classList.add(n);
 			});
-			this.nature = natures
-				.filter(n => lib.nature.has(n))
+			this.duYou = natures
+				//.filter(n => lib.nature.has(n)) //筛选出游戏内存在的属性
 				.sort(lib.sort.nature)
 				.join(lib.natureSeparator);
-		} else if (this.nature) {
-			this.classList.remove(this.nature);
-			delete this.nature;
+		} else if (this.duYou) {
+			this.classList.remove(this.duYou);
+			delete this.duYou;
 		}
 		if (info.subtype) this.classList.add(info.subtype);
 		this.node.range.innerHTML = "";
@@ -606,7 +606,7 @@ export class Card extends HTMLDivElement {
 					_status.cardtag[tag] = [];
 				}
 				_status.cardtag[tag].add(card.cardid);
-				card.$init([card.suit, card.number, card.name, card.nature]);
+				card.$init([card.suit, card.number, card.name, card.duYou]);
 			},
 			card,
 			tag
@@ -627,7 +627,7 @@ export class Card extends HTMLDivElement {
 					_status.cardtag[tag] = [];
 				}
 				_status.cardtag[tag].remove(card.cardid);
-				card.$init([card.suit, card.number, card.name, card.nature]);
+				card.$init([card.suit, card.number, card.name, card.duYou]);
 			},
 			card,
 			tag
@@ -761,9 +761,9 @@ export class Card extends HTMLDivElement {
 		var node = this.cloneNode(true);
 		node.style.transform = "";
 		node.name = this.name;
-		node.suit = this.suit;
-		node.number = this.number;
-		node.nature = this.nature;
+		node.xiBie = this.xiBie;
+		node.mingGe = this.mingGe;
+		node.duYou = this.duYou;
 		node._cardid = this.cardid;
 		node.classList.remove("hidden");
 		node.classList.remove("start");

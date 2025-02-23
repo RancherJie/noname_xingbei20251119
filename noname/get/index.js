@@ -101,14 +101,14 @@ export class Get extends GetCompatible {
 			}
 		} else if ((name1 && info[name1]) || (evt1.skill && info[evt1.skill])) {
 			if (name1 && info[name1]) {
-				if (lib.card[name1] && evt1.card && evt1.card.nature && info[evt1.card.nature]) eventInfo += info[evt1.card.nature];
+				if (lib.card[name1] && evt1.card && evt1.card.duYou && info[evt1.card.duYou]) eventInfo += info[evt1.card.duYou];
 				eventInfo += info[name1];
 			} else eventInfo += info[evt1.skill];
 			th_skill = true;
 			if (sourceEvent) return evt1;
 		} else if ((name2 && info[name2]) || (evt2.skill && info[evt2.skill])) {
 			if (name2 && info[name2]) {
-				if (lib.card[name2] && evt2.card && evt2.card.nature && info[evt2.card.nature]) eventInfo += info[evt2.card.nature];
+				if (lib.card[name2] && evt2.card && evt2.card.duYou && info[evt2.card.duYou]) eventInfo += info[evt2.card.duYou];
 				eventInfo += info[name2];
 			} else eventInfo += info[evt2.skill];
 			th_skill = true;
@@ -743,9 +743,9 @@ export class Get extends GetCompatible {
 			} else {
 				return {
 					name: info.autoViewAs,
-					suit: card.suit,
-					number: card.number,
-					nature: card.nature,
+					xiBie: card.xiBie,
+					mingGe: card.mingGe,
+					duYou: card.duYou,
 				};
 			}
 		} else {
@@ -1711,7 +1711,7 @@ export class Get extends GetCompatible {
 		return Array.from(infos || []).map(get.infoVCard);
 	}
 	cardInfoOL(card) {
-		return "_noname_card:" + JSON.stringify([card.cardid, card.suit, card.number, card.name, card.nature]);
+		return "_noname_card:" + JSON.stringify([card.cardid, card.suit, card.number, card.name, card.duYou]);
 	}
 	infoCardOL(info) {
 		if (!lib.cardOL) return info;

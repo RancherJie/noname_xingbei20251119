@@ -302,7 +302,7 @@ export class Game extends GameCompatible {
 		var duYous = get.duYouList(item, player);
 		if (!duYou) return duYous.length > 0;
 		if (duYou == "linked") return duYous.some(n => lib.linked.includes(n));
-		return get.is.sameDuYou(duYous, duYou);
+		return get.is.sameNature(duYous, duYou);
 	}
 	/**
 	 * 设置卡牌信息/事件的属性
@@ -5580,8 +5580,8 @@ export class Game extends GameCompatible {
 		if (typeof xiBie != "string") {
 			xiBie = "none";
 		}
-		if (typeof number != "string") {
-			number = 'none';
+		if (typeof mingGe != "string") {
+			mingGe = 'none';
 		}
 		let card;
 		if (noclick) {
@@ -5590,7 +5590,7 @@ export class Game extends GameCompatible {
 			card = ui.create.card(ui.special);
 		}
 		card.storage.vanish = true;
-		return card.init([suit, number, name, nature]);
+		return card.init([suit, mingGe, name, nature]);
 	}
 	/**
 	 * @overload
@@ -7977,7 +7977,7 @@ export class Game extends GameCompatible {
 		} else if (Array.isArray(card)) {
 			node.cards = card[1].slice(0);
 			card = card[0];
-			const info = [card.suit || "", card.number || "", card.name || "", card.nature || ""];
+			const info = [card.suit || "", card.number || "", card.name || "", card.duYou || ""];
 			if (!Array.isArray(node.cards) || !node.cards.length) node.cards = [ui.create.card(node, "noclick", true).init(info)];
 			if (card.name == "wuxie") {
 				if (ui.historybar.firstChild && ui.historybar.firstChild.type == "wuxie") {

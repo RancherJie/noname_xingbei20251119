@@ -5,72 +5,72 @@ import { ai } from "../../ai/index.js";
 
 export class VCard {
 	/**
-	 * @param { any } [suitOrCard]
-	 * @param { number | Card[] } [numberOrCards]
+	 * @param { any } [xiBieOrCard]
+	 * @param { number | Card[] } [mingGeOrCards]
 	 * @param { string } [name]
-	 * @param { string } [nature]
+	 * @param { string } [duYou]
 	 * @param { Player | false } [owner]
 	 */
-	constructor(suitOrCard, numberOrCards, name, nature, owner) {
-		if (Array.isArray(suitOrCard)) {
+	constructor(xiBieOrCard, mingGeOrCards, name, duYou, owner) {
+		if (Array.isArray(xiBieOrCard)) {
 			/**
 			 * @type {string}
 			 */
-			this.suit = suitOrCard[0];
+			this.xiBie = xiBieOrCard[0];
 			/**
 			 * @type {number}
 			 */
-			this.number = suitOrCard[1];
+			this.mingGe = xiBieOrCard[1];
 			/**
 			 * @type {string}
 			 */
-			this.name = suitOrCard[2];
+			this.name = xiBieOrCard[2];
 			/**
 			 * @type {string}
 			 */
-			this.nature = suitOrCard[3];
+			this.duYou = xiBieOrCard[3];
 		}
 		// @ts-ignore
-		else if (get.itemtype(suitOrCard) == "card") {
-			this.name = get.name(suitOrCard, owner);
-			this.xiBie = get.xiBie(suitOrCard, owner);
-			//this.color = get.color(suitOrCard, owner);
-			this.mingGe = get.mingGe(suitOrCard, owner);
-			this.duYou = get.duYou(suitOrCard, owner);
+		else if (get.itemtype(xiBieOrCard) == "card") {
+			this.name = get.name(xiBieOrCard, owner);
+			this.xiBie = get.xiBie(xiBieOrCard, owner);
+			//this.color = get.color(xiBieOrCard, owner);
+			this.mingGe = get.mingGe(xiBieOrCard, owner);
+			this.duYou = get.duYou(xiBieOrCard, owner);
 			/**
 			 * @type { boolean }
 			 */
 			this.isCard = true;
-			this.cardid = suitOrCard.cardid;
-			this.wunature = suitOrCard.wunature;
+			this.cardid = xiBieOrCard.cardid;
+			this.wunature = xiBieOrCard.wunature;
 			/**
 			 * @type {Record<string, any>}
 			 */
-			this.storage = get.copy(suitOrCard.storage);
-			if (Array.isArray(numberOrCards)) this.cards = numberOrCards.slice();
-			else this.cards = [suitOrCard];
+			this.storage = get.copy(xiBieOrCard.storage);
+			if (Array.isArray(mingGeOrCards)) this.cards = mingGeOrCards.slice();
+			else this.cards = [xiBieOrCard];
 			const info = get.info(this, false);
 			if (info) {
 				const autoViewAs = info.autoViewAs;
 				if (typeof autoViewAs == "string") this.name = autoViewAs;
 			}
-		} else if (suitOrCard && typeof suitOrCard != "string") {
-			Object.keys(suitOrCard).forEach((key) => {
+		} else if (xiBieOrCard && typeof xiBieOrCard != "string") {
+			Object.keys(xiBieOrCard).forEach((key) => {
 				/**
 				 * @type { PropertyDescriptor }
 				 */
 				// @ts-ignore
-				const propertyDescriptor = Object.getOwnPropertyDescriptor(suitOrCard, key),
+				const propertyDescriptor = Object.getOwnPropertyDescriptor(xiBieOrCard, key),
 					value = propertyDescriptor.value;
 				if (Array.isArray(value)) this[key] = value.slice();
 				else Object.defineProperty(this, key, propertyDescriptor);
 			});
-			if (Array.isArray(numberOrCards)) {
+			if (Array.isArray(mingGeOrCards)) {
 				const noCards = !this.cards;
 				/**
 				 * @type { Card[] }
 				 */
-				this.cards = numberOrCards.slice();
+				this.cards = mingGeOrCards.slice();
 				if (noCards) {
 					if (!lib.xiBies.includes(this.xiBie)) this.xiBie = get.xiBie(this, owner);
 					//if (!Object.keys(lib.color).includes(this.color)) this.color = get.color(this, owner);
@@ -78,10 +78,10 @@ export class VCard {
 					if (! this.mingGe) this.mingGe = get.mingGe(this, owner);
 					if (!this.duYou) this.duYou = get.duYou(this, owner);
 				}
-			} else if (numberOrCards === "unsure" && !this.isCard) {
-				if (!this.xiBie) this.xiBie = "unsure";
+			} else if (mingGeOrCards === "none" && !this.isCard) {
+				if (!this.xiBie) this.xiBie = "none";
 				//if (!this.color) this.color = "unsure";
-				if (!this.mingGe) this.mingGe = "unsure";
+				if (!this.mingGe) this.mingGe = "none";
 			}
 			const info = get.info(this, false);
 			if (info) {
@@ -89,10 +89,10 @@ export class VCard {
 				if (typeof autoViewAs == "string") this.name = autoViewAs;
 			}
 		}
-		if (typeof suitOrCard == "string") this.suit = suitOrCard;
-		if (typeof numberOrCards == "number") this.number = numberOrCards;
+		if (typeof xiBieOrCard == "string") this.xiBie = xiBieOrCard;
+		if (typeof mingGeOrCards == "string") this.number = mingGeOrCards;
 		if (typeof name == "string") this.name = name;
-		if (typeof nature == "string") this.nature = nature;
+		if (typeof duYou == "string") this.duYou = duYou;
 		if (!this.storage) this.storage = {};
 		if (!this.cards) this.cards = [];
 	}
@@ -138,7 +138,7 @@ export class VCard {
 		}+${
 			this.number === undefined ? "none" : this.number
 		}${
-			this.nature ? "+" + this.nature : ""
+			this.duYou ? "+" + this.duYou : ""
 		}]`;
 		if (similar !== undefined && this.cards.length === 1) return ai.getCacheKey(this.cards[0], similar);
 		return prefix + "[array:[" + this.cards.map(i => {

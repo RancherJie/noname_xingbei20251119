@@ -7343,8 +7343,8 @@ export const Content = {
 					virtualCard._destroy = true;
 					virtualCard.expired = true;
 					const info = lib.card[card.name],
-						number = card.number;
-					virtualCard.init([get.suit(card), typeof number == "number" ? number : "虚拟", card.name, card.nature]);
+						mingGe = card.mingGe;
+					virtualCard.init([get.xiBie(card), typeof mingGe == "string" ? mingGe : "虚拟", card.name, card.duYou]);
 					virtualCard_str = virtualCard.querySelector(".info").innerHTML;
 					throw_cards = [virtualCard];
 				}
@@ -7360,7 +7360,7 @@ export const Content = {
 								}
 								if (!node) continue;
 								if (str) node.querySelector(".info").innerHTML = str;
-								if (cards.length > 1 || !card.isCard || card.name != node.name || card.nature != node.nature || !card.cards.length) {
+								if (cards.length > 1 || !card.isCard || card.name != node.name || card.duYou != node.duYou || !card.cards.length) {
 									ui.create.cardTempName(card, node);
 									if (node._tempName && card_cards?.length <= 0) {
 										node._tempName.innerHTML = node._tempName.innerHTML.slice(0, node._tempName.innerHTML.indexOf("<span", -1));
@@ -8185,8 +8185,8 @@ export const Content = {
 				virtualCard._destroy = true;
 				virtualCard.expired = true;
 				const info = lib.card[card.name],
-					number = card.number;
-				virtualCard.init([get.suit(card), typeof number == "number" ? number : "虚拟", card.name, card.nature]);
+					mingGe = card.mingGe;
+				virtualCard.init([get.xiBie(card), typeof mingGe == "string" ? mingGe : "虚拟", card.name, card.duYou]);
 				virtualCard_str = virtualCard.querySelector(".info").innerHTML;
 				throw_cards = [virtualCard];
 			}
@@ -8202,7 +8202,7 @@ export const Content = {
 							}
 							if (!node) continue;
 							if (str) node.querySelector(".info").innerHTML = str;
-							if ((cards.length > 1 || !card.isCard || card.name != node.name || card.nature != node.nature || !card.cards.length) && !judgeing) {
+							if ((cards.length > 1 || !card.isCard || card.name != node.name || card.duYou != node.duYou || !card.cards.length) && !judgeing) {
 								ui.create.cardTempName(card, node);
 								if (node._tempName && card_cards?.length <= 0) {
 									node._tempName.innerHTML = node._tempName.innerHTML.slice(0, node._tempName.innerHTML.indexOf("<span", -1));
