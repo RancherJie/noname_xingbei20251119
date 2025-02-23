@@ -4052,11 +4052,49 @@ export default () => {
 
 					if (event.animate != false) {
 						if (event.throw !== false) {
-							player.$throw(cards);
-							if (lib.config.sync_speed && cards[0] && cards[0].clone) {
+							let throw_cards = cards;
+							let virtualCard_str = false;
+							if (!throw_cards.length && lib.config.card_animation_info) {
+								const virtualCard = ui.create.card();
+								virtualCard._destroy = true;
+								virtualCard.expired = true;
+								const info = lib.card[card.name],
+									mingGe = card.mingGe;
+								virtualCard.init([get.xiBie(card), typeof mingGe == "string" ? mingGe : "虚拟", card.name, card.duYou]);
+								virtualCard_str = virtualCard.querySelector(".info").innerHTML;
+								throw_cards = [virtualCard];
+							}
+							player.$throw(throw_cards);
+							if (lib.config.card_animation_info) {
+								game.broadcastAll(
+									function (cards, card, card_cards, str) {
+										for (let nodex of cards) {
+											let node = nodex.clone;
+											if (nodex._tempName) {
+												nodex._tempName.delete();
+												delete nodex._tempName;
+											}
+											if (!node) continue;
+											if (str) node.querySelector(".info").innerHTML = str;
+											if (cards.length > 1 || !card.isCard || card.name != node.name || card.duYou != node.duYou || !card.cards.length) {
+												ui.create.cardTempName(card, node);
+												if (node._tempName && card_cards?.length <= 0) {
+													node._tempName.innerHTML = node._tempName.innerHTML.slice(0, node._tempName.innerHTML.indexOf("<span", -1));
+													node._tempName.innerHTML += "<span style='color:black'>虚拟</span></span>";
+												}
+											}
+										}
+									},
+									throw_cards,
+									event.card,
+									event.cards,
+									virtualCard_str
+								);
+							}
+							if (lib.config.sync_speed && throw_cards[0] && throw_cards[0].clone) {
 								var waitingForTransition = get.time();
 								event.waitingForTransition = waitingForTransition;
-								cards[0].clone.listenTransition(function () {
+								throw_cards[0].clone.listenTransition(function () {
 									if (_status.waitingForTransition == waitingForTransition && _status.paused) {
 										game.resume();
 									}
