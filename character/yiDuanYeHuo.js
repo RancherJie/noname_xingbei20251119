@@ -16,7 +16,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             xingZhuiNvWu:['xingZhuiNvWu_name','yongGroup','4/5',[],],
             shengTingJianChaShi:['shengTingJianChaShi_name','shengGroup',4,[],],
             lieWuRen:['lieWuRen_name','jiGroup','3/4',[],],
-            shengDianQiShi:['shengDianQiShi_name','shengGroup',4,[],],
+            shengDianQiShi:['shengDianQiShi_name','shengGroup',4,['shenXuanZhe','shenWei','shengCai','shengYu','shenZhiZi','shenLinShengQi','shengYanQiFu','shengYin'],],
 		},
         characterIntro:{
             zhanDouFaShi:`路尔莉嘉不擅长高深莫测的魔法，归因于她对战斗的直觉和创造性。但你如果因此小看她，则她会用符文法术的小把戏让你吃尽苦头`,
@@ -26,7 +26,286 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shengDianQiShi:`作为神之子，斯卡雷特有着能够凭借虔诚将承受的伤痛尽数无视的特殊能力。她可以精准的讨伐对手，亦可以稳定的对对手造成伤害。然而不知道是由于教廷的过度保护还是她自身的原因，她显然没有将自身潜力完全发挥出来`,
         },
 		
-		skill:{},
+		skill:{
+            //圣殿骑士
+            shenXuanZhe:{
+                trigger:{player:'gongJiMingZhong'},
+                forced:true,
+                filter:function(event,player){
+                    return get.is.zhuDongGongJi(event);
+                },
+                content:function(){
+                    player.changeZhiLiao(1);
+                },
+                group:'shenXuanZhe_yiChu',
+                subSkill:{
+                    yiChu:{
+                        trigger:{player:'zhiLiaoYiChu'},
+                        forced:true,
+                        content:function(){
+                            player.addZhiShiWu('shengYin');
+                        }
+                    },
+                },
+                mod:{
+                    maxZhiLiao:function(player,num){
+                        return num-1;
+                    }
+                },
+                ai:{
+                    zhiLiaoYiChu:true,
+                }
+            },
+            shenWei:{
+                trigger:{player:'gongJiBefore'},
+                filter:function(event,player){
+                    if(event.getParent('phaseUse').shenWei==false) return false;
+                    return player.countZhiShiWu('shengYin')>=2&&get.is.zhuDongGongJi(event);
+                },
+                content:function(){
+                    player.removeZhiShiWu('shengYin',2);
+                    trigger.wuFaYingZhan();
+                    if(get.mingGe(trigger.card)=='sheng'){
+                        trigger.changeDamageNum(1);   
+                    }
+                    player.addTempSkill('shenWei_zhiLiao');
+                    trigger.target.addTempSkill('shenWei_zhiLiao');
+                },
+                subSkill:{
+                    zhiLiao:{
+                        trigger:{player:'changeZhiLiaoBefore'},
+                        direct:true,
+                        filter:function(event,player){
+                            return event.num>=0;
+                        },
+                        content:function(){
+                            trigger.cancel();
+                        }
+                    }
+                }
+            },
+            shengCai:{
+                trigger:{player:'gongJiBefore'},
+                filter:function(event,player){
+                    return player.countZhiShiWu('shengYin')>=1&&get.is.zhuDongGongJi(event);
+                },
+                async cost(event,trigger,player){
+                    var list=[];
+                    var num=player.countZhiShiWu('shengYin');
+                    for(var i=1;i<=num;i++){
+                        list.push(i);
+                    }
+                    list.push('cancel2');
+                    var control=await player.chooseControl(list)
+                    .set('prompt',get.prompt('shengCai'))
+                    .set('prompt2',lib.translate.shengCai_info)
+                    .set('ai',function(){
+                        return _status.event.num;
+                    })
+                    .set('num',list.length-2)
+                    .forResultControl();
+                    event.result={
+                        bool:control!='cancel2',
+                        cost_data:control
+                    };
+                },
+                content:function(){
+                    'step 0'
+                    player.removeZhiShiWu('shengYin',event.cost_data);
+                    'step 1'
+                    trigger.target.faShuDamage(1,player);
+                    if(event.cost_data>1){
+                        trigger.changeDamageNum(event.cost_data-1);
+                    }
+                }
+            },
+            shengYu:{
+                type:'faShu',
+                enable:['faShu'],
+                filter:function(event,player){
+                    return player.countZhiShiWu('shengYin')>=1;
+                },
+                chooseButton:{
+                    dialog:function(event,player){
+                        var dialog=ui.create.dialog("<span class='tiaoJian'>(移除X点【圣印】)</span>目标队友+X[治疗]，你弃1张牌，额外+1[攻击行动]",'hidden');
+                        var list=[];
+                        var num=player.countZhiShiWu('shengYin');
+                        for(var i=1;i<=num;i++){
+                            list.push(i);
+                        }
+                        dialog.add([list,'tdnodes']);
+                        return dialog;
+                    },
+                    backup:function(links,player){
+                        return{
+                            links:links,
+                            type:'faShu',
+                            selectTarget:1,
+                            filterTarget:function(card,player,target){
+                                return target!=player&&target.side==player.side;
+                            },
+                            filterCard:true,
+                            selectCard:0,
+                            content:function(){
+                                'step 0'
+                                event.links=lib.skill.shengYu_backup.links;
+                                player.removeZhiShiWu('shengYin',event.links[0]);
+                                'step 1'
+                                target.changeZhiLiao(event.links[0]);
+                                'step 2'
+                                player.chooseToDiscard(1,true);
+                                player.addGongJi();
+                            },
+                            ai:{
+                                result:{
+                                    target:function(player, target){
+                                        return get.zhiLiaoEffect(target,1);
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    prompt:function(links,player){
+                        return `目标队友+${links[0]}[治疗]`;
+                    },
+                    check: function (button) {
+                        return button.link;
+                    },
+                },
+                ai:{
+                    order:function(item,player){
+                        return 1.3+player.countZhiShiWu('shengYin');
+                    },
+                    result:{
+                        player:1,
+                    }
+                }
+            },
+            shenZhiZi:{
+                forced:true,
+                trigger:{player:'changeZhiShiWuEnd'},
+                filter:function(event,player){
+                    return !player.isHengZhi()&&event.zhiShiWu=='shengYin'&&event.num>0;
+                },
+                content:function(){
+                    'step 0'
+                    player.changeZhiLiao(-player.zhiLiao);
+                    'step 1'
+                    player.hengZhi();
+                    event.getParent('phase').shenZhiZi=true;
+                },
+
+                group:['shenZhiZi_xiaoGuo','shenZhiZi_chongZhiHuiHe','shenZhiZi_chongZhiShangHai'],
+                subSkill:{
+                    xiaoGuo:{
+                        trigger:{global:'changeShiQiJudge'},
+                        direct:true,
+                        filter:function(event,player){
+                            if(event.num>=0) return false;
+                            if(player.side!=event.side) return false;
+                            var shiQi=get.shiQi(player.side);
+                            return shiQi+event.num<1;
+                        },
+                        content:function(){
+                            var shiQi=get.shiQi(player.side);
+                            var num=1-shiQi;
+                            trigger.num=num;
+                        },
+                    },
+                    chongZhiHuiHe:{
+                        trigger:{player:'phaseEnd'},
+                        direct:true,
+                        filter:function(event,player){
+                            if(event.shenZhiZi==true) return false;
+                            return player.isHengZhi();
+                        },
+                        content:function(){
+                            'step 0'
+                            player.chongZhi();
+                            'step 1'
+                            player.chooseTarget(function(card,player,target){
+                                return target.side!=player.side;
+                            },true,'对目标对手造成1点法术伤害③')
+                            'step 2'
+                            result.targets[0].faShuDamage(1,player);
+                        }
+                    },
+                    chongZhiShangHai:{
+                        trigger:{player:'shouDaoShangHai'},
+                        forced:true,
+                        priority:-1,
+                        filter:function(event,player){
+                            return player.isHengZhi();
+                        },
+                        content:function(){
+                            'step 0'
+                            trigger.cancel();
+                            'step 1'
+                            player.faShuDamage(1,player).set('step',4);
+                            'step 2'
+                            player.chongZhi();
+                        }
+                    }
+                }
+            },
+            shenLinShengQi:{
+                type:'faShu',
+                enable:['faShu'],
+                filter:function(event,player){
+                    return player.canBiShaShuiJing();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaShuiJing();
+                    'step 1'
+                    player.addZhiShiWu('shengYin',2,4);
+                    player.addGongJi();
+                    event.getParent('phaseUse').shenWei=false;
+                },
+                ai:{
+                    shuiJing:true,
+                    order:function(item,player){
+                        return 4;
+                    },
+                    result:{
+                        player:2,
+                    }
+                }
+            },
+            shengYanQiFu:{
+                trigger:{player:'chongZhiEnd'},
+                filter:function(event,player){
+                    return player.canBiShaShuiJing();
+                },
+                async cost(event,trigger,player){
+                    event.result=player.chooseTarget()
+                    .set('prompt',get.prompt('shengYanQiFu'))
+                    .set('prompt2',lib.translate.shengYanQiFu_info)
+                    .set('ai',function(target){
+                        var player=_status.event.player;
+                        return get.zhiLiaoEffect(target,player,2);
+                    })
+                    .forResult();
+                },
+                content:function(){
+                    'step 0'
+                    player.removeBiShaShuiJing();
+                    'step 1'
+                    event.targets[0].changeZhiLiao(2,player);
+                },
+                ai:{
+                    shuiJing:true,
+                }
+            },
+            shengYin:{
+                intro:{
+                    content:'mark',
+                    max:2,
+                },
+                onremove:'storage',
+                markimage:'image/card/zhiShiWu/hong.png',
+            },
+        },
 		
 		translate:{
             zhanDouFaShi:"战斗法师",
@@ -57,7 +336,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shengCai_info:"<span class='tiaoJian'>(主动攻击前①，移除X点【圣印】)</span>对攻击目标造成1点法术伤害③。本次攻击伤害额外+(X-1)。",
             shengYu_info:"<span class='tiaoJian'>(移除X点【圣印】)</span>目标队友+X[治疗]，你弃1张牌，额外+1[攻击行动]。",
             shenZhiZi_info:"<span class='tiaoJian'>(当你【圣印】增加时)</span>[横置]移除你的所有[治疗]，持续到你的下个回合结束时，你都处于【圣炎形态】，此形态下我方士气最少为1[强制]。 【神之子】的效果结束时[重置]，脱离【圣炎形态】，然后对目标对手造成1点法术伤害③。 <span class='tiaoJian'>(当【圣炎形态】下你受到伤害时③)</span>抵御本次伤害，改为承受1点来自自身的法术伤害⑥，然后[重置]脱离【圣炎形态】。",
-            shenLinShengQi_info:"[水晶]无视你的【圣印】上限为你+2【圣印】，但你的【圣印】最高为4，额外+1[攻击行动]；本回合你不能发动[神威]。",
+            shenLinShengQi_info:"[水晶]无视你的【圣印】上限为你+2【圣印】，但你的【圣印】最高为4，额外+1[攻击行动]；本回合你不能发动【神威】。",
             shengYanQiFu_info:"[水晶]<span class='tiaoJian'>([重置]脱离【圣炎形态】时)</span>目标角色+2[治疗]。",
             shengYin_info:'【圣印】为圣殿骑士专有指示物，上限为2。',
             
