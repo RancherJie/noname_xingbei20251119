@@ -4251,6 +4251,7 @@ export default () => {
 						event.source=player;
 						event.oriTargets=event.target;
 					}
+					if(event.getParent().firstAction) event.firstAction=true;
 					var type=get.type(card);
 					if(type=='gongJi' && event.targets.length>0){
 						event.type='gongJi';
@@ -4366,6 +4367,7 @@ export default () => {
 				useSkill:function(){
 					'step 0'
 					var info=get.info(event.skill);
+					if(event.getParent().firstAction) event.firstAction=true;
 					if(info.type=='faShu' || info.type=='teShu'){
 						event.trigger(info.type+"Before");
 					}
