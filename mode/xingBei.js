@@ -3071,9 +3071,9 @@ export default () => {
 						player.chooseControl(list).set('prompt','选择获得的星石').set('ai',function(){return 0;});
 					}
 					'step 2'
-					if(result.control=='宝石'){
+					if(result.control=='baoShi'){
 						player.addZhanJi('baoShi',1);
-					}else if(result.control=='水晶'){
+					}else if(result.control=='shuiJing'){
 						player.addZhanJi('shuiJing',1);
 					}
 				},
