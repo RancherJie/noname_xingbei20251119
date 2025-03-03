@@ -13,7 +13,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
         },
 		character:{
             zhanDouFaShi:['zhanDouFaShi_name','yongGroup',3,['fuWenZhiHuan','fuMoDaJi','shangBian','moLiShangZeng'],],
-            xingZhuiNvWu:['xingZhuiNvWu_name','yongGroup','4/5',[],],
+            xingZhuiNvWu:['xingZhuiNvWu_name','yongGroup','4/5',['mingDingZhiLi','xingHuan','xingKe','qunXingQiShi','huangJinLv','fanXing','yingYue','shiRi','chuangKeLvDong','luEn'],],
             shengTingJianChaShi:['shengTingJianChaShi_name','shengGroup',4,['kuangXinTu','caiJueLunDing','enDianShenShou','jingHuaZhiShu','biHuLingYu','caiJueZhe','shenShengBianCe','caiJue'],],
             lieWuRen:['lieWuRen_name','jiGroup','3/4',[],],
             shengDianQiShi:['shengDianQiShi_name','shengGroup',4,['shenXuanZhe','shenWei','shengCai','shengYu','shenZhiZi','shenLinShengQi','shengYanQiFu','shengYin'],],
@@ -828,6 +828,531 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 ai:{
                     shuiJing:true,
+                }
+            },
+
+            //星坠女巫
+            mingDingZhiLi:{
+                trigger:{global:'gameStart'},
+                forced:true,
+                content:function(){
+                    player.addZhiShiWu('fanXing');
+                },
+                mod:{
+                    maxHandcardFinal:function(player,num){
+                        var x=player.countZhiShiWu('fanXing')+player.countZhiShiWu('yingYue')+player.countZhiShiWu('shiRi');
+                        return game.handcardLimit+1-x;
+                    }
+                },
+            },
+            xingHuan:{
+                type:'faShu',
+                usable:1,
+                enable:['faShu'],
+                filter:function(event,player){
+                    return player.countCards('h',card=>get.xiBie(card)=='di');
+                },
+                selectCard:[1,Infinity],
+                filterCard:function(card){
+                    return get.xiBie(card)=='di';
+                },
+                discard:true,
+                showCards:true,
+                selectTarget:function(){
+                    return ui.selected.cards.length-1;
+                },
+                filterTarget:true,
+                filterOk:function(){
+                    return ui.selected.cards.length-1==ui.selected.targets.length;
+                },
+                content:async function(event,trigger,player){
+                    if(event.target){
+                        await event.target.changeZhiLiao(1,player);
+                        await event.target.draw();
+                    }
+                },
+                contentAfter:function(){
+                    player.changeZhiLiao(1);
+                    player.draw();
+                    player.addFaShu();
+                },
+                ai:{
+                    order:function(item,player){
+                        return 7-player.countCards('h');
+                    },
+                    result:{
+                        target:1,
+                    }
+                }
+            },
+            xingKe:{
+                trigger:{player:['faShuEnd','gongJiEnd']},
+                filter:function(event,player,name){
+                    if(name=='faShuEnd') return true;
+                    else if(name=='gongJiEnd'){
+                        return get.is.gongJiXingDong(event);
+                    }else return false;
+                },
+                content:function(){
+                    var cards=get.cards();
+                    player.addToExpansion('draw',cards).gaintag.add('luEn');
+                }
+            },
+            qunXingQiShi:{
+                type:'qiDong',
+                trigger:{player:'qiDong'},
+                filter:function(event,player){
+                    var bool1,bool2;
+                    var x=player.countZhiShiWu('fanXing')+player.countZhiShiWu('yingYue')+player.countZhiShiWu('shiRi');
+                    if(x<3&&player.countCards('h')>0) bool1=true;
+                    else bool1=false;
+
+                    if(player.getExpansions('luEn').length>0) bool2=true;
+                    else bool2=false;
+
+                    return bool1||bool2;
+                },
+                content:function(){
+                    'step 0'
+                    var bool1,bool2;
+                    var x=player.countZhiShiWu('fanXing')+player.countZhiShiWu('yingYue')+player.countZhiShiWu('shiRi');
+                    if(x<3&&player.countCards('h')>0) bool1=true;
+                    else bool1=false;
+
+                    if(player.getExpansions('luEn').length>0) bool2=true;
+                    else bool2=false;
+
+                    var list=[];
+                    if(bool1) list.push('选项一');
+                    if(bool2) list.push('选项二');
+                    var choiceList=["<span class='tiaoJian'>(将1张手牌面朝下放置在你角色旁，作为【卢恩】。选择1个【律法】放置于你面前)</span>你摸0-1张牌。","<span class='tiaoJian'>(移除X个【卢恩】[展示])</span>发动任意符合条件的【律法】，然后移除1个【律法】。"];
+
+                    player.chooseControl(list).set('prompt','选择以下一项发动').set('choiceList',choiceList).set('ai',function(){
+                        var bool1=_status.event.bool1;
+                        var bool2=_status.event.bool2;
+                        var player=_status.event.player;
+                        if(player.getExpansions('luEn').length>2&&bool2) return '选项二';
+                        if(bool1) return '选项一';
+                    }).set('bool1',bool1).set('bool2',bool2);
+                    'step 1'
+                    if(result.control=='选项一'){
+                        event.goto(2)
+                    }else{
+                        event.goto(6);
+                    }
+
+                    'step 2'
+                    player.chooseCard('h',true,'将1张手牌面朝下放置在你角色旁，作为【卢恩】');
+                    'step 3'
+                    player.addToExpansion('draw',result.cards).gaintag.add('luEn');
+                    var list=[];
+                    if(!player.hasZhiShiWu('fanXing')) list.push('繁星');
+                    if(!player.hasZhiShiWu('yingYue')) list.push('影月');
+                    if(!player.hasZhiShiWu('shiRi')) list.push('蚀日');
+                    player.chooseControl(list).set('prompt','选择1个【律法】放置于你面前');
+                    'step 4'
+                    switch(result.control){
+                        case '繁星':
+                            player.addZhiShiWu('fanXing');
+                            break;
+                        case '影月':
+                            player.addZhiShiWu('yingYue');
+                            break;
+                        case '蚀日':
+                            player.addZhiShiWu('shiRi');
+                            break;
+                    }
+                    'step 5'
+                    player.chooseDraw(1);
+                    event.finish();
+
+                    'step 6'
+                    var cards=player.getExpansions('luEn');
+                    player.chooseCardButton(cards,true,[1,Infinity],'移除X张【卢恩】');
+                    'step 7'
+                    player.discard(result.links,'luEn','showHiddenCards');
+                    event.cards=result.links;
+                    'step 8'
+                    event.trigger('yiChuLuEn')
+                    'step 9'
+                    var list=[];
+                    if(player.hasZhiShiWu('fanXing')) list.push('繁星');
+                    if(player.hasZhiShiWu('yingYue')) list.push('影月');
+                    if(player.hasZhiShiWu('shiRi')) list.push('蚀日');
+                    if(list.length>0){
+                        player.chooseControl(list).set('prompt','选择1个【律法】移除');
+                    }else{
+                        event.finish();
+                    }
+                    'step 10'
+                    switch(result.control){
+                        case '繁星':
+                            player.removeZhiShiWu('fanXing');
+                            break;
+                        case '影月':
+                            player.removeZhiShiWu('yingYue');
+                            break;
+                        case '蚀日':
+                            player.removeZhiShiWu('shiRi');
+                            break;
+                    }
+                    event.finish();
+                },
+                check:function(event,player){
+                    return player.countCards('h')>0||player.getExpansions('luEn').length>3;
+                }
+            },
+            huangJinLv:{
+                trigger:{player:'qunXingQiShiAfter'},
+                filter:function(event,player){
+                    return player.countCards('h')<2;
+                },
+                content:function(){
+                    'step 0'
+                    player.draw(1);
+                    'step 1'
+                    var cards = player.getExpansions("luEn");
+                    if(cards.length>0){
+                        var next = player.chooseToMove("黄金律：是否交换【卢恩】和手牌");
+                        next.set("list", [
+                            ["卢恩", cards],
+                            ["手牌", player.getCards("h")],
+                        ]);
+                        next.set("filterMove", function (from, to, moved) {
+                            if (typeof to == "number") return false;
+                            var player = _status.event.player;
+                            var hs = player.getCards("h");
+                            var changed = hs.filter(function (card) {
+                                return !moved[1].includes(card);
+                            });
+                            var changed2 = moved[1].filter(function (card) {
+                                return !hs.includes(card);
+                            });
+                            if (changed.length < 1) return true;
+                            var pos1 = moved[0].includes(from.link) ? 0 : 1,
+                                pos2 = moved[0].includes(to.link) ? 0 : 1;
+                            if (pos1 == pos2) return true;
+                            if (pos1 == 0) {
+                                if (changed.includes(from.link)) return true;
+                                return changed2.includes(to.link);
+                            }
+                            if (changed2.includes(from.link)) return true;
+                            return changed.includes(to.link);
+                        });
+                    }else{
+                        event.finish();
+                    }
+                    "step 2";
+                    if (result.bool) {
+                        var pushs = result.moved[0],
+                            gains = result.moved[1];
+                        pushs.removeArray(player.getExpansions("luEn"));
+                        gains.removeArray(player.getCards("h"));
+                        if (!pushs.length || pushs.length != gains.length) return;
+                        player.addToExpansion(pushs, player, "giveAuto").gaintag.add("luEn");
+                        player.gain(gains, "draw");
+			        }
+                }
+            },
+            fanXing:{
+                intro:{
+                    name:'律法：繁星',
+                    content:"<span class='tiaoJian'>(当移除的【卢恩】包含4个不同系别或4个不同命格)</span>对所有对手各造成1点法术伤害③；<span class='tiaoJian'>(若移除的【卢恩】包含4个不同系别与4个不同命格)</span>目标队友额外+1[宝石]。",
+                    nocount:true,
+                },
+                onremove:'storage',
+                markimage:'image/card/zhuanShu/fanXing.png',
+                trigger:{player:'yiChuLuEn'},
+                filter:function(event,player){
+                    if(!player.hasZhiShiWu('fanXing')) return false;
+                    
+                    var cards=event.cards;
+                    var xiBie=[],mingGe=[];
+                    for(var i=0;i<cards.length;i++){
+                        var card=cards[i];
+                        if(!xiBie.includes(get.xiBie(card))) xiBie.push(get.xiBie(card));
+                        if(!mingGe.includes(get.mingGe(card))) mingGe.push(get.mingGe(card));
+                    }
+
+                    return xiBie.length>=4||mingGe.length>=4;
+                },
+                content:function(){
+                    'step 0'
+                    var cards=trigger.cards;
+                    var xiBie=[],mingGe=[];
+                    for(var i=0;i<cards.length;i++){
+                        var card=cards[i];
+                        if(!xiBie.includes(get.xiBie(card))) xiBie.push(get.xiBie(card));
+                        if(!mingGe.includes(get.mingGe(card))) mingGe.push(get.mingGe(card));
+                    }
+
+                    if(xiBie.length>=4&&mingGe.length>=4) event.flag=true;
+
+                    event.targets=game.filterPlayer(function(current){
+                        return current.side!=player.side;
+                    });
+                    'step 1'
+                    var target=event.targets.shift();
+                    target.faShuDamage(1,player);
+                    if(event.targets.length>0){
+                        event.redo();
+                    }
+                    'step 2'
+                    if(event.flag){
+                        player.chooseTarget('目标队友额外+1[宝石]',true,function(card,player,target){
+                            return target.side==player.side&&target!=player;
+                        }).set('ai',function(target){
+                            var num=target.getNengLiangLimit()-target.countNengLiangAll();
+                            return num;
+                        });
+                    }else{
+                        event.finish();
+                    }
+                    'step 3'
+                    result.targets[0].addNengLiang('baoShi',1);
+                }
+            },
+            yingYue:{
+                intro:{
+                    name:'律法：影月',
+                    content:"<span class='tiaoJian'>(当移除的【卢恩】包含X对相同系别的【卢恩】，X>1)</span>对目标角色造成X点法术伤害③。<span class='tiaoJian'>(当移除的【卢恩】包含X对相同命格的【卢恩】，X>1)</span>任意分配X点[治疗]给1~2位我方角色。",
+                    nocount:true,
+                },
+                onremove:'storage',
+                markimage:'image/card/zhuanShu/yingYue.png',
+                trigger:{player:'yiChuLuEn'},
+                filter:function(event,player){
+                    if(!player.hasZhiShiWu('yingYue')) return false;
+
+                    var cards=event.cards;
+                    var xiBie={};
+                    var mingGe={};
+                    for(var i=0;i<cards.length;i++){
+                        var card=cards[i];
+                        if(xiBie[get.xiBie(card)]) xiBie[get.xiBie(card)]++;
+                        else xiBie[get.xiBie(card)]=1;
+                        if(mingGe[get.mingGe(card)]) mingGe[get.mingGe(card)]++;
+                        else mingGe[get.mingGe(card)]=1;
+                    }
+                    var xiBie_num=0;
+                    var mingGe_num=0;
+                    for(var i in xiBie){
+                        if(xiBie[i]>=2){
+                            xiBie_num+=(xiBie[i]/2) >> 0;
+                        }
+                    }
+                    for(var i in mingGe){
+                        if(mingGe[i]>=2){
+                            mingGe_num+=(mingGe[i]/2) >> 0;
+                        }
+                    }
+                    return xiBie_num>1||mingGe_num>1;
+                },
+                content:function(){
+                    'step 0'
+                    var cards=trigger.cards;
+                    var xiBie={};
+                    var mingGe={};
+                    for(var i=0;i<cards.length;i++){
+                        var card=cards[i];
+                        if(xiBie[get.xiBie(card)]) xiBie[get.xiBie(card)]++;
+                        else xiBie[get.xiBie(card)]=1;
+                        if(mingGe[get.mingGe(card)]) mingGe[get.mingGe(card)]++;
+                        else mingGe[get.mingGe(card)]=1;
+                    }
+                    event.xiBie_num=0;
+                    event.mingGe_num=0;
+                    for(var i in xiBie){
+                        if(xiBie[i]>=2){
+                            event.xiBie_num+=(xiBie[i]/2) >> 0;
+                        }
+                    }
+                    for(var i in mingGe){
+                        if(mingGe[i]>=2){
+                            event.mingGe_num+=(mingGe[i]/2) >> 0;
+                        }
+                    }
+
+                    'step 1'
+                    if(event.xiBie_num>1){
+                        var next=player.chooseTarget(`对目标角色造成${event.xiBie_num}点法术伤害③`,true);
+                        next.set('ai',function(target){
+                            var player=_status.event.player;
+                            return -get.attitude(player,target);
+                        });
+                    }
+                    'step 2'
+                    if(event.xiBie_num>1){
+                        result.targets[0].faShuDamage(event.xiBie_num,player);
+                    }
+
+                    'step 3'
+                    if(event.mingGe_num>1){//分配[治疗]
+                        var next=player.chooseTarget([1,2],`任意分配${event.mingGe_num}点[治疗]给1~2位我方角色`,true,function(card,player,target){
+                            return target.side==player.side;
+                        });
+                        next.set('ai',function(target){
+                            return get.zhiLiaoEffect(target);
+                        });
+                    }else{
+                        event.finish();
+                    }
+                    'step 4'
+                    result.targets.sortBySeat(player);
+                    game.log(player,'选择了',result.targets);
+                    if(result.targets.length==1){
+                        result.targets[0].changeZhiLiao(event.mingGe_num);
+                        event.finish();
+                    }else{
+                        if(event.mingGe_num==2){
+                            result.targets[0].changeZhiLiao(1);
+                            result.targets[1].changeZhiLiao(1);
+                            event.finish();
+                        }else{//治疗数>2 后面需要选择分配
+                            event.targets=result.targets;
+                        }
+                    }
+                    'step 5'
+                    var list=[];
+                    for(var i=1;i<=event.mingGe_num-1;i++){
+                        list.push(i);
+                    }
+                    var name=get.translation(event.targets[0]);
+                    var str=name+'获得几点[治疗]';
+                    player.chooseControl(list).set('prompt',str);
+                    'step 6'
+                    event.targets[0].changeZhiLiao(result.control);
+                    event.mingGe_num-=result.control;
+                    'step 7'
+                    event.targets[1].changeZhiLiao(event.mingGe_num);
+                }
+            },
+            shiRi:{
+                intro:{
+                    name:'律法：蚀日',
+                    content:"<span class='tiaoJian'>(当移除的【卢恩】包含每3个相同系别的【卢恩】)</span>你+1[宝石]。<span class='tiaoJian'>(当移除的【卢恩】包含每3个相同命格的【卢恩】)</span>我方【战绩区】+1[宝石]。",
+                    nocount:true,
+                },
+                onremove:'storage',
+                markimage:'image/card/zhuanShu/shiRi.png',
+                trigger:{player:'yiChuLuEn'},
+                filter:function(event,player){
+                    if(!player.hasZhiShiWu('shiRi')) return false;
+
+                    var cards=event.cards;
+                    var xiBie={};
+                    var mingGe={};
+                    for(var i=0;i<cards.length;i++){
+                        var card=cards[i];
+                        if(xiBie[get.xiBie(card)]) xiBie[get.xiBie(card)]++;
+                        else xiBie[get.xiBie(card)]=1;
+                        if(mingGe[get.mingGe(card)]) mingGe[get.mingGe(card)]++;
+                        else mingGe[get.mingGe(card)]=1;
+                    }
+                    var xiBie_num=0;
+                    var mingGe_num=0;
+                    for(var i in xiBie){
+                        if(xiBie[i]>=3){
+                            xiBie_num+=(xiBie[i]/3) >> 0;
+                        }
+                    }
+                    for(var i in mingGe){
+                        if(mingGe[i]>=3){
+                            mingGe_num+=(mingGe[i]/3) >> 0;
+                        }
+                    }
+                    return xiBie_num>0||mingGe_num>0;
+                },
+                content:function(){
+                    'step 0'
+                    var cards=trigger.cards;
+                    var xiBie={};
+                    var mingGe={};
+                    for(var i=0;i<cards.length;i++){
+                        var card=cards[i];
+                        if(xiBie[get.xiBie(card)]) xiBie[get.xiBie(card)]++;
+                        else xiBie[get.xiBie(card)]=1;
+                        if(mingGe[get.mingGe(card)]) mingGe[get.mingGe(card)]++;
+                        else mingGe[get.mingGe(card)]=1;
+                    }
+                    event.xiBie_num=0;
+                    event.mingGe_num=0;
+                    for(var i in xiBie){
+                        if(xiBie[i]>=3){
+                            event.xiBie_num+=(xiBie[i]/3) >> 0;
+                        }
+                    }
+                    for(var i in mingGe){
+                        if(mingGe[i]>=3){
+                            event.mingGe_num+=(mingGe[i]/3) >> 0;
+                        }
+                    }
+                    'step 1'
+                    if(event.xiBie_num>0) player.addNengLiang('baoShi',event.xiBie_num);
+                    'step 2'
+                    if(event.mingGe_num>0) player.addZhanJi('baoShi',event.mingGe_num);
+                }
+            },
+            chuangKeLvDong:{
+                type:'faShu',
+                enable:['faShu'],
+                filter:function(event,player){
+                    return player.canBiShaBaoShi();
+                },
+                content:function(){
+                    'step 0'
+                    player.storage.chuangKeLvDong=true;
+                    player.removeBiShaBaoShi();
+                    'step 1'
+                    player.chooseDraw(1);
+                    'step 2'
+                    var x=player.countZhiShiWu('fanXing')+player.countZhiShiWu('yingYue')+player.countZhiShiWu('shiRi');
+                    player.chooseCard('h',`将最多${x+1}张手牌面朝下放置在你角色旁，作为【卢恩】`,[1,x+1]);
+                    'step 3'
+                    if(result.bool){
+                        player.addToExpansion('draw',result.cards).gaintag.add('luEn');
+                    }
+                    player.storage.chuangKeLvDong=false;
+                    'step 4'
+                    player.qiPai();
+                },
+                mod:{
+                    maxHandcardWuShi:function(player,num){
+                        if(player.storage.chuangKeLvDong) return 99;
+                    }
+                },
+                ai:{
+                    baoShi:true,
+                    order:3.8,
+                    result:{
+                        player:1,
+                    }
+                }
+            },
+            luEn:{
+                intro:{
+                    markcount:'expansion',
+                    mark:function(dialog,storage,player){
+						var cards=player.getExpansions('luEn');
+						if(player.isUnderControl(true)) dialog.addAuto(cards);
+						else return '共有'+cards.length+'张牌';
+					},
+                },
+                onremove:function(player, skill) {
+                    const cards = player.getExpansions(skill);
+                    if (cards.length) player.loseToDiscardpile(cards);
+                },
+                direct:true,
+                trigger:{player:'addToExpansionEnd'},
+                filter:function(event,player){
+                    return player.getExpansions('luEn').length>6;
+                },
+                content:function(){
+                    'step 0'
+                    var cards=player.getExpansions('luEn');
+                    var next=player.chooseCardButton(cards,true,cards.length-6,`舍弃${cards.length-6}张【卢恩】`);
+                    'step 1'
+                    player.discard(result.links);
                 }
             },
         },
