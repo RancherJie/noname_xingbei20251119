@@ -4757,7 +4757,7 @@ export default () => {
 					if(event.gaiPai){//移除了盖牌日志
 						let name=get.translation(event.gaiPai);
 						if(event.visible){
-							game.log(player,'移除了',cards.length,'张','【'+name+'】,',"(",card,")");
+							game.log(player,'移除了',cards.length,'张','【'+name+'】',',',"(",cards,")");
 						}else {
 							game.log(player,'移除了',cards.length,'张','【'+name+'】');
 						}
