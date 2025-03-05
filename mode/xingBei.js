@@ -5402,14 +5402,7 @@ export default () => {
 
 				gainJiChuXiaoGuo:function(){
 					'step 0'
-					var list=[];
-					var skill=target.getSkills().concat(lib.skill.global);
-					for(var i=0;i<skill.length;i++){
-						let info=get.info(skill[i]);
-						if(info&&info.tag&&info.tag.jiChuXiaoGuo&&target.hasExpansions(skill[i])){
-							list.push(skill[i]);
-						}
-					}
+					var list=target.jiChuXiaoGuoList();
 					player.chooseControl(list).set('prompt','选择要获得的基础效果').set('ai',function(){
                         var player=_status.event.player;
                         var target=_status.event.targetX;
@@ -5462,14 +5455,7 @@ export default () => {
 				},
 				removeJiChuXiaoGuo:function(){
 					'step 0'
-					var list=[];
-					var skill=target.getSkills().concat(lib.skill.global);
-					for(var i=0;i<skill.length;i++){
-						let info=get.info(skill[i]);
-						if(info&&info.tag&&info.tag.jiChuXiaoGuo&&target.hasExpansions(skill[i])){
-							list.push(skill[i]);
-						}
-					}
+					var list=target.jiChuXiaoGuoList();
 					player.chooseControl(list).set('prompt','选择要移除的基础效果').set('ai',function(){
                         var player=_status.event.player;
                         var target=_status.event.targetX;
@@ -6677,6 +6663,17 @@ export default () => {
 						}
 					}
 					return false;
+				},
+				jiChuXiaoGuoList:function(){
+					var list=[];
+					var skill=this.getSkills().concat(lib.skill.global);
+					for(var i=0;i<skill.length;i++){
+						let info=get.info(skill[i]);
+						if(info&&info.tag&&info.tag.jiChuXiaoGuo&&this.hasExpansions(skill[i])){
+							list.push(skill[i]);
+						}
+					}
+					return list;
 				},
 
 				canFaShu:function(){
