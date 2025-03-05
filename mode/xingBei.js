@@ -2811,6 +2811,9 @@ export default () => {
 							trigger.cancel();
 						}
 					},
+				},
+				tag:{
+					jiChuXiaoGuo:true,
 				}
             },
 
@@ -2835,7 +2838,10 @@ export default () => {
                         next.faShu=true;
                     }
                     player.loseToDiscardpile(player.getExpansions('_zhongDu'));
-                }
+                },
+				tag:{
+					jiChuXiaoGuo:true,
+				}
             },
             _shengDun:{
                 //marktext:"盾",
@@ -2862,7 +2868,10 @@ export default () => {
 						event.customArgs=trigger.customArgs;
                         event.trigger('gongJiWeiMingZhong');
                     }else if(trigger.card.name=='moDan') game.resetMoDan();
-                }
+                },
+				tag:{
+					jiChuXiaoGuo:true,
+				}
             },
             _yingZhan:{
                 trigger:{target:'shouDaoGongJi'},
@@ -5394,13 +5403,13 @@ export default () => {
 				gainJiChuXiaoGuo:function(){
 					'step 0'
 					var list=[];
-                    for(var xiaoGuoList in game.jiChuXiaoGuo){
-                        for(var xiaoGuo of game.jiChuXiaoGuo[xiaoGuoList]){
-                            if(target.hasExpansions(xiaoGuo)){
-                                list.push(xiaoGuo);
-                            }
-                        }
-                    }
+					var skill=target.getSkills().concat(lib.skill.global);
+					for(var i=0;i<skill.length;i++){
+						let info=get.info(skill[i]);
+						if(info&&info.tag&&info.tag.jiChuXiaoGuo&&target.hasExpansions(skill[i])){
+							list.push(skill[i]);
+						}
+					}
 					player.chooseControl(list).set('prompt','选择要获得的基础效果').set('ai',function(){
                         var player=_status.event.player;
                         var target=_status.event.targetX;
@@ -5454,13 +5463,13 @@ export default () => {
 				removeJiChuXiaoGuo:function(){
 					'step 0'
 					var list=[];
-                    for(var xiaoGuoList in game.jiChuXiaoGuo){
-                        for(var xiaoGuo of game.jiChuXiaoGuo[xiaoGuoList]){
-                            if(target.hasExpansions(xiaoGuo)){
-                                list.push(xiaoGuo);
-                            }
-                        }
-                    }
+					var skill=target.getSkills().concat(lib.skill.global);
+					for(var i=0;i<skill.length;i++){
+						let info=get.info(skill[i]);
+						if(info&&info.tag&&info.tag.jiChuXiaoGuo&&target.hasExpansions(skill[i])){
+							list.push(skill[i]);
+						}
+					}
 					player.chooseControl(list).set('prompt','选择要移除的基础效果').set('ai',function(){
                         var player=_status.event.player;
                         var target=_status.event.targetX;
@@ -6658,6 +6667,16 @@ export default () => {
 					next.target=target;
 					next.setContent('removeJiChuXiaoGuo');
 					return next;
+				},
+				hasJiChuXiaoGuo:function(){
+					var skill=this.getSkills().concat(lib.skill.global);
+					for(var i=0;i<skill.length;i++){
+						let info=get.info(skill[i]);
+						if(info&&info.tag&&info.tag.jiChuXiaoGuo&&this.hasExpansions(skill[i])){
+							return true;
+						}
+					}
+					return false;
 				},
 
 				canFaShu:function(){

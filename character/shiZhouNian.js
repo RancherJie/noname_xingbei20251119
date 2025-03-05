@@ -664,6 +664,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             player.loseToDiscardpile(player.getExpansions('diZhiFengYin_xiaoGuo'));
                             'step 2'
                             player.removeSkill('diZhiFengYin_xiaoGuo')
+                        },
+                        tag:{
+                            jiChuXiaoGuo:true,
                         }
                     },
                 },
@@ -741,6 +744,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             player.loseToDiscardpile(player.getExpansions('shuiZhiFengYin_xiaoGuo'));
                             'step 2'
                             player.removeSkill('shuiZhiFengYin_xiaoGuo')
+                        },
+                        tag:{
+                            jiChuXiaoGuo:true,
                         }
                     },
                 },
@@ -815,6 +821,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             player.loseToDiscardpile(player.getExpansions('huoZhiFengYin_xiaoGuo'));
                             'step 2'
                             player.removeSkill('huoZhiFengYin_xiaoGuo')
+                        },
+                        tag:{
+                            jiChuXiaoGuo:true,
                         }
                     },
                 },
@@ -893,6 +902,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             player.loseToDiscardpile(player.getExpansions('fengZhiFengYin_xiaoGuo'));
                             'step 2'
                             player.removeSkill('fengZhiFengYin_xiaoGuo')
+                        },
+                        tag:{
+                            jiChuXiaoGuo:true,
                         }
                     },
                 },
@@ -973,6 +985,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             player.loseToDiscardpile(player.getExpansions('leiZhiFengYin_xiaoGuo'));
                             'step 2'
                             player.removeSkill('leiZhiFengYin_xiaoGuo')
+                        },
+                        tag:{
+                            jiChuXiaoGuo:true,
                         }
                     },
                 },
@@ -1091,13 +1106,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return bool1&&bool2;
                 },
                 filterTarget:function(card,player,target){
-                    for(var xiaoGuoList in game.jiChuXiaoGuo){
-                        for(var xiaoGuo of game.jiChuXiaoGuo[xiaoGuoList]){
-                            if(target.hasExpansions(xiaoGuo)){
-                                return true;
-                            }
-                        }
-                    }
+                    return target.hasJiChuXiaoGuo();
                 },
                 content:function(){
                     'step 0'
@@ -1137,13 +1146,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 discard:true,
                 showCards:true,
                 filterTarget:function(card,player,target){
-                    for(var xiaoGuoList in game.jiChuXiaoGuo){
-                        for(var xiaoGuo of game.jiChuXiaoGuo[xiaoGuoList]){
-                            if(target.hasExpansions(xiaoGuo)){
-                                return true;
-                            }
-                        }
-                    }
+                    return target.hasJiChuXiaoGuo();
                 },
                 content:function(){
                     'step 0'
@@ -1245,25 +1248,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         return false;
                     }
                     for(var p of game.players){
-                        for(var xiaoGuoList in game.jiChuXiaoGuo){
-                            for(var xiaoGuo of game.jiChuXiaoGuo[xiaoGuoList]){
-                                if(p.hasExpansions(xiaoGuo)){
-                                    return true;
-                                }
-                            }
-                        }
+                        return p.hasJiChuXiaoGuo();
                     }
                     return false;
                 },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseTarget(function(card,player,target){
-                        for(var xiaoGuoList in game.jiChuXiaoGuo){
-                            for(var xiaoGuo of game.jiChuXiaoGuo[xiaoGuoList]){
-                                if(target.hasExpansions(xiaoGuo)){
-                                    return true;
-                                }
-                            }
-                        }
+                        return target.hasJiChuXiaoGuo();
                     })
                     .set('ai',function(target){
                         var player=_status.event.player;
@@ -3789,6 +3780,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             trigger.changeDamageNum(2);
                             'step 1'
                             player.removeSkill('weiLiCiFu_xiaoGuo');
+                        },
+                        tag:{
+                            jiChuXiaoGuo:true,
                         }
                     }
                 },
@@ -3849,6 +3843,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         check:function(event,player){
                             return player.canGongJi();
+                        },
+                        tag:{
+                            jiChuXiaoGuo:true,
                         }
                     }
                 },
