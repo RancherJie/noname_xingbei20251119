@@ -2796,7 +2796,7 @@ export default () => {
 					}else if(result.control=="选项一"){
 						player.draw(3);
 					}
-                    player.loseToDiscardpile(player.getExpansions('_xuRuo'));
+                    player.discard(player.getExpansions('_xuRuo'),'_xuRuo').set('visible',true);
                 },
 				subSkill:{
 					xiaoGuo:{
@@ -2837,7 +2837,7 @@ export default () => {
                         var next=player.damage(target);
                         next.faShu=true;
                     }
-                    player.loseToDiscardpile(player.getExpansions('_zhongDu'));
+                    player.discard(player.getExpansions('_zhongDu'),'_zhongDu').set('visible',true);
                 },
 				tag:{
 					jiChuXiaoGuo:true,
@@ -2858,7 +2858,7 @@ export default () => {
                 },
                 content:function(){
 					'step 0'
-                    player.loseToDiscardpile(player.getExpansions('_shengDun'));
+                    player.discard(player.getExpansions('_shengDun'),'_shengDun').set('visible',true);
                     trigger.weiMingZhong();
 					'step 1'
                     if(get.type(trigger.card)=='gongJi'){

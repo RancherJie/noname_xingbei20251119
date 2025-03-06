@@ -661,7 +661,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             'step 0'
                             player.faShuDamage(player.storage.fengYin,3);
                             'step 1'
-                            player.loseToDiscardpile(player.getExpansions('diZhiFengYin_xiaoGuo'));
+                            player.discard(player.getExpansions('diZhiFengYin_xiaoGuo'),'diZhiFengYin_xiaoGuo').set('visible',true);
                             'step 2'
                             player.removeSkill('diZhiFengYin_xiaoGuo')
                         },
@@ -741,7 +741,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             'step 0'
                             player.faShuDamage(player.storage.fengYin,3);
                             'step 1'
-                            player.loseToDiscardpile(player.getExpansions('shuiZhiFengYin_xiaoGuo'));
+                            player.discard(player.getExpansions('shuiZhiFengYin_xiaoGuo'),'shuiZhiFengYin_xiaoGuo').set('visible',true);
                             'step 2'
                             player.removeSkill('shuiZhiFengYin_xiaoGuo')
                         },
@@ -818,7 +818,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             'step 0'
                             player.faShuDamage(player.storage.fengYin,3);
                             'step 1'
-                            player.loseToDiscardpile(player.getExpansions('huoZhiFengYin_xiaoGuo'));
+                            player.discard(player.getExpansions('huoZhiFengYin_xiaoGuo'),'huoZhiFengYin_xiaoGuo').set('visible',true);
                             'step 2'
                             player.removeSkill('huoZhiFengYin_xiaoGuo')
                         },
@@ -899,7 +899,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             'step 0'
                             player.faShuDamage(player.storage.fengYin,3);
                             'step 1'
-                            player.loseToDiscardpile(player.getExpansions('fengZhiFengYin_xiaoGuo'));
+                            player.discard(player.getExpansions('fengZhiFengYin_xiaoGuo'),'fengZhiFengYin_xiaoGuo').set('visible',true);
                             'step 2'
                             player.removeSkill('fengZhiFengYin_xiaoGuo')
                         },
@@ -982,7 +982,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             'stpe 0'
                             player.faShuDamage(player.storage.fengYin,3);
                             'step 1'
-                            player.loseToDiscardpile(player.getExpansions('leiZhiFengYin_xiaoGuo'));
+                            player.discard(player.getExpansions('leiZhiFengYin_xiaoGuo'),'leiZhiFengYin_xiaoGuo').set('visible',true);
                             'step 2'
                             player.removeSkill('leiZhiFengYin_xiaoGuo')
                         },
@@ -1077,7 +1077,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             player.removeZhiShiWu('wuXiShuFu_xiaoGuo');
                             'step 3'
                             if(player.hasExpansions('_xuRuo')){
-                                player.loseToDiscardpile(player.getExpansions('_xuRuo')); 
+                                player.discard(player.getExpansions('_xuRuo'),'_xuRuo').set('visible',true); 
                             }
                             'step 4'
                             player.removeSkill('wuXiShuFu_xiaoGuo');
@@ -3775,7 +3775,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:function(){
                             'step 0'
-                            player.loseToDiscardpile(player.getExpansions('weiLiCiFu_xiaoGuo'));
+                            player.discard(player.getExpansions('weiLiCiFu_xiaoGuo'),'weiLiCiFu_xiaoGuo').set('visible',true);
                             trigger.changeDamageNum(2);
                             'step 1'
                             player.removeSkill('weiLiCiFu_xiaoGuo');
@@ -3835,7 +3835,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:function(){
                             'step 0'
-                            player.loseToDiscardpile(player.getExpansions('xunJieCiFu_xiaoGuo'));
+                            player.discard(player.getExpansions('xunJieCiFu_xiaoGuo'),'xunJieCiFu_xiaoGuo').set('visible',true);
                             player.addGongJi();
                             'step 1'
                             player.removeSkill('xunJieCiFu_xiaoGuo');
