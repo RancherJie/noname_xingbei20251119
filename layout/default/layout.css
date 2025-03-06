@@ -717,6 +717,31 @@ table {
 	right: 14px;
 	text-align: right;
 }
+.touchinfo.bottom-right{
+	top:auto;
+    right: 0;
+    bottom: 0;
+
+	border-collapse: collapse;
+	border-radius: 8px;
+	overflow: hidden;
+	background-color: rgba(255, 255, 255, 0.7); /* 半透明白色背景 */
+}
+tr > td{
+    padding: 2px;
+	text-align: center;
+	border: none;
+	/*font-size: 18px;*/
+}
+
+tr.highlight {
+	background-color:rgba(6, 165, 165, 0.352);
+}
+
+.table.zhanJi {
+	font-size: 24px;
+}
+
 #window.touchinfohidden > .touchinfo {
 	opacity: 0;
 }
@@ -1687,11 +1712,11 @@ div:not(.handcards) > .card > .info > span,
 }
 .marks > div > .markcount.menubutton {
 	font-family: "xinwei";
-	font-size: 9px;
-	width: 12px;
-	height: 12px;
+	font-size: 16px;
+	width: 14px;
+	height: 14px;
 	padding: 0;
-	line-height: 14px;
+	line-height: 16px;
 	position: absolute;
 	left: 16px;
 	top: 14px;
@@ -1756,7 +1781,7 @@ div:not(.handcards) > .card > .info > span,
 }
 #window > .dialog.popped {
 	z-index: 5;
-	width: 220px;
+	width: 420px;
 	background: rgba(0, 0, 0, 0.2);
 	box-shadow: rgba(0, 0, 0, 0.3) 0 0 0 1px;
 	border-radius: 6px;
@@ -1949,16 +1974,17 @@ div:not(.handcards) > .card > .info > span,
 .caption > div > div {
 	font-size: 16px;
 	position: relative;
-	width: calc(100% - 70px);
+	width: calc(100% - 0px);
 	vertical-align: top;
 	margin: 0;
 	padding: 0;
 }
 
 .skill {
+	color: rgb(75, 96, 3);
 	left: 0 !important;
-	width: 70px !important;
-	/*-- white-space: nowrap; --*/
+	width: 400px !important;
+	white-space: nowrap;
 }
 .skilln {
 	left: 0 !important;
@@ -2027,7 +2053,7 @@ div:not(.handcards) > .card > .info > span,
 .button.character.newstyle > .identity {
 	/*display: none;*/
 	border: none;
-	background: none !important;
+	/*background: none !important;*/
 	/*box-shadow: none;*/
 	left: auto;
 	right: 6px;
@@ -2680,8 +2706,8 @@ div:not(.handcards) > .card > .info > span,
 }
 .judges > div,
 .marks > div {
-	width: 24px;
-	height: 24px;
+	width: 26px;
+	height: 26px;
 	margin: 0;
 	left: 0;
 	top: 0;
@@ -2727,6 +2753,18 @@ div:not(.handcards) > .card > .info > span,
 	background: rgba(63, 119, 173, 1);
 	border: 1px solid rgba(63, 119, 173, 1);
 }
+
+/*xingBei星级*/
+.hp:not(.text):not(.actcount):not(.treasure)[data-condition="xing"]>div:not(.lost){
+    background: url('../../theme/style/hp/image/xing.png') no-repeat center;
+    box-shadow: none;
+    border: none;
+    background-size: 90% 90%;
+    transform: scale(2.5);
+    -webkit-filter:brightness(0.8) contrast(1.5);
+    border-radius: 0px;
+}
+
 .hp[data-condition="hidden"] > div:not(.lost):not(.shield) {
 	background-image: url("../../theme/style/hp/image/hidden_hp.png") !important;
 	width: 12px;
@@ -3441,6 +3479,16 @@ div:not(.handcards) > .card > .info > span,
 	right: 13px;
 }
 
+.tiaoJian {
+    color: rgb(131, 109, 31); 
+}
+.hong {
+	color: rgb(160, 72, 36); 
+}
+.lan {
+	color: rgb(0, 133, 160);
+}
+
 /*--------动画--------*/
 .start,
 .equips > .card,
@@ -3933,9 +3981,9 @@ div:hover > .intro {
 .player .identity > div {
 	position: relative;
 	font-family: "huangcao", "xinwei";
-	font-size: 24px;
+	font-size: 36px;
 	line-height: 24px;
-	top: 0;
+	top: 8px;
 }
 .player .identity.animate {
 	animation: identity 0.8s;
@@ -4455,6 +4503,8 @@ div[data-decoration="bronze"]::after {
 	color: rgba(0, 0, 0, 0.8);
 	white-space: nowrap;
 	text-shadow: none;
+	text-shadow: rgba(255, 255, 0,1) 0 0 2px,rgba(255, 120, 0,1) 0 0 2px,rgba(255, 120, 0,1) 0 0 2px,rgba(255, 120, 0,1) 0 0 2px,black 0 0 1px;
+	font-size:20px;
 }
 .card.fullskin > .info.red {
 	color: #a82424;

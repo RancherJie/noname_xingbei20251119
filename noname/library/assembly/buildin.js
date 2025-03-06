@@ -21,7 +21,7 @@ export const checkBegin = {};
 export const checkCard = {
 	updateTempname(card, event) {
 		if (lib.config.cardtempname === "off") return;
-		if (get.name(card) === card.name && get.is.sameNature(get.nature(card), card.nature, true)) return;
+		if (get.name(card) === card.name && get.is.sameNature(get.duYou(card), card.duYou, true)) return;
 		const node = ui.create.cardTempName(card);
 		if (lib.config.cardtempname !== "default") node.classList.remove("vertical");
 	},

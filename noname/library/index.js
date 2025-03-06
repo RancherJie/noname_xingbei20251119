@@ -35,7 +35,7 @@ export class Library {
 	updateURLS = updateURLs;
 	updateURL = updateURLs.github;
 	mirrorURL = updateURLs.coding;
-	hallURL = "";
+	hallURL = "ssyy.tech:58080";
 	assetURL = assetURL;
 	userAgent = userAgentLowerCase;
 	characterDefaultPicturePath = characterDefaultPicturePath;
@@ -169,17 +169,10 @@ export class Library {
 	ondb2 = [];
 	chatHistory = [];
 	emotionList = {
+		xingBei_emotion: 27,
 		xiaowu_emotion: 14,
-		xiaokuo_emotion: 8,
-		shibing_emotion: 15,
-		guojia_emotion: 20,
-		zhenji_emotion: 20,
-		xiaosha_emotion: 20,
-		xiaotao_emotion: 20,
-		xiaojiu_emotion: 20,
 		biexiao_emotion: 18,
 		chaijun_emotion: 43,
-		huangdou_emotion: 20,
 		maoshu_emotion: 18,
 	};
 	animate = {
@@ -695,12 +688,13 @@ export class Library {
 		general: {
 			name: "通用",
 			config: {
+				/*
 				mount_combine: {
 					name: "合并坐骑栏",
 					init: false,
 					intro: "<li>将进攻坐骑栏和防御坐骑栏合并为同一个位置（重启后生效）。",
 					restart: true,
-				},
+				},*/
 				low_performance: {
 					name: "流畅模式",
 					init: false,
@@ -764,6 +758,7 @@ export class Library {
 					unfrequent: true,
 					intro: "当候选目标只有1个时，点击目标后无需再点击确认",
 				},
+				/*
 				skip_shan: {
 					name: "无闪自动取消",
 					init: false,
@@ -787,7 +782,7 @@ export class Library {
 					init: false,
 					intro: "双方阵营明确的模式中（如对决），敌方角色濒死时不询问出桃",
 					unfrequent: true,
-				},
+				},*/
 				enable_drag: {
 					name: "启用拖拽",
 					init: true,
@@ -1024,10 +1019,10 @@ export class Library {
 					},
 				},
 				doubleclick_intro: {
-					name: "双击显示武将资料",
+					name: "双击显示角色资料",
 					init: true,
 					unfrequent: true,
-					intro: "双击武将头像后显示其资料卡",
+					intro: "双击角色头像后显示其资料卡",
 				},
 				video: {
 					name: "保存录像",
@@ -1154,7 +1149,7 @@ export class Library {
 				},
 				extension_source: {
 					name: "获取扩展地址",
-					init: "GitHub Proxy",
+					init: "GitHub",
 					unfrequent: true,
 					item: {},
 					intro: () => `获取在线扩展时的地址。当前地址：${document.createElement("br").outerHTML}${lib.config.extension_sources[lib.config.extension_source]}`,
@@ -1376,13 +1371,13 @@ export class Library {
 				},
 				layout: {
 					name: "布局",
-					init: "mobile",
+					init: "nova",
 					item: {
 						//default:'旧版',
-						newlayout: "对称",
-						mobile: "默认",
-						long: "宽屏",
-						long2: "手杀",
+						//newlayout: "对称",
+						//mobile: "默认",
+						//long: "宽屏",
+						//long2: "手杀",
 						nova: "新版",
 					},
 					visualMenu: function (node, link) {
@@ -1878,7 +1873,7 @@ export class Library {
 				change_skin: {
 					name: "开启换肤",
 					init: true,
-					intro: "在武将的右键菜单中换肤，皮肤可在选项-文件-图片文件-皮肤图片中添加",
+					intro: "在角色的右键菜单中换肤，皮肤可在选项-文件-图片文件-皮肤图片中添加",
 				},
 				change_skin_auto: {
 					name: "自动换肤",
@@ -1907,7 +1902,7 @@ export class Library {
 						wood: "木纹",
 						music: "音乐",
 						simple: "原版",
-						ol: "手杀",
+						//ol: "手杀",
 						// new:'新版',
 						custom: "自定",
 						default: "默认",
@@ -2033,15 +2028,16 @@ export class Library {
 				cardback_style: {
 					name: "卡背样式",
 					intro: "设置背面朝上的卡牌的样式",
-					init: "default",
+					init: "xingBei",
 					item: {
 						// wood:'木纹',
 						// music:'音乐',
-						official: "原版",
+						//official: "原版",
 						// new:'新版',
-						feicheng: "废城",
-						liusha: "流沙",
-						ol: "手杀",
+						//feicheng: "废城",
+						//liusha: "流沙",
+						//ol: "手杀",
+						xingBei: "星杯",
 						custom: "自定",
 						default: "默认",
 					},
@@ -2108,7 +2104,7 @@ export class Library {
 								node.style.backgroundImage = "none";
 								node.className = "button character dashedmenubutton";
 								break;
-							}
+							}/*
 							case "new":
 								node.className = "button character";
 								node.setBackgroundImage("theme/style/cardback/image/new.png");
@@ -2137,6 +2133,11 @@ export class Library {
 							case "music":
 								node.className = "button card fullskin";
 								node.setBackgroundImage("theme/music/wood3.png");
+								break;
+							*/
+							case "xingBei":
+								node.className = "button card fullskin";
+								node.setBackgroundImage("theme/style/cardback/image/xingBei1.png");
 								break;
 						}
 						if (link == "custom") {
@@ -2200,17 +2201,18 @@ export class Library {
 					unfrequent: true,
 				},
 				hp_style: {
-					name: "体力条样式",
-					init: "ol",
+					name: "治疗样式",
+					init: "default",
 					item: {
 						default: "默认",
 						// official:'勾玉',
-						emotion: "表情",
-						glass: "勾玉",
-						round: "国战",
-						ol: "手杀",
-						xinglass: "双鱼",
-						xinround: "OL",
+						//emotion: "表情",
+						//glass: "勾玉",
+						//round: "国战",
+						//ol: "手杀",
+						//xinglass: "双鱼",
+						//xinround: "OL",
+						xingBei: "星杯",
 						custom: "自定",
 					},
 					visualBar: function (node, item, create, switcher) {
@@ -2677,12 +2679,12 @@ export class Library {
 				},
 				autoborder_count: {
 					name: "边框升级方式",
-					intro: "<strong>击杀</strong> 每击杀一人，边框提升两级<br><strong>伤害</strong> 每造成两点伤害，边框提升一级<br><strong>混合</strong> 击杀量决定边框颜色，伤害量决定边框装饰",
-					init: "kill",
+					intro: "<strong>伤害</strong> 每造成两点伤害，边框提升一级<br>",
+					init: "damage",
 					item: {
-						kill: "击杀",
+						//kill: "击杀",
 						damage: "伤害",
-						mix: "混合",
+						//mix: "混合",
 					},
 					unfrequent: true,
 				},
@@ -3142,12 +3144,13 @@ export class Library {
 						lib.init.cssstyles();
 					},
 				},
+				/*
 				equip_span: {
 					name: "装备牌占位",
 					intro: "打开后，没有装备的装备区将在装备栏占据空白位置。",
 					init: false,
 					unfrequent: false,
-				},
+				},*/
 				fold_card: {
 					name: "折叠手牌",
 					init: true,
@@ -3205,14 +3208,15 @@ export class Library {
 					init: true,
 					unfrequent: true,
 				},
+				/*
 				jiu_effect: {
 					name: "喝酒效果",
 					init: true,
 					unfrequent: true,
-				},
+				},*/
 				animation: {
 					name: "游戏特效",
-					intro: "开启后出现属性伤害、回复体力等情况时会显示动画",
+					intro: "开启后出现部分情况时会显示动画",
 					init: false,
 					unfrequent: true,
 				},
@@ -3224,7 +3228,7 @@ export class Library {
 				},
 				skill_animation_type: {
 					name: "技能特效",
-					intro: "开启后觉醒技、限定技将显示全屏文字",
+					intro: "开启后发动部分技能将显示全屏文字",
 					init: "default",
 					unfrequent: true,
 					item: {
@@ -3233,6 +3237,7 @@ export class Library {
 						off: "关闭",
 					},
 				},
+				/*
 				die_move: {
 					name: "阵亡效果",
 					intro: "阵亡后武将的显示效果",
@@ -3243,7 +3248,7 @@ export class Library {
 						move: "移动",
 						flip: "翻面",
 					},
-				},
+				},*/
 				target_shake: {
 					name: "目标效果",
 					intro: "一名玩家成为卡牌或技能的目标时的显示效果",
@@ -3276,12 +3281,12 @@ export class Library {
 				link_style2: {
 					name: "横置样式",
 					intro: "设置角色被横置时的样式",
-					init: "chain",
+					init: "rotate",
 					unfrequent: true,
 					item: {
-						chain: "铁索",
+						//chain: "铁索",
 						rotate: "横置",
-						mark: "标记",
+						//mark: "标记",
 					},
 					onclick(style) {
 						var list = [];
@@ -3391,7 +3396,7 @@ export class Library {
 					}
 				},*/
 				buttoncharacter_style: {
-					name: "选将样式",
+					name: "选角样式",
 					init: "default",
 					item: {
 						default: "默认",
@@ -3401,7 +3406,7 @@ export class Library {
 					unfrequent: true,
 				},
 				buttoncharacter_prefix: {
-					name: "武将前缀",
+					name: "角色前缀",
 					init: "default",
 					item: {
 						default: "默认",
@@ -3587,11 +3592,13 @@ export class Library {
 			name: "显示",
 			config: {
 				update: function (config, map) {
-					if (lib.config.mode == "versus" || lib.config.mode == "chess" || lib.config.mode == "tafang" || lib.config.mode == "boss") {
+					//if (lib.config.mode == "versus" || lib.config.mode == "chess" || lib.config.mode == "tafang" || lib.config.mode == "boss") {
+						/*
+					if (lib.config.mode == "xingBei" || lib.config.mode == "chess" || lib.config.mode == "tafang" || lib.config.mode == "boss") {
 						map.show_handcardbutton.show();
 					} else {
 						map.show_handcardbutton.hide();
-					}
+					}*/
 					if (lib.config.touchscreen) {
 						map.pop_logv.hide();
 					} else {
@@ -3633,13 +3640,14 @@ export class Library {
 						map.popequip.hide();
 						map.filternode_button.hide();
 					}
+					/*
 					if (lib.config.show_card_prompt) {
 						map.hide_card_prompt_basic.show();
 						map.hide_card_prompt_equip.show();
 					} else {
 						map.hide_card_prompt_basic.hide();
 						map.hide_card_prompt_equip.hide();
-					}
+					}*/
 					if (lib.config.show_log != "off") {
 						map.clear_log.show();
 					} else {
@@ -3658,11 +3666,12 @@ export class Library {
 						map.show_time.show();
 						map.watchface.hide();
 					}
+					/*
 					if (lib.config.show_deckMonitor) {
 						map.show_deckMonitor_online.show();
 					} else {
 						map.show_deckMonitor_online.hide();
-					}
+					}*/
 					if (lib.config.show_extensionmaker) {
 						map.show_extensionshare.show();
 					} else {
@@ -3833,6 +3842,7 @@ export class Library {
 					init: true,
 					unfrequent: true,
 				},
+				/*
 				hide_card_prompt_basic: {
 					name: "隐藏基本牌信息",
 					intro: "不显示基本牌名称",
@@ -3844,7 +3854,7 @@ export class Library {
 					intro: "不显示装备牌名称",
 					init: false,
 					unfrequent: true,
-				},
+				},*/
 				show_phase_prompt: {
 					name: "显示阶段信息",
 					intro: "在当前回合不同阶段开始时显示阶段名称",
@@ -3942,7 +3952,7 @@ export class Library {
 					},
 				},
 				show_rarity: {
-					name: "显示武将评级",
+					name: "显示角色评级",
 					init: false,
 					intro: "仅供娱乐，重启后生效",
 					unfrequent: true,
@@ -3950,6 +3960,7 @@ export class Library {
 						game.saveConfig("show_rarity", bool);
 					},
 				},
+				/*
 				mark_identity_style: {
 					name: "标记身份操作",
 					intro: "设置单击身份按钮时的操作",
@@ -3959,10 +3970,10 @@ export class Library {
 						menu: "菜单",
 						click: "单击",
 					},
-				},
+				},*/
 				character_dialog_tool: {
-					name: "自由选将显示",
-					intro: "点击自由选将时默认显示的条目",
+					name: "自由选角显示",
+					intro: "点击自由选角时默认显示的条目",
 					init: "最近",
 					item: {
 						收藏: "收藏",
@@ -3972,8 +3983,8 @@ export class Library {
 					unfrequent: true,
 				},
 				recent_character_number: {
-					name: "最近使用武将",
-					intro: "自由选将对话框中最近使用武将的数量",
+					name: "最近使用角色",
+					intro: "自由选角对话框中最近使用角色的数量",
 					init: "12",
 					item: {
 						5: "5",
@@ -3986,8 +3997,8 @@ export class Library {
 					unfrequent: true,
 				},
 				showMax_character_number: {
-					name: "最大武将数显示",
-					intro: "设置自由选将对话框一页显示的最大武将数<br><span class=firetext>注意事项：<br><li>更改此选项后，需要重启游戏以使用新选项配置<br><li>推荐将此选项设置为偏小数值，可降低加载过多武将时导致的性能损耗</span>",
+					name: "最大角色数显示",
+					intro: "设置自由选角对话框一页显示的最大角色数<br><span class=firetext>注意事项：<br><li>更改此选项后，需要重启游戏以使用新选项配置<br><li>推荐将此选项设置为偏小数值，可降低加载过多角色时导致的性能损耗</span>",
 					init: "10",
 					item: {
 						5: "5",
@@ -4008,13 +4019,13 @@ export class Library {
 				},
 				filternode_button: {
 					name: "触屏筛选按钮",
-					intro: "设置自由选将对话框中筛选按钮的样式",
+					intro: "设置自由选角对话框中筛选按钮的样式",
 					init: true,
 					unfrequent: true,
 				},
 				show_charactercard: {
-					name: "显示武将资料",
-					intro: "在武将界面单击时弹出武将资料卡",
+					name: "显示角色资料",
+					intro: "在角色界面单击时弹出角色资料卡",
 					init: true,
 					unfrequent: true,
 				},
@@ -4032,19 +4043,20 @@ export class Library {
 				},
 				show_favourite_menu: {
 					name: "显示收藏菜单",
-					intro: "在选项-武将中显示收藏一栏",
+					intro: "在选项-角色中显示收藏一栏",
 					init: true,
 					unfrequent: true,
 				},
 				show_ban_menu: {
-					name: "显示禁将菜单",
-					intro: "在选项-武将中显示禁将一栏",
+					name: "显示禁角菜单",
+					intro: "在选项-角色中显示禁角一栏",
 					init: true,
 					unfrequent: true,
 				},
+				
 				right_range: {
-					name: "显示距离信息",
-					intro: "在角色的右键菜单中显示距离等信息",
+					name: "显示角色信息",
+					intro: "在角色的右键菜单中显示信息",
 					init: true,
 					unfrequent: true,
 				},
@@ -4184,6 +4196,7 @@ export class Library {
 						}
 					},
 				},
+				/*
 				show_handcardbutton: {
 					name: "显示手牌按钮",
 					init: true,
@@ -4192,6 +4205,8 @@ export class Library {
 						game.saveConfig("show_handcardbutton", bool);
 					},
 				},
+				*/
+				/*
 				show_giveup: {
 					name: "显示投降按钮",
 					init: true,
@@ -4199,7 +4214,7 @@ export class Library {
 					onclick(bool) {
 						game.saveConfig("show_giveup", bool);
 					},
-				},
+				},*/
 				show_tip: {
 					name: "显示tip标记",
 					init: false,
@@ -4209,6 +4224,7 @@ export class Library {
 						document.documentElement.style.setProperty("--tip-display", bool ? "flex" : "none");
 					},
 				},
+				/*
 				show_deckMonitor: {
 					name: "显示记牌器",
 					init: true,
@@ -4244,7 +4260,8 @@ export class Library {
 							game.saveConfig("show_deckMonitor_online", bool);
 						}
 					},
-				},
+				},*/
+				/*
 				show_wuxie: {
 					name: "显示无懈按钮",
 					intro: "在右上角显示不询问无懈",
@@ -4263,12 +4280,13 @@ export class Library {
 					name: "无懈按钮靠左",
 					init: true,
 					unfrequent: true,
-				},
+				},*/
+				/*
 				show_discardpile: {
 					name: "暂停时显示弃牌堆",
 					init: false,
 					unfrequent: true,
-				},
+				},*/
 				show_extensionmaker: {
 					name: "显示制作扩展",
 					init: true,
@@ -4280,8 +4298,8 @@ export class Library {
 					unfrequent: true,
 				},
 				show_characternamepinyin: {
-					name: "显示武将名注解",
-					intro: "在武将资料卡显示武将名及其注解、性别、势力、体力等信息",
+					name: "显示角色名注解",
+					intro: "在角色资料卡显示角色名及其注解、性别、势力、体力等信息",
 					init: "showPinyin",
 					unfrequent: true,
 					item: {
@@ -4328,7 +4346,7 @@ export class Library {
 				},
 				show_skillnamepinyin: {
 					name: "显示技能名注解",
-					intro: "在武将资料卡显示技能名注解",
+					intro: "在角色资料卡显示技能名注解",
 					get init() {
 						return lib.configMenu.view.config.show_characternamepinyin.init;
 					},
@@ -4399,10 +4417,11 @@ export class Library {
 					name: "人物配音",
 					init: true,
 				},
+				/*
 				equip_audio: {
 					name: "装备配音",
 					init: false,
-				},
+				},*/
 				repeat_audio: {
 					name: "播放重复语音",
 					init: false,
@@ -4714,313 +4733,244 @@ export class Library {
 		},
 	};
 	extensionMenu = {
-		cardpile: {
-			enable: {
-				name: "开启",
-				init: false,
-				restart: true,
-			},
-			intro: {
-				name: "将杀闪等牌在牌堆中的比例维持在与军争牌堆相同，防止开启扩展包后被过多地稀释",
-				clear: true,
-				nopointer: true,
-			},
-			sha: {
-				name: "杀",
-				init: "1",
-				item: {
-					1: "补充全部",
-					0.5: "补充一半",
-					0: "不补充",
-				},
-			},
-			huosha: {
-				name: "火杀",
-				init: "1",
-				item: {
-					1: "补充全部",
-					0.5: "补充一半",
-					0: "不补充",
-				},
-			},
-			leisha: {
-				name: "雷杀",
-				init: "1",
-				item: {
-					1: "补充全部",
-					0.5: "补充一半",
-					0: "不补充",
-				},
-			},
-			shan: {
-				name: "闪",
-				init: "1",
-				item: {
-					1: "补充全部",
-					0.5: "补充一半",
-					0: "不补充",
-				},
-			},
-			tao: {
-				name: "桃",
-				init: "0",
-				item: {
-					1: "补充全部",
-					0.5: "补充一半",
-					0: "不补充",
-				},
-			},
-			jiu: {
-				name: "酒",
-				init: "0",
-				item: {
-					1: "补充全部",
-					0.5: "补充一半",
-					0: "不补充",
-				},
-			},
-			wuxie: {
-				name: "无懈可击",
-				init: "0.5",
-				item: {
-					1: "补充全部",
-					0.5: "补充一半",
-					0: "不补充",
-				},
-			},
-			nanman: {
-				name: "南蛮入侵",
-				init: "0",
-				item: {
-					1: "补充全部",
-					0.5: "补充一半",
-					0: "不补充",
-				},
-			},
-			wanjian: {
-				name: "万箭齐发",
-				init: "0",
-				item: {
-					1: "补充全部",
-					0.5: "补充一半",
-					0: "不补充",
-				},
-			},
-			guohe: {
-				name: "过河拆桥",
-				init: "0",
-				item: {
-					1: "补充全部",
-					0.5: "补充一半",
-					0: "不补充",
-				},
-			},
-			shunshou: {
-				name: "顺手牵羊",
-				init: "0",
-				item: {
-					1: "补充全部",
-					0.5: "补充一半",
-					0: "不补充",
-				},
-			},
-			tiesuo: {
-				name: "铁索连环",
-				init: "0",
-				item: {
-					1: "补充全部",
-					0.5: "补充一半",
-					0: "不补充",
-				},
-			},
-			hide: {
-				name: "隐藏此扩展",
-				clear: true,
-				onclick() {
-					if (this.firstChild.innerHTML == "隐藏此扩展") {
-						this.firstChild.innerHTML = "此扩展将在重启后隐藏";
-						lib.config.hiddenPlayPack.add("cardpile");
-						if (!lib.config.prompt_hidepack) {
-							alert("隐藏的扩展包可通过选项-其它-重置隐藏内容恢复");
-							game.saveConfig("prompt_hidepack", true);
-						}
-					} else {
-						this.firstChild.innerHTML = "隐藏此扩展";
-						lib.config.hiddenPlayPack.remove("cardpile");
-					}
-					game.saveConfig("hiddenPlayPack", lib.config.hiddenPlayPack);
-				},
-			},
-		},
-		boss: {
-			enable: {
-				name: "开启",
-				init: false,
-				restart: true,
-				onswitch: function (bool) {
-					if (bool) {
-						var storage = { boss: {}, versus: {}, translate: {} };
-						var loadversus = function () {
-							game.loadModeAsync("versus", function (mode) {
-								for (var i in mode.translate) {
-									storage.translate[i] = mode.translate[i];
-								}
-								for (var i in mode.jiangeboss) {
-									if (mode.jiangeboss[i].isBossAllowed) {
-										storage.versus[i] = mode.jiangeboss[i];
-									}
-								}
-								localStorage.setItem("boss_storage_playpackconfig", JSON.stringify(storage));
-							});
-						};
-						game.loadModeAsync("boss", function (mode) {
-							for (var i in mode.translate) {
-								storage.translate[i] = mode.translate[i];
-							}
-							for (var i in mode.characterPack.mode_boss) {
-								if (mode.characterPack.mode_boss[i].isBossAllowed) {
-									storage.boss[i] = mode.characterPack.mode_boss[i];
-								}
-							}
-							loadversus();
-						});
-					} else {
-						localStorage.removeItem("boss_storage_playpackconfig");
-					}
-				},
-			},
-			intro: {
-				name: "将剑阁和挑战模式的武将添加到其它模式",
-				clear: true,
-				nopointer: true,
-			},
-			enableai: {
-				name: "随机选将可用",
-				init: false,
-			},
-			hide: {
-				name: "隐藏此扩展",
-				clear: true,
-				onclick() {
-					if (this.firstChild.innerHTML == "隐藏此扩展") {
-						this.firstChild.innerHTML = "此扩展将在重启后隐藏";
-						lib.config.hiddenPlayPack.add("boss");
-						if (!lib.config.prompt_hidepack) {
-							alert("隐藏的扩展包可通过选项-其它-重置隐藏内容恢复");
-							game.saveConfig("prompt_hidepack", true);
-						}
-					} else {
-						this.firstChild.innerHTML = "隐藏此扩展";
-						lib.config.hiddenPlayPack.remove("boss");
-					}
-					game.saveConfig("hiddenPlayPack", lib.config.hiddenPlayPack);
-				},
-			},
-		},
-		wuxing: {
-			enable: {
-				name: "开启",
-				init: false,
-				restart: true,
-			},
-			intro: {
-				name: "每名角色和部分卡牌在游戏开始时随机获得一个属性",
-				clear: true,
-				nopointer: true,
-			},
-			num: {
-				name: "带属性卡牌",
-				init: "0.3",
-				item: {
-					0.1: "10%",
-					0.2: "20%",
-					0.3: "30%",
-					0.5: "50%",
-				},
-			},
-			hide: {
-				name: "隐藏此扩展",
-				clear: true,
-				onclick() {
-					if (this.firstChild.innerHTML == "隐藏此扩展") {
-						this.firstChild.innerHTML = "此扩展将在重启后隐藏";
-						lib.config.hiddenPlayPack.add("wuxing");
-						if (!lib.config.prompt_hidepack) {
-							alert("隐藏的扩展包可通过选项-其它-重置隐藏内容恢复");
-							game.saveConfig("prompt_hidepack", true);
-						}
-					} else {
-						this.firstChild.innerHTML = "隐藏此扩展";
-						lib.config.hiddenPlayPack.remove("wuxing");
-					}
-					game.saveConfig("hiddenPlayPack", lib.config.hiddenPlayPack);
-				},
-			},
-		},
-		coin: {
-			enable: {
-				name: "开启",
-				init: false,
-				restart: true,
-				onclick(bool) {
-					if (bool) {
-						lib.config.plays.add("coin");
-					} else {
-						lib.config.plays.remove("coin");
-					}
-					game.saveConfig("plays", lib.config.plays);
-				},
-			},
-			intro: {
-				name: "每完成一次对局，可获得一定数量的金币；金币可用于购买游戏特效",
-				clear: true,
-				nopointer: true,
-			},
-			display: {
-				name: "金币显示",
-				init: "text",
-				item: {
-					symbol: "符号",
-					text: "文字",
-				},
-				onclick(item) {
-					game.saveConfig("coin_display_playpackconfig", item);
-					if (game.changeCoin) game.changeCoin(0);
-				},
-			},
-			canvas: {
-				name: "特效置顶",
-				init: false,
-				onclick(bool) {
-					game.saveConfig("coin_canvas_playpackconfig", bool);
-					if (bool) {
-						ui.window.classList.add("canvas_top");
-					} else {
-						ui.window.classList.remove("canvas_top");
-					}
-				},
-			},
-			hide: {
-				name: "隐藏此扩展",
-				clear: true,
-				onclick() {
-					if (this.firstChild.innerHTML == "隐藏此扩展") {
-						this.firstChild.innerHTML = "此扩展将在重启后隐藏";
-						lib.config.hiddenPlayPack.add("coin");
-						if (!lib.config.prompt_hidepack) {
-							alert("隐藏的扩展包可通过选项-其它-重置隐藏内容恢复");
-							game.saveConfig("prompt_hidepack", true);
-						}
-					} else {
-						this.firstChild.innerHTML = "隐藏此扩展";
-						lib.config.hiddenPlayPack.remove("coin");
-					}
-					game.saveConfig("hiddenPlayPack", lib.config.hiddenPlayPack);
-				},
-			},
-		},
+
 	};
 	mode = {
+		xingBei:{
+			name:'星杯传说',
+			connect:{
+				update:function(config,map){
+					if(config.connect_choose_mode=='多选1'){
+						map.connect_choose_number.show();
+					}else{
+						map.connect_choose_number.hide();
+					}
+					if(config.connect_choose_mode=='CM02'){
+						map.connect_team_sequence.hide();
+					}else{
+						map.connect_team_sequence.show();
+					}
+					if(config.connect_choose_mode=='BP01' || config.connect_choose_mode=='BP02'){
+						map.connect_BPchoose_number.show();
+					}else{
+						map.connect_BPchoose_number.hide();
+					}
+					if(config.connect_versus_mode=='4v4'){
+						map.connect_team_sequence.hide();
+						map.connect_choose_mode.hide();
+						map.connect_choose_number.show();
+						map.connect_BPchoose_number.hide();
+					}else{
+						map.connect_team_sequence.show();
+						map.connect_choose_mode.show();
+					}	
+				},
+				connect_remark:{
+					name:'房间备注',
+					input:true,
+					frequent:true,
+				},
+				connect_versus_mode:{
+					name:'游戏模式',
+					init:'2v2',
+					item:{
+						//'1v1':'1v1',
+						'2v2':'2v2',
+						'3v3':'3v3',
+						'4v4':'4v4',
+						//'guandu':'官渡',
+					},
+					frequent:true
+				},
+				connect_choose_mode:{
+					name:"选角模式",
+					init:"多选1",
+					item:{
+						'多选1':'多选1',
+						'CM02':"CM02",
+						'BP01':"BP01",
+						'BP02':"BP02",
+					},
+					frequent:true,
+				},
+				connect_team_sequence:{
+					name:"队伍顺序",
+					init:"random",
+					item:{
+						'random':'随机',
+						'crossed':'交叉',
+						'near':'临近',
+						'CM':"CM",
+					},
+					frequent:true,
+				},
+				connect_choose_number:{
+					name:'候选角色数',
+					init:3,
+					item:{
+						1:'1',
+						2:'2',
+						3:'3',
+						4:'4',
+						5:'5',
+					},
+					frequent:true,
+				},
+				connect_BPchoose_number:{
+					name:'可选角色数',
+					init:16,
+					item:{
+						12:'12',
+						16:'16',
+						20:'20',
+					},
+					frequent:true,
+				},
+				connect_viewHandcard:{
+					name:'可见队友手牌',
+					init:false,
+					onclick:function(bool){
+						game.saveConfig('connect_viewHandcard',bool,this._link.config.mode);
+					},
+					frequent:true,
+				},
+				connect_chooseSide:{
+					name:'手动选择队伍',
+					init:false,
+					onclick:function(bool){
+						game.saveConfig('connect_chooseSide',bool,this._link.config.mode);
+					},
+					frequent:true,
+				},
+			},
+			config:{
+				update:function(config,map){
+					if(config.choose_mode=='多选1'){
+						map.choose_number.show();
+					}else{
+						map.choose_number.hide();
+					}
+					if(config.versus_mode=='four'){
+						map.team_sequence.hide();
+					}else{
+						map.team_sequence.show();
+					}
+				},
+				versus_mode:{
+					name:'游戏模式',
+					init:'two',
+					item:{
+						three:'3v3',
+						two:'2v2',
+						four:'4v4',
+					},
+					restart:true,
+					frequent:true,
+				},
+				choose_mode:{
+					name:"选角模式",
+					init:"多选1",
+					item:{
+						'多选1':'多选1',
+						//'CM02':"CM02",
+					},
+					frequent:true,
+				},
+				team_sequence:{
+					name:"队伍顺序",
+					init:"random",
+					item:{
+						random:'随机',
+						crossed:'交叉',
+						near:'临近',
+						CM:"CM",
+					},
+					frequent:true,
+				},
+				choose_number:{
+					name:'候选角色数',
+					init:3,
+					item:{
+						1:'1',
+						2:'2',
+						3:'3',
+						5:'5',
+						7:'7',
+						10:'10',
+					},
+					frequent:true,
+				},
+				viewHandcard:{
+					name:'可见队友手牌',
+					init:false,
+					onclick:function(bool){
+						game.saveConfig('viewHandcard',bool,this._link.config.mode);
+					},
+					frequent:true,
+				},
+				phaseswap:{
+					name:'多控',
+					init:false,
+					onclick:function(bool){
+						game.saveConfig('phaseswap',bool,this._link.config.mode);
+						if(!ui.create.cheat2) return;
+						if(get.mode()!=this._link.config.mode||!_status.event.getParent().showConfig&&!_status.event.showConfig) return;
+						if(!ui.cheat2&&get.config('phaseswap')) ui.create.cheat2();
+						else if(ui.cheat2&&!get.config('phaseswap')){
+							ui.cheat2.close();
+							delete ui.cheat2;
+						}
+					},
+					frequent:true,
+				},
+
+				free_choose:{
+					name:'自由选角',
+					init:true,
+					onclick:function(bool){
+						game.saveConfig('free_choose',bool,this._link.config.mode);
+						if(!ui.create.cheat2) return;
+						if(get.mode()!=this._link.config.mode||!_status.event.getParent().showConfig&&!_status.event.showConfig) return;
+						if(!ui.cheat2&&get.config('free_choose')) ui.create.cheat2();
+						else if(ui.cheat2&&!get.config('free_choose')){
+							ui.cheat2.close();
+							delete ui.cheat2;
+						}
+					}
+				},
+				change_identity:{
+					name:'自由选择座位',
+					init:true,
+					onclick:function(bool){
+						game.saveConfig('change_identity',bool,this._link.config.mode);
+						if(!_status.event.getParent().showConfig&&!_status.event.showConfig) return;
+
+						var dialog;
+						if(ui.cheat2&&ui.cheat2.backup) dialog=ui.cheat2.backup;
+						else dialog=_status.event.dialog;
+						if(!_status.brawl||!_status.brawl.noAddSetting){
+							if(!dialog.querySelector('table')&&get.config('change_identity')) _status.event.getParent().addSetting(dialog);
+							else _status.event.getParent().removeSetting(dialog);
+						}
+						ui.update();
+					}
+				},
+				change_choice:{
+					name:'开启换角卡',
+					init:true,
+					onclick:function(bool){
+						game.saveConfig('change_choice',bool,this._link.config.mode);
+						if(!_status.event.getParent().showConfig&&!_status.event.showConfig) return;
+						if(!ui.cheat&&get.config('change_choice')) ui.create.cheat();
+						else if(ui.cheat&&!get.config('change_choice')){
+							ui.cheat.close();
+							delete ui.cheat;
+						}
+					},
+				},
+			}
+		},
+
 		identity: {
 			name: "身份",
 			connect: {
@@ -6711,7 +6661,7 @@ export class Library {
 				},
 				connect_avatar: {
 					name: "联机头像",
-					init: "caocao",
+					init: "fengZhiJianSheng",
 					item: {},
 					frequent: true,
 					onclick(item) {
@@ -7752,37 +7702,16 @@ export class Library {
 		关于游戏: '<div style="margin:10px">关于无名杀</div><ul style="margin-top:0"><li>无名杀官方发布地址仅有GitHub仓库！<br><a href="https://github.com/libnoname/noname">点击前往Github仓库</a><br><li>无名杀基于GPLv3开源协议。<br><a href="https://www.gnu.org/licenses/gpl-3.0.html">点击查看GPLv3协议</a><br><li>其他所有的所谓“无名杀”社群（包括但不限于绝大多数“官方”QQ群、QQ频道等）均为玩家自发组织，与无名杀官方无关！',
 		游戏操作: "<ul><li>长按/鼠标悬停/右键单击显示信息。<li>触屏模式中，双指点击切换暂停；下划显示菜单，上划切换托管。<li>键盘快捷键<br>" + "<table><tr><td>A<td>切换托管<tr><td>W<td>切换不询问无懈<tr><td>空格<td>暂停</table><li>编辑牌堆<br>在卡牌包中修改牌堆后，将自动创建一个临时牌堆，在所有模式中共用，当保存当前牌堆后，临时牌堆被清除。每个模式可设置不同的已保存牌堆，设置的牌堆优先级大于临时牌堆。</ul>",
 		游戏命令:
-			'<div style="margin:10px">变量名</div><ul style="margin-top:0"><li>场上角色<br>game.players<li>阵亡角色<br>game.dead' +
 			"<li>玩家<br>game.me<li>玩家的上/下家<br>game.me.previous/next" +
-			"<li>玩家的上/下家（含阵亡）<br>game.me.previousSeat/<br>nextSeat" +
 			"<li>牌堆<br>ui.cardPile<li>弃牌堆<br>ui.discardPile</ul>" +
-			'<div style="margin:10px">角色属性</div><ul style="margin-top:0"><li>体力值<br>player.hp' +
-			'<li>体力上限<br>player.maxHp<li>身份<br>player.identity<li>手牌<br>player.getCards("h")<li>装备牌<br>player.getCards("e")<li>判定牌<br>player.getCards("j")' +
-			"<li>是否存活/横置/翻面<br>player.isAlive()/<br>isLinked()/<br>isTurnedOver()</ul>" +
+			'手牌<br>player.getCards("h")<li>' +
+			"<li>是否横置<br>player.isLinked()<li>" +
 			'<div style="margin:10px">角色操作</div><ul style="margin-top:0"><li>受到伤害<br>player.damage(source,<br>num)' +
-			"<li>回复体力<br>player.recover(num)<li>摸牌<br>player.draw(num)<li>获得牌<br>player.gain(cards)<li>弃牌<br>player.discard(cards)" +
-			"<li>使用卡牌<br>player.useCard(card,<br>targets)<li>死亡<br>player.die()<li>复活<br>player.revive(hp)</ul>" +
+			"摸牌<br>player.draw(num)<li>获得牌<br>player.gain(cards)<li>弃牌<br>player.discard(cards)" +
+			"<li>使用卡牌<br>player.useCard(card,<br>targets)" +
 			'<div style="margin:10px">游戏操作</div><ul style="margin-top:0"><li>在命令框中输出结果<br>game.print(str)<li>清除命令框中的内容<br>cls<li>上一条/下一条输入的内容<br>up/down<li>游戏结束<br>game.over(bool)' +
 			"<li>角色资料<br>lib.character<li>卡牌资料<br>lib.card</ul>",
-		游戏名词:
-			"<ul><li>智囊：无名杀默认为过河拆桥/无懈可击/无中生有/洞烛先机。牌堆中没有的智囊牌会被过滤。可在卡牌设置中自行增减。若没有可用的智囊，则改为随机选取的三种锦囊牌的牌名。" +
-			"<li>仁库：部分武将使用的游戏外共通区域。至多包含六张牌。当有新牌注入后，若牌数超过上限，则将最早进入仁库的溢出牌置入弃牌堆。" +
-			"<li>护甲：和体力类似，每点护甲可抵挡1点伤害，但不影响手牌上限。" +
-			"<li>随从：通过技能获得，拥有独立的技能、手牌区和装备区（共享判定区），出场时替代主武将的位置；随从死亡时自动切换回主武将。" +
-			"<li>发现：从三张随机亮出的牌中选择一张，若无特殊说明，则获得此牌。" +
-			"<li>蓄能技：发动时可以增大黄色的数字。若如此做，红色数字于技能的结算过程中改为原来的两倍。" +
-			"<li>施法：若技能的拥有者未拥有等待执行的同名“施法”效果，则其可以发动“施法”技能。其须选择声明一个数字X（X∈[1, 3]），在此之后的第X个回合结束时，其执行“施法”效果，且效果中的数字X视为与技能发动者声明的X相同。" +
-			"<li>共同拼点：一种特殊的拼点结算。发起者与被指定的拼点目标同时亮出拼点牌，进行一次决算：其中拼点牌点数唯一最大的角色赢，其他角色均没赢；若没有点数唯一最大的拼点牌，则所有角色拼点均没赢。" +
-			"<li>强令：若一名角色拥有带有“强令”的技能，则该技能的发动时机为“出牌阶段开始时”。若技能拥有者发动该技能，其须发布“强令”给一名其他角色，并在对应技能的时间节点加以判断目标角色是否成功完成该强令所要求的任务条件。成功或失败则会根据技能效果执行不同结算流程。" +
-			"<li>摧坚：若一名角色拥有带有“摧坚”的技能，则该技能的发动时机为“当你使用伤害牌指定第一个目标后”。你可以对其中一个目标发动“摧坚”技能，然后执行后续效果。其中，后续效果里的X等于该目标的非charlotte技能的数量。" +
-			"<li>妄行：一种特殊的选项。若一名角色拥有带有“妄行”的技能，则该技能触发时，你须选择声明一个数字X（X∈{1,2,3,4}），技能后续中的X即为你选择的数字。选择完毕后，你获得如下效果：回合结束时，你选择一项：1.弃置X张牌；2.减1点体力上限。" +
-			"<li>搏击：若一名角色拥有带有“搏击”的技能，则当该搏击技能触发时，若本次技能的目标角色在你攻击范围内，且你在其攻击范围内，则你执行技能主体效果时，同时额外执行“搏击”后的额外效果。" +
-			"<li>游击：若一名角色拥有带有“游击”的技能，则当该游击技能执行至“游击”处时，若本次技能的目标角色在你的攻击范围内，且你不在其攻击范围内，则你可以执行“游击”后的额外效果。" +
-			"<li>激昂：一名角色发动“昂扬技”标签技能后，此技能失效，直至从此刻至满足此技能“激昂”条件后。" +
-			"<li>历战：一名角色的回合结束时，若本回合发动过拥有历战效果的技能，则对此技能效果的进行等同于发动次数的永久可叠加式升级或修改。" +
-			"<li>同心：若技能拥有同心效果，则拥有该技能的角色可在回合开始时与其他角色同心直到自己下回合开始（默认为选择一名角色同心），选择的角色称为“同心角色”。拥有同心效果的技能发动后，技能发动者先执行同心效果。然后若有与其同心的角色，这些角色也依次执行同心效果。" +
-			"<li>持恒技：拥有此标签的技能不会被其他技能无效。" +
-			"",
+		游戏名词:''
 	};
 	/**
 	 * @type {import('path')}
@@ -9231,7 +9160,7 @@ export class Library {
 				}
 			}
 			if (!targets.length) targets.push(game.me);
-			source.useCard(game.createCard(card.name, card.suit, card.number, card.nature), targets);
+			source.useCard(game.createCard(card.name, card.xiBie, card.mingGe, card.duYou), targets);
 		},
 		/**
 		 * 输出每个强度的武将数量、每个武将包的每个强度的武将数量、每个武将对应的id和翻译
@@ -9374,36 +9303,24 @@ export class Library {
 		 * ```
 		 */
 		gn(name) {
-			let nature = null;
-			let suit = null;
-			let suits = ["club", "spade", "diamond", "heart"];
-			for (let i = 0; i < suits.length; i++) {
-				if (name.startsWith(suits[i])) {
-					suit = suits[i];
-					name = name.slice(suits[i].length);
+			let xiBei = null;
+			let xiBeiList = ["huo", "feng", "shui", "di",'an','lei'];
+			let nameList = ['huoYanZhan','fengShenZhan','shuiLianZhan','diLieZhan','anMie','leiGuangZhan'];
+			let mingGeList = ['sheng','xue','yong','ji','huan'];
+			for (let i = 0; i < xiBeiList.length; i++) {
+				if (name.startsWith(xiBeiList[i])) {
+					xiBei = xiBei[i];
+					name = nameList.slice(xiBeiList[i].length);
 					break;
 				}
 			}
-			if (name.startsWith("red")) {
-				name = name.slice(3);
-				suit = ["diamond", "heart"].randomGet();
-			}
-			if (name.startsWith("black")) {
-				name = name.slice(5);
-				suit = ["spade", "club"].randomGet();
-			}
+			
+			let mingGe = mingGeList.randomGet();
 
-			if (name == "huosha") {
-				name = "sha";
-				nature = "fire";
-			} else if (name == "leisha") {
-				name = "sha";
-				nature = "thunder";
-			}
 			if (!lib.card[name]) {
 				return null;
 			}
-			return game.createCard(name, suit, null, nature);
+			return game.createCard(name, xiBei, mingGe);
 		},
 		/**
 		 * 指定的玩家或自己立即获得诸葛连弩，青龙刀，八卦阵，的卢，赤兔，木牛
@@ -9594,28 +9511,28 @@ export class Library {
 		legend: "传说",
 		default: "默认",
 		special: "特殊",
-		zhenfa: "阵法",
-		aozhan: "鏖战",
+		//zhenfa: "阵法",
+		//aozhan: "鏖战",
 		mode_derivation_card_config: "衍生",
 		mode_banned_card_config: "禁卡",
 		mode_favourite_character_config: "收藏",
-		mode_banned_character_config: "禁将",
-		heart: "♥︎",
-		diamond: "♦︎",
-		spade: "♠︎",
-		club: "♣︎",
-		none: "◈",
-		ghujia: "护甲",
-		ghujia_bg: "甲",
-		heart2: "红桃",
-		diamond2: "方片",
-		spade2: "黑桃",
-		club2: "梅花",
-		none2: "无色",
-		red: "红色",
-		black: "黑色",
-		red2: "红色",
-		black2: "黑色",
+		mode_banned_character_config: "禁角",
+		//heart: "♥︎",
+		//diamond: "♦︎",
+		//spade: "♠︎",
+		//club: "♣︎",
+		//none: "◈",
+		//ghujia: "护甲",
+		//ghujia_bg: "甲",
+		//heart2: "红桃",
+		//diamond2: "方片",
+		//spade2: "黑桃",
+		//club2: "梅花",
+		//none2: "无色",
+		//red: "红色",
+		//black: "黑色",
+		//red2: "红色",
+		//black2: "黑色",
 		ok: "确定",
 		ok2: "确定",
 		cancel: "取消",
@@ -9627,6 +9544,7 @@ export class Library {
 		_out: "无效",
 		agree: "同意",
 		refuse: "拒绝",
+		/*
 		fire: "火",
 		thunder: "雷",
 		poison: "毒",
@@ -9652,6 +9570,7 @@ export class Library {
 		key2: "KEY",
 		jin2: "晋朝",
 		ye2: "野心家",
+		*/
 		double2: "双势力",
 		male: "男",
 		female: "女",
@@ -9660,10 +9579,11 @@ export class Library {
 		draw_card: "摸牌",
 		discard_card: "弃牌",
 		take_damage: "受伤害",
-		reset_character: "复原武将牌",
+		reset_character: "复原角色牌",
 		recover_hp: "回复体力",
 		lose_hp: "失去体力",
 		get_damage: "受伤害",
+		/*
 		weiColor: "#b0d0e2",
 		shuColor: "#ffddb9",
 		wuColor: "#b2d9a9",
@@ -9677,7 +9597,9 @@ export class Library {
 		trick: "锦囊",
 		delay: "延时锦囊",
 		special_delay: "技能机制",
+		*/
 		character: "角色",
+		/*
 		revive: "复活",
 		equip1: "武器",
 		equip2: "防具",
@@ -9686,6 +9608,7 @@ export class Library {
 		equip4: "攻击马",
 		equip5: "宝物",
 		equip6: "特殊装备",
+		*/
 		zero: "零",
 		one: "一",
 		two: "二",
@@ -9708,6 +9631,7 @@ export class Library {
 		baiban: "白板",
 		_disableJudge: "判定区",
 
+		xingBei_emotion: "星杯表情",
 		xiaowu_emotion: "小无表情",
 		guojia_emotion: "郭嘉表情",
 		zhenji_emotion: "甄姬表情",
@@ -9724,7 +9648,7 @@ export class Library {
 		pause: "暂停",
 		config: "选项",
 		auto: "托管",
-
+		/*
 		unknown: "未知",
 		unknown0: "一号位",
 		unknown1: "二号位",
@@ -9805,13 +9729,32 @@ export class Library {
 		expandedSlots: "扩展装备栏",
 		stratagem_fury: "怒气",
 		_stratagem_add_buff: "强化",
-
+		*/
 		phaseZhunbei: "准备阶段",
 		phaseJudge: "判定阶段",
 		phaseDraw: "摸牌阶段",
 		phaseUse: "出牌阶段",
 		phaseDiscard: "弃牌阶段",
 		phaseJieshu: "结束阶段",
+
+		xueGroup:"鲜血议会",
+		yongGroup:"咏歌城",
+		jiGroup:"战技殿堂",
+		shengGroup:"神圣教廷",
+		huanGroup:"幻影联盟",
+		xueGroupColor:"#7D0101",
+		yongGroupColor:"#C6813C",
+		jiGroupColor:"#A5BE7D",
+		shengGroupColor:"#22A3C3",
+		huanGroupColor:"#635282",
+
+		zhiLiao:"治疗",
+
+		'3xing':'3星',
+		'3.5xing':'3.5星',
+		'4xing':'4星',
+		'4.5xing':'4.5星',
+		'5xing':'5星',
 	};
 
 	experimental = Experimental;
@@ -10174,6 +10117,9 @@ export class Library {
 			)
 				return false;
 			if (info.filter && !info.filter(event, player, triggername, indexedData)) return false;
+			//xingBei 针对启动技能，如果已经启动过了，就不能再启动了
+			if(info.type=='qiDong' && event.qiDongGuo) return false;
+
 			if (event._notrigger.includes(player) && !lib.skill.global.includes(skill)) return false;
 			if (info.usable !== undefined && player.hasSkill("counttrigger") && player.storage.counttrigger) {
 				let num = info.usable;
@@ -10217,11 +10163,18 @@ export class Library {
 				if (typeof enable === "function") return enable(event);
 				if (Array.isArray(enable)) return enable.some(i => checkEnable(i));
 				if (enable === "phaseUse") return event.type === "phase";
+				if(enable==='wuFaXingDong') return event.firstAction === true;//专门无法行动设置启用参数
+				if(enable==='gongJiOrFaShu') return event.name=='gongJi' || event.name=='faShu' || event.name=='gongJiOrFaShu';//专门攻击或法术设置启用参数
+				if(enable=='faShu') return event.name=='faShu' || event.name=='gongJiOrFaShu';//专门法术设置启用参数
+				if(enable=='gongJi') return event.name=='gongJi' || event.name=='gongJiOrFaShu';//专门攻击设置启用参数
 				if (typeof enable === "string") return enable === event.name;
 				return false;
 			};
 			if (!checkEnable(info.enable)) return false;
 			if (info.filter && !info.filter(event, player)) return false;
+			//teShu 针对特殊行动，如果不能使用特殊行动，就不能
+			if(info.type=='teShu' && event.canTeShu==false) return false;
+
 			if (info.viewAs && typeof info.viewAs !== "function") {
 				if (info.viewAsFilter && info.viewAsFilter(player) === false) return false;
 				if (event.filterCard && !event.filterCard(get.autoViewAs(info.viewAs, "unsure"), player, event)) return false;
@@ -10622,15 +10575,15 @@ export class Library {
 		group: function (a, b) {
 			const groupSort = function (group) {
 				let base = 0;
-				if (group == "wei") return base;
-				if (group == "shu") return base + 1;
-				if (group == "wu") return base + 2;
-				if (group == "qun") return base + 3;
-				if (group == "jin") return base + 4;
-				if (group == "key") return base + 5;
-				if (group == "western") return base + 6;
-				if (group == "shen") return base + 7;
-				if (group == "double") return base + 7;
+				if (group == "ji") return base;
+				if (group == "huan") return base + 1;
+				if (group == "xue") return base + 2;
+				if (group == "yong") return base + 3;
+				if (group == "sheng") return base + 4;
+				//if (group == "key") return base + 5;
+				//if (group == "western") return base + 6;
+				//if (group == "shen") return base + 7;
+				//if (group == "double") return base + 7;
 				return base + 9;
 			};
 			return groupSort(a) - groupSort(b);
@@ -10642,14 +10595,11 @@ export class Library {
 				let base = 0;
 				if (get.is.double(name, true)) base = 9;
 				const group = info[1];
-				if (group == "shen") return base - 1;
-				if (group == "wei") return base;
-				if (group == "shu") return base + 1;
-				if (group == "wu") return base + 2;
-				if (group == "qun") return base + 3;
-				if (group == "jin") return base + 4;
-				if (group == "key") return base + 5;
-				if (group == "western") return base + 6;
+				if (group == "jiGroup") return base;
+				if (group == "huanGroup") return base + 1;
+				if (group == "xueGroup") return base + 2;
+				if (group == "yongGroup") return base + 3;
+				if (group == "shengGroup") return base + 4;
 				return base + 7;
 			};
 			const del = groupSort(a) - groupSort(b);
@@ -10682,14 +10632,15 @@ export class Library {
 			var typeSort = function (name) {
 				var type = get.type(name);
 				if (!type) return 10;
-				if (type == "basic") return -1;
-				if (type == "trick") return 0;
+				if (type == "gongJi") return -1;
+				if (type == "faShu") return 0;
+				/*
 				if (type == "delay") return 1;
 				if (type == "equip") {
 					var type2 = get.subtype(name, false);
 					if (type2 && type2.slice) return 1 + parseInt(type2.slice(5) || 7);
 					return 8.5;
-				}
+				}*/
 				return 9;
 			};
 			var del = typeSort(a) - typeSort(b);
@@ -10746,10 +10697,10 @@ export class Library {
 			return i2.priority - i1.priority;
 		},
 		number: function (a, b) {
-			return get.number(a) - get.number(b);
+			return get.mingGe(a) - get.mingGe(b);
 		},
 		number2: function (a, b) {
-			return get.number(b) - get.number(a);
+			return get.mingGe(b) - get.mingGe(a);
 		},
 		capt: function (a, b) {
 			var aa = a,
@@ -10796,6 +10747,7 @@ export class Library {
 	 * }}
 	 */
 	skill = {
+		/*
 		stratagem_fury: {
 			marktext: "🔥",
 			intro: {
@@ -10829,7 +10781,7 @@ export class Library {
 								event.filterCard(
 									new lib.element.VCard({
 										name: availableName,
-										nature: get.nature(card, player),
+										nature: get.duYou(card, player),
 										isCard: true,
 										cards: [card],
 									}),
@@ -10906,7 +10858,7 @@ export class Library {
 						filterCard(
 							new lib.element.VCard({
 								name: availableName,
-								nature: get.nature(card, player),
+								nature: get.duYou(card, player),
 								isCard: true,
 								cards: [card],
 							}),
@@ -10922,9 +10874,9 @@ export class Library {
 					return cardName
 						? new lib.element.VCard({
 								name: cardName,
-								nature: get.nature(cards[0], player),
+								nature: get.duYou(cards[0], player),
 								suit: get.suit(cards[0], player),
-								number: get.number(cards[0], player),
+								number: get.mingGe(cards[0], player),
 								isCard: true,
 								cards: [cards[0]],
 								storage: {
@@ -11350,10 +11302,10 @@ export class Library {
 							if (typeof card.number != "number") return;
 							var history = player.getHistory("useCard", evt => evt.isPhaseUsing());
 							if (history.length == 0) return num + 10 * (14 - card.number);
-							var num = get.number(history[0].card);
+							var num = get.mingGe(history[0].card);
 							if (!num) return;
 							for (var i = 1; i < history.length; i++) {
-								var num2 = get.number(history[i].card);
+								var num2 = get.mingGe(history[i].card);
 								if (!num2 || num2 <= num) return;
 								num = num2;
 							}
@@ -11377,13 +11329,13 @@ export class Library {
 						});
 						var goon = true;
 						for (var i = 0; i < list.length; i++) {
-							var num = get.number(list[i].card);
+							var num = get.mingGe(list[i].card);
 							if (typeof num != "number") {
 								goon = false;
 								break;
 							}
 							if (i > 0) {
-								var num2 = get.number(list[i - 1].card);
+								var num2 = get.mingGe(list[i - 1].card);
 								if (typeof num2 != "number" || num2 >= num) {
 									goon = false;
 									break;
@@ -11618,7 +11570,7 @@ export class Library {
 				return "是否防止即将对" + get.translation(event.player) + "造成的伤害，改为令其减少" + get.cnNumber(event.num) + "点体力上限？";
 			},
 			filter: function (event, player) {
-				return event.hasNature("kami") && event.num > 0;
+				return event.hasDuYou("kami") && event.num > 0;
 			},
 			ruleSkill: true,
 			check: function (event, player) {
@@ -11632,6 +11584,7 @@ export class Library {
 				trigger.player.loseMaxHp(trigger.num).source = player;
 			},
 		},
+		*/
 		_doublegroup_choice: {
 			trigger: {
 				global: "gameStart",
@@ -11653,6 +11606,7 @@ export class Library {
 				player.changeGroup(result.control);
 			},
 		},
+		/*
 		aozhan: {
 			charlotte: true,
 			mod: {
@@ -11719,7 +11673,7 @@ export class Library {
 					sub: true,
 				},
 			},
-		},
+		},*/
 		global: [],
 		globalmap: {},
 		storage: {},
@@ -11729,6 +11683,7 @@ export class Library {
 		zhuSkill: {},
 		land_used: {},
 		unequip: { ai: { unequip: true } },
+		/*
 		subplayer: {
 			trigger: { player: "dieBefore" },
 			forced: true,
@@ -11756,7 +11711,7 @@ export class Library {
 			ai: {
 				nosave: true,
 			},
-		},
+		},*/
 		autoswap: {
 			firstDo: true,
 			trigger: {
@@ -11773,6 +11728,7 @@ export class Library {
 				return true;
 			},
 			content: function () {
+				console.log("autoswap", trigger);
 				game.swapPlayerAuto(player);
 			},
 		},
@@ -11893,6 +11849,7 @@ export class Library {
 				},
 			},
 		},
+		/*
 		qianxing: {
 			mark: true,
 			nopop: true,
@@ -11951,6 +11908,7 @@ export class Library {
 			},
 			markimage: "image/card/shield.png",
 		},
+		*/
 		counttrigger: {
 			trigger: { global: "phaseAfter" },
 			silent: true,
@@ -12116,6 +12074,98 @@ export class Library {
 				}, trigger.discardid);
 			},
 		},
+		/*
+		_save: {
+			//trigger:{source:'dying2',player:'dying2'},
+			priority: 5,
+			forced: true,
+			popup: false,
+			silent: true,
+			filter: function (event, player) {
+				//if(!event.player.isDying()) return false;
+				//if(event.source&&event.source.isIn()&&event.source!=player) return false;
+				//return true;
+				return false;
+			},
+			content: function () {
+				"step 0";
+				event.dying = trigger.player;
+				if (!event.acted) event.acted = [];
+				"step 1";
+				if (trigger.player.isDead()) {
+					event.finish();
+					return;
+				}
+				event.acted.push(player);
+				var str = get.translation(trigger.player) + "濒死，是否帮助？";
+				var str2 = "当前体力：" + trigger.player.hp;
+				if (lib.config.tao_enemy && event.dying.side != player.side && lib.config.mode != "identity" && lib.config.mode != "guozhan" && !event.dying.hasSkillTag("revertsave")) {
+					event._result = { bool: false };
+				} else if (player.canSave(event.dying)) {
+					player.chooseToUse({
+						filterCard: function (card, player, event) {
+							event = event || _status.event;
+							return lib.filter.cardSavable(card, player, event.dying);
+						},
+						filterTarget: function (card, player, target) {
+							if (target != _status.event.dying) return false;
+							if (!card) return false;
+							var info = get.info(card);
+							if (!info.singleCard || ui.selected.targets.length == 0) {
+								var mod = game.checkMod(card, player, target, "unchanged", "playerEnabled", player);
+								if (mod == false) return false;
+								var mod = game.checkMod(card, player, target, "unchanged", "targetEnabled", target);
+								if (mod != "unchanged") return mod;
+							}
+							return true;
+						},
+						prompt: str,
+						prompt2: str2,
+						ai1: function (card) {
+							if (typeof card == "string") {
+								var info = get.info(card);
+								if (info.ai && info.ai.order) {
+									if (typeof info.ai.order == "number") {
+										return info.ai.order;
+									} else if (typeof info.ai.order == "function") {
+										return info.ai.order();
+									}
+								}
+							}
+							return 1;
+						},
+						ai2: function (target) {
+							let effect_use = get.effect_use(target);
+							if (effect_use <= 0) return effect_use;
+							return get.effect(target);
+						},
+						type: "dying",
+						targetRequired: true,
+						dying: event.dying,
+					});
+				} else {
+					event._result = { bool: false };
+				}
+				"step 2";
+				if (result.bool) {
+					var player = trigger.player;
+					if (player.hp <= 0 && !trigger.nodying && !player.nodying && player.isAlive() && !player.isOut() && !player.removed) event.goto(0);
+					else trigger.untrigger();
+				} else {
+					for (var i = 0; i < 20; i++) {
+						if (event.acted.includes(event.player.next)) {
+							break;
+						} else {
+							event.player = event.player.next;
+							if (!event.player.isOut()) {
+								event.goto(1);
+								break;
+							}
+						}
+					}
+				}
+			},
+		},
 		_ismin: {
 			mod: {
 				cardEnabled: function (card, player) {
@@ -12214,16 +12264,18 @@ export class Library {
 			silent: true,
 			filter: function (event, player) {
 				var evt = event.getParent();
-				return evt && evt.name == "damage" && evt.hasNature("linked") && player.isLinked();
+				return evt && evt.name == "damage" && evt.hasDuYou("linked") && player.isLinked();
 			},
 			content: function () {
 				player.link();
 				if (trigger.getParent().notLink()) trigger.getParent().lianhuanable = true;
 			},
 		},
+		*/
 		/**
 		 * @deprecated
 		 */
+		/*
 		_chongzhu: {
 			get filter() {
 				return lib.skill._recasting.filter;
@@ -12249,7 +12301,7 @@ export class Library {
 			set ai(ai) {
 				lib.skill._recasting.ai = ai;
 			},
-		},
+		},*/
 	};
 	/** @type {Object<string, import("./element/character.js").Character>} */
 	character = new Proxy(
@@ -12279,6 +12331,7 @@ export class Library {
 			 * @this {import("./element/client.js").Client}
 			 */
 			init(version, config, banned_info) {
+				/*
 				var show_deckMonitor = false;
 				if (lib.config.show_deckMonitor && lib.config.show_deckMonitor_online) {
 					show_deckMonitor = true;
@@ -12289,7 +12342,7 @@ export class Library {
 					} else {
 						ui.deckMonitor.style.display = "none";
 					}
-				}, show_deckMonitor);
+				}, show_deckMonitor);*/
 				this.onlineKey = config.onlineKey;
 				var banBlacklist = lib.config.banBlacklist === undefined ? [] : lib.config.banBlacklist;
 				if (lib.node.banned.includes(banned_info) || banBlacklist.includes(config.onlineKey)) {
@@ -13184,7 +13237,8 @@ export class Library {
 						player.identityShown = info.identityShown;
 						player.hp = info.hp;
 						player.maxHp = info.maxHp;
-						player.hujia = info.hujia;
+						player.zhiLiao = info.zhiLiao;
+						//player.hujia = info.hujia;
 						player.sex = info.sex;
 						player.side = info.side;
 						player.phaseNumber = info.phaseNumber;
@@ -13486,14 +13540,15 @@ export class Library {
 		[12, "Q"],
 		[13, "K"],
 	]);
-	suit = ["club", "spade", "diamond", "heart"];
-	suits = ["club", "spade", "diamond", "heart", "none"];
+	xiBie = ["an", "huo", "di", "feng","lei",'shui',"guang"];
+	xiBies = ["an", "huo", "di", "feng","lei",'shui',"guang","none"];
+	mingGe = ["ji", "xue", "huan", "sheng", "yong"];
 	color = {
 		black: ["club", "spade"],
 		red: ["diamond", "heart"],
 		none: ["none"],
 	};
-	group = ["wei", "shu", "wu", "qun", "jin", "shen"];
+	group = ["jiGroup", "xueGroup", "huanGroup", "shengGroup", "yongGroup"];
 	//数值代表各元素在名称中排列的先后顺序
 	nature = new Map([
 		["fire", 20],
@@ -14179,12 +14234,19 @@ export class Library {
 			},
 		],
 		[
-			"TW谋",
+			"三版",
 			{
-				/**
-				 * @returns {string}
-				 */
-				getSpan: () => `${get.prefixSpan("TW")}${get.prefixSpan("谋")}`,
+				showName: "三",
+				color: "#ffff99",
+				nature: "firemm",
+			},
+		],
+		[
+			"四版",
+			{
+				showName: "四",
+				color: "#ffff99",
+				nature: "firemm",
 			},
 		],
 	]);

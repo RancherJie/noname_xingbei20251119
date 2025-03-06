@@ -44,7 +44,7 @@
 		/* JavaScript Support */
 		"allowJs": true,                                  /* Allow JavaScript files to be a part of your program. Use the `checkJS` option to get errors from these files. */
 		"allowImportingTsExtensions": true,
-		"checkJs": true,                                  /* Enable error reporting in type-checked JavaScript files. */
+		"checkJs": false,                                  /* Enable error reporting in type-checked JavaScript files. */
 		// "maxNodeModuleJsDepth": 1,                        /* Specify the maximum folder depth used for checking JavaScript files from `node_modules`. Only applicable with `allowJs`. */
 		/* Emit */
 		"declaration": true,                              /* Generate .d.ts files from TypeScript and JavaScript files in your project. */
@@ -68,7 +68,7 @@
 		// "noEmitHelpers": true,                            /* Disable generating custom helper functions like `__extends` in compiled output. */
 		"noEmitOnError": false,                            /* Disable emitting files if any type checking errors are reported. */
 		// "preserveConstEnums": true,                       /* Disable erasing `const enum` declarations in generated code. */
-		"declarationDir": "./node_modules/@types/noname-typings/nonameModules",                           /* Specify the output directory for generated declaration files. */
+		"declarationDir": "./node_modules/@types/noname-typings/nonameModules/js",                           /* Specify the output directory for generated declaration files. */
 		// "preserveValueImports": true,                     /* Preserve unused imported values in the JavaScript output that would otherwise be removed. */
 		/* Interop Constraints */
 		// "isolatedModules": true,                          /* Ensure that each file can be safely transpiled without relying on other imports. */

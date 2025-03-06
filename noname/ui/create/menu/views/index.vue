@@ -42,7 +42,7 @@ export default {
 					startMenuData,
 				],
 				["选项", startMenuData],
-				["武将", startMenuData],
+				["角色", startMenuData],
 				["卡牌", startMenuData],
 				["扩展", startMenuData],
 				["其它", startMenuData],

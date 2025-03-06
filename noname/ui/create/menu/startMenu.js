@@ -96,11 +96,12 @@ export const startMenuData = {
 					init: false,
 					connect: true,
 				};
+				/*
 				if (!infoconfig.connect_mount_combine) infoconfig.connect_mount_combine = {
 					name: "合并坐骑栏",
 					init: false,
 					connect: true,
-				};
+				};*/
 			}
 			for (const key in infoconfig) {
 				if (key === "update") {

@@ -760,8 +760,8 @@ export const extensionMenu = function (connectMenu) {
 						skillList.firstChild.appendChild(node);
 					}
 
-					toggle.innerHTML = "编辑武将 <div>&gt;</div>";
-					editnode.innerHTML = "编辑武将";
+					toggle.innerHTML = "编辑角色 <div>&gt;</div>";
+					editnode.innerHTML = "编辑角色";
 					editnode.classList.remove("disabled");
 					delnode.innerHTML = "删除";
 					delnode.button = this;
@@ -879,7 +879,7 @@ export const extensionMenu = function (connectMenu) {
 					audio: {},
 				};
 				var newCharacter;
-				var toggle = ui.create.div(".config.more.on", "创建武将 <div>&gt;</div>", page, function () {
+				var toggle = ui.create.div(".config.more.on", "创建角色 <div>&gt;</div>", page, function () {
 					this.classList.toggle("on");
 					if (this.classList.contains("on")) {
 						newCharacter.style.display = "";
@@ -904,8 +904,8 @@ export const extensionMenu = function (connectMenu) {
 						inputs[i].value = "";
 					}
 					skillList.firstChild.innerHTML = "";
-					toggle.innerHTML = "创建武将 <div>&gt;</div>";
-					editnode.innerHTML = "创建武将";
+					toggle.innerHTML = "创建角色 <div>&gt;</div>";
+					editnode.innerHTML = "创建角色";
 					editnode.classList.add("disabled");
 					delnode.innerHTML = "取消";
 					delete delnode.button;
@@ -1023,7 +1023,7 @@ export const extensionMenu = function (connectMenu) {
 				dieaudiocancel.style.display = "none";
 				var options = ui.create.div(
 					".add_skill.options",
-					'<span>主公<input type="checkbox" name="zhu"></span><span>BOSS<input type="checkbox" name="boss"></span><span>仅点将可用<input type="checkbox" name="forbidai"></span><br><span>隐匿技<input type="checkbox" name="hiddenSkill"></span><br>',
+					'<span>主公<input type="checkbox" name="zhu"></span><span>BOSS<input type="checkbox" name="boss"></span><span>仅点角可用<input type="checkbox" name="forbidai"></span><br><span>隐匿技<input type="checkbox" name="hiddenSkill"></span><br>',
 					newCharacter
 				);
 				var addSkill = ui.create.div(".add_skill", "添加技能<br>", newCharacter);
@@ -1099,7 +1099,7 @@ export const extensionMenu = function (connectMenu) {
 							return alert(
 								selectname.value == "current_extension"
 									? "此扩展还未添加技能"
-									: "此武将没有技能可添加"
+									: "此角色没有技能可添加"
 							);
 					}
 					//无技能时
@@ -1145,12 +1145,12 @@ export const extensionMenu = function (connectMenu) {
 				ui.create.div(skillList);
 				var editnode = ui.create.div(
 					".menubutton.large.disabled",
-					"创建武将",
+					"创建角色",
 					ui.create.div(skillList),
 					function () {
 						var name = page.querySelector("input.new_name").value;
 						if (!name) {
-							alert("请填写武将名\n提示：武将名格式为id+|+中文名，其中id必须惟一");
+							alert("请填写角色名\n提示：角色名格式为id+|+中文名，其中id必须惟一");
 							return;
 						}
 						name = name.split("|");
@@ -1160,7 +1160,7 @@ export const extensionMenu = function (connectMenu) {
 							if (currentButton.link != name) {
 								if (lib.character[name] || page.content.pack.character[name]) {
 									alert(
-										"武将名与现有武将重复，请更改\n提示：武将名格式为id+|+中文名，其中id必须惟一"
+										"角色名与现有角色重复，请更改\n提示：角色名格式为id+|+中文名，其中id必须惟一"
 									);
 									return;
 								}
@@ -1174,7 +1174,7 @@ export const extensionMenu = function (connectMenu) {
 						} else {
 							if (lib.character[name] || page.content.pack.character[name]) {
 								alert(
-									"武将名与现有武将重复，请更改\n提示：武将名格式为id+|+中文名，其中id必须惟一"
+									"角色名与现有角色重复，请更改\n提示：角色名格式为id+|+中文名，其中id必须惟一"
 								);
 								return;
 							}
@@ -1183,7 +1183,7 @@ export const extensionMenu = function (connectMenu) {
 							page.content.image[name + ".jpg"] = fakeme.image;
 						} else {
 							if (!page.content.image[name + ".jpg"]) {
-								alert("请选择武将头像");
+								alert("请选择角色头像");
 								return;
 							}
 						}
@@ -1221,7 +1221,7 @@ export const extensionMenu = function (connectMenu) {
 
 						page.content.pack.translate[name] = translate;
 						page.content.pack.character[name] = [sexes.value, groups.value, hp, skills, tags];
-						if (this.innerHTML == "创建武将") {
+						if (this.innerHTML == "创建角色") {
 							createButton(name, fakeme.image64);
 						} else if (currentButton) {
 							if (fakeme.image64) {
@@ -2532,7 +2532,7 @@ export const extensionMenu = function (connectMenu) {
 					page,
 					clickCode,
 					"content",
-					"function(config,pack){\n    \n}\n\n/*\n函数执行时机为游戏数据加载之后、界面加载之前\n参数1扩展选项（见选项代码）；参数2为扩展定义的武将、卡牌和技能等（可在此函数中修改）\n导出时本段代码中的换行、缩进以及注释将被清除\n*/"
+					"function(config,pack){\n    \n}\n\n/*\n函数执行时机为游戏数据加载之后、界面加载之前\n参数1扩展选项（见选项代码）；参数2为扩展定义的角色、卡牌和技能等（可在此函数中修改）\n导出时本段代码中的换行、缩进以及注释将被清除\n*/"
 				);
 				createCode(
 					"预",
@@ -2569,7 +2569,7 @@ export const extensionMenu = function (connectMenu) {
 
 				return page;
 			})();
-			createDash("将", "编辑武将", dash1);
+			createDash("角", "编辑角色", dash1);
 			createDash("卡", "编辑卡牌", dash2);
 			createDash("技", "编辑技能", dash3);
 			createDash("码", "编辑代码", dash4);

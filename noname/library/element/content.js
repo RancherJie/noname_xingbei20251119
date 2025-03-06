@@ -234,7 +234,7 @@ export const Content = {
 		const newPairs = event.newPairs;
 		for (let name of newPairs) {
 			if (!lib.character[name]) {
-				console.warn(`警告：Player[${player.name}]试图将武将牌变更为不存在的武将:`, name);
+				console.warn(`警告：Player[${player.name}]试图将角色牌变更为不存在的角色:`, name);
 				return;
 			}
 		}
@@ -2832,14 +2832,14 @@ export const Content = {
 			}
 			player.storage[current].hp = player.hp;
 			player.storage[current].maxHp = player.maxHp;
-			player.storage[current].hujia = player.hujia;
+			player.storage[current].zhiLiao = player.zhiLiao;
 			player.storage[current].hs = player.getCards("h");
 			player.storage[current].es = player.getVCards("e");
 			player.lose(player.getCards("he"), ui.special)._triggered = null;
 
 			var cfg = player.storage[event.directresult];
 			player.storage.subplayer.name2 = event.directresult;
-			player.reinit(current, event.directresult, [cfg.hp, cfg.maxHp, cfg.hujia]);
+			player.reinit(current, event.directresult, [cfg.hp, cfg.maxHp, cfg.zhiLiao]);
 			if (player.name == event.directresult || player.name1 == event.directresult) {
 				const groupx = cfg.group || "qun";
 				player.group = groupx;
@@ -2859,12 +2859,12 @@ export const Content = {
 			} else {
 				player.storage[current].hp = player.hp;
 				player.storage[current].maxHp = player.maxHp;
-				player.storage[current].hujia = player.hujia;
+				player.storage[current].zhiLiao = player.zhiLiao;
 				player.storage[current].hs = player.getCards("h");
 				player.storage[current].es = player.getVCards("e");
 				player.lose(player.getCards("he"), ui.special)._triggered = null;
 			}
-			player.reinit(current, player.storage.subplayer.name, [player.storage.subplayer.hp, player.storage.subplayer.maxHp, player.storage.subplayer.hujia]);
+			player.reinit(current, player.storage.subplayer.name, [player.storage.subplayer.hp, player.storage.subplayer.maxHp, player.storage.subplayer.zhiLiao]);
 			if (goon) {
 				const groupx = player.storage.subplayer.group || "qun";
 				player.group = groupx;
@@ -2932,7 +2932,7 @@ export const Content = {
 				name2: event.directresult,
 				hp: player.hp,
 				maxHp: player.maxHp,
-				hujia: player.hujia,
+				zhiLiao: player.zhiLiao,
 				skills: event.list.slice(0),
 				hs: player.getCards("h"),
 				es: player.getVCards("e"),
@@ -2940,7 +2940,7 @@ export const Content = {
 				group: player.group,
 			};
 			player.removeSkill(event.list);
-			player.reinit(source, name, [cfg.hp, cfg.maxHp, cfg.hujia]);
+			player.reinit(source, name, [cfg.hp, cfg.maxHp, cfg.zhiLiao]);
 			if (player.name == name || player.name1 == name) {
 				const groupx = cfg.group || "qun";
 				player.group = groupx;
@@ -3277,6 +3277,15 @@ export const Content = {
 							if (event.choice.length === 1 || skillsToChoose.length === 1) {
 								event.current = currentChoice;
 							} else {
+								let bool=false;
+								for(let i=0;i<skillsToChoose.length;i++){
+									let info=get.info(skillsToChoose[i]);
+									if(info.silent||info.forced||info.direct){
+										bool=true;
+										break;
+									}
+								}
+								if(!bool) skillsToChoose.push("cancel2");
 								const currentPlayer = currentChoice.player;
 								const next = currentPlayer.chooseControl(skillsToChoose);
 								next.set("prompt", "选择下一个触发的技能");
@@ -3286,7 +3295,9 @@ export const Content = {
 								const { result } = await next;
 								//千里走单骑全责，把敌人打死可能会打断chooseControl
 								if (result) {
-									event.current = usableSkills.find(info => info.skill == result.control);
+									if(result.control=="cancel2"){
+										return;
+									}else event.current = usableSkills.find(info => info.skill == result.control);
 								} else {
 									event.current = usableSkills[0];
 								}
@@ -3731,7 +3742,8 @@ export const Content = {
 		game.phaseNumber++;
 		//初始化阶段列表
 		if (!event.phaseList) {
-			event.phaseList = ["phaseZhunbei", "phaseJudge", "phaseDraw", "phaseUse", "phaseDiscard", "phaseJieshu"];
+			//event.phaseList = ["phaseZhunbei", "phaseJudge", "phaseDraw", "phaseUse", "phaseDiscard", "phaseJieshu"];
+			event.phaseList = [ "phaseUse"];
 		}
 		if (typeof event.num != "number") {
 			event.num = 0;
@@ -3772,6 +3784,7 @@ export const Content = {
 			changeHp: [],
 			everything: [],
 		});
+
 		var players = game.players.slice(0).concat(game.dead);
 		for (var i = 0; i < players.length; i++) {
 			var current = players[i];
@@ -3847,9 +3860,10 @@ export const Content = {
 				game.send("server", "config", lib.configOL);
 			}
 		}
-		game.log();
+		game.log('————————————————————');
 		game.log(player, "的回合开始");
 		player._noVibrate = true;
+		/*
 		if (get.config("identity_mode") != "zhong" && get.config("identity_mode") != "purple" && !_status.connectMode) {
 			var num;
 			switch (get.config("auto_identity")) {
@@ -3874,7 +3888,7 @@ export const Content = {
 				_status.identityShown = true;
 				game.showIdentity(false);
 			}
-		}
+		}*/
 		player.ai.tempIgnore = [];
 		if (ui.land && ui.land.player == player) {
 			game.addVideo("destroyLand");
@@ -4151,6 +4165,7 @@ export const Content = {
 		if (_status.noclearcountdown !== "direct") _status.noclearcountdown = true;
 		if (event.type == "phase") {
 			if (event.isMine()) {
+				/*
 				event.endButton = ui.create.control("结束回合", "stayleft", function () {
 					var evt = _status.event;
 					if (evt.name != "chooseToUse" || evt.type != "phase") return;
@@ -4158,7 +4173,7 @@ export const Content = {
 						ui.click.cancel();
 					}
 					ui.click.cancel();
-				});
+				});*/
 				event.fakeforce = true;
 			} else {
 				if (event.endButton) {
@@ -5131,9 +5146,9 @@ export const Content = {
 		event.lose_list = lose_list;
 		event.getNum = function (card) {
 			for (var i of event.lose_list) {
-				if (i[1].contains && i[1].includes(card)) return get.number(card, i[0]);
+				if (i[1].contains && i[1].includes(card)) return get.mingGe(card, i[0]);
 			}
-			return get.number(card, false);
+			return get.mingGe(card, false);
 		};
 		event.cardlist = cards;
 		event.cards = cards;
@@ -5314,9 +5329,9 @@ export const Content = {
 		event.lose_list = lose_list;
 		event.getNum = function (card) {
 			for (var i of event.lose_list) {
-				if (i[1].contains && i[1].includes(card)) return get.number(card, i[0]);
+				if (i[1].contains && i[1].includes(card)) return get.mingGe(card, i[0]);
 			}
-			return get.number(card, false);
+			return get.mingGe(card, false);
 		};
 		event.cardlist = cards;
 		event.cards = cards;
@@ -5484,9 +5499,9 @@ export const Content = {
 		game.log(target, "的拼点牌为", event.card2);
 		var getNum = function (card) {
 			for (var i of event.lose_list) {
-				if (i[1].includes(card)) return get.number(card, i[0]);
+				if (i[1].includes(card)) return get.mingGe(card, i[0]);
 			}
-			return get.number(card, false);
+			return get.mingGe(card, false);
 		};
 		event.num1 = getNum(event.card1);
 		event.num2 = getNum(event.card2);
@@ -5575,12 +5590,13 @@ export const Content = {
 			for (i = 0; i < list.length; i++) {
 				if (lib.translate[list[i] + "_info"]) {
 					var translation = get.translation(list[i]);
+					/*
 					if (translation[0] == "新" && translation.length == 3) {
 						translation = translation.slice(1, 3);
 					} else {
 						translation = translation.slice(0, 2);
-					}
-					var item = dialog.add('<div class="popup pointerdiv" style="width:80%;display:inline-block"><div class="skill">【' + translation + "】</div><div>" + lib.translate[list[i] + "_info"] + "</div></div>");
+					}*/
+					var item = dialog.add('<div class="popup pointerdiv" style="width:80%;display:inline-block"><div class="skill">' + translation + "</div><div>" + lib.translate[list[i] + "_info"] + "</div></div>");
 					item.firstChild.addEventListener("click", clickItem);
 					item.firstChild.link = list[i];
 				}
@@ -7338,8 +7354,8 @@ export const Content = {
 					virtualCard._destroy = true;
 					virtualCard.expired = true;
 					const info = lib.card[card.name],
-						number = card.number;
-					virtualCard.init([get.suit(card), typeof number == "number" ? number : "虚拟", card.name, card.nature]);
+						mingGe = card.mingGe;
+					virtualCard.init([get.xiBie(card), typeof mingGe == "string" ? mingGe : "虚拟", card.name, card.duYou]);
 					virtualCard_str = virtualCard.querySelector(".info").innerHTML;
 					throw_cards = [virtualCard];
 				}
@@ -7355,7 +7371,7 @@ export const Content = {
 								}
 								if (!node) continue;
 								if (str) node.querySelector(".info").innerHTML = str;
-								if (cards.length > 1 || !card.isCard || card.name != node.name || card.nature != node.nature || !card.cards.length) {
+								if (cards.length > 1 || !card.isCard || card.name != node.name || card.duYou != node.duYou || !card.cards.length) {
 									ui.create.cardTempName(card, node);
 									if (node._tempName && card_cards?.length <= 0) {
 										node._tempName.innerHTML = node._tempName.innerHTML.slice(0, node._tempName.innerHTML.indexOf("<span", -1));
@@ -7406,7 +7422,7 @@ export const Content = {
 				}
 			} else {
 				var config = {};
-				var nature = get.natureList(card)[0];
+				var nature = get.duYouList(card)[0];
 				if (nature || (card.classList && card.classList.contains(nature))) config.color = nature;
 				if (event.addedTarget) {
 					player.line2(targets.concat(event.addedTargets), config);
@@ -8180,8 +8196,8 @@ export const Content = {
 				virtualCard._destroy = true;
 				virtualCard.expired = true;
 				const info = lib.card[card.name],
-					number = card.number;
-				virtualCard.init([get.suit(card), typeof number == "number" ? number : "虚拟", card.name, card.nature]);
+					mingGe = card.mingGe;
+				virtualCard.init([get.xiBie(card), typeof mingGe == "string" ? mingGe : "虚拟", card.name, card.duYou]);
 				virtualCard_str = virtualCard.querySelector(".info").innerHTML;
 				throw_cards = [virtualCard];
 			}
@@ -8197,7 +8213,7 @@ export const Content = {
 							}
 							if (!node) continue;
 							if (str) node.querySelector(".info").innerHTML = str;
-							if ((cards.length > 1 || !card.isCard || card.name != node.name || card.nature != node.nature || !card.cards.length) && !judgeing) {
+							if ((cards.length > 1 || !card.isCard || card.name != node.name || card.duYou != node.duYou || !card.cards.length) && !judgeing) {
 								ui.create.cardTempName(card, node);
 								if (node._tempName && card_cards?.length <= 0) {
 									node._tempName.innerHTML = node._tempName.innerHTML.slice(0, node._tempName.innerHTML.indexOf("<span", -1));
@@ -8579,7 +8595,7 @@ export const Content = {
 		}
 		if (event.animate == "draw") {
 			player.$draw(cards.length);
-			if (event.log) game.log(player, "将", get.cnNumber(cards.length), "张牌置于了武将牌上");
+			if (event.log) game.log(player, "将", get.cnNumber(cards.length), "张牌置于了角色牌上");
 			game.pause();
 			setTimeout(function () {
 				player.$addToExpansion(cards, null, event.gaintag);
@@ -8611,18 +8627,18 @@ export const Content = {
 				for (var i in evtmap) {
 					var source = (_status.connectMode ? lib.playerOL : game.playerMap)[i];
 					source.$give(evtmap[i][0], player, false);
-					if (event.log) game.log(player, "将", evtmap[i][0], "置于了武将牌上");
+					if (event.log) game.log(player, "将", evtmap[i][0], "置于了角色牌上");
 				}
 			} else {
 				for (var i in evtmap) {
 					var source = (_status.connectMode ? lib.playerOL : game.playerMap)[i];
 					if (evtmap[i][1].length) {
 						source.$giveAuto(evtmap[i][1], player, false);
-						if (event.log) game.log(player, "将", get.cnNumber(evtmap[i][1].length), "张牌置于了武将牌上");
+						if (event.log) game.log(player, "将", get.cnNumber(evtmap[i][1].length), "张牌置于了角色牌上");
 					}
 					if (evtmap[i][2].length) {
 						source.$give(evtmap[i][2], player, false);
-						if (event.log) game.log(player, "将", evtmap[i][2], "置于了武将牌上");
+						if (event.log) game.log(player, "将", evtmap[i][2], "置于了角色牌上");
 					}
 				}
 			}
@@ -9220,29 +9236,26 @@ export const Content = {
 		}
 		event.trigger("changeHp");
 	},
-	changeHujia: function () {
+	changeZhiLiao: function () {
 		if (num > 0) {
-			game.log(player, "获得了" + get.cnNumber(num) + "点护甲");
+			game.log(player, "获得了" + get.cnNumber(num) + "点治疗");
 		} else if (num < 0) {
-			if (-num > player.hujia) {
-				num = -player.hujia;
+			if (-num > player.zhiLiao) {
+				num = -player.zhiLiao;
 				event.num = num;
 			}
 			switch (
 				event.type //log moved here
 			) {
 				case "damage":
-					game.log(player, "的护甲抵挡了" + get.cnNumber(-num) + "点伤害");
+					game.log(player, "的治疗抵挡了" + get.cnNumber(-num) + "点伤害");
 					break;
 				case "lose":
-					game.log(player, "失去了" + get.cnNumber(-num) + "点护甲");
+					game.log(player, "失去了" + get.cnNumber(-num) + "点治疗");
 					break;
 			}
 		}
-		player.hujia += num;
-		//if(player.hujia<0){
-		//	player.hujia=0;
-		//}
+		player.zhiLiao += num;
 		player.update();
 	},
 	dying: function () {
@@ -9712,8 +9725,8 @@ export const Content = {
 		event.result = {
 			card: player.judging[0],
 			name: player.judging[0].name,
-			number: get.number(player.judging[0]),
-			suit: get.suit(player.judging[0]),
+			mingGe: get.mingGe(player.judging[0]),
+			xiBie: get.xiBie(player.judging[0]),
 			color: get.color(player.judging[0]),
 			node: event.node,
 		};

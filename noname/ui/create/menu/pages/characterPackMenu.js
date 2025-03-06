@@ -204,10 +204,10 @@ export const characterPackMenu = function (connectMenu) {
 				onclick: togglePack,
 			});
 			var cfgnodeAI = createConfig({
-				name: "仅点将可用",
+				name: "仅点角可用",
 				_name: mode,
 				init: boolAI,
-				intro: "将该武将包内的武将全部设置为仅点将可用",
+				intro: "将该角色包内的角色全部设置为仅点角可用",
 				onclick(bool) {
 					if (bool) {
 						for (var i = 0; i < list.length; i++) {
@@ -230,7 +230,7 @@ export const characterPackMenu = function (connectMenu) {
 						name: "新版替换",
 						_name: mode,
 						init: charactersToAlter.length == 0,
-						intro: "以下武将将被修改：" + get.translation(alterableCharacters),
+						intro: "以下武角色被修改：" + get.translation(alterableCharacters),
 						onclick(bool) {
 							if (bool) {
 								for (var i = 0; i < alterableSkills.length; i++) {
@@ -423,20 +423,20 @@ export const characterPackMenu = function (connectMenu) {
 				if (lib.config.all.sgscharacters.includes(mode)) {
 					ui.create.div(
 						".config.pointerspan",
-						'<span style="opacity:0.5">该武将包不可被隐藏</span>',
+						'<span style="opacity:0.5">该角色包不可被隐藏</span>',
 						page
 					);
 				} else if (!mode.startsWith("mode_")) {
-					ui.create.div(".config.pointerspan", "<span>隐藏武将包</span>", page, function () {
-						if (this.firstChild.innerHTML == "隐藏武将包") {
+					ui.create.div(".config.pointerspan", "<span>隐藏角色包</span>", page, function () {
+						if (this.firstChild.innerHTML == "隐藏角色包") {
 							if (
 								confirm(
 									"真的要隐藏“" +
 										get.translation(mode + "_character_config") +
-										"”武将包吗？\n建议使用“关闭”而不是“隐藏”功能，否则将会影响其他相关武将包的正常运行！"
+										"”角色包吗？\n建议使用“关闭”而不是“隐藏”功能，否则将会影响其他相关角色包的正常运行！"
 								)
 							) {
-								this.firstChild.innerHTML = "武将包将在重启后隐藏";
+								this.firstChild.innerHTML = "角色包将在重启后隐藏";
 								lib.config.hiddenCharacterPack.add(mode);
 								if (!lib.config.prompt_hidepack) {
 									alert("隐藏的扩展包可通过选项-其它-重置隐藏内容恢复");
@@ -444,7 +444,7 @@ export const characterPackMenu = function (connectMenu) {
 								}
 							}
 						} else {
-							this.firstChild.innerHTML = "隐藏武将包";
+							this.firstChild.innerHTML = "隐藏角色包";
 							lib.config.hiddenCharacterPack.remove(mode);
 						}
 						game.saveConfig("hiddenCharacterPack", lib.config.hiddenCharacterPack);

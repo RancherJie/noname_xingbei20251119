@@ -288,7 +288,7 @@ export class Player extends HTMLDivElement {
 	/**
 	 * @type { number }
 	 */
-	hujia;
+	zhiLiao;
 	/**
 	 * @type { number }
 	 */
@@ -1824,7 +1824,7 @@ export class Player extends HTMLDivElement {
 		}
 		for (let name of newPairs) {
 			if (!lib.character[name]) {
-				console.warn(`警告：Player[${this.name}]试图将武将牌变更为不存在的武将:`, name);
+				console.warn(`警告：Player[${this.name}]试图将角色牌变更为不存在的角色:`, name);
 				return;
 			}
 		}
@@ -2110,18 +2110,18 @@ export class Player extends HTMLDivElement {
 	/**
 	 * @param { Card } card
 	 * @param { string } name
-	 * @param { string } [nature]
+	 * @param { string } [duYou]
 	 * @param { string } [popname]
 	 */
-	tryCardAnimate(card, name, nature, popname) {
+	tryCardAnimate(card, name, duYou, popname) {
 		game.broadcast(
-			function (player, card, name, nature, popname) {
-				player.tryCardAnimate(card, name, nature, popname);
+			function (player, card, name, duYou, popname) {
+				player.tryCardAnimate(card, name, duYou, popname);
 			},
 			this,
 			card,
 			name,
-			nature,
+			duYou,
 			popname
 		);
 		if (lib.animate.card[card.name]) lib.animate.card[card.name].apply(this, arguments);
@@ -2129,8 +2129,8 @@ export class Player extends HTMLDivElement {
 			if (!lib.config.show_card_prompt) return;
 			if (get.type(card) == "equip" && lib.config.hide_card_prompt_equip) return;
 			if (get.type(card) == "basic" && lib.config.hide_card_prompt_basic) return;
-			if (popname) this.popup({ name: card.name, nature: card.nature }, nature, false);
-			else this.popup(name, nature, false);
+			if (popname) this.popup({ name: card.name, duYou: card.duYou }, duYou, false);
+			else this.popup(name, duYou, false);
 		}
 	}
 	/**
@@ -2476,7 +2476,7 @@ export class Player extends HTMLDivElement {
 
 		var hp1 = info.hp;
 		var maxHp1 = info.maxHp;
-		var hujia1 = info.hujia;
+		var zhiLiao1 = info.zhiLiao;
 
 		this.name = character;
 		this.name1 = character;
@@ -2489,7 +2489,7 @@ export class Player extends HTMLDivElement {
 		this.group = info.group;
 		this.hp = hp1;
 		this.maxHp = maxHp1;
-		this.hujia = hujia1;
+		this.zhiLiao = zhiLiao1;
 		this.node.intro.innerHTML = lib.config.intro;
 		this.node.name.dataset.nature = get.groupnature(this.group);
 		lib.setIntro(this);
@@ -2515,8 +2515,8 @@ export class Player extends HTMLDivElement {
 			this.name2 = character2;
 			var hp2 = info2.hp;
 			var maxHp2 = info2.maxHp;
-			var hujia2 = info2.hujia;
-			this.hujia += hujia2;
+			var zhiLiao2 = info2.zhiLiao;
+			this.zhiLiao += zhiLiao2;
 			var double_hp;
 			if (_status.connectMode || (get.mode() == "single" && _status.mode == "changban")) {
 				double_hp = "pingjun";
@@ -2793,7 +2793,8 @@ export class Player extends HTMLDivElement {
 				this.key = info[4];
 				this.roomempty = false;
 				str += get.modetrans(config);
-				str += " 模式　";
+				str += ' '+get.translation(config.choose_mode);
+				str += " 模式 ";
 				for (var i = str.length; i < 11; i++) str += "　";
 				this.version = config.version;
 				if (config.gameStarted) {
@@ -2817,6 +2818,7 @@ export class Player extends HTMLDivElement {
 				else str += '人数：<span class="firetext">' + this.hp + "/" + this.maxHp + "</span>";
 
 				str += "　(" + info[0].slice(0, 12) + " 的房间)";
+				/*
 				if (config.mode != "guozhan" && (config.mode != "doudizhu" || config.doudizhu_mode != "online")) {
 					str += "【";
 					for (var i = 0; i < config.cardPack.length; i++) {
@@ -2824,7 +2826,20 @@ export class Player extends HTMLDivElement {
 						if (i < config.cardPack.length - 1) str += "+";
 					}
 					str += "】";
+				}*/
+				if(config.mode=='xingBei'){
+					str+='【';
+					for(var i=0;i<config.characterPack.length;i++){
+						str+=(get.translation(config.characterPack[i]+'_character_config'));
+						if(i<config.characterPack.length-1) str+='+';
+					}
+					str+='】';
 				}
+
+				if(info[2].remark && info[2].remark!='无'){
+					str+=`备注[${info[2].remark}]`;
+				}
+
 				this.config = config;
 				if (this.hp == this.maxHp && !config.gameStarted) {
 					this.roomfull = true;
@@ -2951,7 +2966,7 @@ export class Player extends HTMLDivElement {
 				this.maxHp = maxHp[1];
 				this.hp = maxHp[0];
 				if (typeof maxHp[2] == "number") {
-					this.hujia = maxHp[2];
+					this.zhiLiao = maxHp[2];
 				}
 			} else {
 				var num;
@@ -3031,7 +3046,7 @@ export class Player extends HTMLDivElement {
 		delete this.group;
 		delete this.hp;
 		delete this.maxHp;
-		delete this.hujia;
+		delete this.zhiLiao;
 
 		if (this.name2) {
 			delete this.singleHp;
@@ -3272,7 +3287,7 @@ export class Player extends HTMLDivElement {
 			function () {
 				dialog.delete();
 			},
-			lib.quickVoice.includes(str) ? 3800 : 2000
+			lib.quickVoice.includes(str) ? 3800 : 3200
 		);
 		var name = get.translation(this.name);
 		var info = [name ? name + "[" + this.nickname + "]" : this.nickname, str];
@@ -3341,7 +3356,7 @@ export class Player extends HTMLDivElement {
 			expandedSlots: this.expandedSlots,
 			views: [],
 			position: parseInt(this.dataset.position),
-			hujia: this.hujia,
+			zhiLiao: this.zhiLiao,
 			side: this.side,
 			identityShown: this.identityShown,
 			identityNode: [this.node.identity.innerHTML, this.node.identity.dataset.color],
@@ -3461,18 +3476,25 @@ export class Player extends HTMLDivElement {
 	}
 	update() {
 		if (_status.video && arguments.length == 0) return;
+		this.hp=this.zhiLiao;
+		if(this.hp>=this.maxHp){
+			this.maxHp=this.hp;
+		}else{
+			this.maxHp=this.getZhiLiaoLimit();
+		}
+
 		if (this.hp >= this.maxHp) this.hp = this.maxHp;
 		game.broadcast(
-			function (player, hp, maxHp, hujia) {
-				player.hp = hp;
-				player.maxHp = maxHp;
-				player.hujia = hujia;
+			function (player, hp, maxHp, zhiLiao) {
+				player.hp=hp;
+				player.maxHp=maxHp;
+				player.zhiLiao=zhiLiao;
 				player.$update();
 			},
 			this,
 			this.hp,
 			this.maxHp,
-			this.hujia
+			this.zhiLiao
 		);
 		game.callHook("checkUpdate", [this]);
 		this.$update(...arguments);
@@ -3481,13 +3503,14 @@ export class Player extends HTMLDivElement {
 		if (this.hp >= this.maxHp) this.hp = this.maxHp;
 		var hp = this.node.hp;
 		hp.style.transition = "none";
+		/*
 		if (!_status.video) {
 			if (this.hujia) {
 				this.markSkill("ghujia");
 			} else {
 				this.unmarkSkill("ghujia");
 			}
-		}
+		}*/
 		if (!this.storage.nohp) {
 			const hidden = this.classList.contains("unseen_show") || this.classList.contains("unseen2_show");
 			const maxHp = hidden ? 1 : this.maxHp;
@@ -3577,7 +3600,7 @@ export class Player extends HTMLDivElement {
 			}
 		}
 		if (!_status.video) {
-			game.addVideo("update", this, [this.countCards("h"), this.hp, this.maxHp, this.hujia]);
+			game.addVideo("update", this, [this.countCards("h"), this.hp, this.maxHp, this.zhiLiao]);
 		}
 		this.updateMarks();
 		game.callHook("checkTipBottom", [this]);
@@ -3885,7 +3908,7 @@ export class Player extends HTMLDivElement {
 		return (
 			prefix +
 			dedent`
-			${this.name}+${this.sex}+${this.group}+${this.hp}+${this.maxHp}+${this.hujia}+${"[" + this.skills.join(",") + "]"}+${this.name1}+${this.name2}]
+			${this.name}+${this.sex}+${this.group}+${this.hp}+${this.maxHp}+${this.zhiLiao}+${"[" + this.skills.join(",") + "]"}+${this.name1}+${this.name2}]
 		`
 		);
 	}
@@ -3977,7 +4000,7 @@ export class Player extends HTMLDivElement {
 				filter = card => {
 					for (let j in arg2) {
 						var value;
-						if (j == "type" || j == "subtype" || j == "color" || j == "suit" || j == "number") {
+						if (j == "type" || j == "subtype" || j == "xiBei" || j == "mingGe") {
 							value = get[j](card);
 						} else if (j == "name") {
 							value = getCardName(card);
@@ -4060,7 +4083,7 @@ export class Player extends HTMLDivElement {
 				filter = card => {
 					for (let j in arg2) {
 						var value;
-						if (j == "type" || j == "subtype" || j == "color" || j == "suit" || j == "number") {
+						if (j == "type" || j == "subtype" || j == "color" || j == "xiBei" || j == "mingGe") {
 							value = get[j](card);
 						} else if (j == "name") {
 							value = getCardName(card);
@@ -4410,29 +4433,29 @@ export class Player extends HTMLDivElement {
 										break;
 									}
 								}
-							} else if (j == "suit") {
+							} else if (j == "xiBei") {
 								if (typeof arg2[j] == "object") {
-									if (arg2[j].includes(get.suit(cards[i])) == false) {
+									if (arg2[j].includes(get.xiBei(cards[i])) == false) {
 										cards.splice(i, 1);
 										i--;
 										break;
 									}
 								} else if (typeof arg2[j] == "string") {
-									if (get.suit(cards[i]) != arg2[j]) {
+									if (get.mingGe(cards[i]) != arg2[j]) {
 										cards.splice(i, 1);
 										i--;
 										break;
 									}
 								}
-							} else if (j == "number") {
+							} else if (j == "mingGe") {
 								if (typeof arg2[j] == "object") {
-									if (arg2[j].includes(get.number(cards[i])) == false) {
+									if (arg2[j].includes(get.mingGe(cards[i])) == false) {
 										cards.splice(i, 1);
 										i--;
 										break;
 									}
 								} else if (typeof arg2[j] == "string") {
-									if (get.number(cards[i]) != arg2[j]) {
+									if (get.mingGe(cards[i]) != arg2[j]) {
 										cards.splice(i, 1);
 										i--;
 										break;
@@ -4453,7 +4476,7 @@ export class Player extends HTMLDivElement {
 							}
 						}
 					}
-				} else if (typeof arg2 == "number" && arg2 > 0) {
+				} else if (typeof arg2 == "mingGe") {
 					cards.splice(arg2);
 				} else if (typeof arg2 == "function") {
 					for (i = 0; i < cards.length; i++) {
@@ -4471,11 +4494,11 @@ export class Player extends HTMLDivElement {
 				}
 			}
 			if (arg2 === 0) return cards[0];
-			if (typeof arg3 == "number") {
+			if (typeof arg3 == "mingGe") {
 				if (arg3 == 0) return cards[0];
 				cards.splice(arg3);
 			}
-			if (typeof arg4 == "number") {
+			if (typeof arg4 == "mingGe") {
 				if (arg4 == 0) return cards[0];
 				cards.splice(arg4);
 			}
@@ -4850,7 +4873,7 @@ export class Player extends HTMLDivElement {
 					var getn = function (card) {
 						//会赢吗？会赢的！
 						if (player.hasSkillTag("forceWin", null, { card })) return 13 * (Boolean(event.small) ? -1 : 1);
-						return get.number(card) * (Boolean(event.small) ? -1 : 1);
+						return get.mingGe(card) * (Boolean(event.small) ? -1 : 1);
 					};
 					if (source && source != player) {
 						if (get.attitude(player, source) > 1) {
@@ -4880,8 +4903,8 @@ export class Player extends HTMLDivElement {
 					}
 					var player = get.owner(card);
 					var getn = function (card) {
-						if (player.hasSkill("tianbian") && get.suit(card) == "heart") return 13;
-						return get.number(card);
+						if (player.hasSkill("tianbian") && get.xiBie(card) == "heart") return 13;
+						return get.mingGe(card);
 					};
 					var event = _status.event.getParent();
 					var to = player == event.player ? event.target : event.player;
@@ -6556,6 +6579,7 @@ export class Player extends HTMLDivElement {
 		if (typeof next.num != "number") next.num = (event.baseDamage || 1) + (event.extraDamage || 0);
 		next.original_num = next.num;
 		next.change_history = [];
+		/*
 		next.hasNature = function (nature) {
 			if (!nature) return Boolean(this.nature && this.nature.length > 0);
 			let natures = get.natureList(nature),
@@ -6564,7 +6588,8 @@ export class Player extends HTMLDivElement {
 			return get.is.sameNature(natures, naturesx);
 		};
 		if (next.hasNature("poison")) delete next._triggered;
-		else if (next.unreal) next._triggered = 2;
+		*/
+		if (next.unreal) next._triggered = 2;
 		next.setContent("damage");
 		next.filterStop = function () {
 			if (this.source && this.source.isDead()) delete this.source;
@@ -6726,14 +6751,14 @@ export class Player extends HTMLDivElement {
 	 * @param { number } [limit] 护甲上限
 	 * @returns { GameEventPromise }
 	 */
-	changeHujia(num, type, limit) {
-		var next = game.createEvent("changeHujia");
+	changeZhiLiao(num, type, limit) {
+		var next = game.createEvent("changeZhiLiao");
 		if (typeof num != "number") {
 			num = 1;
 		}
 		if (limit === true) limit = 5;
-		if (typeof limit == "number" && this.hujia + num > parseInt(limit)) {
-			num = Math.max(0, parseInt(limit) - this.hujia);
+		if (typeof limit == "number" && this.zhiLiao + num > parseInt(limit)) {
+			num = Math.max(0, parseInt(limit) - this.zhiLiao);
 		}
 		if (typeof type != "string") {
 			if (num > 0) type = "gain";
@@ -6743,7 +6768,7 @@ export class Player extends HTMLDivElement {
 		next.num = num;
 		next.player = this;
 		next.type = type;
-		next.setContent("changeHujia");
+		next.setContent("changeZhiLiao");
 		return next;
 	}
 	getBuff() {
@@ -7901,8 +7926,8 @@ export class Player extends HTMLDivElement {
 				node = name.copy("mark");
 				node.classList.add("drawinghidden");
 				this.node.marks.insertBefore(node, this.node.marks.childNodes[1]);
-				node.suit = name.suit;
-				node.number = name.number;
+				node.xiBei = name.xiBei;
+				node.mingGe = name.mingGe;
 				// if(name.name&&lib.card[name.name]&&lib.card[name.name].markimage){
 				// 	node.node.image.style.left=lib.card[name.name].markimage;
 				// }
@@ -8127,7 +8152,7 @@ export class Player extends HTMLDivElement {
 		cfg.skills = cfg.skills || [];
 		cfg.hp = cfg.hp || 1;
 		cfg.maxHp = cfg.maxHp || 1;
-		cfg.hujia = cfg.hujia || 0;
+		cfg.zhiLiao = cfg.zhiLiao || 0;
 		cfg.sex = cfg.sex || "male";
 		cfg.group = cfg.group || "qun";
 		cfg.skill = cfg.skill || _status.event.name;
@@ -8152,7 +8177,7 @@ export class Player extends HTMLDivElement {
 						subplayer: true,
 					},
 				};
-				lib.character[skill] = [cfg.sex, cfg.group, parseFloat(cfg.hp) + "/" + parseFloat(cfg.maxHp) + "/" + parseFloat(cfg.hujia), cfg.skills, ["tempname:" + cfg.name].concat(lib.character[cfg.name].trashBin || [])];
+				lib.character[skill] = [cfg.sex, cfg.group, parseFloat(cfg.hp) + "/" + parseFloat(cfg.maxHp) + "/" + parseFloat(cfg.zhiLiao), cfg.skills, ["tempname:" + cfg.name].concat(lib.character[cfg.name].trashBin || [])];
 				if (Array.isArray(cfg.image)) {
 					cfg.image.forEach(image => lib.character[skill][4].push(image));
 				} else if (typeof cfg.image == "string") {
@@ -9809,11 +9834,12 @@ export class Player extends HTMLDivElement {
 		}
 		if (that === me || this == me._trueMe) return true;
 		if (_status.connectMode) return false;
-		if (lib.config.mode == "versus") {
-			if (_status.mode == "three") return this.side == me.side;
-			if (_status.mode == "standard") return lib.storage.single_control && this.side == me.side;
-			if (_status.mode == "four") return get.config("four_phaseswap") && this.side == me.side;
-			if (_status.mode == "two") return get.config("two_phaseswap") && this.side == me.side;
+		//if (lib.config.mode == "versus") {
+		if (lib.config.mode == "xingBei") {
+			//if (_status.mode == "three") return this.side == me.side;
+			//if (_status.mode == "standard") return lib.storage.single_control && this.side == me.side;
+			//if (_status.mode == "four") return get.config("four_phaseswap") && this.side == me.side;
+			if (_status.mode == "two" || _status.mode=='three') return get.config("phaseswap") && this.side == me.side;
 			return false;
 		} else if (lib.config.mode == "boss") {
 			if (me.side) return false;
@@ -11645,7 +11671,7 @@ export class Player extends HTMLDivElement {
 		} else if (info.subtype === "equip4") {
 			cardShownName += "-";
 		}
-		const cardx = isViewAsCard ? game.createCard(card.name, cards.length == 1 ? get.suit(cards[0]) : "none", cards.length == 1 ? get.number(cards[0]) : 0) : cards[0];
+		const cardx = isViewAsCard ? game.createCard(card.name, cards.length == 1 ? get.xiBie(cards[0]) : "none", cards.length == 1 ? get.mingGe(cards[0]) : 0) : cards[0];
 		cardx.fix();
 		const cardSymbol = Symbol("card");
 		cardx.cardSymbol = cardSymbol;
@@ -11654,16 +11680,16 @@ export class Player extends HTMLDivElement {
 		cardx.style.transform = "";
 		cardx.classList.remove("drawinghidden");
 		delete cardx._transform;
-		const suit = get.translation(cardx.suit),
-			number = get.strNumber(cardx.number);
+		const xiBei = get.translation(cardx.xiBei),
+			mingGe = get.mingGe(cardx.mingGe);
 		if (isViewAsCard) {
 			cardx.cards = cards || [];
 			cardx.viewAs = card.name;
-			cardx.node.name2.innerHTML = `${suit}${number} [${cardShownName}]`;
+			cardx.node.name2.innerHTML = `${xiBei}${mingGe} [${cardShownName}]`;
 			cardx.classList.add("fakeequip");
 		} else {
 			delete cardx.viewAs;
-			cardx.node.name2.innerHTML = `${suit}${number} ${cardShownName}`;
+			cardx.node.name2.innerHTML = `${xiBei}${mingGe} ${cardShownName}`;
 			cardx.classList.remove("fakeequip");
 		}
 		let equipped = false,

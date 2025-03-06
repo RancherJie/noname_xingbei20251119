@@ -1,4 +1,4 @@
 export const updateURLs = {
-	coding: "https://unitedrhythmized.club/libccy/noname",
-	github: "https://raw.githubusercontent.com/libnoname/noname",
+	coding: "https://unitedrhythmized.club/RancherJie/noname_xingbei",
+	github: "https://raw.githubusercontent.com/RancherJie/noname_xingbei",
 };

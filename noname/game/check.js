@@ -134,6 +134,15 @@ export class Check {
 			else ownedSkills.push(skill);
 		});
 
+		//将无法命中专门设置的技能放到装备技能列表方便显示调整
+		if(globalSkills.includes("_wuFaXingDong")){
+			const index = globalSkills.indexOf("_wuFaXingDong");
+			if (index > -1) {
+				globalSkills.splice(index, 1); // 移除特定的元素
+			}
+			equipSkills.push('_wuFaXingDong');
+		}
+
 		if (ownedSkills.length) ui.create.skills(ownedSkills);
 		if (globalSkills.length) ui.create.skills2(globalSkills);
 		if (equipSkills.length) ui.create.skills3(equipSkills);

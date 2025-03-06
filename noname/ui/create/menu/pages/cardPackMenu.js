@@ -187,6 +187,13 @@ export const cardPackMenu = function (connectMenu) {
 					return lib.cardType[type];
 				}
 				switch (type) {
+					case "gongJi":
+						return 0;
+					case "faShu":
+						return 1;
+					default:
+						return 2;
+					/*
 					case "basic":
 						return 0;
 					case "chess":
@@ -215,6 +222,7 @@ export const cardPackMenu = function (connectMenu) {
 						return 5;
 					default:
 						return 6;
+					*/
 				}
 			};
 			list.sort(function (a, b) {
@@ -389,10 +397,13 @@ export const cardPackMenu = function (connectMenu) {
 				cardpileaddname.style.marginLeft = "-1px";
 				var cardpileaddsuit = ui.create.selectlist(
 					[
-						["heart", "红桃"],
-						["diamond", "方片"],
-						["club", "梅花"],
-						["spade", "黑桃"],
+						['an', '暗'],
+						["di", "地"],
+						['lei', '雷'],
+						['huo', '火'],
+						['shui', '水'],
+						['feng', '风'],
+						['guang','光'],
 					],
 					null,
 					cardpileadd
@@ -400,7 +411,13 @@ export const cardPackMenu = function (connectMenu) {
 				cardpileaddsuit.style.width = "53px";
 				cardpileaddsuit.style.marginRight = "2px";
 				var cardpileaddnumber = ui.create.selectlist(
-					[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+					[
+						['xue','血'],
+						['ji','技'],
+						['yong','咏'],
+						['huan','幻'],
+						['sheng', '圣'],
+					],
 					null,
 					cardpileadd
 				);
@@ -428,7 +445,8 @@ export const cardPackMenu = function (connectMenu) {
 					var cfgnode = ui.create.div(".config.toggle.cardpilecfg");
 					cfgnode._info = card;
 					cfgnode.innerHTML =
-						get.translation(card[2]) + " " + get.translation(card[0]) + get.strNumber(card[1]);
+						get.translation(card[2]) + " " + get.translation(card[0]) + get.translation(card[1]);
+						//get.translation(card[2]) + " " + get.translation(card[0]) + get.strNumber(card[1]);
 					var cfgnodedelete = document.createElement("span");
 					cfgnodedelete.classList.add("cardpiledelete");
 					cfgnodedelete.innerHTML = "删除";
@@ -449,7 +467,8 @@ export const cardPackMenu = function (connectMenu) {
 						get.translation(card[2]) +
 						" " +
 						get.translation(card[0]) +
-						card[1];
+						get.translation(card[1]);
+						//card[1];
 					var cfgnodedelete = document.createElement("span");
 					cfgnodedelete.classList.add("cardpiledelete");
 					cfgnodedelete.innerHTML = "删除";
@@ -468,7 +487,8 @@ export const cardPackMenu = function (connectMenu) {
 							get.translation(card[2]) +
 							" " +
 							get.translation(card[0]) +
-							get.strNumber(card[1]),
+							get.translation(card[1]),
+							//get.strNumber(card[1]),
 						_number: i,
 						_name: mode,
 						init: !lib.config.bannedpile[mode].includes(i),

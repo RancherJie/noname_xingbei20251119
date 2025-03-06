@@ -140,7 +140,7 @@
 }
 #arena:not(.single-handcard):not(.chess) > #me #handcards1 {
 	left: 150px !important;
-	width: calc(100% - 150px) !important;
+	width: calc(100% - 380px) !important;
 }
 #arena:not(.single-handcard):not(.chess) > #me #handcards1 > .handcards {
 	left: 0 !important;
@@ -286,7 +286,7 @@
 /*--------位置(6人)------*/
 #arena[data-number="6"] > .player[data-position="1"] {
 	top: calc(30% - 128px);
-	left: calc(100% - 120px);
+	left: calc(100% - 130px);
 }
 #arena[data-number="6"] > .player[data-position="2"] {
 	top: 0px;

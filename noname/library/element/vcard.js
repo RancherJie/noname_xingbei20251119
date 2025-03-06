@@ -5,82 +5,83 @@ import { ai } from "../../ai/index.js";
 
 export class VCard {
 	/**
-	 * @param { any } [suitOrCard]
-	 * @param { number | Card[] } [numberOrCards]
+	 * @param { any } [xiBieOrCard]
+	 * @param { number | Card[] } [mingGeOrCards]
 	 * @param { string } [name]
-	 * @param { string } [nature]
+	 * @param { string } [duYou]
 	 * @param { Player | false } [owner]
 	 */
-	constructor(suitOrCard, numberOrCards, name, nature, owner) {
-		if (Array.isArray(suitOrCard)) {
+	constructor(xiBieOrCard, mingGeOrCards, name, duYou, owner) {
+		if (Array.isArray(xiBieOrCard)) {
 			/**
 			 * @type {string}
 			 */
-			this.suit = suitOrCard[0];
+			this.xiBie = xiBieOrCard[0];
 			/**
 			 * @type {number}
 			 */
-			this.number = suitOrCard[1];
+			this.mingGe = xiBieOrCard[1];
 			/**
 			 * @type {string}
 			 */
-			this.name = suitOrCard[2];
+			this.name = xiBieOrCard[2];
 			/**
 			 * @type {string}
 			 */
-			this.nature = suitOrCard[3];
+			this.duYou = xiBieOrCard[3];
 		}
 		// @ts-ignore
-		else if (get.itemtype(suitOrCard) == "card") {
-			this.name = get.name(suitOrCard, owner);
-			this.suit = get.suit(suitOrCard, owner);
-			this.color = get.color(suitOrCard, owner);
-			this.number = get.number(suitOrCard, owner);
-			this.nature = get.nature(suitOrCard, owner);
+		else if (get.itemtype(xiBieOrCard) == "card") {
+			this.name = get.name(xiBieOrCard, owner);
+			this.xiBie = get.xiBie(xiBieOrCard, owner);
+			//this.color = get.color(xiBieOrCard, owner);
+			this.mingGe = get.mingGe(xiBieOrCard, owner);
+			this.duYou = get.duYou(xiBieOrCard, owner);
 			/**
 			 * @type { boolean }
 			 */
 			this.isCard = true;
-			this.cardid = suitOrCard.cardid;
-			this.wunature = suitOrCard.wunature;
+			this.cardid = xiBieOrCard.cardid;
+			this.wunature = xiBieOrCard.wunature;
 			/**
 			 * @type {Record<string, any>}
 			 */
-			this.storage = get.copy(suitOrCard.storage);
-			if (Array.isArray(numberOrCards)) this.cards = numberOrCards.slice();
-			else this.cards = [suitOrCard];
+			this.storage = get.copy(xiBieOrCard.storage);
+			if (Array.isArray(mingGeOrCards)) this.cards = mingGeOrCards.slice();
+			else this.cards = [xiBieOrCard];
 			const info = get.info(this, false);
 			if (info) {
 				const autoViewAs = info.autoViewAs;
 				if (typeof autoViewAs == "string") this.name = autoViewAs;
 			}
-		} else if (suitOrCard && typeof suitOrCard != "string") {
-			Object.keys(suitOrCard).forEach((key) => {
+		} else if (xiBieOrCard && typeof xiBieOrCard != "string") {
+			Object.keys(xiBieOrCard).forEach((key) => {
 				/**
 				 * @type { PropertyDescriptor }
 				 */
 				// @ts-ignore
-				const propertyDescriptor = Object.getOwnPropertyDescriptor(suitOrCard, key),
+				const propertyDescriptor = Object.getOwnPropertyDescriptor(xiBieOrCard, key),
 					value = propertyDescriptor.value;
 				if (Array.isArray(value)) this[key] = value.slice();
 				else Object.defineProperty(this, key, propertyDescriptor);
 			});
-			if (Array.isArray(numberOrCards)) {
+			if (Array.isArray(mingGeOrCards)) {
 				const noCards = !this.cards;
 				/**
 				 * @type { Card[] }
 				 */
-				this.cards = numberOrCards.slice();
+				this.cards = mingGeOrCards.slice();
 				if (noCards) {
-					if (!lib.suits.includes(this.suit)) this.suit = get.suit(this, owner);
-					if (!Object.keys(lib.color).includes(this.color)) this.color = get.color(this, owner);
-					if (typeof this.number != "number") this.number = get.number(this, owner);
-					if (!this.nature) this.nature = get.nature(this, owner);
+					if (!lib.xiBies.includes(this.xiBie)) this.xiBie = get.xiBie(this, owner);
+					//if (!Object.keys(lib.color).includes(this.color)) this.color = get.color(this, owner);
+					//if (typeof this.number != "number") this.number = get.mingGe(this, owner);
+					if (! this.mingGe) this.mingGe = get.mingGe(this, owner);
+					if (!this.duYou) this.duYou = get.duYou(this, owner);
 				}
-			} else if (numberOrCards === "unsure" && !this.isCard) {
-				if (!this.suit) this.suit = "unsure";
-				if (!this.color) this.color = "unsure";
-				if (!this.number) this.number = "unsure";
+			} else if (mingGeOrCards === "none" && !this.isCard) {
+				if (!this.xiBie) this.xiBie = "none";
+				//if (!this.color) this.color = "unsure";
+				if (!this.mingGe) this.mingGe = "none";
 			}
 			const info = get.info(this, false);
 			if (info) {
@@ -88,24 +89,24 @@ export class VCard {
 				if (typeof autoViewAs == "string") this.name = autoViewAs;
 			}
 		}
-		if (typeof suitOrCard == "string") this.suit = suitOrCard;
-		if (typeof numberOrCards == "number") this.number = numberOrCards;
+		if (typeof xiBieOrCard == "string") this.xiBie = xiBieOrCard;
+		if (typeof mingGeOrCards == "string") this.mingGe = mingGeOrCards;
 		if (typeof name == "string") this.name = name;
-		if (typeof nature == "string") this.nature = nature;
+		if (typeof duYou == "string") this.duYou = duYou;
 		if (!this.storage) this.storage = {};
 		if (!this.cards) this.cards = [];
 	}
-	sameSuitAs(card) {
-		return get.suit(this) == get.suit(card);
+	sameXiBieAs(card) {
+		return get.xiBie(this) == get.xiBie(card);
 	}
-	differentSuitFrom(card) {
-		return get.suit(this) != get.suit(card);
+	differentXiBieFrom(card) {
+		return get.xiBie(this) != get.xiBie(card);
 	}
-	sameNumberAs(card) {
-		return get.number(this) == get.number(card);
+	sameMingGeAs(card) {
+		return get.mingGe(this) == get.mingGe(card);
 	}
-	differentNumberFrom(card) {
-		return get.number(this) != get.number(card);
+	differentMingGeFrom(card) {
+		return get.mingGe(this) != get.mingGe(card);
 	}
 	sameNameAs(card) {
 		return get.name(this) == get.name(card);
@@ -116,11 +117,12 @@ export class VCard {
 	/**
 	 * @param { Player } player
 	 */
-	hasNature(nature, player) {
-		const natures = get.natureList(this, player);
-		if (!nature) return natures.length > 0;
-		if (nature == "linked") return natures.some((n) => lib.linked.includes(n));
-		return get.is.sameNature(natures, nature);
+	//hasDuYou(nature, player) {
+	hasDuYou(duYou, player) {
+		const duYous = get.duYouList(this, player);
+		if (!duYou) return duYous.length > 0;
+		if (duYou == "linked") return duYous.some((n) => lib.linked.includes(n));
+		return get.is.sameNature(duYous, duYou);
 	}
 	/**
 	 * 返回一个键值，用于在缓存中作为键名。
@@ -132,11 +134,11 @@ export class VCard {
 		if (similar !== false) prefix = similar ? "[card:" : "[vcard:";
 		if (this.cardid) return prefix + this.cardid + "]";
 		if (!this.cards.length) return prefix + `${this.name}+${
-			this.suit ? this.suit : (this.color || "none")
+			this.xiBie ? this.xiBie : "none"
 		}+${
-			this.number === undefined ? "none" : this.number
+			this.mingGe === undefined ? "none" : this.mingGe
 		}${
-			this.nature ? "+" + this.nature : ""
+			this.duYou ? "+" + this.duYou : ""
 		}]`;
 		if (similar !== undefined && this.cards.length === 1) return ai.getCacheKey(this.cards[0], similar);
 		return prefix + "[array:[" + this.cards.map(i => {

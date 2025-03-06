@@ -322,7 +322,7 @@ export class Create {
 	cardTempName(card, applyNode) {
 		let getApplyNode = applyNode || card;
 		let cardName = get.name(card);
-		let cardNature = get.nature(card);
+		let cardDuYou = get.duYou(card);
 		let tempname = get.translation(cardName);
 		let cardTempNameConfig = lib.config.cardtempname;
 		let node = getApplyNode._tempName || ui.create.div(".tempname", getApplyNode);
@@ -1152,7 +1152,7 @@ export class Create {
 					if (!packsource.onlypack) {
 						packsource.classList.remove("thundertext");
 						if (!get.is.phoneLayout() || !lib.config.filternode_button) {
-							packsource.innerHTML = "武将包";
+							packsource.innerHTML = "角色包";
 						}
 					}
 				}
@@ -1376,7 +1376,7 @@ export class Create {
 					packsource.style.display = "none";
 					packsource.previousSibling.style.display = "none";
 				} else {
-					packsource.innerHTML = "武将包";
+					packsource.innerHTML = "角色包";
 				}
 			}
 
@@ -2334,16 +2334,16 @@ export class Create {
 			}
 			if (game.me.hasSkillTag("sortCardByNum")) {
 				var getn = function (card) {
-					var num = get.number(card, game.me);
-					if (num < 3) return 13 + num;
-					return num;
+					var mingGe = get.mingGe(card, game.me);
+					//if (num < 3) return 13 + num;
+					return mingGe;
 				};
 				hs.sort((a, b) => getn(b) - getn(a));
 			} else
 				hs.sort(function (b, a) {
 					if (a.name != b.name) return lib.sort.card(a.name, b.name);
-					else if (a.suit != b.suit) return lib.suit.indexOf(a) - lib.suit.indexOf(b);
-					else return a.number - b.number;
+					else if (a.xiBie != b.xiBie) return lib.xiBie.indexOf(a.xiBie) - lib.xiBie.indexOf(b.xiBie);
+					else return lib.mingGe.indexOf(a.mingGe) - lib.mingGe.indexOf(b.mingGe);
 				});
 			game.me.directgain(hs, false);
 		});
@@ -2459,7 +2459,7 @@ export class Create {
 									result,
 									Object.groupBy(typeResult[key], card => {
 										if (get.name(card) !== "sha") return;
-										let perfix = get.translation(get.nature(card));
+										let perfix = get.translation(get.duYou(card));
 										if (perfix == "") perfix = "普通";
 										return perfix + "杀";
 									})
@@ -2518,6 +2518,7 @@ export class Create {
 
 
 		lib.arenaReady?.push(function () {
+			/*
 			if (lib.config.show_deckMonitor) {
 				ui.deckMonitor.style.display = "";
 				if (_status.connectMode && !lib.config.show_deckMonitor_online) {
@@ -2525,7 +2526,8 @@ export class Create {
 				}
 			} else {
 				ui.deckMonitor.style.display = "none";
-			}
+			}*/
+			ui.deckMonitor.style.display = "none";
 			document.documentElement.style.setProperty("--tip-display", lib.config.show_tip ? "flex" : "none");
 		});
 
@@ -2882,9 +2884,14 @@ export class Create {
 			if (item.style.color) {
 				node.style.color = item.style.color;
 			}
-			if (item.nature) {
-				let natures = get.natureList(item.nature);
-				natures.forEach(n => node.classList.add(n));
+			if (item.duYou) {
+				let duYous = get.duYouList(item.duYou);
+				//duYous.forEach(n => node.classList.add(n));
+				duYous.forEach(n => {
+					if(n!=''){
+						node.classList.add(n)
+					}
+				});
 			}
 			if (!noclick) {
 				lib.setIntro(node);
@@ -2956,28 +2963,32 @@ export class Create {
 					ui.create.div(node.node.hp);
 					var hp = infoitem.hp,
 						maxHp = infoitem.maxHp,
-						hujia = infoitem.hujia;
+						zhiLiao = infoitem.zhiLiao;
 					var str = get.numStr(hp);
 					if (hp !== maxHp) {
 						str += "/";
 						str += get.numStr(maxHp);
 					}
 					var textnode = ui.create.div(".text", str, node.node.hp);
+					/*
 					if (infoitem[2] == 0) {
 						node.node.hp.hide();
 					} else if (get.infoHp(infoitem[2]) <= 3) {
 						node.node.hp.dataset.condition = "mid";
 					} else {
 						node.node.hp.dataset.condition = "high";
-					}
+					}*/
+					node.node.hp.dataset.condition = "xing";
+
+					/*
 					if (hujia > 0) {
 						ui.create.div(node.node.hp, ".shield");
 						ui.create.div(".text", get.numStr(hujia), node.node.hp);
-					}
+					}*/
 				} else {
 					var hp = infoitem.hp,
 						maxHp = infoitem.maxHp,
-						shield = infoitem.hujia;
+						shield = infoitem.zhiLiao;
 					if (maxHp > 14) {
 						if (hp !== maxHp || shield > 0) node.node.hp.innerHTML = infoitem[2];
 						else node.node.hp.innerHTML = get.numStr(infoitem[2]);

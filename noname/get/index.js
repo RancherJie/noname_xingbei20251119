@@ -101,14 +101,14 @@ export class Get extends GetCompatible {
 			}
 		} else if ((name1 && info[name1]) || (evt1.skill && info[evt1.skill])) {
 			if (name1 && info[name1]) {
-				if (lib.card[name1] && evt1.card && evt1.card.nature && info[evt1.card.nature]) eventInfo += info[evt1.card.nature];
+				if (lib.card[name1] && evt1.card && evt1.card.duYou && info[evt1.card.duYou]) eventInfo += info[evt1.card.duYou];
 				eventInfo += info[name1];
 			} else eventInfo += info[evt1.skill];
 			th_skill = true;
 			if (sourceEvent) return evt1;
 		} else if ((name2 && info[name2]) || (evt2.skill && info[evt2.skill])) {
 			if (name2 && info[name2]) {
-				if (lib.card[name2] && evt2.card && evt2.card.nature && info[evt2.card.nature]) eventInfo += info[evt2.card.nature];
+				if (lib.card[name2] && evt2.card && evt2.card.duYou && info[evt2.card.duYou]) eventInfo += info[evt2.card.duYou];
 				eventInfo += info[name2];
 			} else eventInfo += info[evt2.skill];
 			th_skill = true;
@@ -621,7 +621,7 @@ export class Get extends GetCompatible {
 		}
 		return 0;
 	}
-	infoHujia(hp) {
+	infoZhiLiao(hp) {
 		if (typeof hp == "string" && hp.includes("/")) {
 			const num = hp.split("/")[2];
 			if (num) {
@@ -743,18 +743,18 @@ export class Get extends GetCompatible {
 			} else {
 				return {
 					name: info.autoViewAs,
-					suit: card.suit,
-					number: card.number,
-					nature: card.nature,
+					xiBie: card.xiBie,
+					mingGe: card.mingGe,
+					duYou: card.duYou,
 				};
 			}
 		} else {
 			if (card.isCard || get.itemtype(card) == "card") {
 				var next = {
 					name: get.name(card),
-					suit: get.suit(card),
-					number: get.number(card),
-					nature: get.nature(card),
+					xiBie: get.xiBie(card),
+					mingGe: get.mingGe(card),
+					duYou: get.duYou(card),
 					isCard: true,
 					cardid: card.cardid,
 					wunature: card.wunature,
@@ -871,7 +871,7 @@ export class Get extends GetCompatible {
 			name = name.slice(name.indexOf("_") + 1);
 		}
 		if (lib.characterIntro[name]) return lib.characterIntro[name];
-		return "暂无武将介绍";
+		return "暂无角色介绍";
 	}
 	bordergroup(info, raw) {
 		if (typeof info == "string") info = get.character(info);
@@ -1217,9 +1217,9 @@ export class Get extends GetCompatible {
 				if (lib.inpile.includes(info[2]) && get.type(info[2]) == type) {
 					list.push({
 						name: info[2],
-						suit: info[0],
-						number: info[1],
-						nature: info[3],
+						xiBie: info[0],
+						mingGe: info[1],
+						duYou: info[3],
 					});
 				}
 			}
@@ -1299,67 +1299,15 @@ export class Get extends GetCompatible {
 		}
 	}
 	modetrans(config, server) {
-		if (config.mode == "doudizhu") {
-			switch (config.doudizhu_mode) {
-				case "kaihei":
-					return "开黑斗地主";
-				case "huanle":
-					return "欢乐斗地主";
-				case "binglin":
-					return "兵临城下";
-				case "online":
-					return "智斗三国";
-				default:
-					return "休闲" + (config.double_character ? "双将" : "") + "斗地主";
-			}
-		}
-		if (config.mode == "versus") {
+		if (config.mode == "xingBei") {
 			switch (config.versus_mode) {
-				case "1v1":
-					return "单人对决";
 				case "2v2":
-					return "欢乐成双";
+					return "2v2";
 				case "3v3":
-					return "血战到底";
+					return "3v3";
 				case "4v4":
-					return "四人对决";
-				case "guandu":
-					return "官渡之战";
+					return "4v4";
 			}
-		}
-		if (config.mode == "single") {
-			switch (config.single_mode) {
-				case "normal":
-					return "新１ｖ１";
-				case "changban":
-					return "血战长坂坡";
-				case "dianjiang":
-					return "点将单挑";
-				case "wuxianhuoli":
-					return "无限火力";
-			}
-		}
-		if (config.mode == "identity") {
-			switch (config.identity_mode) {
-				case "purple":
-					return "三对三对二";
-				case "zhong":
-					return (config.double_character ? "双将" : "") + "忠胆英杰";
-				case "stratagem":
-					return get.cnNumber(parseInt(config.number)) + "人" + (config.double_character ? "双将" : "") + "谋攻";
-				default:
-					return `${get.cnNumber(parseInt(config.number))}人${config.double_nei ? "双内" : ""}${config.enable_commoner ? "带民" : ""}${config.double_character ? "双将" : ""}身份`;
-			}
-		}
-		if (config.mode == "guozhan") {
-			if (config.separatism) return "群雄割据";
-			if (config.guozhan_mode != "normal")
-				switch (config.guozhan_mode) {
-					case "yingbian":
-						return "应变国战";
-					case "old":
-						return "怀旧国战";
-				}
 		}
 		if (server) {
 			return get.translation(config.mode) + "模式";
@@ -1382,6 +1330,23 @@ export class Get extends GetCompatible {
 			if (lib.filter.characterDisabled(i, libCharacter)) continue;
 			list.push(i);
 		}
+		return list;
+	}
+	characters(func){
+		var list=[];
+		var libCharacter={};
+		for(var i=0;i<lib.config.characters.length;i++){
+			var pack=lib.characterPack[lib.config.characters[i]];
+			for(var j in pack){
+				if(typeof func=='function'&&func(j)) continue;
+				if(lib.character[j]) libCharacter[j]=pack[j];
+			}
+		}
+		for(i in libCharacter){
+			if(lib.filter.characterDisabled(i,libCharacter)) continue;
+			list.push(i);
+		}
+
 		return list;
 	}
 	trimip(str) {
@@ -1664,7 +1629,7 @@ export class Get extends GetCompatible {
 		return Array.from(infos || []).map(info => game.playerMap[info]);
 	}
 	cardInfo(card) {
-		return [card.suit, card.number, card.name, card.nature, card.cardid];
+		return [card.xiBie, card.mingGe, card.name, card.duYou, card.cardid];
 	}
 	cardsInfo(cards = []) {
 		return Array.from(cards).map(get.cardInfo);
@@ -1746,7 +1711,7 @@ export class Get extends GetCompatible {
 		return Array.from(infos || []).map(get.infoVCard);
 	}
 	cardInfoOL(card) {
-		return "_noname_card:" + JSON.stringify([card.cardid, card.suit, card.number, card.name, card.nature]);
+		return "_noname_card:" + JSON.stringify([card.cardid, card.xiBie, card.mingGe, card.name, card.duYou]);
 	}
 	infoCardOL(info) {
 		if (!lib.cardOL) return info;
@@ -2480,27 +2445,28 @@ export class Get extends GetCompatible {
 		return card.name;
 	}
 	/**
-	 * 返回牌的花色
+	 * 返回牌的系别
 	 * @param {Card | VCard | Card[] | VCard[]} card
 	 * @param {false | Player} [player]
 	 * @returns {string | undefined }
 	 */
-	suit(card, player) {
+	//suit(card, player) {
+	xiBie(card, player) {
 		if (typeof card !== "object") return;
 		if (Array.isArray(card)) {
-			if (card.length == 1) return get.suit(card[0], player);
-			return "none";
-		} else if (!("suit" in card) && Array.isArray(card.cards)) {
-			return get.suit(card.cards, player);
+			if (card.length == 1) return get.xiBie(card[0], player);
+			return null;
+		} else if (!("xiBie" in card) && Array.isArray(card.cards)) {
+			return get.xiBie(card.cards, player);
 		} else {
 			if (player !== false) {
 				const owner = player || get.owner(card);
 				if (owner) {
-					return game.checkMod(card, owner, game.checkMod(card, card.suit, "suit", owner), "cardsuit", owner);
+					return game.checkMod(card, owner, game.checkMod(card, card.xiBie, "xiBie", owner), "cardXiBie", owner);
 				}
 			}
-			if (card.suit === "unsure" || lib.suits.includes(card.suit)) return card.suit;
-			return "none";
+			if (card.xiBie === "unsure" || lib.xiBies.includes(card.xiBie)) return card.xiBie;
+			return null;
 		}
 	}
 	/**
@@ -2509,6 +2475,7 @@ export class Get extends GetCompatible {
 	 * @param {false | Player} [player]
 	 * @returns {string | undefined }
 	 */
+	/*
 	color(card, player) {
 		if (typeof card !== "object") return;
 		if (Array.isArray(card)) {
@@ -2530,35 +2497,36 @@ export class Get extends GetCompatible {
 			}
 			return "none";
 		}
-	}
+	}*/
 	/**
-	 * 返回牌的点数
+	 * 返回牌的命格
 	 * @param {Card | VCard} card
 	 * @param {false | Player} [player]
 	 * @returns {number | undefined | "unsure" | null}
 	 */
-	number(card, player) {
+	//number(card, player) {
+	mingGe(card, player) {
 		if (typeof card !== "object") return;
 		if (Array.isArray(card)) {
-			if (card.length == 1) return get.number(card[0], player);
+			if (card.length == 1) return get.mingGe(card[0], player);
 			return null;
 		}
 		//狗卡你是真敢出啊
-		var number = null;
-		if ("number" in card) {
-			number = card.number;
-			if (number === "unsure") return number;
-			else if (typeof number != "number") number = null;
+		var mingGe = null;
+		if ("mingGe" in card) {
+			mingGe = card.mingGe;
+			if (mingGe === "unsure") return mingGe;
+			//else if (typeof number != "number") number = null;
 		} else {
-			if (card.cards && card.cards.length == 1) number = get.number(card.cards[0], false);
+			if (card.cards && card.cards.length == 1) mingGe = get.mingGe(card.cards[0], false);
 		}
 		if (player !== false) {
 			var owner = player || get.owner(card);
 			if (owner) {
-				return game.checkMod(card, owner, number, "cardnumber", owner);
+				return game.checkMod(card, owner, mingGe, "cardMingGe", owner);
 			}
 		}
-		return number;
+		return mingGe;
 	}
 	/**
 	 * 返回一张杀的属性。如有多种属性则用`lib.natureSeparator`分割开来。例：火雷【杀】的返回值为`fire|thunder`
@@ -2566,17 +2534,17 @@ export class Get extends GetCompatible {
 	 * @param {false | Player} [player]
 	 * @returns {string}
 	 */
-	nature(card, player) {
+	duYou(card, player) {
 		if (typeof card == "string") return card.split(lib.natureSeparator).sort(lib.sort.nature).join(lib.natureSeparator);
 		if (Array.isArray(card)) return card.sort(lib.sort.nature).join(lib.natureSeparator);
-		var nature = card.nature;
+		var duYou = card.duYou;
 		if (get.itemtype(player) == "player" || (player !== false && get.position(card) == "h")) {
 			var owner = get.owner(card);
 			if (owner) {
-				return game.checkMod(card, owner, nature, "cardnature", owner);
+				return game.checkMod(card, owner, duYou, "cardDuYou", owner);
 			}
 		}
-		return nature;
+		return duYou;
 	}
 	/**
 	 * 返回包含所有属性的数组
@@ -2584,11 +2552,11 @@ export class Get extends GetCompatible {
 	 * @param {false | Player} [player]
 	 * @returns {string[]}
 	 */
-	natureList(card, player) {
+	duYouList(card, player) {
 		if (!card) return [];
 		if (get.itemtype(card) == "natures") return card.split(lib.natureSeparator);
 		if (get.itemtype(card) == "nature") return [card];
-		const natures = get.nature(card, player);
+		const natures = get.duYou(card, player);
 		if (typeof natures != "string") return [];
 		return natures.split(lib.natureSeparator);
 	}
@@ -2949,11 +2917,11 @@ export class Get extends GetCompatible {
 					}
 				}
 				if ((str.suit && str.number) || str.isCard) {
-					var cardnum = get.strNumber(get.number(str, false), true) || "";
+					var mingGe = get.translation(get.mingGe(str, false)) || "";
 					if (arg == "viewAs" && str.viewAs != str.name && str.viewAs) {
 						str2 += "（" + get.translation(str) + "）";
 					} else {
-						str2 += "【" + get.translation(get.suit(str, false)) + cardnum + "】";
+						str2 += "【" + get.translation(get.xiBie(str, false)) + mingGe + "】";
 						// var len=str2.length-1;
 						// str2=str2.slice(0,len)+'<span style="letter-spacing: -2px">'+str2[len]+'·</span>'+get.translation(str.suit)+str.number;
 					}
@@ -2978,7 +2946,8 @@ export class Get extends GetCompatible {
 		}
 		if (arg == "skill") {
 			if (lib.translate[str + "_ab"]) return lib.translate[str + "_ab"];
-			if (lib.translate[str]) return lib.translate[str].slice(0, 2);
+			//if (lib.translate[str]) return lib.translate[str].slice(0, 2);
+			if (lib.translate[str]) return lib.translate[str];
 			return str;
 		} else if (arg == "info") {
 			if (lib.translate[str + "_info"]) return lib.translate[str + "_info"];
@@ -3278,17 +3247,17 @@ export class Get extends GetCompatible {
 							} else if (typeof filter[j] == "string") {
 								if (get.color(arguments[i]) != filter[j]) return false;
 							}
-						} else if (j == "suit") {
+						} else if (j == "xiBei") {
 							if (Array.isArray(filter[j])) {
-								if (filter[j].includes(get.suit(arguments[i])) == false) return false;
+								if (filter[j].includes(get.xiBie(arguments[i])) == false) return false;
 							} else if (typeof filter[j] == "string") {
-								if (get.suit(arguments[i]) != filter[j]) return false;
+								if (get.xiBie(arguments[i]) != filter[j]) return false;
 							}
-						} else if (j == "number") {
+						} else if (j == "mingGe") {
 							if (Array.isArray(filter[j])) {
-								if (filter[j].includes(get.number(arguments[i])) == false) return false;
+								if (filter[j].includes(get.mingGe(arguments[i])) == false) return false;
 							} else if (typeof filter[j] == "string") {
-								if (get.number(arguments[i]) != filter[j]) return false;
+								if (get.mingGe(arguments[i]) != filter[j]) return false;
 							}
 						} else if (Array.isArray(filter[j])) {
 							if (filter[j].includes(arguments[i][j]) == false) return false;
@@ -3429,14 +3398,14 @@ export class Get extends GetCompatible {
 			};
 		} else if (sort == "suit_sort") {
 			func = function (card) {
-				if (get.suit(card) == "heart") return 2;
-				if (get.suit(card) == "diamond") return 1;
-				if (get.suit(card) == "spade") return -1;
-				if (get.suit(card) == "club") return -2;
+				if (get.xiBie(card) == "heart") return 2;
+				if (get.xiBie(card) == "diamond") return 1;
+				if (get.xiBie(card) == "spade") return -1;
+				if (get.xiBie(card) == "club") return -2;
 			};
 		} else if (sort == "number_sort") {
 			func = function (card) {
-				return get.number(card) - 7 + 0.5;
+				return get.mingGe(card) - 7 + 0.5;
 			};
 		}
 		return func;
@@ -3606,7 +3575,8 @@ export class Get extends GetCompatible {
 				} else {
 					opacity = "";
 				}
-				var skilltrans = get.translation(skills[i]).slice(0, 2);
+				//var skilltrans = get.translation(skills[i]).slice(0, 2);
+				var skilltrans = get.translation(skills[i]);
 				str += '<div class="skill" style="' + opacity + '">【' + skilltrans + '】</div><div style="' + opacity + '">' + get.skillInfoTranslation(skills[i]) + '</div><div style="display:block;height:10px"></div>';
 			}
 		}
@@ -3630,7 +3600,10 @@ export class Get extends GetCompatible {
 		switch (type) {
 			case "mark": {
 				if (content > 0) {
-					return "共有" + content + "个标记";
+					let info=get.info(skill);
+					let str="共有" + content + "个标记"
+					if(info.intro.max&&info.intro.max>0) str+="，上限为"+info.intro.max;
+					return str;
 				}
 				return false;
 			}
@@ -3819,7 +3792,8 @@ export class Get extends GetCompatible {
 					if (lib.translate[skills[i] + "_ab"]) translation = lib.translate[skills[i] + "_ab"];
 					else {
 						translation = get.translation(skills[i]);
-						if (!lib.skill[skills[i]].nobracket) translation = `【${translation.slice(0, 2)}】`;
+						//if (!lib.skill[skills[i]].nobracket) translation = `【${translation.slice(0, 2)}】`;
+						if (!lib.skill[skills[i]].nobracket) translation = `${translation}`;
 					}
 
 					if (node.forbiddenSkills[skills[i]]) {
@@ -3930,9 +3904,9 @@ export class Get extends GetCompatible {
 				table = document.createElement("table");
 				tr = document.createElement("tr");
 				table.appendChild(tr);
-				td = document.createElement("td");
-				td.innerHTML = "距离";
-				tr.appendChild(td);
+				//td = document.createElement("td");
+				//td.innerHTML = "距离";
+				//tr.appendChild(td);
 				td = document.createElement("td");
 				td.innerHTML = "手牌";
 				tr.appendChild(td);
@@ -3942,9 +3916,10 @@ export class Get extends GetCompatible {
 				td = document.createElement("td");
 				td.innerHTML = "伤害";
 				tr.appendChild(td);
-
+				
 				tr = document.createElement("tr");
 				table.appendChild(tr);
+				/*
 				td = document.createElement("td");
 				if (node == game.me || !game.me || !game.me.isIn()) {
 					td.innerHTML = "-";
@@ -3958,6 +3933,7 @@ export class Get extends GetCompatible {
 					}
 				}
 				tr.appendChild(td);
+				*/
 				td = document.createElement("td");
 				let handcardLimit = node.getHandcardLimit();
 				td.innerHTML = `${node.countCards("h")}/${handcardLimit >= 114514 ? "∞" : handcardLimit}`;
@@ -4600,7 +4576,8 @@ export class Get extends GetCompatible {
 						if (lib.translate[skills[i] + "_ab"]) translation = lib.translate[skills[i] + "_ab"];
 						else {
 							translation = get.translation(skills[i]);
-							if (!lib.skill[skills[i]].nobracket) translation = `【${translation.slice(0, 2)}】`;
+							//if (!lib.skill[skills[i]].nobracket) translation = `【${translation.slice(0, 2)}】`;
+							if (!lib.skill[skills[i]].nobracket) translation = `${translation}`;
 						}
 
 						uiintro.add('<div><div class="skill">' + translation + "</div><div>" + get.skillInfoTranslation(skills[i]) + "</div></div>");
@@ -5516,10 +5493,11 @@ export class Get extends GetCompatible {
 		return final;
 	}
 	damageEffect(target, player, viewer, nature) {
+		/*
 		if (get.itemtype(nature) == "natures") {
-			var natures = get.natureList(nature);
+			var natures = get.duYouList(nature);
 			return natures.map(n => get.damageEffect(target, player, viewer, n)).reduce((p, c) => p + c, 0) / (natures.length || 1);
-		}
+		}*/
 		if (!player) {
 			player = target;
 		}
@@ -5535,7 +5513,7 @@ export class Get extends GetCompatible {
 			name = "icedamage";
 		}
 		var eff = get.effect(target, { name: name }, player, viewer);
-		if (eff > 0 && target.hujia > 0) return eff / 1.3;
+		if (eff > 0 && target.zhiLiao > 0) return eff / 1.3;
 		return eff;
 	}
 	/**

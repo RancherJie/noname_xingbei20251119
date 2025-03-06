@@ -27,6 +27,28 @@ import { GameCompatible } from "./compatible.js";
 import { save } from "../util/config.js";
 
 export class Game extends GameCompatible {
+	shiQiMax=15;
+	xingBeiMax=5;
+	zhanJiMax=5;
+	hongShiQi=0;
+	lanShiQi=0;
+	hongZhanJi=[];
+	lanZhanJi=[];
+	hongXingBei=0;
+	lanXingBei=0;
+
+	moDan=2;
+	moDanFangXiang='you';
+	jiChuXiaoGuo={
+		all:['diZhiFengYin','shuiZhiFengYin','huoZhiFengYin','fengZhiFengYin','leiZhiFengYin','weiLiCiFu','xunJieCiFu','shengDun','xuRuo','zhongDu'],
+		fengYinShi:['diZhiFengYin_xiaoGuo','shuiZhiFengYin_xiaoGuo','huoZhiFengYin_xiaoGuo','fengZhiFengYin_xiaoGuo','leiZhiFengYin_xiaoGuo'],
+		qiDaoShi:['weiLiCiFu_xiaoGuo','xunJieCiFu_xiaoGuo'],
+		pai:['_shengDun','_xuRuo','_zhongDu'],
+	};
+	handcardLimit=6;
+	zhiLiaoMax=2;
+	nengLiangMax=3;
+
 	documentZoom;
 	online = false;
 	onlineID = null;
@@ -276,27 +298,27 @@ export class Game extends GameCompatible {
 	/**
 	 * 判断卡牌信息/事件是否有某个属性
 	 */
-	hasNature(item, nature, player) {
-		var natures = get.natureList(item, player);
-		if (!nature) return natures.length > 0;
-		if (nature == "linked") return natures.some(n => lib.linked.includes(n));
-		return get.is.sameNature(natures, nature);
+	hasDuYou(item, duYou, player) {
+		var duYous = get.duYouList(item, player);
+		if (!duYou) return duYous.length > 0;
+		if (duYou == "linked") return duYous.some(n => lib.linked.includes(n));
+		return get.is.sameNature(duYous, duYou);
 	}
 	/**
 	 * 设置卡牌信息/事件的属性
 	 */
-	setNature(item, nature, addNature) {
-		if (!nature) nature = [];
-		if (!addNature) {
-			item.nature = get.nature(nature);
-			if (!item.nature.length) delete item.nature;
+	setDuYou(item, duYou, addNature) {
+		if (!duYou) duYou = [];
+		if (!addDuYou) {
+			item.duYou = get.duYou(duYou);
+			if (!item.duYou.length) delete item.duYou;
 		} else {
-			let natures = Array.isArray(nature) ? nature : nature.split(lib.natureSeparator);
-			let _nature = get.natureList(item, false);
+			let duYous = Array.isArray(duYou) ? duYou : duYou.split(lib.natureSeparator);
+			let _nature = get.duYouList(item, false);
 			_nature.addArray(natures);
-			item.nature = _nature.join(lib.natureSeparator);
+			item.duYou = _nature.join(lib.natureSeparator);
 		}
-		return item.nature;
+		return item.duYou;
 	}
 	/**
 	 * 洗牌
@@ -1819,7 +1841,7 @@ export class Game extends GameCompatible {
 			sex = sex == "female" ? "female" : "male";
 		}
 		if (!lib.config.background_audio || (get.type(card) == "equip" && !lib.config.equip_audio)) return;
-		let nature = get.natureList(card)[0];
+		let nature = get.duYouList(card)[0];
 		if (lib.natureAudio[card.name]) {
 			let useAudio = lib.natureAudio[card.name][nature];
 			if (useAudio === "default") {
@@ -2748,7 +2770,8 @@ export class Game extends GameCompatible {
 		},
 		init: function (players) {
 			if (game.chess) return;
-			if (lib.config.mode == "versus") {
+			//if (lib.config.mode == "versus") {
+			if (lib.config.mode == "xingBei") {
 				players.bool = players.pop();
 			}
 			ui.arena.setNumber(players.length);
@@ -2761,7 +2784,8 @@ export class Game extends GameCompatible {
 			ui.handcards2 = game.me.node.handcards2;
 			ui.handcards1Container.appendChild(ui.handcards1);
 			ui.handcards2Container.appendChild(ui.handcards2);
-			if (lib.config.mode == "versus") {
+			//if (lib.config.mode == "versus") {
+			if (lib.config.mode == "xingBei") {
 				if (players.bool) {
 					ui.arena.setNumber(parseInt(ui.arena.dataset.number) + 1);
 					for (var i = 0; i < game.players.length; i++) {
@@ -2811,7 +2835,8 @@ export class Game extends GameCompatible {
 					game.players[i].setIdentity(players[i].identity);
 					game.players[i].dataset.position = players[i].position;
 					game.players[i].node.action.innerHTML = "行动";
-				} else if (lib.config.mode == "versus") {
+				//} else if (lib.config.mode == "versus") {
+				} else if (lib.config.mode == "xingBei") {
 					game.players[i].init(players[i].name, players[i].name2);
 					game.players[i].node.identity.firstChild.innerHTML = players[i].identity;
 					game.players[i].node.identity.dataset.color = players[i].color;
@@ -2842,7 +2867,8 @@ export class Game extends GameCompatible {
 				game.playerMap[game.players[i].dataset.position] = game.players[i];
 			}
 
-			if (lib.config.mode == "versus") {
+			//if (lib.config.mode == "versus") {
+			if (lib.config.mode == "xingBei") {
 				if (players.bool) {
 					game.onSwapControl();
 				}
@@ -3362,7 +3388,7 @@ export class Game extends GameCompatible {
 				}
 				for (var i = 0; i < cards.length; i++) {
 					for (var j = 0; j < nodes.length; j++) {
-						if (cards[i][2] == nodes[j].name && cards[i][0] == nodes[j].suit && cards[i][1] == nodes[j].number) {
+						if (cards[i][2] == nodes[j].name && cards[i][0] == nodes[j].xiBie && cards[i][1] == nodes[j].mingGe) {
 							nodes[j].moveDelete(player);
 							cards.splice(i--, 1);
 							nodes.splice(j--, 1);
@@ -3386,7 +3412,7 @@ export class Game extends GameCompatible {
 				}
 				for (var i = 0; i < cards.length; i++) {
 					for (var j = 0; j < nodes.length; j++) {
-						if (cards[i][2] == nodes[j].name && cards[i][0] == nodes[j].suit && cards[i][1] == nodes[j].number) {
+						if (cards[i][2] == nodes[j].name && cards[i][0] == nodes[j].xiBie && cards[i][1] == nodes[j].mingGe) {
 							nodes[j].delete();
 							if (method == "zoom") {
 								nodes[j].style.transform = "scale(0)";
@@ -3409,7 +3435,7 @@ export class Game extends GameCompatible {
 					nodes.push(nodeList[i]);
 				}
 				for (var j = nodes.length - 1; j >= 0; j--) {
-					if (card[2] == nodes[j].name && card[0] == nodes[j].suit && card[1] == nodes[j].number) {
+					if (card[2] == nodes[j].name && card[0] == nodes[j].xiBie && card[1] == nodes[j].mingGe) {
 						nodes[j].classList.add("thrownhighlight");
 						break;
 					}
@@ -3487,7 +3513,7 @@ export class Game extends GameCompatible {
 									l2.splice(j--, 1);
 									break;
 								}
-							} else if (l2[j].suit == l1[i][0] && l2[j].number == l1[i][1] && l2[j].name == l1[i][2]) {
+							} else if (l2[j].xiBie == l1[i][0] && l2[j].mingGe == l1[i][1] && l2[j].name == l1[i][2]) {
 								l2[j].addGaintag(content[1]);
 								l2.splice(j--, 1);
 								break;
@@ -3512,7 +3538,7 @@ export class Game extends GameCompatible {
 										l2.splice(j--, 1);
 										break;
 									}
-								} else if (l2[j].suit == l1[i][0] && l2[j].number == l1[i][1] && l2[j].name == l1[i][2]) {
+								} else if (l2[j].xiBie == l1[i][0] && l2[j].mingGe == l1[i][1] && l2[j].name == l1[i][2]) {
 									l2[j].removeGaintag(content[0]);
 									l2.splice(j--, 1);
 									break;
@@ -3651,7 +3677,7 @@ export class Game extends GameCompatible {
 			if (player && info) {
 				player.hp = info[1];
 				player.maxHp = info[2];
-				player.hujia = info[3];
+				player.zhiLiao = info[3];
 				player.update(info[0]);
 			} else {
 				console.log(player);
@@ -3827,7 +3853,7 @@ export class Game extends GameCompatible {
 									l2.splice(j--, 1);
 									break;
 								}
-							} else if (l2[j].suit == l1[i][0] && l2[j].number == l1[i][1] && l2[j].name == l1[i][2]) {
+							} else if (l2[j].xiBie == l1[i][0] && l2[j].mingGe == l1[i][1] && l2[j].name == l1[i][2]) {
 								l2[j].classList.remove("glow");
 								l2[j].classList.remove("glows");
 								l2[j].remove();
@@ -4034,6 +4060,66 @@ export class Game extends GameCompatible {
 				}
 			}
 		},
+
+		changeShiQi:function(content){
+			var side=content[1];
+			var num=content[0];
+			if(side==true){
+				game.hongShiQi+=num;
+			}else if(side==false){
+				game.lanShiQi+=num;
+			}
+			ui.updateShiQiInfo();
+		},
+		changeZhanJi:function(content){
+			var num=content[0];
+			var xingShi=content[1];
+			var side=content[2];
+
+			if(num>0){
+				if(side==true){
+					for(let i=0;i<num;i++){
+						game.hongZhanJi.push(xingShi);
+					}
+				}else if(side==false){
+					for(let i=0;i<num;i++){
+						game.lanZhanJi.push(xingShi);
+					}
+				}
+			}else if(num<0){
+				num=-num;
+				if(side==true){
+					for(let i=0;i<num;i++){
+						let index = game.hongZhanJi.indexOf(xingShi);  
+						if (index !== -1) {  
+							game.hongZhanJi.splice(index, 1);  
+						}
+					}
+					
+				}else if(side==false){
+					for(let i=0;i<num;i++){
+						let index = game.lanZhanJi.indexOf(xingShi);  
+						if (index !== -1) {  
+							game.lanZhanJi.splice(index, 1);  
+						}
+					}
+					
+				}	
+			}
+			game.hongZhanJi.sort();
+			game.lanZhanJi.sort();
+			ui.updateShiQiInfo();
+		},
+		changeXingBei:function(content){
+			var num=content[0];
+			var side=content[1];
+			if(side==true){
+				game.hongXingBei+=num;
+			}else if(side==false){
+				game.lanXingBei+=num;
+			}
+			ui.updateShiQiInfo();
+		}
 	};
 	reload() {
 		if (_status) {
@@ -5465,41 +5551,37 @@ export class Game extends GameCompatible {
 	}
 	/**
 	 * @param { Card | VCard | object | string } name
-	 * @param { string } [suit]
-	 * @param { number | string } [number]
-	 * @param { string } [nature]
+	 * @param { string } [xiBie]
+	 * @param { number | string } [mingGe]
+	 * @param { string } [duYou]
 	 * @returns { Card }
 	 */
-	createCard(name, suit, number, nature) {
+	createCard(name, xiBie, mingGe, duYou) {
 		if (typeof name == "object") {
-			nature = name.nature;
-			number = name.number;
-			suit = name.suit;
+			duYou = name.duYou;
+			mingGe = name.mingGe;
+			xiBie = name.xiBie;
 			name = name.name;
 		}
 		if (typeof name != "string") {
-			name = "sha";
+			name = "shengGuang";
 		}
 		let noclick = false;
-		if (suit == "noclick") {
+		if (xiBie == "noclick") {
 			noclick = true;
-			suit = null;
+			xiBie = null;
 		}
-		if (!suit && lib.card[name].cardcolor) {
-			suit = lib.card[name].cardcolor;
+		if (!xiBie && lib.card[name].cardXiBie) {
+			xiBie = lib.card[name].cardXiBie;
 		}
-		if (!nature && lib.card[name].cardnature) {
-			nature = lib.card[name].cardnature;
+		if (!duYou && lib.card[name].cardDuYou) {
+			duYou = lib.card[name].cardDuYou;
 		}
-		if (typeof suit != "string") {
-			suit = "none";
-		} else if (suit == "black") {
-			suit = Math.random() < 0.5 ? "club" : "spade";
-		} else if (suit == "red") {
-			suit = Math.random() < 0.5 ? "diamond" : "heart";
+		if (typeof xiBie != "string") {
+			xiBie = "none";
 		}
-		if (typeof number != "number" && typeof number != "string") {
-			number = 0;
+		if (typeof mingGe != "string") {
+			mingGe = 'none';
 		}
 		let card;
 		if (noclick) {
@@ -5508,7 +5590,7 @@ export class Game extends GameCompatible {
 			card = ui.create.card(ui.special);
 		}
 		card.storage.vanish = true;
-		return card.init([suit, number, name, nature]);
+		return card.init([xiBie, mingGe, name, duYou]);
 	}
 	/**
 	 * @overload
@@ -5517,9 +5599,9 @@ export class Game extends GameCompatible {
 	/**
 	 * @overload
 	 * @param { Card | string } name
-	 * @param { string } suit
-	 * @param { number } number
-	 * @param { string } nature
+	 * @param { string } xiBie
+	 * @param { number } mingGe
+	 * @param { string } duYou
 	 */
 	createCard2() {
 		let card = game.createCard.apply(this, arguments);
@@ -5656,6 +5738,7 @@ export class Game extends GameCompatible {
 		if (game.addOverDialog) {
 			game.addOverDialog(dialog, result);
 		}
+		/*
 		if (typeof _status.coin == "number" && !_status.connectMode) {
 			let coeff = Math.random() * 0.4 + 0.8;
 			let added = 0;
@@ -5771,7 +5854,7 @@ export class Game extends GameCompatible {
 			if (ui.ladder && game.getLadderName) {
 				ui.ladder.innerHTML = game.getLadderName(lib.storage.ladder.current);
 			}
-		}
+		}*/
 		// if(true){
 		if (game.players.length) {
 			table = document.createElement("table");
@@ -5789,9 +5872,9 @@ export class Game extends GameCompatible {
 			td = document.createElement("td");
 			td.innerHTML = "出牌";
 			tr.appendChild(td);
-			td = document.createElement("td");
-			td.innerHTML = "杀敌";
-			tr.appendChild(td);
+			//td = document.createElement("td");
+			//td.innerHTML = "杀敌";
+			//tr.appendChild(td);
 			table.appendChild(tr);
 			for (i = 0; i < game.players.length; i++) {
 				tr = document.createElement("tr");
@@ -5828,6 +5911,7 @@ export class Game extends GameCompatible {
 				}
 				td.innerHTML = num;
 				tr.appendChild(td);
+				/*
 				td = document.createElement("td");
 				num = 0;
 				for (j = 0; j < game.players[i].stat.length; j++) {
@@ -5835,6 +5919,7 @@ export class Game extends GameCompatible {
 				}
 				td.innerHTML = num;
 				tr.appendChild(td);
+				*/
 				table.appendChild(tr);
 			}
 			dialog.add(ui.create.div(".placeholder"));
@@ -7731,13 +7816,38 @@ export class Game extends GameCompatible {
 			["r", "fire"],
 			["y", "yellow"],
 			["g", "green"],
-			["b", "blue"],
+			["b", "lightblue"],
 		]);
 		Array.from(arguments).forEach(value => {
 			const itemtype = get.itemtype(value);
 			if (itemtype == "player" || itemtype == "players") {
+				/*
 				str += `<span class="bluetext">${get.translation(value)}</span>`;
 				str2 += get.translation(value);
+				*/
+				if(itemtype=='player'){
+					if(value.side==true){
+						var c='red';
+					}else{
+						var c='lightblue'
+					}
+					str+=`<span style="color:${c};">${get.translation(value)}</span>`;
+					str2+=get.translation(value);
+				}else{
+					for(let i=0;i<value.length;i++){
+						if(value[i].side==true){
+							var c='red';
+						}else{
+							var c='lightblue'
+						}
+						str+=`<span style="color:${c};">${get.translation(value[i])}</span>`;
+						str2+=get.translation(value[i]);
+						if(i!=value.length-1){
+							str+='、';
+							str2+='、';
+						}
+					}
+				}
 			} else if (itemtype == "cards" || itemtype == "card" || (typeof value == "object" && value && value.name)) {
 				str += `<span class="yellowtext">${get.translation(value)}</span>`;
 				str2 += get.translation(value);
@@ -7747,16 +7857,27 @@ export class Game extends GameCompatible {
 					str += get.translation(value);
 					str2 += get.translation(value);
 				}
-			} else if (typeof value == "string") {
-				if (value[0] == "【" && value[value.length - 1] == "】") {
-					str += `<span class="greentext">${get.translation(value)}</span>`;
-					str2 += get.translation(value);
-				} else if (value[0] == "#") {
-					str += `<span class="${color.get(value[1]) || ""}text">${get.translation(value.slice(2))}</span>`;
-					str2 += get.translation(value.slice(2));
-				} else {
-					str += get.translation(value);
-					str2 += get.translation(value);
+			} else if(typeof value=='string'){
+				if(value[0]=='【'&&value[value.length-1]=='】'){
+					str+=`<span class="greentext">${get.translation(value)}</span>`;
+					str2+=get.translation(value);
+				}
+				else if(value[0]=='#'){
+					str+=`<span class="${color.get(value[1])||''}text">${get.translation(value.slice(2))}</span>`;
+					str2+=get.translation(value.slice(2));
+				}else if(value[0]=='['&&value[value.length-1]==']'){
+					str+=`<span style="color:skyblue;">${get.translation(value)}</span>`;
+					str2+=get.translation(value);
+				}else if(value=='宝石'){
+					str+=`<span style="color:OrangeRed;">${get.translation(value)}</span>`;
+					str2+=get.translation(value);
+				}else if(value=='水晶'){
+					str+=`<span style="color:PowderBlue;">${get.translation(value)}</span>`;
+					str2+=get.translation(value);
+				}
+				else{
+					str+=get.translation(value);
+					str2+=get.translation(value);
 				}
 			} else {
 				str += value;
@@ -7856,7 +7977,7 @@ export class Game extends GameCompatible {
 		} else if (Array.isArray(card)) {
 			node.cards = card[1].slice(0);
 			card = card[0];
-			const info = [card.suit || "", card.number || "", card.name || "", card.nature || ""];
+			const info = [card.xiBie || "", card.mingGe || "", card.name || "", card.duYou || ""];
 			if (!Array.isArray(node.cards) || !node.cards.length) node.cards = [ui.create.card(node, "noclick", true).init(info)];
 			if (card.name == "wuxie") {
 				if (ui.historybar.firstChild && ui.historybar.firstChild.type == "wuxie") {

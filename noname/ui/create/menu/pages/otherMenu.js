@@ -525,7 +525,7 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 			updatepx.style.whiteSpace = "nowrap";
 			updatepx.style.marginTop = "8px";
 			var buttonx = ui.create.node("button", "访问项目主页", function () {
-				window.open("https://github.com/libnoname/noname");
+				window.open("https://github.com/RancherJie/noname_xingbei");
 			});
 			updatepx.appendChild(buttonx);
 			ui.updateUpdate = function () {
@@ -783,7 +783,13 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 		var norow2 = function () {
 			var node = currentrow1;
 			if (!node) return false;
-			return node.innerHTML == "横置" || node.innerHTML == "翻面" || node.innerHTML == "换人" || node.innerHTML == "复活";
+			return (
+				node.innerHTML == "横置/重置" ||
+				node.innerHTML == "翻面" ||
+				node.innerHTML == "换人" ||
+				node.innerHTML == "复活" ||
+				node.innerHTML == "回合" 
+			);
 		};
 		var checkCheat = function () {
 			if (norow2()) {
@@ -833,6 +839,9 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 			if (checkCheat()) {
 				var num;
 				if (currentrow2) {
+					var str = currentrow2.innerHTML;
+					num = parseInt(str, 10); // 将字符串转换为整数
+					/*
 					switch (currentrow2.innerHTML) {
 						case "一":
 							num = 1;
@@ -849,7 +858,7 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 						case "五":
 							num = 5;
 							break;
-					}
+					}*/
 				}
 				var targets = [];
 				var buttons = row3.querySelectorAll(".glow");
@@ -859,26 +868,40 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 				while (targets.length) {
 					var target = targets.shift();
 					switch (currentrow1.innerHTML) {
-						case "伤害":
+						case "攻伤":
 							target.damage(num, "nosource");
 							break;
-						case "回复":
-							target.recover(num, "nosource");
+						case "法伤":
+							target.faShuDamage(num, "nosource");
 							break;
-						case "摸牌":
-							target.draw(num);
+						case "手牌":
+							if(num>0) target.draw(num);
+							else if(num<0) target.discard(target.getCards("h").randomGets(-num));
 							break;
-						case "弃牌":
-							target.discard(target.getCards("he").randomGets(num));
-							break;
-						case "横置":
-							target.link();
+						case "横置/重置":
+							if(target.isLinked()) target.chongZhi();
+							else target.hengZhi();
 							break;
 						case "翻面":
 							target.turnOver();
 							break;
-						case "复活":
-							target.revive(target.maxHp);
+						case "回合":
+							target.insertPhase();
+							break;
+						case '红石':
+							target.changeZhanJi('baoShi',num);
+							break;
+						case '红能':
+							target.changeNengLiang('baoShi',num);
+							break;
+						case '红灯':
+							target.changeHong(num,Infinity);
+							break;
+						case '蓝灯':
+							target.changeLan(num,Infinity);
+							break;
+						case '治疗':
+							target.changeZhiLiao(num,Infinity);
 							break;
 						case "换人": {
 							if (_status.event.isMine()) {
@@ -932,17 +955,18 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 			}
 			checkCheat();
 		};
-		var nodedamage = ui.create.div(".menubutton", "伤害", row1, clickrow1);
-		var noderecover = ui.create.div(".menubutton", "回复", row1, clickrow1);
-		var nodedraw = ui.create.div(".menubutton", "摸牌", row1, clickrow1);
-		var nodediscard = ui.create.div(".menubutton", "弃牌", row1, clickrow1);
-		var nodelink = ui.create.div(".menubutton", "横置", row1, clickrow1);
-		var nodeturnover = ui.create.div(".menubutton", "翻面", row1, clickrow1);
-		var noderevive = ui.create.div(".menubutton", "复活", row1, clickrow1);
-		var nodereplace = ui.create.div(".menubutton", "换人", row1, clickrow1);
-		if (!game.canReplaceViewpoint || !game.canReplaceViewpoint()) {
-			nodereplace.classList.add("unselectable");
-		}
+		var nodedamage=ui.create.div('.menubutton','攻伤',row1,clickrow1);
+		var nodedamageFaShu=ui.create.div('.menubutton','法伤',row1,clickrow1);
+		var nodehandCard=ui.create.div('.menubutton','手牌',row1,clickrow1);
+		//var nodeturnover=ui.create.div('.menubutton','翻面',row1,clickrow1);
+		var nodechangeZhiLiao=ui.create.div('.menubutton','治疗',row1,clickrow1);
+		var nodechangeHong=ui.create.div('.menubutton','红灯',row1,clickrow1);
+		var nodechangeLan=ui.create.div('.menubutton','蓝灯',row1,clickrow1);
+		var nodechangeNengLiang=ui.create.div('.menubutton','红能',row1,clickrow1);
+		var nodegaiBianZhanJi=ui.create.div('.menubutton','红石',row1,clickrow1);
+		var nodelink=ui.create.div('.menubutton','横置/重置',row1,clickrow1);
+		var nodereplace=ui.create.div('.menubutton','换人',row1,clickrow1);
+		var nodePhase=ui.create.div('.menubutton','回合',row1,clickrow1);
 
 		var currentrow2 = null;
 		var row2 = ui.create.div(".menu-cheat", page);
@@ -960,11 +984,19 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 			}
 			checkCheat();
 		};
+		/*
 		var nodex1 = ui.create.div(".menubutton", "一", row2, clickrow2);
 		var nodex2 = ui.create.div(".menubutton", "二", row2, clickrow2);
 		var nodex3 = ui.create.div(".menubutton", "三", row2, clickrow2);
 		var nodex4 = ui.create.div(".menubutton", "四", row2, clickrow2);
 		var nodex5 = ui.create.div(".menubutton", "五", row2, clickrow2);
+		*/
+		var nodex1 = ui.create.div(".menubutton", "-3", row2, clickrow2);
+		var nodex2 = ui.create.div(".menubutton", "-2", row2, clickrow2);
+		var nodex3 = ui.create.div(".menubutton", "-1", row2, clickrow2);
+		var nodex4 = ui.create.div(".menubutton", "+1", row2, clickrow2);
+		var nodex5 = ui.create.div(".menubutton", "+2", row2, clickrow2);
+		var nodex6 = ui.create.div(".menubutton", "+3", row2, clickrow2);
 
 		var row3 = ui.create.div(".menu-buttons.leftbutton.commandbutton", page);
 		row3.style.marginTop = "3px";
@@ -1044,11 +1076,12 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 					nodereplace.classList.remove("unselectable");
 				}
 			}
+			/* 复活相关，用不到
 			if (game.dead.length == 0) {
 				noderevive.classList.add("unselectable");
 			} else {
 				noderevive.classList.remove("unselectable");
-			}
+			}*/
 			checkCheat();
 		});
 	})();

@@ -951,6 +951,7 @@ export class Click {
 				game.shuffleNumber +
 				"</div>"
 		);
+		/*
 		uiintro.add('<div class="text center">弃牌堆</div>');
 		if (ui.discardPile.childNodes.length) {
 			var list = [];
@@ -960,7 +961,7 @@ export class Click {
 			uiintro.addSmall([list, "card"]);
 		} else {
 			uiintro.add('<div class="text center" style="padding-bottom:3px">无</div>');
-		}
+		}*/
 		return uiintro;
 	}
 	chat() {
@@ -2751,7 +2752,8 @@ export class Click {
 			if (game.online) {
 				if (game.onlinezhu) {
 					if (!this.playerid && game.connectPlayers) {
-						if (lib.configOL.mode == "versus" || lib.configOL.mode == "doudizhu") return;
+						//if (lib.configOL.mode == "versus" || lib.configOL.mode == "doudizhu") return;
+						if (lib.configOL.mode == "xingBei") return;
 						if (lib.configOL.mode == "identity" && lib.configOL.identity_mode == "zhong") return;
 						if (!this.classList.contains("unselectable2") && lib.configOL.number <= 2) return;
 						this.classList.toggle("unselectable2");
@@ -2794,7 +2796,8 @@ export class Click {
 				}
 			} else {
 				if (
-					lib.configOL.mode == "versus" ||
+					//lib.configOL.mode == "versus" ||
+					lib.configOL.mode == "xingBei" ||
 					lib.configOL.mode == "doudizhu" ||
 					lib.configOL.mode == "single"
 				)
@@ -3033,8 +3036,10 @@ export class Click {
 				const cards = result.cards;
 				if (cards.length == 1) {
 					const firstCard = cards[0];
-					if (!resultCard.suit) resultCard.suit = get.suit(firstCard);
-					if (!resultCard.number) resultCard.number = get.number(firstCard);
+					//if (!resultCard.suit) resultCard.suit = get.suit(firstCard);
+					//if (!resultCard.number) resultCard.number = get.mingGe(firstCard);
+					if (!resultCard.xiBie) resultCard.xiBie = get.xiBie(firstCard);
+					if (!resultCard.mingGe) resultCard.mingGe = get.mingGe(firstCard);
 				}
 			}
 			const skillDialog = gameEvent.skillDialog;
@@ -3680,12 +3685,13 @@ export class Click {
 				const hpDiv = ui.create.div(".hp", characterIntroTable),
 					nameInfoHP = nameInfo[2],
 					infoHP = get.infoHp(nameInfoHP);
-				hpDiv.dataset.condition = infoHP < 4 ? "mid" : "high";
+				//hpDiv.dataset.condition = infoHP < 4 ? "mid" : "high";
+				hpDiv.dataset.condition = 'xing';
 				ui.create.div(hpDiv);
 				const hpTextDiv = ui.create.div(".text", hpDiv),
 					infoMaxHP = get.infoMaxHp(nameInfoHP);
 				hpTextDiv.innerHTML = infoHP == infoMaxHP ? `×${infoHP}` : `×${infoHP}/${infoMaxHP}`;
-				const infoShield = get.infoHujia(nameInfoHP);
+				const infoShield = get.infoZhiLiao(nameInfoHP);
 				if (infoShield) {
 					ui.create.div(".shield", hpDiv);
 					const shieldTextDiv = ui.create.div(".text", hpDiv);

@@ -337,6 +337,17 @@ export function createConfig(config, position) {
 				input.innerHTML = input.innerHTML.replace(/<br>/g, "");
 				game.saveConfig("hall_ip", input.innerHTML, "connect");
 			};
+		}else if(config.name=='房间备注'){
+			input.innerHTML=config.init||'无';
+			input.onblur=function(){
+				input.innerHTML=input.innerHTML.replace(/<br>/g,'');
+				if(!input.innerHTML||get.is.banWords(input.innerHTML)){
+					input.innerHTML='无';
+				}
+				input.innerHTML=input.innerHTML.slice(0,12);
+				game.saveConfig('connect_remark',input.innerHTML);
+				game.saveConfig('connect_remark',input.innerHTML,'xingBei');
+			}
 		} else {
 			input.innerHTML = config.init;
 			input.onblur = config.onblur;
@@ -461,7 +472,7 @@ export function menu(connectMenu) {
 				clickContainer.call(cacheMenuContainer, connectMenu);
 			}
 		};
-		menux = createMenu(connectMenu, ["开始", "选项", "武将", "卡牌", "扩展", "其它"], {
+		menux = createMenu(connectMenu, ["开始", "选项", "角色", "卡牌", "扩展", "其它"], {
 			position: cacheMenuContainer,
 			bar: 40,
 		});
@@ -495,7 +506,7 @@ export function menu(connectMenu) {
 			}
 		};
 
-		menux = createMenu(connectMenu, ["模式", "武将", "卡牌"], {
+		menux = createMenu(connectMenu, ["模式", "角色", "卡牌"], {
 			position: cacheMenuContainer,
 			bar: 123,
 		});

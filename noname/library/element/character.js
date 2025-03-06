@@ -24,7 +24,7 @@ export class Character {
 	 * 武将牌的护甲值
 	 * @type { number }
 	 **/
-	hujia = 0;
+	zhiLiao = 0;
 	/**
 	 * 武将姓名
 	 * @type { string|undefined }
@@ -184,7 +184,7 @@ export class Character {
 			this.group = data[1];
 			this.hp = get.infoHp(data[2]);
 			this.maxHp = get.infoMaxHp(data[2]);
-			this.hujia = get.infoHujia(data[2]);
+			this.zhiLiao = get.infoZhiLiao(data[2]);
 			this.skills = get.copy(data[3] || []);
 			if (data[4]) this.setPropertiesFromTrash(data[4]);
 			if (data.length > 5) this.extraModeData = data[5];
@@ -320,14 +320,14 @@ export class Character {
 	 * @deprecated
 	 */
 	get 2() {
-		if (this.hujia > 0) return `${this.hp}/${this.maxHp}/${this.hujia}`;
+		if (this.zhiLiao > 0) return `${this.hp}/${this.maxHp}/${this.zhiLiao}`;
 		else if (this.hp !== this.maxHp) return `${this.hp}/${this.maxHp}`;
 		return this.hp;
 	}
 	set 2(hp) {
 		this.hp = get.infoHp(hp);
 		this.maxHp = get.infoMaxHp(hp);
-		this.hujia = get.infoHujia(hp);
+		this.zhiLiao = get.infoZhiLiao(hp);
 	}
 
 	/**
