@@ -62,10 +62,6 @@ export default () => {
 				}
 				game.chooseCharacter();
 			}
-			game.broadcastAll(function(){
-                ui.shiQiInfo=ui.create.div('.touchinfo.bottom-right',ui.window);
-                ui.updateShiQiInfo();
-            });
 			"step 3"
 			if(_status.connectMode){
 				_status.mode=lib.configOL.versus_mode;
@@ -79,8 +75,6 @@ export default () => {
                             players[i].node.identity.firstChild.innerHTML='蓝';
                         }
                     }
-                    ui.shiQiInfo=ui.create.div('.touchinfo.bottom-right',ui.window);
-                    ui.updateShiQiInfo();
                 },];
 			};
 			var players=get.players(lib.sort.position);
@@ -102,8 +96,6 @@ export default () => {
 			}
 			game.addVideo('init',null,info);
 			event.trigger('gameStart');
-			game.changeShiQi(game.shiQiMax,true,false);
-			game.changeShiQi(game.shiQiMax,false,false);
             'step 4'
 			if(_status.connectMode){
                 _status.first_less=true;

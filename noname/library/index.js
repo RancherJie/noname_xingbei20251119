@@ -14036,7 +14036,7 @@ export class Library {
 					game.hongXingBei = state.hongXingBei;
 					game.lanXingBei = state.lanXingBei;
 					game.moDanFangXiang = state.moDanFangXiang;
-					
+                    
 					var pos = state.players[observe || game.onlineID].position;
 					for (var i in state.players) {
 						var info = state.players[i];
@@ -14155,6 +14155,9 @@ export class Library {
 					}
 					game.arrangePlayers();
 					ui.create.me(true);
+					//xingBei更新战绩区
+					ui.shiQiInfo=ui.create.div('.touchinfo.bottom-right',ui.window);
+                    ui.updateShiQiInfo();
 
 					_status.event = lib.element.GameEvent.initialGameEvent();
 					_status.paused = false;

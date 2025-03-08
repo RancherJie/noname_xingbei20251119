@@ -3119,6 +3119,7 @@ export const Content = {
 			current = current.next;
 			num++;
 		}
+		game.$initZhanJi();
 		"step 1";
 		for (var i = 0; i < lib.onphase.length; i++) {
 			lib.onphase[i]();

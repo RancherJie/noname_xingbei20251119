@@ -49,6 +49,14 @@ export class Game extends GameCompatible {
 	zhiLiaoMax=2;
 	nengLiangMax=3;
 
+	$initZhanJi(){
+		game.broadcastAll(function(){
+			ui.shiQiInfo=ui.create.div('.touchinfo.bottom-right',ui.window);
+		});
+		game.changeShiQi(game.shiQiMax,true,false);
+		game.changeShiQi(game.shiQiMax,false,false);
+	}
+
 	documentZoom;
 	online = false;
 	onlineID = null;
