@@ -2837,7 +2837,6 @@ export class Player extends HTMLDivElement {
 					for(var i=0;i<config.characterPack.length;i++){
 						let enNameOri=config.characterPack[i];
 						let enName=enNameOri+'_character_config';
-						console.log(enNameOri,enName);
 						let name=get.translation(enName);
 						if(enName==name) name=enNameOri;
 						str+=name;
