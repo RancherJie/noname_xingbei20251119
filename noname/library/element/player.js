@@ -2832,10 +2832,15 @@ export class Player extends HTMLDivElement {
 					}
 					str += "】";
 				}*/
-				if(config.mode=='xingBei'){
+				if(config.characterPack.length>0){
 					str+='【';
 					for(var i=0;i<config.characterPack.length;i++){
-						str+=(get.translation(config.characterPack[i]+'_character_config'));
+						let enNameOri=config.characterPack[i];
+						let enName=enNameOri+'_character_config';
+						console.log(enNameOri,enName);
+						let name=get.translation(enName);
+						if(enName==name) name=enNameOri;
+						str+=name;
 						if(i<config.characterPack.length-1) str+='+';
 					}
 					str+='】';
