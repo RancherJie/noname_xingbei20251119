@@ -4196,16 +4196,15 @@ export class Library {
 						}
 					},
 				},
-				/*
 				show_handcardbutton: {
 					name: "显示手牌按钮",
+					intro: "在多控情况下右上角显示所有我方角色手牌",
 					init: true,
 					unfrequent: true,
 					onclick(bool) {
 						game.saveConfig("show_handcardbutton", bool);
 					},
 				},
-				*/
 				/*
 				show_giveup: {
 					name: "显示投降按钮",
