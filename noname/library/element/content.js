@@ -10932,7 +10932,7 @@ export const Content = {
 			}
 		}
 		"step 7"
-		event.trigger('chengShouShangHaiAftrer');
+		event.trigger('chengShouShangHaiAfter');
 		'step 8'
 		event.trigger('shouDaoShangHaiAfter');
 	},
