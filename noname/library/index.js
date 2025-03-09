@@ -12898,6 +12898,9 @@ export class Library {
 				content:'expansion',
 				markcount:'expansion',
 			},
+			init:function(player){
+				player.storage.zhongDu=[];
+			},
 			trigger:{player:'xingDongBefore'},
 			forced:true,
 			filter:function(event,player){
