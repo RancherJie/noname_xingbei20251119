@@ -201,6 +201,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         trigger:{global:'changeShiQiJudge'},
                         direct:true,
                         filter:function(event,player){
+                            if(!player.isHengZhi()) return false;
                             if(event.num>=0) return false;
                             if(player.side!=event.side) return false;
                             var shiQi=get.shiQi(player.side);
