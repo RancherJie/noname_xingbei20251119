@@ -2777,8 +2777,6 @@ export class Game extends GameCompatible {
 			}
 		},
 		init: function (players) {
-			if (game.chess) return;
-			//if (lib.config.mode == "versus") {
 			if (lib.config.mode == "xingBei") {
 				players.bool = players.pop();
 			}
@@ -2792,7 +2790,6 @@ export class Game extends GameCompatible {
 			ui.handcards2 = game.me.node.handcards2;
 			ui.handcards1Container.appendChild(ui.handcards1);
 			ui.handcards2Container.appendChild(ui.handcards2);
-			//if (lib.config.mode == "versus") {
 			if (lib.config.mode == "xingBei") {
 				if (players.bool) {
 					ui.arena.setNumber(parseInt(ui.arena.dataset.number) + 1);
@@ -2807,87 +2804,23 @@ export class Game extends GameCompatible {
 				ui.arena.style.display = "";
 				ui.refresh(ui.arena);
 				ui.arena.show();
-			} else if (lib.config.mode == "boss") {
-				if (!players.boss) {
-					game.singleHandcard = true;
-					ui.arena.classList.add("single-handcard");
-					ui.window.classList.add("single-handcard");
-					ui.fakeme = ui.create.div(".fakeme.avatar", ui.me);
-				}
-				ui.arena.setNumber(8);
 			}
 			ui.updatehl();
 			for (var i = 0; i < players.length; i++) {
-				if (lib.config.mode == "identity") {
-					if (_status.mode == "stratagem") {
-						game.players[i].init(players[i].name, players[i].name2);
-						game.players[i].identity = players[i].identity;
-						if ((game.players[i].identity == "fan" && game.players[i].isCamouflaged && game.me.identity == "nei") || game.players[i] == game.me) {
-							game.players[i].setIdentity(players[i].identity);
-						}
-					} else {
-						game.players[i].init(players[i].name, players[i].name2);
-						game.players[i].setIdentity(players[i].identity);
-					}
-					game.players[i].setNickname(players[i].nickname);
-				} else if (lib.config.mode == "doudizhu" || lib.config.mode == "single") {
-					game.players[i].init(players[i].name, players[i].name2);
-					game.players[i].setIdentity(players[i].identity);
-					game.players[i].setNickname(players[i].nickname);
-				} else if (lib.config.mode == "stone") {
-					game.players[i].init(players[i].name, players[i].name2);
-					game.players[i].classList.add("noidentity");
-					game.players[i].updateActCount(null, players[i].count, 0);
-				} else if (lib.config.mode == "boss") {
-					game.players[i].init(players[i].name, players[i].name2);
-					game.players[i].setIdentity(players[i].identity);
-					game.players[i].dataset.position = players[i].position;
-					game.players[i].node.action.innerHTML = "行动";
-				//} else if (lib.config.mode == "versus") {
-				} else if (lib.config.mode == "xingBei") {
+				if (lib.config.mode == "xingBei") {
 					game.players[i].init(players[i].name, players[i].name2);
 					game.players[i].node.identity.firstChild.innerHTML = players[i].identity;
 					game.players[i].node.identity.dataset.color = players[i].color;
-					game.players[i].node.action.innerHTML = "行动";
-				} else if (lib.config.mode == "guozhan") {
-					game.players[i].name = players[i].name;
-					game.players[i].name1 = players[i].name1;
-					game.players[i].name2 = players[i].name2;
-
-					game.players[i].sex = "unknown";
-					game.players[i].identity = "unknown";
-
-					lib.translate[game.players[i].name] = players[i].translate;
-					game.players[i].init(players[i].name1, players[i].name2);
-
-					game.players[i].classList.add("unseen_v");
-					game.players[i].classList.add("unseen2_v");
-					if (game.players[i] != game.me) {
-						game.players[i].node.identity.firstChild.innerHTML = "猜";
-						game.players[i].node.identity.dataset.color = "unknown";
-					} else {
-						game.players[i].setIdentity(game.players[i].group);
-					}
-					game.players[i].setNickname(players[i].nickname);
+					game.players[i].side = players[i].side;
 				}
 			}
 			for (var i = 0; i < game.players.length; i++) {
 				game.playerMap[game.players[i].dataset.position] = game.players[i];
 			}
-
-			//if (lib.config.mode == "versus") {
 			if (lib.config.mode == "xingBei") {
 				if (players.bool) {
 					game.onSwapControl();
 				}
-			} else if (lib.config.mode == "boss") {
-				if (!players.boss) {
-					game.onSwapControl();
-				}
-				ui.arena.style.display = "";
-				ui.refresh(ui.arena);
-				ui.arena.show();
-				ui.updatehl();
 			}
 		},
 		newcard: function (content) {
