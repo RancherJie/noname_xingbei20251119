@@ -15083,6 +15083,21 @@ export class Library {
 				nature: "firemm",
 			},
 		],
+		[
+			"FAQ",
+			{
+				getSpan: () => {
+					const span = document.createElement("span"),
+						style = span.style;
+					style.writingMode = style.webkitWritingMode = "horizontal-tb";
+					style.fontFamily = "MotoyaLMaru";
+					style.transform = "scaleY(0.85)";
+					style.color = "#FBF2E3";
+					span.textContent = "FAQ";
+					return span.outerHTML;
+				},
+			},
+		],
 	]);
 	groupnature = {
 		shen: "shen",
