@@ -5,7 +5,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 		connect:true,
         characterSort:{
             shiZhouNian:{
-                'FAQ':['FAQ_xianZhe','FAQ_geDouJia'],
+                'FAQ':['FAQ_xianZhe','FAQ_geDouJia','FAQ_yueZhiNvShen'],
                 "3xing":['fengZhiJianSheng','kuangZhanShi','shenJianShou','fengYinShi','anShaZhe','shengNv','tianShi','moFaShaoNv'],
                 "3.5xing":['moJianShi','shengQiangQiShi','yuanSuShi','maoXianJia','wenYiFaShi','zhongCaiZhe','jingLingSheShou','nvWuShen'],
                 "4xing":['shenGuan','yingLingRenXing','yinYangShi','moGong','xianZhe','lingFuShi','cangYanMoNv','moQiang','xueSeJianLing','qiDaoShi','hongLianQiShi'],
@@ -54,6 +54,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 
             FAQ_xianZhe:['xianZhe_name','yongGroup',4,['zhiHuiFaDian','FAQ_faShuFanTan','moDaoFaDian','shengJieFaDian'],['character:xianZhe']],
             FAQ_geDouJia:['geDouJia_name','jiGroup','4/5',['nianQiLiChang','xuLiYiji','nianDan','baiShiHuanLongQuan','FAQ_qiJueBengJi','douShenTianQu','douQi'],['character:geDouJia']],
+            FAQ_yueZhiNvShen:['yueZhiNvShen_name','shengGroup',5,['xinYueBiHu','anYueZuZhou','FAQ_meiDuShaZhiYan','yueZhiLunHui','yueDu','anYueZhan','cangBaiZhiYue','xinYue','shiHua','anYue'],['character:yueZhiNvShen']],
 
 		},
 
@@ -8823,6 +8824,56 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                 },
             },
+
+            FAQ_meiDuShaZhiYan:{
+                trigger:{global:'gongJiShi'},
+                filter:function(event,player){
+                    if(event.player.side==player.side) return false;
+                    if(event.cards.length==0||(!event.card.isCard)) return false;
+                    var anYue=player.getExpansions('anYue');
+                    return anYue.length>0;
+                },
+                async cost(event, trigger, player) {
+                    var result = await player.chooseCardButton(player.getExpansions('anYue'),'是否发动【美杜莎之眼】<br>'+lib.translate.meiDuShaZhiYan_info)
+                    .set('filterButton',function(button){
+                        return get.xiBie(button.link)==_status.event.xiBie;
+                    })
+                    .set('xiBie',get.xiBie(trigger.card)).forResult();
+                    event.result = {
+                        bool: result.bool,
+                        cost_data: result.links,
+                    }
+                },
+                content:function(){
+                    'step 0'
+                    var card=event.cost_data[0];
+                    event.card=card;
+                    player.discard(card,'anYue').set('showHiddenCards',true);
+                    'step 1'
+                    player.changeZhiLiao(1);
+                    'step 2'
+                    player.addZhiShiWu('shiHua');
+                    'step 3'
+                    if(get.type(event.card)=='faShu'){
+                        if(player.countCards('h')>0){
+                            player.chooseToDiscard('h',true);
+                        }
+                    }else event.finish();
+                    'step 4'
+                    var next=player.chooseTarget(1,'美杜莎之眼：目标对手造成1点法术伤害③',true,function(card,player,target){
+                        return target.side!=player.side;
+                    });
+                    next.set('ai',function(target){
+                        var player=_status.event.player;
+                        return get.damageEffect2(target,player,1);
+                    });
+                    'step 5'
+                    if(result.bool){
+                        result.targets[0].damage(1,player).set('faShu',true);
+                    }
+                }
+
+            },
         },
 		
 		translate:{
@@ -9511,6 +9562,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             FAQ_geDouJia_prefix: "FAQ",
             FAQ_qiJueBengJi:"[响应]气绝崩击",
             FAQ_qiJueBengJi_info:"<span class='tiaoJian'>(主动攻击前发动①，移除1点</span><span class='hong'>【斗气】</span><span class='tiaoJian'>)</span>本次攻击对方无法应战，本次攻击结束后对自己造成X点法术伤害③，X为你的<span class='hong'>【斗气】</span>数；不能和【蓄力一击】同时发动。",
+
+            FAQ_yueZhiNvShen:"FAQ月之女神",
+            FAQ_yueZhiNvShen_prefix: "FAQ",
+            FAQ_meiDuShaZhiYan:"[响应]美杜莎之眼",
+            FAQ_meiDuShaZhiYan_info:"<span class='tiaoJian'>(目标对手使用实体牌攻击时①，移除1个与攻击牌系别相应的系别的【暗月】[展示])</span>你+1[治疗]，你+1<span class='lan'>【石化】</span>。<span class='tiaoJian'>(若该【暗月】为法术牌)</span>你弃1张牌，对目标对手造成1点法术伤害③。",
 		},
 	};
 });
