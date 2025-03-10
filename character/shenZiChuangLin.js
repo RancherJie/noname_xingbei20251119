@@ -63,7 +63,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             if(card.length>0) cards.push(card[0]);
                         }
                         for(var target of targets){
-                            target.draw();
+                            await target.draw();
                         }
                     }else{
                         let card=await player.draw().forResult();
