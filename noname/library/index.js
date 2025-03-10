@@ -15089,10 +15089,9 @@ export class Library {
 				getSpan: () => {
 					const span = document.createElement("span"),
 						style = span.style;
-					style.writingMode = style.webkitWritingMode = "horizontal-tb";
 					style.fontFamily = "MotoyaLMaru";
-					style.transform = "scaleY(0.85)";
-					style.color = "#FBF2E3";
+					style.transform = "scaleY(0.5)";
+					style.color = "#E9F0F6";
 					span.textContent = "FAQ";
 					return span.outerHTML;
 				},
