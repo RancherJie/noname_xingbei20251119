@@ -346,7 +346,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             caiJueLunDing:{
                 trigger:{global:'zhiLiaoYiChu'},
                 usable:1,
-                frequent:true,
                 filter:function(event,player){
                     return event.player.side==player.side;
                 },
@@ -700,7 +699,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             fuMoDaJi:{
                 trigger:{source:['gongJiMingZhong','gongJiWeiMingZhong']},
                 usable:1,
-                frequent:true,
                 filter:function(event,player,name){
                     if(get.is.zhuDongGongJi(event)){
                         if(name=='gongJiMingZhong') return true;

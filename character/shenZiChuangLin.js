@@ -635,7 +635,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             huangShenJiYi:{
                 trigger:{global:'gongJiShi'},
-                frequent:true,
                 filter:function(event,player){
                     if(!get.is.zhuDongGongJi(event)) return false;
                     var cards=player.getExpansions('jieJie');

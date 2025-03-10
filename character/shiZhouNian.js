@@ -135,7 +135,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             //风之剑圣
             fengNuZhuiJi:{
                 usable:1,
-                frequent:true,
                 trigger:{player:"gongJiAfter"},
                 filter:function(event,player){
                     return event.yingZhan!=true;
@@ -209,7 +208,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             lieFengJi:{
                 trigger:{player:'gongJiShi'},
-                frequent:true,
                 filter:function(event,player){
                     return event.card.hasDuYou('lieFengJi')&&event.target.hasExpansions('_shengDun');
                 },
@@ -221,7 +219,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             jiFengJi:{
                 trigger:{player:'gongJiShi'},
-                frequent:true,
                 filter:function(event,player){
                     return event.card.hasDuYou('jiFengJi')&&event.yingZhan!=true;
                 },
@@ -275,7 +272,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             xueYingKuangDao:{
                 trigger:{player:'gongJiShi'},
-                frequent:true,
                 group:['xueYingKuangDao_gongJiMingZhong'],
                 filter:function(event,player){
                     return event.yingZhan!=true&&event.card.hasDuYou('xueYingKuangDao');
@@ -304,7 +300,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             xueXingPaoXiao:{
                 trigger:{player:'gongJiShi'},
-                frequent:true,
+
                 filter:function(event,player){
                     return event.card.hasDuYou('xueXingPaoXiao')&&event.yingZhan!=true&&event.target.zhiLiao==2;
                 },
@@ -594,7 +590,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             //封印师
             faShuJiDang:{
                 trigger:{player:'faShuAfter'},
-                frequent:true,
                 content:function(){
                     player.addGongJi();
                 }
@@ -1729,7 +1724,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             //元素师
             yuanSuXiShou:{
                 trigger:{source:'zaoChengShangHai'},
-                frequent:true,
                 filter:function(event,player){
                     if(event.faShu!=true) return false;
                     if(event.yuanSuDianRan==true) return false;
@@ -3142,7 +3136,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             //瘟疫法师
             buXiu:{
                 trigger:{player:'faShuEnd'},
-                frequent:true,
                 filter:function(event,player){
                     return event.skill!='siWangZhiChu_backup';
                 },
@@ -3289,7 +3282,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             //魔剑士
             xiuLuoLianZhan:{
                 usable:1,
-                frequent:true,
                 trigger:{player:"gongJiAfter"},
                 filter:function(event,player){
                     return event.yingZhan!=true;
@@ -3917,7 +3909,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             //红莲骑士
             xingHongShengYue:{
                 usable:1,
-                frequent:true,
                 trigger:{player:'gongJiShi'},
                 filter:function(event,player){
                     return event.yingZhan!=true;
@@ -4380,7 +4371,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             //神官
             shenShengQiShi:{
                 trigger:{player:'teShuEnd'},
-                frequent:true,
                 content:function(){
                     player.changeZhiLiao(1);
                 }
@@ -7653,7 +7643,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             //兽灵武士
             wuZheCanXin:{
                 usable:1,
-                frequent:true,
                 trigger:{player:'gongJiEnd'},
                 filter:function(event,player){
                     return get.is.gongJiXingDong(event);
