@@ -9751,6 +9751,7 @@ export class Library {
 
 		zhiLiao:"治疗",
 
+		FAQ:'FAQ',
 		'3xing':'3星',
 		'3.5xing':'3.5星',
 		'4xing':'4星',

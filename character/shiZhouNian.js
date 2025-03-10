@@ -9552,7 +9552,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             jian_info:"【茧】为蝶舞者专有盖牌，上限为8。",
             DWZyong_info:"<span class='hong'>【蛹】</span>为蝶舞者专有指示物，无上限。",
 
-            FAQ:'FAQ',
             FAQ_xianZhe:'FAQ贤者',
             FAQ_xianZhe_prefix: "FAQ",
             FAQ_faShuFanTan:"[响应]法术反弹",
