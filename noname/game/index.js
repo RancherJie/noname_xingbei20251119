@@ -5327,8 +5327,10 @@ export class Game extends GameCompatible {
 		lib.mode[name] = {
 			name: info2.translate,
 			config: info2.config,
+			connect: info2.connect,
 			splash: imgsrc,
 			fromextension: true,
+			info: info,
 		};
 		lib.init["setMode_" + name] = async () => {
 			await game.import("mode", (lib, game, ui, get, ai, _status) => {
@@ -6640,36 +6642,41 @@ export class Game extends GameCompatible {
 	loadModeAsync(name, callback, onerror = e => console.error(e)) {
 		let promise = (async () => {
 			window.game = game;
-			const exports = await import(`../../mode/${name}.js`);
-			// esm模式
-			if (Object.keys(exports).length > 0) {
-				if (typeof exports.default !== "function") {
-					throw new Error(`导入的模式[${name}]格式不正确！`);
+			let content;
+			if(!lib.mode[name].fromextension){
+				const exports = await import(`../../mode/${name}.js`);
+				// esm模式
+				if (Object.keys(exports).length > 0) {
+					if (typeof exports.default !== "function") {
+						throw new Error(`导入的模式[${name}]格式不正确！`);
+					}
+					game.import("mode", exports.default);
 				}
-				game.import("mode", exports.default);
+				// 普通模式
+				else {
+					await new Promise((resolve, reject) => {
+						let script = lib.init.js(
+							`${lib.assetURL}mode`,
+							name,
+							() => {
+								script?.remove();
+								resolve(null);
+							},
+							e => reject(e.error)
+						);
+					});
+				}
+				await Promise.allSettled(_status.importing.mode);
+				if (!lib.config.dev) delete window.game;
+				content = lib.imported.mode[name];
+				delete lib.imported.mode[name];
+				if (get.is.empty(lib.imported.mode)) {
+					delete lib.imported.mode;
+				}
+			}else if(lib.mode[name].connect){
+				if(lib.mode[name].info) content = lib.mode[name].info;
 			}
-			// 普通模式
-			else {
-				await new Promise((resolve, reject) => {
-					let script = lib.init.js(
-						`${lib.assetURL}mode`,
-						name,
-						() => {
-							script?.remove();
-							resolve(null);
-						},
-						e => reject(e.error)
-					);
-				});
-			}
-			await Promise.allSettled(_status.importing.mode);
-			if (!lib.config.dev) delete window.game;
-			const content = lib.imported.mode[name];
 			if (!content) throw new Error(`导入的模式[${name}]格式不正确！`);
-			delete lib.imported.mode[name];
-			if (get.is.empty(lib.imported.mode)) {
-				delete lib.imported.mode;
-			}
 			return content;
 		})();
 		if (callback) promise = promise.then(callback, onerror);
