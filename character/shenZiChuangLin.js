@@ -128,7 +128,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         return 4;
                     },
                     result:{
-                        player:1,
+                        player:function(player){
+                            if(player.countCards('h')>=player.getHandcardLimit()) return -1;
+                            else return 1;
+                        },
                     }
                 }
             },
