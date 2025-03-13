@@ -6638,7 +6638,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 await player.addZhiShiWu('nuQi',nuQi);
                             }
                             if(num>0){
-                                trigger.getParent().changeDamageNum(num);
+                                trigger.changeDamageNum(num);
                                 await player.faShuDamage(num,player);
                             }
                             await event.trigger('jinDuanZhiLi');
