@@ -1297,7 +1297,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         list.push(['baoShi','宝石']);
                     }
                     for(var i=0;i<player.countNengLiang('shuiJing');i++){
-                        list.push('shuiJing','水晶');
+                        list.push(['shuiJing','水晶']);
                     }
                     var result = await player.chooseButton(['是否发动【神之庇护】<br>'+lib.translate.shenZhiBiHu_info,[list,'tdnodes']])
                     .set('selectButton',[1,-trigger.num])
