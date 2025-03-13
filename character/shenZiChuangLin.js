@@ -1526,7 +1526,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 ai:{
                     baoShi:true,
                 },
-                trigger:{player:'moFaRuMenBegin'},
+                trigger:{player:'FAQ_moFaRuMenBegin'},
                 usable:1,
                 filter:function(event,player){
                     return player.canBiShaBaoShi();
