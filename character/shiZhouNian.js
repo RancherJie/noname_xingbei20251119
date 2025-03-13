@@ -2216,7 +2216,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return player.isHengZhi()&&player.canBiShaShuiJing()&&player.getExpansions('anYue').length>0;
                 },
                 async cost(event, trigger, player) {
-                    var result=await player.chooseCardButton(player.getExpansions('anYue'),true,'是否发动【暗月斩】<br>'+lib.translate.anYueZhan_info).forResult();
+                    var result=await player.chooseCardButton(player.getExpansions('anYue'),'是否发动【暗月斩】<br>'+lib.translate.anYueZhan_info,[1, 2]).forResult();
                     event.result = {
                         bool: result.bool,
                         cost_data: result.links,
