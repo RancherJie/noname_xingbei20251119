@@ -8693,7 +8693,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         var targets=await player.chooseTarget("对目标角色造成1点法术伤害③，该伤害不能用[治疗]抵御",true)
                         .set('ai',function(target){
                             var player=_status.event.player;
-                            return gat.damageEffect2(target,player,1);
+                            return get.damageEffect2(target,player,1);
                         }).forResultTargets();
                         var target=targets[0];
                         await target.faShuDamage(1,player).set('canZhiLiao',false);
