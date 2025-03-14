@@ -4551,7 +4551,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             //阴阳师
             shiShenJiangLin:{
                 type:'faShu',
-                enable:['chooseToUse','faShu'],
+                enable:['faShu'],
                 filter:function(event,player){
                     if(player.isHengZhi()) return false;
                     return player.countTongMingPai()>=2;
@@ -5843,7 +5843,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             //灵符师
             lingFu_leiMing:{
                 type:'faShu',
-                enable:['chooseToUse','faShu'],
+                enable:['faShu'],
                 filter:function(event,player){
                     return player.countCards('h',card=>lib.skill.lingFu_leiMing.filterCard(card))>0;
                 },
@@ -7125,7 +7125,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             shengGuangBaoLie:{
                 type:'faShu',
-                enable:['chooseToUse','faShu'],
+                enable:['faShu'],
                 filter:function(event,player){
                     return player.isHengZhi();
                 },
