@@ -4226,7 +4226,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                     await lib.skill.zhanWenZhangWo.fanZhuanZhanWen(player,zhanWenNum);
                     await player.discard(event.cards).set('showCards',true);
-                    await trigger.changeDamageNum(num);
+                    trigger.changeDamageNum(num);
                 }
             },
             moWenRongHe:{
