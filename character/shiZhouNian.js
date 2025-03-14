@@ -7845,7 +7845,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 content:function(){
                     'step 0'
                     trigger.customArgs.niFanJuHeZhan_num=event.cost_data;
-                    player.removeZhiShiWu('shouHun',event.cost_data);
+                    if(event.cost_data>0){
+                        player.removeZhiShiWu('shouHun',event.cost_data);
+                    }
                 },
                 group:'niFanJuHeZhan_xiaoGuo',
                 subSkill:{
