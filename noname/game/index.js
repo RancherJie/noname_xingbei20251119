@@ -7767,7 +7767,7 @@ export class Game extends GameCompatible {
 			["r", "fire"],
 			["y", "yellow"],
 			["g", "green"],
-			["b", "lightblue"],
+			["b", "blue"],
 		]);
 		Array.from(arguments).forEach(value => {
 			const itemtype = get.itemtype(value);
