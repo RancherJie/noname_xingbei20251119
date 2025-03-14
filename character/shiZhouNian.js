@@ -797,6 +797,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         intro:{
                             content:'expansion',
                         },
+                        onremove:function(player, skill) {
+                            const cards = player.getExpansions(skill);
+                            if (cards.length) player.loseToDiscardpile(cards);
+                        },
                         trigger:{player:['daChuPai','showCardsEnd']},
                         forced:true,
                         priority:1,
@@ -6265,6 +6269,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     content:"[响应]激昂狂想曲：<span class='tiaoJian'>(回合开始时若你拥有【永恒乐章】)</span>选择以下一项执行：<br>·吟游诗人对2名目标对手各造成1点法术伤害③。 <br>·你弃2张牌。<br>[响应]胜利交响诗：<span class='tiaoJian'>(回合结束时若你拥有【永恒乐章】)</span>选择以下一项执行<br>·将我方【战绩区】的1个星石提炼成为你的能量。<br>·为我方【战绩区】+1[宝石]，你+1[治疗]。",
                     nocount:true,
                 },
+                onremove:'storage',
                 group:['yongHengYueZhang_jiAngKuangXiangQu','yongHengYueZhang_shengLiJiaoXiangShi'],
                 markimage:'image/card/zhuanShu/yongHengYueZhang.png',
                 subSkill:{
