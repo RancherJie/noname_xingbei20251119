@@ -605,7 +605,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 type:'faShu',
                 enable:['faShu'],
                 filter:function(event,player){
-                    return !player.getExpansions('jieJie').length>0;
+                    return !player.getExpansions('jieJie').length>0&&player.hasSkill('jieJie');
                 },
                 selectCard:2,
                 discard:false,
