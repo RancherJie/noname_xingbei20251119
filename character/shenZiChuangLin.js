@@ -142,12 +142,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         player.chooseToDiscard(2,true);
                     }
                     'step 1'
-                    if(player.countSkill('moFanRuMen')==3){
+                    if(player.countSkill('moFaRuMen')==3){
                         player.addZhanJi('baoShi',2);
                     }
                 },
                 check:function(event,player){
-                    var num=player.countSkill('moFanRuMen');
+                    var num=player.countSkill('moFaRuMen');
                     if(num==3) return true;
                     return num<4;
                 }
