@@ -4858,11 +4858,9 @@ export class Library {
 					}
 					if(config.phaseswap==true){
 						map.change_identity.hide();
-						map.free_choose.hide();
 						map.viewHandcard.hide();
 					}else{
 						map.change_identity.show();
-						map.free_choose.show();
 						map.viewHandcard.show();
 					}
 				},
