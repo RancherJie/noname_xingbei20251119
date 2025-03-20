@@ -19,7 +19,7 @@ window.config = {
 		sgscharacters:['shiZhouNian'],
 		sgscards:['xingBei'],
 		sgsmodes:['connect','xingBei'],
-		stockmode:['connect','xingBei'],
+		stockmode:['connect','xingBei','tutorial'],
 		stockextension:[],
 		layout:['default','newlayout'],
 		theme:['woodden','music','simple'],

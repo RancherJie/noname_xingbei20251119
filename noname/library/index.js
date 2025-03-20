@@ -4978,8 +4978,6 @@ export class Library {
 				},
 			}
 		},
-
-
 		connect: {
 			name: "联机",
 			config: {
@@ -5110,7 +5108,9 @@ export class Library {
 				},
 			},
 		},
-
+		tutorial:{
+			name:'教程',
+		}
 	};
 	status = {
 		running: false,
