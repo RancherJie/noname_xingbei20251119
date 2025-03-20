@@ -8119,6 +8119,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         trigger:{global:'chengShouShangHai'},
                         filter:function(event,player){
+                            if(event.lingHunLianJie) return false;
                             if(!player.storage.lingHunLianJieTarget) return false;
                             if(!(event.player==player.storage.lingHunLianJieTarget||event.player==player)) return false;
                             return player.hasZhiShiWu('lanSeLingHun');
@@ -8185,21 +8186,21 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             if(list[0]==player){
                                 if(trigger.player==player){
                                     trigger.insertAfter(function(){
-                                        player.faShuDamage(num,source).set('step',5);
+                                        player.faShuDamage(num,source).set('step',4).set('lingHunLianJie',true);
                                     },{
                                         player:player.storage.lingHunLianJieTarget,
                                         num:event.num,
                                         source:player,
                                     });
                                 }else{
-                                    player.faShuDamage(event.num,player).set('step',5);
+                                    player.faShuDamage(event.num,player).set('step',4).set('lingHunLianJie',true);
                                 }
                             }else{
                                 if(trigger.player==player){
-                                    player.storage.lingHunLianJieTarget.faShuDamage(event.num,player).set('step',5);
+                                    player.storage.lingHunLianJieTarget.faShuDamage(event.num,player).set('step',4).set('lingHunLianJie',true);
                                 }else{
                                     trigger.insertAfter(function(){
-                                        player.faShuDamage(num,player).set('step',5);
+                                        player.faShuDamage(num,player).set('step',4).set('lingHunLianJie',true);
                                     },{
                                         player:player,
                                         num:event.num,
