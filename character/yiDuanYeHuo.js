@@ -1515,62 +1515,46 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         cost_data:result.links
                     }
                 },
-                content:function(){
-                    'step 0'
-                    player.removeBiShaShuiJing();
-                    'step 1'
-                    player.discard(event.cost_data,'moLiPing','showHiddenCards');
-                    event.cards=event.cost_data;
+                content:async function(event,trigger,player){
+                    await player.removeBiShaShuiJing();
+                    await player.discard(event.cost_data,'moLiPing','showHiddenCards');
+                    var cards=event.cost_data;
 
-                    'step 2'
-                    event.faShu=0;
-                    event.gongJi=0;
-                    event.tongXi=false;
+                    var faShu=0;
+                    var gongJi=0;
+                    var tongXi=false;
 
-                    for(var i=0;i<event.cards.length;i++){
-                        var card=event.cards[i];
+                    for(let card of cards){
                         if(get.type(card)=='faShu'){
-                            event.faShu++;
+                            faShu++;
                         }else if(get.type(card)=='gongJi'){
-                            event.gongJi++;
+                            gongJi++;
                         }
                     }
-                    if(get.xiBie(event.cards[0])==get.xiBie(event.cards[1])) event.tongXi=true;
+                    if(get.xiBie(cards[0])==get.xiBie(cards[1])) tongXi=true;
 
-                    'step 3'
-                    if(event.faShu>=1){
-                        player.chooseTarget(`对${event.faShu}个目标对手造成1点法术伤害③`,true,event.faShu,function(card,player,target){
+                    if(faShu>=1){
+                        let targets=await player.chooseTarget(`对${faShu}个目标对手造成1点法术伤害③`,true,faShu,function(card,player,target){
                             return target.side!=player.side;
                         }).set('ai',function(target){
                             return -get.damageEffect(target,1);
-                        });
-                    }else{
-                        event.goto(6);
+                        }).forResultTargets();
+                        targets.sortBySeat(player);
+                        game.log(player,'选择了',targets);
+                        for(let target of targets){
+                            await target.faShuDamage(1,player);
+                        }
                     }
-                    'step 4'
-                    game.log(player,'选择了',result.targets);
-
-                    event.targets=result.targets;
-                    'step 5'
-                    var target=event.targets.shift();
-                    target.faShuDamage(1,player);
-                    if(event.targets.length>0) event.redo();
-
-                    'step 6'
-                    if(event.gongJi>=2) player.addGongJi();
+                    if(gongJi>=2) player.addGongJi();
                     
-                    'step 7'
-                    if(event.tongXi){
-                        player.chooseTarget(`对目标角色造成1点法术伤害③`,true).set('ai',function(target){
+                    if(tongXi){
+                        let targets=await player.chooseTarget(`对目标角色造成1点法术伤害③`,true).set('ai',function(target){
                             var player=_status.event.player;
                             if(target.side==player.side) return -1;
                             return -get.damageEffect(target,1);
-                        });
-                    }else{
-                        event.finish();
+                        }).forResultTargets();
+                        await targets[0].faShuDamage(1,player);
                     }
-                    'step 8'
-                    result.targets[0].faShuDamage(1,player);
                 },
                 ai:{
                     shuiJing:true,
