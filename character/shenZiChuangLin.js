@@ -144,7 +144,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }).set('ai',function(){
                         var target=_status.event.target;
                         if(target.zhiLiao>0){
-                            return Math.random;
+                            return Math.random();
                         }else{
                             return 0;
                         }
@@ -441,6 +441,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                     game.log(player,`获得了${cards.length}张【刃】`);
                     player.gain(cards,'draw');
+                },
+                check: function(event,player){
+                    return !player.storage.moRen&&!player.storage.yiRen;
                 },
                 ai: {
                     shuiJing: true,
