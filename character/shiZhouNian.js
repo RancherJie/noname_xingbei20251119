@@ -6250,6 +6250,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         else if(control=='lingGan') await player.addZhiShiWu('lingGan');
                     }
                 },
+                check:function(event,player){
+                    return player.hasZhiShiWu('lingGan')<3;
+                },
                 ai:{
                     shuiJing:true,
                 }
