@@ -112,6 +112,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         player.gain(card,'draw');
                     }
                 },
+                check: function(event,player){
+                    return player.countCards('h')<player.getHandcardLimit();
+                }
             },
             qingKe: {
                 trigger: {source: "gongJiMingZhong",},
