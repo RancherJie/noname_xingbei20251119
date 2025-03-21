@@ -6021,6 +6021,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 usable:1,
                 async cost(event,trigger,player){
+                    if(trigger.getParent().name=='yongHengYueZhang_jiAngKuangXiangQu'){
+                        await event.trigger('yongHengYueZhang');
+                        trigger.getParent().bool=true;
+                    }
                     event.result=await player.chooseCard('h',2)
                     .set('complexCard',true)
                     .set('filterCard',function(card){return get.xuanZeTongXiPai(card)})
@@ -6299,7 +6303,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             'step 3'
                             event.targets[1].faShuDamage(1,player.storage.yongHengYueZhang_player);
                             'step 4'
-                            event.trigger('yongHengYueZhang');
+                            if(!event.bool) event.trigger('yongHengYueZhang');
                         },
                         check:function(event,player){
                             var bool1=player.storage.yongHengYueZhang_player.countCards('h')>2;
