@@ -1485,10 +1485,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 subSkill:{
                     gain:{
-                        trigger:{global:'drawAfter'},
+                        trigger:{global:['drawAfter','damageZero']},
                         direct:true,
                         filter:function(event,player){
-                            return event.getParent('damage').guanYinDuRen;
+                            return event.getParent('damage').guanYinDuRen||event.guanYinDuRen;
                         },
                         content:function(){
                             'step 0'
