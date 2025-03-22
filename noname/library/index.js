@@ -10400,7 +10400,11 @@ export class Library {
 				next.set('filterCard',function(card,player,event){
 					if(get.type(card)=='gongJi'){
 						if(_status.event.canYingZhan==false) return false;//不能应战设置
-						if(get.name(card)!='anMie'&&get.xiBie(card)!=get.xiBie(_status.event.card)) return false;
+						if(_status.event.canAnMie==false){
+							if(get.xiBie(card)!=get.xiBie(_status.event.card)) return false;
+						}else{
+							if(get.name(card)!='anMie'&&get.xiBie(card)!=get.xiBie(_status.event.card)) return false;
+						}
 					}else if(get.type(card)=='faShu'){
 						if(_status.event.canShengGuang==false) return false;
 						if(get.name(card)!='shengGuang') return false;
@@ -10417,6 +10421,7 @@ export class Library {
 				next.set('yingZhan',true);
 				next.set('canYingZhan',trigger.canYingZhan);
 				next.set('canShengGuang',trigger.canShengGuang);
+				next.set('canAnMie',trigger.canAnMie);
 				'step 1'
 				if(result.bool){
 					trigger.weiMingZhong();

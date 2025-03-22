@@ -8566,6 +8566,7 @@ export const Content = {
 			event.canYingZhan=true;
 			event.canShengGuang=true;
 			event.canShengDun=true;
+			event.canAnMie=true;
 		}else if(type=='faShu'&&get.is.xingDong(event)){//防止传递魔弹时触发该时机
 			event.type='faShu';
 		}else if(card.name=='shengGuang'){
