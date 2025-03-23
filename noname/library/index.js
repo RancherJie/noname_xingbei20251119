@@ -9888,7 +9888,6 @@ export class Library {
 				}
 			}
 		},
-		/*
 		_faShuXianZhi:{
 			mod:{
 				cardEnabled:function(card){
@@ -9906,7 +9905,7 @@ export class Library {
 					}
 				}    
 			}
-		},*/
+		},
 		_gongJiXingShi:{//攻击获得星石
 			trigger:{source:'gongJiMingZhong'},
 			direct:true,
