@@ -1462,7 +1462,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 trigger:{target:'gongJiMingZhong'},
                 firstDo:true,
                 filter:function(event,player){
-                    return get.is.zhuDongGongJi(event.getParent())&&(player.getExpansions('yanLing').length>0||player.countZhiShiWu('miShu')>0);
+                    return player.getExpansions('yanLing').length>0&&get.is.zhuDongGongJi(event.getParent())&&(player.getExpansions('yanLing').length>0||player.countZhiShiWu('miShu')>0);
                 },
                 content:function(){
                     'step 0'
@@ -2032,7 +2032,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             yanLingShu:"[法术]言灵术",
             yanLingShu_info:"<span class='tiaoJian'>(将1-2张手牌面朝上放置在你角色旁[展示]作为【言灵】)</span>你摸1张牌[强制]；<span class='tiaoJian'>(摸牌后，若你额外弃1张与现存【言灵】系别相同的牌[展示])</span>你+1<span class='hong'>【秘术】</span>。",
             shouHuLing:"[被动]守护灵",
-            shouHuLing_info:"<span class='tiaoJian'>(你被主动攻击命中时②，其他角色结算效果前)</span>移除1个【言灵】。<span class='tiaoJian'>(你被主动攻击命中时②，其他角色结算效果前，若你移除1点</span><span class='hong'>【秘术】</span><span class='tiaoJian'>)</span>将1张手牌面朝上放置在你角色旁[展示]作为【言灵】。",
+            shouHuLing_info:"<span class='tiaoJian'>(若【言灵】数>0，你被主动攻击命中时②，其他角色结算效果前)</span>移除1个【言灵】；<span class='tiaoJian'>(若你</span><span class='hong'>【秘术】</span>数>0<span class='tiaoJian'>)</span>移除1点<span class='hong'>【秘术】</span>，将1张手牌面朝上放置在你角色旁[展示]作为【言灵】。",
             zhenYanShu:"[法术]真言术",
             zhenYanShu_backup:'[法术]真言术',
             zhenYanShu_info:"<span class='tiaoJian'>(将1个除光系外的【言灵】视为手牌使用)</span>执行相应的行动；<span class='tiaoJian'>(若使用的【言灵】为咏类命格或法术牌，或你额外移除1点</span><span class='hong'>【秘术】</span><span class='tiaoJian'>)</span>本次相应行动执行完成后，对目标对手造成1点法术伤害③。",
