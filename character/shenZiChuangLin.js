@@ -1466,12 +1466,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content:function(){
                     'step 0'
-                    if(player.getExpansions('yanLing').length>0){
-                        var cards=player.getExpansions('yanLing');
-                        player.chooseCardButton(cards,true,'移除1个【言灵】').set('ai',function(){
-                            return Math.random();
-                        });
-                    }else event.goto(2);
+                    var cards=player.getExpansions('yanLing');
+                    player.chooseCardButton(cards,true,'移除1个【言灵】').set('ai',function(){
+                        return Math.random();
+                    });
                     'step 1'
                     player.discard(result.links,'yanLing');
                     'step 2'
@@ -1490,7 +1488,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 4'
                     if(player.countCards('h')>0){
                         player.chooseCard('h',true,'将1张手牌面朝上放置在你的角色旁【展示】作为【言灵】');
-                    }
+                    }else event.finish();
                     'step 5'
                     player.showCards(result.cards);
                     event.cards=result.cards;
