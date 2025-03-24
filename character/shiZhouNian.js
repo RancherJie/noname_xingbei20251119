@@ -3190,8 +3190,31 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 filterTarget:function(card,player,target){
                     return target!=player;
                 },
-                content:function(){
-                    target.faShuDamage(1,player);
+                content:async function(event, trigger, player){
+                    await player.addTempSkill('wenYi_xiaJiang');
+                    await event.target.faShuDamage(1,player).set('wenYi',true);
+                },
+                subSkill:{
+                    xiaJiang:{
+                        trigger:{global:'changeShiQiAfter'},
+                        lastDo:true,
+                        direct:true,
+                        filter:function(event,player){
+                            return event.getParent('damage').wenYi==true&&event.num<0;
+                        },
+                        content:function(){
+                            player.removeSkill('wenYi_xiaJiang');
+                            player.addTempSkill('wenYi_zhiLiao');
+                        }
+                    },
+                    zhiLiao:{
+                        trigger:{player:'phaseEnd'},
+                        direct:true,
+                        content:function(){
+                            player.changeZhiLiao(1);
+                            player.removeSkill('wenYi_zhiLiao');
+                        }
+                    }
                 },
                 ai:{
                     order:3.6,
@@ -3209,7 +3232,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 chooseButton:{
                     dialog:function(event,player){
-						var dialog=ui.create.dialog('死亡之触：移除a点[治疗]','hidden');
+						var dialog=ui.create.dialog('死亡之触：移除X点[治疗]','hidden');
                         var list=[];
                         for(var i=0;i<=player.zhiLiao;i++){
                             if(i<2) continue;
@@ -3252,7 +3275,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 					},
                     prompt:function(links,player){
                         var num=links.length;
-						return `弃置b张同系牌[展示]至少2张，对目标角色造成(${num}+b-3)点伤害`;
+						return `弃置Y张同系牌[展示]至少2张，对目标角色造成(${num}+Y-3)点伤害`;
 					},
                     check: function (button) {
                         return button.link;
@@ -9103,9 +9126,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shengDu:"[被动]圣渎",
             shengDu_info:"你的[治疗]不能抵御攻击伤害，你的[治疗]上限+3。",
             wenYi:"[法术]瘟疫",
-            wenYi_info:"<span class='tiaoJian'>(弃1张地系牌[展示])</span>对所有其他角色各造成1点法术伤害③。",
+            wenYi_info:"<span class='tiaoJian'>(弃1张地系牌[展示])</span>对所有其他角色各造成1点法术伤害③；<span class='tiaoJian'>(若因此造成士气下降)</span>回合结束时，你+1[治疗]。",
             siWangZhiChu:"[法术]死亡之触",
-            siWangZhiChu_info:"<span class='tiaoJian'>(移除你的a[治疗]并弃b张同系牌[展示]，a，b的数值由你决定，但每项最少为2)</span>对目标角色造成(a+b-3)点伤害③，不能和【不朽】同时发动。",
+            siWangZhiChu_info:"<span class='tiaoJian'>(移除你的X[治疗]并弃Y张同系牌[展示]，a，b的数值由你决定，但每项最少为2)</span>对目标角色造成(X+Y-3)点伤害③，不能和【不朽】同时发动。",
             siWangZhiChu_backup:"[法术]死亡之触",
             juDuXinXing:"[法术]剧毒新星",
             juDuXinXing_info:"[宝石]对其他角色各造成2点法术伤害③，你+1[治疗]。",
