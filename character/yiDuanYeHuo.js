@@ -499,7 +499,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 }
             },
             jingHuaZhiShu:{
-                trigger:{player:'shangHaiAfter'},
+                trigger:{player:'damageAfter'},
                 filter:function(event,player){
                     return player.countCards('h')>0;
                 },

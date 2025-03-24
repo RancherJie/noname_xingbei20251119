@@ -6025,7 +6025,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             //吟游诗人
             chenLunXieZouQu:{
-                trigger:{global:'shangHaiAfter'},//该时机不会因为治疗而被抵消
+                trigger:{global:'damageAfter'},//该时机不会因为治疗而被抵消
                 filter:function(event,player){
                     if(player.isHengZhi()) return false;
                     if(event.faShu!=true) return false;
