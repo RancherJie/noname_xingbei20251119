@@ -687,6 +687,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 check:function(event,player){
                     if(player.countCards('h')==4) return false;
+                    return player.canGongJi()||player.canFaShu();
                 },
                 ai:{
                     shuiJing:true,
