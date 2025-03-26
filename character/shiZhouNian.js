@@ -3075,6 +3075,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 1'
                     player.hengZhi();
                     'step 2'
+                    game.log(player,'将牌堆顶3张牌作为','【祝福】');
                     var cards=get.cards(3);
                     player.loseToSpecial(cards,'zhuFu',player);
                     player.markSkill('zhuFu');
@@ -3133,6 +3134,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 return card.hasGaintag('zhuFu');
                             });
                             await player.discard(zhuFu,'zhuFu');
+                            game.log(player,`将牌堆顶${zhuFu.length}张牌作为`,'【祝福】');
                             var cards=get.cards(zhuFu.length);
                             await player.loseToSpecial(cards,'zhuFu',player);
                         }
