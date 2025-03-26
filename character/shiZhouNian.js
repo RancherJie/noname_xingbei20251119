@@ -4063,6 +4063,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 7'
                     player.addZhiShiWu('xueYin');
                 },
+                check:function(event,player){
+                    if(player.countZhiShiWu('xueYin')>=lib.skill.xueYin.intro.max) return false;
+                    var zhiLiaoPlayer=game.filterPlayer(function(current){
+                        return current.side==player.side&&current!=player&&current.zhiLiao<current.getZhiLiaoLimit();
+                    });
+                    return zhiLiaoPlayer.length>0;
+                }
             },
             shaLuShengYan:{
                 trigger:{source:'gongJiMingZhong'},
