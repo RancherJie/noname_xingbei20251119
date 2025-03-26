@@ -3079,7 +3079,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.loseToSpecial(cards,'zhuFu',player);
                     player.markSkill('zhuFu');
                 },
-                group:'jingLingMiYi_chongZhi',
+                group:['jingLingMiYi_chongZhi','jingLingMiYi_wuFaXingDongBefore','jingLingMiYi_wuFaXingDongAfter'],
                 subSkill:{
                     chongZhi:{
                         trigger:{player:'phaseEnd'},
@@ -3101,6 +3101,40 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             });
                             'step 1'
                             result.targets[0].faShuDamage(2,player); 
+                        }
+                    },
+                    wuFaXingDongBefore:{
+                        trigger:{player:'wuFaXingDongBefore'},
+                        direct:true,
+                        filter:function(event,player){
+                            var cards=player.getCards('s',function(card){
+                                return card.hasGaintag('zhuFu');
+                            });
+                            return cards.length>0;
+                        },
+                        content:function(){
+                            var cards=player.getCards('s',function(card){
+                                return card.hasGaintag('zhuFu');
+                            });
+                            trigger.contentx[1].concat(cards);
+                        },
+                    },
+                    wuFaXingDongAfter:{
+                        trigger:{player:'wuFaXingDongAfter'},
+                        direct:true,
+                        filter:function(event,player){
+                            var cards=player.getCards('s',function(card){
+                                return card.hasGaintag('zhuFu');
+                            });
+                            return cards.length>0;
+                        },
+                        content:async function(event, trigger, player){
+                            var zhuFu=player.getCards('s',function(card){
+                                return card.hasGaintag('zhuFu');
+                            });
+                            await player.discard(zhuFu,'zhuFu');
+                            var cards=get.cards(zhuFu.length);
+                            await player.loseToSpecial(cards,'zhuFu',player);
                         }
                     }
                 },
