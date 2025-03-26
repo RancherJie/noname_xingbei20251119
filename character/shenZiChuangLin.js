@@ -1027,12 +1027,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 0'
                     player.removeBiShaBaoShi();
                     'step 1'
-                    player.chooseCard('h',2,true,'将2张手牌面朝下放置在你角色旁作为【影】');
+                    player.chooseCard('h',2,true,'将2张手牌面朝下放置在你角色旁作为【影】').set('ai',function(card){
+                        return 6-get.value(card);
+                    });
                     'step 2'
                     player.addToExpansion('draw',result.cards,'log').gaintag.add('ying');
                 },
                 check:function(event,player){
-                    return player.countCards('h')>3&&player.countExpansions('ying')<=1;
+                    return player.countCards('h',card=>get.type(card)=='gongJi')>3&&player.countExpansions('ying')<=1;
                 }
             },
             ying:{
