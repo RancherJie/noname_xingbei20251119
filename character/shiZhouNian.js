@@ -7973,7 +7973,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var list=['摸','弃','放弃'];
                     player.chooseControl(list).set('prompt','摸或弃1张牌').set('ai',function(){
                         var player=_status.event.player;
-                        if(player.countCards('h')>=player.getHandcardLimit()) return '弃';
+                        var cards=player.getCards('h');
+                        var bool=false;
+                        for(var card of cards){
+                            if(player.hasUseTarget(card)) bool=true;
+                            if(bool) break;
+                        }
+                        if(bool) return '摸';
+                        if(player.countCards('h')+1>=player.getHandcardLimit()) return '弃';
                         if(player.countCards('h')<player.getHandcardLimit()-2) return '摸';
                         return '放弃';
                     });
