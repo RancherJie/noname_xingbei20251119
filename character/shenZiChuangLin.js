@@ -1865,7 +1865,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var list=['弃2张牌','摸2张牌'];
                     player.chooseControl(list).set('prompt','选择你的行动').set('ai',function(){
                         var player=_status.event.player;
-                        if(player.countCards('h')>=3) return '弃2张牌';
+                        if(!(player.canGongJi()||player.canFaShu())) return '摸2张牌';
+                        if(player.countCards('h')+2>=player.getHandcardLimit()) return '弃2张牌';
                         else return '摸2张牌';
                     });
                     'step 4'
@@ -1883,7 +1884,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.setZhiShiWu('liQi',result.control);
                 },
                 check:function(event,player){
-                    return Math.random()<0.5;
+                    return player.canGongJi()||player.canFaShu();
                 },
                 ai:{
                     baoShi:1,
