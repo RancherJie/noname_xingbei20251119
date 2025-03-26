@@ -240,8 +240,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 check:function(event,player){
                     if(player.storage.gongJi.zhuDong>=3) return false;
-                    var num=player.countCards('h',card=>get.type(card)=='gongJi');
-                    return num>0
+                    return player.canGongJi();
                 },
                 ai:{
                     shuiJing:true,
