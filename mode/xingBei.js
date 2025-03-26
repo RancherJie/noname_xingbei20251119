@@ -359,7 +359,7 @@ export default () => {
 						event.phaseswap=true;
 					}
 
-					var dialog=ui.create.dialog(basestr,[characterChoice,'character']);
+					var dialog=ui.create.dialog(basestr,[characterChoice,"characterx"]);
 					game.me.chooseButton(true,dialog,basenum).set('onfree',true);
 					if(!_status.brawl||!_status.brawl.noAddSetting){
 						if(get.config('change_identity')){
@@ -375,7 +375,7 @@ export default () => {
 							}
 							var buttons=ui.create.div('.buttons');
 							var node=_status.event.dialog.buttons[0].parentNode;
-							_status.event.dialog.buttons=ui.create.buttons(list.randomGets(choose_number),'character',buttons);
+							_status.event.dialog.buttons=ui.create.buttons(list.randomGets(choose_number),'characterx',buttons);
 							_status.event.dialog.content.insertBefore(buttons,node);
 							buttons.addTempClass('start');
 							node.remove();
@@ -542,7 +542,7 @@ export default () => {
 					var basestr=game.me.side?'（红方）':'（蓝方）';
 					basestr+='选择你和队友的角色，按顺位选择';
 					
-					var dialog=ui.create.dialog(basestr,[characterChoice,'character']);
+					var dialog=ui.create.dialog(basestr,[characterChoice,'characterx']);
 					game.me.chooseButton(true,dialog,basenum).set('onfree',true);
 
 					if(lib.onfree){
@@ -565,7 +565,7 @@ export default () => {
 							}
 							var buttons=ui.create.div('.buttons');
 							var node=_status.event.dialog.buttons[0].parentNode;
-							_status.event.dialog.buttons=ui.create.buttons(list.randomGets(choose_number),'character',buttons);
+							_status.event.dialog.buttons=ui.create.buttons(list.randomGets(choose_number),'characterx',buttons);
 							_status.event.dialog.content.insertBefore(buttons,node);
 							buttons.addTempClass('start');
 							node.remove();
@@ -905,7 +905,7 @@ export default () => {
 						}
 						//dialog.addText('你的选将框');
 						var buttons=ui.create.div('.buttons',dialog.content);
-						dialog.players=ui.create.buttons(players,'character',buttons)
+						dialog.players=ui.create.buttons(players,'characterx',buttons)
 						dialog.buttons=dialog.buttons.concat(dialog.players);
 					},event.videoId,choose);
 					
@@ -1251,7 +1251,7 @@ export default () => {
 					event.blue_chooseList = [];
 
 					var createDialog = function (list, id, list1, list2) {
-						var dialog = ui.create.dialog("Ban角色", [list, "character"]);
+						var dialog = ui.create.dialog("Ban角色", [list, "characterx"]);
 						dialog.classList.add("fullwidth");
 						dialog.classList.add("fullheight");
 						dialog.classList.add("noslide");
@@ -1367,7 +1367,7 @@ export default () => {
 
 					event.videoId = lib.status.videoId++;
 					var createDialog = function (choosed,list, id,list1, list2) {
-						var dialog = ui.create.dialog(`<span style="color:red;">红方</span>为${choosed}选择角色，<span style="color:lightblue;">蓝方</span>队长是否插入Ban`, [list, "character"]);
+						var dialog = ui.create.dialog(`<span style="color:red;">红方</span>为${choosed}选择角色，<span style="color:lightblue;">蓝方</span>队长是否插入Ban`, [list, "characterx"]);
 						dialog.classList.add("fullwidth");
 						dialog.classList.add("fullheight");
 						dialog.classList.add("noslide");
@@ -1723,7 +1723,7 @@ export default () => {
 					event.num=1;
 					
 					var createDialog = function (list, id, list1, list2) {
-						var dialog = ui.create.dialog("Ban角色", [list, "character"]);
+						var dialog = ui.create.dialog("Ban角色", [list, "characterx"]);
 						dialog.classList.add("fullwidth");
 						dialog.classList.add("fullheight");
 						dialog.classList.add("noslide");
@@ -1837,7 +1837,7 @@ export default () => {
 
 					event.videoId = lib.status.videoId++;
 					var createDialog = function (choosing,list, id,list1, list2) {
-						var dialog = ui.create.dialog(`<span style="color:red;">${choosing}</span>选择角色`, [list, "character"]);
+						var dialog = ui.create.dialog(`<span style="color:red;">${choosing}</span>选择角色`, [list, "characterx"]);
 						dialog.classList.add("fullwidth");
 						dialog.classList.add("fullheight");
 						dialog.classList.add("noslide");
@@ -2069,7 +2069,7 @@ export default () => {
 					event.num=1;
 					
 					var createDialog = function (list, id, list1, list2) {
-						var dialog = ui.create.dialog("Ban角色", [list, "character"]);
+						var dialog = ui.create.dialog("Ban角色", [list, "characterx"]);
 						dialog.classList.add("fullwidth");
 						dialog.classList.add("fullheight");
 						dialog.classList.add("noslide");
@@ -2183,7 +2183,7 @@ export default () => {
 
 					event.videoId = lib.status.videoId++;
 					var createDialog = function (choosing,list, id,list1, list2) {
-						var dialog = ui.create.dialog(`<span style="color:red;">${choosing}</span>选择角色`, [list, "character"]);
+						var dialog = ui.create.dialog(`<span style="color:red;">${choosing}</span>选择角色`, [list, "characterx"]);
 						dialog.classList.add("fullwidth");
 						dialog.classList.add("fullheight");
 						dialog.classList.add("noslide");
