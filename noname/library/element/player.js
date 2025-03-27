@@ -3642,6 +3642,7 @@ export class Player extends HTMLDivElement {
 			else str = lib.translate[i];
 			if(info.markimage.includes('hong')) var colorStr='#r【'+str+'】';
 			else if(info.markimage.includes('lan')) var colorStr='#b【'+str+'】';
+			else var colorStr='【'+str+'】';
 			if (colorStr) game.log(this, "移去了", num, "个",colorStr);
 		}
 		this.syncStorage(i);
