@@ -1590,7 +1590,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 0'
                     trigger.selected=true;
                     player.addTempSkill('yaoJingMiShu_gongJi');
-                    player.gongJi().set('bool',true);
+                    player.storage.extraXingDong.push({
+                        xingDong:'gongJi',
+                        bool:true,
+                        prompt:'妖精秘法：攻击行动',
+                    });
                 },
                 subSkill:{
                     gongJi:{
