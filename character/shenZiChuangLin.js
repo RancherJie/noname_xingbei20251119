@@ -838,6 +838,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         cost_data:control,
                     }
                 },
+                logTarget:'player',
                 content:function(){
                     'step 0'
                     player.removeZhiShiWu('mi',event.cost_data);
@@ -924,6 +925,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 filter:function(event,player){
                     return event.player!=player;
                 },
+                logTarget:'player',
                 content:function(){
                     'step 0'
                     player.addZhiShiWu('mi');
