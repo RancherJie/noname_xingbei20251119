@@ -11366,7 +11366,9 @@ export class Player extends HTMLDivElement {
 			let info = get.info(skills[i]);
 			if(!info) continue;
 			if(info.type==type){
-				var enable=lib.skill[skills[i]].filter(event, player);
+				var enable=false;
+				if(lib.skill[skills[i]].filter) enable=lib.skill[skills[i]].filter(event, player);
+				else enable=true;
 			}else continue;
 			if(enable) return true;
 		}
