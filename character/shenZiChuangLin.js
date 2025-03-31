@@ -1083,7 +1083,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var cards=player.getExpansions('ying');
                     var next=player.chooseCardButton(cards,true,cards.length-3,`舍弃${cards.length-3}张【影】`);
                     'step 1'
-                    player.discard(result.links);
+                    player.discard(result.links,'ying').set('sheQi',true);
                 }
             },
             mi:{
@@ -1688,7 +1688,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var cards=player.getExpansions('yanLing');
                     var next=player.chooseCardButton(cards,true,cards.length-3,`舍弃${cards.length-3}张【言灵】`);
                     'step 1'
-                    player.discard(result.links);
+                    player.discard(result.links,'yanLing').set('sheQi',true);
                 }
             },
             miShu:{

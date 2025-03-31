@@ -1359,7 +1359,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var cards=player.getExpansions('luEn');
                     var next=player.chooseCardButton(cards,true,cards.length-6,`舍弃${cards.length-6}张【卢恩】`);
                     'step 1'
-                    player.discard(result.links);
+                    player.discard(result.links,'luEn').set('sheQi',true);
                 }
             },
             //猎巫人

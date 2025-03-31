@@ -9398,6 +9398,8 @@ export const Content = {
 			let name=get.translation(event.gaiPai);
 			if(event.visible){
 				game.log(player,'移除了',cards.length,'张','【'+name+'】',"(",cards,")");
+			}else if(event.sheQi){
+				game.log(player,'舍弃了',cards.length,'张','【'+name+'】');
 			}else {
 				game.log(player,'移除了',cards.length,'张','【'+name+'】');
 			}
