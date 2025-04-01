@@ -1597,7 +1597,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         if(target.countCards('h')>0){
                             let cards=await target.chooseToDiscard('h',true).forResultCards();
                             await player.showCards(cards);
-                            await player.addToExpansion('draw',cards,'log').gaintag.add('yanLing'); 
+                            await player.addToExpansion('draw',cards,'log').set('gaintag',['yanLing']); 
                         }
                     }
                 }

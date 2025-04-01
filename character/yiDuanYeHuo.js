@@ -1062,7 +1062,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         if (!pushs.length || pushs.length != gains.length) return;
                         await player.lose(pushs);
                         await player.lose(gains);
-                        await player.addToExpansion(pushs, "draw",'log').gaintag.add("luEn");
+                        await player.addToExpansion(pushs, "draw",'log').set('gaintag',['luEn']);
                         game.log(player,'获得了1张牌');
                         await player.gain(gains, "draw");
                     }
