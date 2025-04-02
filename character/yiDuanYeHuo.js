@@ -502,7 +502,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             jingHuaZhiShu:{
                 trigger:{player:'damageAfter'},
                 filter:function(event,player){
-                    return player.countCards('h')>0;
+                    return player.countCards('h')>0&&event.jingHuaZhiShu==true;
                 },
                 async cost(event,trigger,player){
                     event.result=await player.chooseCard('h',function(card){
@@ -523,6 +523,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 2'
                     player.draw(1);
                     lib.skill.yiDuanCaiJueSuo.removeZhiLiao(player,1);
+                },
+                group:'jingHuaZhiShu_chengShouShangHai',
+                subSkill:{
+                    chengShouShangHai:{
+                        trigger:{player:'chengShouShangHai'},
+                        direct:true,
+                        content:function(){
+                            trigger.jingHuaZhiShu=true;
+                        }
+                    }
                 }
             },
             biHuLingYu:{

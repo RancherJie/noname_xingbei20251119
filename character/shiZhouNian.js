@@ -639,7 +639,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         trigger:{player:['daChuPai','showCardsEnd']},
                         forced:true,
-                        firstDo:true,
                         priority:1,
                         filter:function(event,player){
                             if(!player.hasExpansions('diZhiFengYin_xiaoGuo')){

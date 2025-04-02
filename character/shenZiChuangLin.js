@@ -320,7 +320,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     daChuQiZhi: {
                         trigger: {player: ["daChuPai","discard"],},
                         forced: true,
-                        priority:1,
+                        priority:0.5,
                         getIndex(event, player) {
 							const cards = [];
 							for(let i = 0; i < event.cards.length; i++) {
