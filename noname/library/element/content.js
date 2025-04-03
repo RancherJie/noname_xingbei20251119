@@ -12083,7 +12083,6 @@ export const Content = {
 	changeZhiLiao:function(){
 		'step 0'
 		player.zhiLiao+=num;
-
 		if(num>=0){
 			if(event.yiChu==true){
 				if(event.source) game.log(event.source,'使',player,'获得了'+num+'点','[治疗]','，','[治疗]','溢出');
@@ -12097,14 +12096,15 @@ export const Content = {
 			if(event.source) game.log(event.source,'使',player,'移除了'+num+'点','[治疗]');
 			else game.log(player,'移除了'+num+'点','[治疗]');
 		}
-		'step 2'
+		'step 1'
 		if(player.zhiLiao<0){
 			player.zhiLiao=0;
 		}
+		player.update();
+		'step 2'
 		if(event.yiChu==true){
 			event.trigger('zhiLiaoYiChu');
 		}
-		player.update();
 	},
 
 	chooseDraw:function(){
