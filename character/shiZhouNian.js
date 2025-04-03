@@ -8637,9 +8637,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.addToExpansion('draw',cards,'log').gaintag.add('jian');
                 },
                 ai:{
-                    order:4.1,
+                    order:3.6,
                     result:{
-                        player:1,
+                        player:function(player){
+                            return player.getExpansions('jian').length<=6?1:0;
+                        },
+                    }
+                },
+                mod:{
+                    aiOrder:function(player,item,num){
+                        if(item=='_tiLian'&&player.getExpansions('jian').length>4) return num+1;
                     }
                 }
             },
