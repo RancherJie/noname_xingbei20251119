@@ -5296,7 +5296,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     order:3.7,
                     result:{
                         target:function(player,target){
-                            if(player.countTongXiPai()<4) return 0;
+                            if(player.countTongXiPai()<3) return 0;
                             return get.damageEffect(target,2);
                         },
                     }
@@ -5342,7 +5342,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     order:3.3,
                     result:{
                         target:function(player,target){
-                            return get.zhiLiaoEffect(target,2);
+                            if(player.side!=target.side) return 0;
+                            return get.zhiLiaoEffect(target,2)-0.1;
                         },
                     }
                 }
