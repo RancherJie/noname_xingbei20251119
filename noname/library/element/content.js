@@ -11080,28 +11080,6 @@ export const Content = {
 		}
 		event.trigger("changeHp");
 	},
-	changeZhiLiao: function () {
-		if (num > 0) {
-			game.log(player, "获得了" + get.cnNumber(num) + "点治疗");
-		} else if (num < 0) {
-			if (-num > player.zhiLiao) {
-				num = -player.zhiLiao;
-				event.num = num;
-			}
-			switch (
-				event.type //log moved here
-			) {
-				case "damage":
-					game.log(player, "的治疗抵挡了" + get.cnNumber(-num) + "点伤害");
-					break;
-				case "lose":
-					game.log(player, "失去了" + get.cnNumber(-num) + "点治疗");
-					break;
-			}
-		}
-		player.zhiLiao += num;
-		player.update();
-	},
 	dying: function () {
 		"step 0";
 		event.forceDie = true;

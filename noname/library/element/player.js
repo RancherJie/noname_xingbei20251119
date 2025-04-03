@@ -6759,33 +6759,6 @@ export class Player extends HTMLDivElement {
 		next.setContent("changeHp");
 		return next;
 	}
-	/**
-	 * 调整玩家的护甲值
-	 * @param { number } [num]
-	 * @param { "gain" | "lose" | "damage" | "null" } [type]
-	 * @param { number } [limit] 护甲上限
-	 * @returns { GameEventPromise }
-	 */
-	changeZhiLiao(num, type, limit) {
-		var next = game.createEvent("changeZhiLiao");
-		if (typeof num != "number") {
-			num = 1;
-		}
-		if (limit === true) limit = 5;
-		if (typeof limit == "number" && this.zhiLiao + num > parseInt(limit)) {
-			num = Math.max(0, parseInt(limit) - this.zhiLiao);
-		}
-		if (typeof type != "string") {
-			if (num > 0) type = "gain";
-			else if (num < 0) type = "lose";
-			else type = "null";
-		}
-		next.num = num;
-		next.player = this;
-		next.type = type;
-		next.setContent("changeZhiLiao");
-		return next;
-	}
 	getBuff() {
 		var list = [1, 2, 3, 4, 5, 6];
 		var nodelay = false;
