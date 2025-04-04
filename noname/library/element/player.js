@@ -10826,19 +10826,23 @@ export class Player extends HTMLDivElement {
 			}).length;
 			num=Math.max(num,numx);
 		}
-		if(num!=0){
-			var next=game.createEvent('changeZhanJi');
-			if(typeof num!='number'||!num) num=1;
-			next.player=this;
-			next.xingShi=xingShi;
-			next.side=sidex;
-			next.num=num;
-			next.setContent('changeZhanJi');
-			return next;
+		var next=game.createEvent('changeZhanJi');
+		if(typeof num!='number'||!num) num=1;
+		next.player=this;
+		next.xingShi=xingShi;
+		next.side=sidex;
+		next.num=num;
+		next.setContent('changeZhanJi');
+		
+		if(num==0){
+			_status.event.next.remove(next);
+			next.resolve();
 		}
+		return next;
 	}
 	changeXingBei(num,side){//xingbei
 		var next=game.createEvent('changeXingBei');
+		if(typeof num!='number'||!num) num=1;
 		next.num=num;
 		next.player=this;
 		if(side==undefined){
@@ -10922,14 +10926,16 @@ export class Player extends HTMLDivElement {
 				num=-current;
 			}
 		}
-		if(num!=0){
-			var next=game.createEvent('changeNengLiang');
-			next.player=this;
-			next.xingShi=xingShi;
-			next.num=num;
-			next.setContent('changeNengLiang');
-			return next;
+		var next=game.createEvent('changeNengLiang');
+		next.player=this;
+		next.xingShi=xingShi;
+		next.num=num;
+		next.setContent('changeNengLiang');
+		if(num==0){
+			_status.event.next.remove(next);
+			next.resolve();	
 		}
+		return next;
 	}
 	addNengLiang(xingShi,num){//添加能量
 		if(typeof num!='number'||!num) num=1;
@@ -10980,7 +10986,7 @@ export class Player extends HTMLDivElement {
 				forced=arguments[i];
 			}
 		}
-		if(!this.hasSkill(zhiShiWu)&&!forced) return;
+		
 		if(typeof num!='number'||!num) num=1;
 		var info=get.info(zhiShiWu);
 		if(num>0){
@@ -11001,16 +11007,18 @@ export class Player extends HTMLDivElement {
 				num=-current;
 			}
 		}
-		if(num!=0){
-			var next=game.createEvent('changeZhiShiWu');
-			next.player=this;
-			next.zhiShiWu=zhiShiWu;
-			next.num=num;
-			next.setContent('changeZhiShiWu');
-			return next;
-		}else{
-			return;
+		var next=game.createEvent('changeZhiShiWu');
+		next.player=this;
+		next.zhiShiWu=zhiShiWu;
+		next.num=num;
+		next.setContent('changeZhiShiWu');
+	
+		if(num==0||(!(this.hasSkill(zhiShiWu)||forced||lib.skill.global.includes(zhiShiWu)))){
+			_status.event.next.remove(next);
+			next.resolve();
 		}
+
+		return next;
 	}
 	addZhiShiWu(){//添加指示物
 		var num_flag=0;
@@ -11220,16 +11228,12 @@ export class Player extends HTMLDivElement {
 			else if (get.itemtype(argument) == "player") source = argument;
 		}
 
-		
 		if(typeof num!='number'){
 			num=1;
 		}
-		
-		
 		if(typeof limit!='number'){
 			limit=this.getZhiLiaoLimit();
 		}
-		
 		if(num>0&&this.zhiLiao+num>limit){
 			if(this.zhiLiao>=limit){
 				num=0;
@@ -11243,13 +11247,17 @@ export class Player extends HTMLDivElement {
 		if(num<0&&this.zhiLiao+num<0){
 			num=-this.zhiLiao;
 		}
-		if(yiChu||num!=0){
-			var next=game.createEvent('changeZhiLiao');
-			next.player=this;
-			next.setContent('changeZhiLiao');
-			next.num=num;
-			next.yiChu=yiChu;
-			if(source!=undefined) next.source=source;
+
+		var next=game.createEvent('changeZhiLiao');
+		next.player=this;
+		next.setContent('changeZhiLiao');
+		next.num=num;
+		next.yiChu=yiChu;
+		if(source!=undefined) next.source=source;
+
+		if(!yiChu&&num==0){
+			_status.event.next.remove(next);
+			next.resolve();
 		}
 		return next;
 	}
