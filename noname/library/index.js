@@ -9913,10 +9913,6 @@ export class Library {
 			trigger:{source:'gongJiMingZhong'},
 			direct:true,
 			firstDo:true,
-			filter:function(event,player){
-				var zhanJi=get.zhanJi(player.side);
-				return zhanJi.length<game.zhanJiMax;
-			},
 			content:function(){
 				if(trigger.yingZhan==true){
 					player.changeZhanJi('shuiJing',1)
@@ -10021,9 +10017,9 @@ export class Library {
 				}
 				'step 2'
 				if(result.control=='baoShi'){
-					player.addZhanJi('baoShi',1);
+					player.addZhanJi('baoShi',1).set('yiChu',true);
 				}else if(result.control=='shuiJing'){
-					player.addZhanJi('shuiJing',1);
+					player.addZhanJi('shuiJing',1).set('yiChu',true);
 				}
 			},
 			ai:{
