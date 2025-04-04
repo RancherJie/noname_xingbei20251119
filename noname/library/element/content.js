@@ -4450,7 +4450,8 @@ export const Content = {
 		for(var i=0;i<skills.length;i++){
 			var info=get.info(skills[i]);
 			if(info.type=='qiDong'){
-				if(info.filter(event,player)) flag=true;
+				if(info.filter&&info.filter(event,player)) flag=true;
+				if(!info.filter) flag=true;
 				if(flag) break;
 			}
 		}
