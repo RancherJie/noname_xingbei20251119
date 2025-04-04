@@ -10816,9 +10816,11 @@ export class Player extends HTMLDivElement {
 		}else{
 			sidex=side;
 		}
+		if(typeof num!='number') num=1;
 		var zhanJi=get.zhanJi(sidex);
 		if(num>0&&(zhanJi.length+num>game.zhanJiMax)){
 			num=Math.max(0,game.zhanJiMax-zhanJi.length);
+			var yiChu=true;
 		}
 		if(num<0){
 			var numx = -zhanJi.filter(function(item) {
@@ -10827,14 +10829,14 @@ export class Player extends HTMLDivElement {
 			num=Math.max(num,numx);
 		}
 		var next=game.createEvent('changeZhanJi');
-		if(typeof num!='number'||!num) num=1;
 		next.player=this;
 		next.xingShi=xingShi;
 		next.side=sidex;
 		next.num=num;
+		if(yiChu) next.yiChu=true;
 		next.setContent('changeZhanJi');
 		
-		if(num==0){
+		if(num==0&&!yiChu){
 			_status.event.next.remove(next);
 			next.resolve();
 		}

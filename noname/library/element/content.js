@@ -12042,6 +12042,8 @@ export const Content = {
 		},game.hongZhanJi,game.lanZhanJi);
 	
 		game.addVideo('changeZhanJi',null,[numx,xingShi,side]);
+		'step 1'
+		if(event.yiChu) event.trigger('zhanJiYiChu');
 		//game.checkResult();
 	},
 
