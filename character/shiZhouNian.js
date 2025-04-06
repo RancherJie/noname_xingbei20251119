@@ -6906,7 +6906,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     
                 },
                 check:function(event,player){
-                    return player.countZhiShiWu('douQi')<=3;
+                    return player.countZhiShiWu('douQi')+player.countCards('h')<=player.getHandcardLimit();
                 },
             },
             baiShiHuanLongQuan:{
