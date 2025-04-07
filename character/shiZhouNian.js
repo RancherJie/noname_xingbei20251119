@@ -2581,6 +2581,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 trigger:{player:'gouMai'},
                 forced:true,
                 content:function(){
+                    'step 0'
+                    player.draw(3).set('cause','teShuXingDong');
+                    'step 1'
                     player.addZhanJi('baoShi',2);
                     trigger.finish();
                 }
