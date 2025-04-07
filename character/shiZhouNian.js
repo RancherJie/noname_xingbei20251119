@@ -2115,7 +2115,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 trigger:{global:'gongJiShi'},
                 filter:function(event,player){
                     if(event.player.side==player.side) return false;
-                    if(event.cards.length==0||(!event.card.isCard)) return false;
+                    if(!event.card.isCard) return false;
                     var anYue=player.getExpansions('anYue');
                     return anYue.length>0;
                 },
