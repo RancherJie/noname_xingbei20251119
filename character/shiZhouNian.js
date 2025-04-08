@@ -5782,6 +5782,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     },
                 },
                 check:function(event,player){
+                    if(get.shiQi(player.side)<=4) return false;
                     if(game.hasPlayer(function(current){
                         if(current.side==player.side) return false;
                         var num=current.countCards('h');
