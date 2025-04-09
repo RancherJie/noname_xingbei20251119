@@ -6884,8 +6884,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 check:function(event,player){
                     if(!player.isHengZhi()) return true;
+                    if(event.target.countCards('h')>3) return false;
+                    if(player.countZhiShiWu('douQi')>=3) return false;
                     var num=Math.random();
-                    return num>0.9;
+                    return num>0.5;
                 },
                 group:'xuLiYiji_weiMingZhong',
                 subSkill:{
