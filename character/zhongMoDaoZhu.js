@@ -1286,6 +1286,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         await event.targets[0].gain(card,'draw');
                         cards.remove(card);
                     }
+                    if(player.getExpansions('yuYan').length>=6) return;
                     if(player.hasExpansions('yuYan')&&cards.length>0){
                         cards.randomSort();
                         if(cards.length+player.countExpansions('yuYan')>6){
