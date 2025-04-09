@@ -7034,6 +7034,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 1'
                     player.faShuDamage(player.countZhiShiWu('douQi'),player);
                 },
+                check:function(event,player){
+                    if(player.countZhiShiWu('douQi')-1+player.countCards('h')>=player.getHandcardLimit()) return false;
+                    else return true;
+                }
             },
             douShenTianQu:{
                 type:'qiDong',
