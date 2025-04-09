@@ -1301,6 +1301,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     chongZhi:{
                         trigger:{player:'phaseBefore'},
                         direct:true,
+                        init:function(player){
+                            player.storage.shenPanYJT=[];
+                        },
                         priority:1,
                         content:function (){
                             player.storage.shenPanYJT=[];
