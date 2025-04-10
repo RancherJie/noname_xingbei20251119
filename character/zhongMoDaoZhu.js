@@ -1302,9 +1302,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     chongZhi:{
                         trigger:{player:'phaseBefore'},
                         direct:true,
-                        init:function(player){
-                            player.storage.shenPanYJT=[];
-                        },
                         priority:1,
                         content:function (){
                             player.storage.shenPanYJT=[];
@@ -1314,7 +1311,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         trigger:{source:'zaoChengShangHai'},
                         direct:true,
                         filter:function (event,player){
-                            return event.player.side!=player.side;
+                            return event.player.side!=player.side&&Array.isArray(player.storage.shenPanYJT);
                         },
                         content:function (){
                             player.storage.shenPanYJT.push(trigger.player);
