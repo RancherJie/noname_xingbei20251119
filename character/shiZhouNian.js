@@ -7029,6 +7029,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content:function(){
                     'step 0'
+                    trigger.storage.qiJueBengJi=true;
                     player.removeZhiShiWu('douQi');
                     trigger.wuFaYingZhan();
                     'step 1'
