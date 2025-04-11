@@ -9438,7 +9438,7 @@ export const Content = {
 				}
 			}
 		}else if(event.showCards==true){
-			var next=player.showCards(cards);
+			var next=player.showCards(cards).set('discard',true);
 		}else if(event.showHiddenCards==true){
 			var next=player.showHiddenCards(cards);
 		}
