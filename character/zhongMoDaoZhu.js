@@ -10,8 +10,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 "5xing":['zhuLvZhe','hongYiZhuJiao'],
             }
         },
+        characterReplace:{
+            zhuLvZhe:['zhuLvZhe','hongYiZhuJiao'],
+            hongYiZhuJiao:['hongYiZhuJiao','zhuLvZhe'],
+        },
 		character:{
-            zhuLvZhe:['zhuLvZhe_name','xueGroup',5,['shenLvFengSuo','shengXueZhiJi','wangCheYiWei','zuiDuanHuoMian','shengYinSongEn','wangQuanBaoZhu','xinYangChongZhu','shengYiWu','yinZhiZiDan']],
+            zhuLvZhe:['zhuLvZhe_name','xueGroup',5,['shenLvFengSuo','shengXueZhiJi','wangCheYiWei','zuiDuanHuoMian','shengYinSongEn','wangQuanBaoZhu','xinYangChongZhu','shengYiWu','yinZhiZiDan'],['forbidai']],
             hongYiZhuJiao:['zhuLvZhe_name','shengGroup',5,['shengYueYinQi','quMoShi','daoGaoShi','quanNengNiWei','shenXuanDaoYan','shengDian','shengYiWu','yinZhiZiDan']],
             jiLuZhe:['jiLuZhe_name','huanGroup','4/5',['chuanShuoZhiDi','zhiXingHeYi','jiGuShiDian','yiJiLunPo','xuanCuiJingLian','miJingWanXiang','shiShu','guJinHuzheng','yiJi','shiLiao']],
             chuanJiaoShi:['chuanJiaoShi_name','shengGroup','4/5',['shenDeWenTu','xinYangZhiLu','chuanDao','qiShi','shiFeng','luBiao','shuLingEnCi','miSa','qianCheng']],
