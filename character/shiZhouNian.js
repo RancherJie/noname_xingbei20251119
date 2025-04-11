@@ -5097,7 +5097,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     showCards:{
                         trigger:{player:'showCardsBefore'},
                         filter:function(event,player){
-                            return event.cards.length>0&&player.isHengZhi()&&event.moNvZhiNu!=true;
+                            return event.cards.length>0&&player.isHengZhi()&&event.getParent().name=='discard'&&event.getParent().player==player;
                         },
                         direct:true,
                         content:async function(event, trigger, player){
@@ -5110,8 +5110,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 var tempCard=game.createCard(card.name,'huo',card.mingGe,card.duYou);
                                 cards.push(tempCard);
                             }
-                            await player.showCards(cards).set('moNvZhiNu',true);
-                            await trigger.finish();
+                            trigger.cards=cards;
                         }
                     }
                 }
