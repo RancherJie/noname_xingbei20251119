@@ -655,11 +655,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:function(){
                             'step 0'
-                            player.faShuDamage(player.storage.fengYin,3);
-                            'step 1'
                             player.discard(player.getExpansions('diZhiFengYin_xiaoGuo'),'diZhiFengYin_xiaoGuo').set('visible',true);
+                            'step 1'
+                            player.removeSkill('diZhiFengYin_xiaoGuo');
                             'step 2'
-                            player.removeSkill('diZhiFengYin_xiaoGuo')
+                            player.faShuDamage(player.storage.fengYin,3); 
                         },
                         tag:{
                             jiChuXiaoGuo:true,
@@ -736,11 +736,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:function(){
                             'step 0'
-                            player.faShuDamage(player.storage.fengYin,3);
-                            'step 1'
                             player.discard(player.getExpansions('shuiZhiFengYin_xiaoGuo'),'shuiZhiFengYin_xiaoGuo').set('visible',true);
+                            'step 1'
+                            player.removeSkill('shuiZhiFengYin_xiaoGuo');
                             'step 2'
-                            player.removeSkill('shuiZhiFengYin_xiaoGuo')
+                            player.faShuDamage(player.storage.fengYin,3); 
                         },
                         tag:{
                             jiChuXiaoGuo:true,
@@ -818,11 +818,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:function(){
                             'step 0'
-                            player.faShuDamage(player.storage.fengYin,3);
-                            'step 1'
                             player.discard(player.getExpansions('huoZhiFengYin_xiaoGuo'),'huoZhiFengYin_xiaoGuo').set('visible',true);
+                            'step 1'
+                            player.removeSkill('huoZhiFengYin_xiaoGuo');
                             'step 2'
-                            player.removeSkill('huoZhiFengYin_xiaoGuo')
+                            player.faShuDamage(player.storage.fengYin,3); 
                         },
                         tag:{
                             jiChuXiaoGuo:true,
@@ -900,11 +900,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:function(){
                             'step 0'
-                            player.faShuDamage(player.storage.fengYin,3);
-                            'step 1'
                             player.discard(player.getExpansions('fengZhiFengYin_xiaoGuo'),'fengZhiFengYin_xiaoGuo').set('visible',true);
+                            'step 1'
+                            player.removeSkill('fengZhiFengYin_xiaoGuo');
                             'step 2'
-                            player.removeSkill('fengZhiFengYin_xiaoGuo')
+                            player.faShuDamage(player.storage.fengYin,3); 
                         },
                         tag:{
                             jiChuXiaoGuo:true,
@@ -983,12 +983,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             return false;
                         },
                         content:function(){
-                            'stpe 0'
-                            player.faShuDamage(player.storage.fengYin,3);
-                            'step 1'
+                            'step 0'
                             player.discard(player.getExpansions('leiZhiFengYin_xiaoGuo'),'leiZhiFengYin_xiaoGuo').set('visible',true);
+                            'step 1'
+                            player.removeSkill('leiZhiFengYin_xiaoGuo');
                             'step 2'
-                            player.removeSkill('leiZhiFengYin_xiaoGuo')
+                            player.faShuDamage(player.storage.fengYin,3);
                         },
                         tag:{
                             jiChuXiaoGuo:true,
