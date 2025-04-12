@@ -249,6 +249,9 @@ window.noname_asset_list =
 	"image/splash/style1/xingBei.jpg",
 	"image/splash/style2/connect.jpg",
 	"image/splash/style2/xingBei.jpg",
+	"image/splash/style1/tutorial.jpg",
+	"image/splash/style2/tutorial.jpg",
+
 ];
 window.noname_skin_list =
 {

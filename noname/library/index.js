@@ -4979,8 +4979,6 @@ export class Library {
 				},
 			}
 		},
-
-
 		connect: {
 			name: "联机",
 			config: {
@@ -5111,7 +5109,15 @@ export class Library {
 				},
 			},
 		},
-
+		tutorial:{
+			name:'新手向导',
+			config:{
+				information:{
+					name:'相关信息在其他(右上角)->帮助-><br>关于游戏中查看',
+					frequent:true,
+				}
+			}
+		}
 	};
 	status = {
 		running: false,
@@ -5124,10 +5130,18 @@ export class Library {
 		globalId: 0,
 	};
 	help = {
-		关于游戏: '<div style="margin:10px">关于无名星杯</div><ul style="margin-top:0"><li>无名星杯官方发布地址仅有GitHub仓库！<br><a href="https://github.com/RancherJie/noname_xingbei">点击前往Github仓库</a><br><li>无名星杯基于GPLv3开源协议。<br><a href="https://www.gnu.org/licenses/gpl-3.0.html">点击查看GPLv3协议</a>',
+		关于游戏: `<div style="margin:10px">关于无名星杯</div><ul style="margin-top:0">
+        <li>无名星杯官方发布地址仅有GitHub仓库！
+        <br><a href="https://github.com/RancherJie/noname_xingbei" target="_blank">点击前往Github仓库</a>
+        <br><li>无名星杯基于GPLv3开源协议。
+        <br><a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">点击查看GPLv3协议</a>
+        <br><li>无名星杯交流QQ群966951007
+        <br><li>视频教学BV1Mo4y1q717
+        <br><a href="https://www.bilibili.com/video/BV1Mo4y1q717/" target="_blank">点击前往B站教学视频</a>
+        <br><li>说明书
+        <br><a href="https://docs.qq.com/doc/DVEpvRXJzcWZPaVZP" target="_blank">点击查看说明书</a>`,
 		游戏操作: "<ul><li>长按/鼠标悬停/右键单击显示信息。<li>触屏模式中，双指点击切换暂停；下划显示菜单，上划切换托管。<li>键盘快捷键<br>" + "<table><tr><td>A<td>切换托管<tr><td>W<td>切换不询问无懈<tr><td>空格<td>暂停</table><li>编辑牌堆<br>在卡牌包中修改牌堆后，将自动创建一个临时牌堆，在所有模式中共用，当保存当前牌堆后，临时牌堆被清除。每个模式可设置不同的已保存牌堆，设置的牌堆优先级大于临时牌堆。</ul>",
-		说明书:'<div style="margin:10px">说明书</div><ul style="margin-top:0"><br><a href="https://docs.qq.com/doc/DVEpvRXJzcWZPaVZP">点击查看说明书</a>',
-		赞助:`<div style="margin:10px">赞助</div><ul style="margin-top:0"><li><a href="https://github.com/RancherJie/noname_xingbei">爱发电</a>`
+		赞助:`<div style="margin:10px">赞助</div><ul style="margin-top:0"><li><a href="https://github.com/RancherJie/noname_xingbei target="_blank">爱发电</a>`
 	};
 	/**
 	 * @type {import('path')}

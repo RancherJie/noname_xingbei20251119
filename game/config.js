@@ -19,7 +19,7 @@ window.config = {
 		sgscharacters:['shiZhouNian'],
 		sgscards:['xingBei'],
 		sgsmodes:['connect','xingBei'],
-		stockmode:['connect','xingBei'],
+		stockmode:['connect','xingBei','tutorial'],
 		stockextension:[],
 		layout:['default','newlayout'],
 		theme:['woodden','music','simple'],
@@ -143,17 +143,8 @@ window.config = {
 	customcardpile: {},
 	addedpile: {},
 
-	mode: "xingBei",
+	mode: "tutorial",
 	mode_config: {
-		global: {
-			free_choose:true,
-			change_identity:true,
-			versus_mode:'two',
-			team_sequence:'random',
-			change_choice:true,
-			choose_number:3,
-			choose_mode:"多选1"
-		},
 	},
 	current_mode: {},
 	customforbid: [],
