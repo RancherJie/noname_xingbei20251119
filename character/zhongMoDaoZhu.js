@@ -1531,9 +1531,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             
                             for(var xiBie of xiBieList){
                                 var xiBieName=get.translation(xiBie);
-                                var cards=await player.chooseToDiscard('h',true,[0,4],'showCards',card=>get.xiBie(card)==xiBie,`弃X张${xiBieName}系牌[展示]，摸X张牌，X最大为4`).set('ai',function(card){
+                                var cards=await player.chooseToDiscard('h',true,[0,4],'showCards',card=>get.xiBie(card)==_status.event.xiBie,`弃X张${xiBieName}系牌[展示]，摸X张牌，X最大为4`).set('ai',function(card){
                                     return 1;
-                                }).forResultCards();
+                                }).set('xiBie',xiBie).forResultCards();
                                 var num=cards.length;
                                 if(num>0) await player.draw(num);
                                 var targets=await player.chooseTarget(true,`选择1个目标角色弃Y张${xiBieName}系牌[展示]，然后你对他造成(${num}+1)点法术伤害③`).set('ai',function(target){
@@ -1542,9 +1542,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                     return get.damageEffect2(target,player,num+1);
                                 }).set('num',num).forResultTargets();
                                 var target=targets[0];
-                                await target.chooseToDiscard('h',true,[0,Infinity],'showCards',card=>get.xiBie(card)==xiBie,`弃Y张${xiBieName}系牌[展示]`).set('ai',function(card){
+                                await target.chooseToDiscard('h',true,[0,Infinity],'showCards',card=>get.xiBie(card)==_status.event.xiBie,`弃Y张${xiBieName}系牌[展示]`).set('ai',function(card){
                                     return 1;
-                                });
+                                }).set('xiBie',xiBie);
                                 await target.faShuDamage(num+1,player);
                             }
                         }
@@ -1598,9 +1598,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             
                             for(var xiBie of xiBieList){
                                 var xiBieName=get.translation(xiBie);
-                                var cards=await player.chooseToDiscard('h',true,[0,4],'showCards',card=>get.xiBie(card)==xiBie,`弃X张${xiBieName}系牌[展示]，摸X张牌，X最大为4`).set('ai',function(card){
+                                var cards=await player.chooseToDiscard('h',true,[0,4],'showCards',card=>get.xiBie(card)==_status.event.xiBie,`弃X张${xiBieName}系牌[展示]，摸X张牌，X最大为4`).set('ai',function(card){
                                     return 1;
-                                }).forResultCards();
+                                }).set('xiBie',xiBie).forResultCards();
                                 var num=cards.length;
                                 if(num>0) await player.draw(num);
                                 var targets=await player.chooseTarget(true,`选择1个目标角色弃Y张${xiBieName}系牌[展示]，然后你对他造成(${num}+1)点法术伤害③`).set('ai',function(target){
@@ -1609,9 +1609,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                     return get.damageEffect2(target,player,num+1);
                                 }).set('num',num).forResultTargets();
                                 var target=targets[0];
-                                await target.chooseToDiscard('h',true,[0,Infinity],'showCards',card=>get.xiBie(card)==xiBie,`弃Y张${xiBieName}系牌[展示]`).set('ai',function(card){
+                                await target.chooseToDiscard('h',true,[0,Infinity],'showCards',card=>get.xiBie(card)==_status.event.xiBie,`弃Y张${xiBieName}系牌[展示]`).set('ai',function(card){
                                     return 1;
-                                });
+                                }).set('xiBie',xiBie);
                                 await target.faShuDamage(num+1,player);
                             }
                         }
