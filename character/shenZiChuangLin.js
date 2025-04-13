@@ -312,14 +312,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             }
                             next.set('ai',function(card){
                                 if(_status.event.yingZhan){
-                                    let xiBei1=get.xiBie(_status.event.card);
-                                    if(get.name(card)=='moRen'&&(xiBei1=='huo'||xiBei1=='shui')){
-                                        let xiBei2=get.xiBie(card);
-                                        if(xiBei2==xiBei1) return 0;
+                                    let xiBie1=get.xiBie(_status.event.card);
+                                    if(get.name(card)=='moRen'&&(xiBie1=='huo'||xiBie1=='shui')){
+                                        let xiBie2=get.xiBie(card);
+                                        if(xiBie2==xiBie1) return 0;
                                         else return 1;
-                                    }else if(get.name(card)=='yiRen'&&(xiBei1=='lei'||xiBei1=='feng')){
-                                        let xiBei2=get.xiBie(card);
-                                        if(xiBei2==xiBei1) return 0;
+                                    }else if(get.name(card)=='yiRen'&&(xiBie1=='lei'||xiBie1=='feng')){
+                                        let xiBie2=get.xiBie(card);
+                                        if(xiBie2==xiBie1) return 0;
                                         else return 1;
                                     }
                                 }
