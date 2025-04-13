@@ -8726,7 +8726,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 content:function(){
                     'step 0'
                     player.discard(event.cost_data,'jian').set('jian',true);
-                    'step 2'
+                    'step 1'
                     trigger.changeDamageNum(1);
                 },
             },
