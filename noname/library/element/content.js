@@ -9965,6 +9965,7 @@ export const Content = {
 				_status.cardPileNum=num;
 			},player,cards,ui.cardPile.childNodes.length,event.gaintag);
 		};
+		game.addVideo("directgain", player, get.cardsInfo(cards));//录像正常显示角色手牌
 		if(event.animate=='draw'){
 			player.$draw(cards.length);
 			game.pause();
