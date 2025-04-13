@@ -8805,6 +8805,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     })
                     .set('ai',function(button){
                         var player=_status.event.player;
+                        if(player.countSkill('diaoLing')==1) return 0;
                         var num=player.getHandcardLimit()-player.countCards('h');
                         if(num>2) return 1;
                         else return 0;
