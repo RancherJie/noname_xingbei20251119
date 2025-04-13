@@ -6212,6 +6212,7 @@ export class Player extends HTMLDivElement {
 				cards,
 				gaintag
 			);
+		game.addVideo('addToExpansion',this,[get.cardsInfo(cards),gaintag]);
 		return this;
 	}
 	directgain(cards, broadcast, gaintag) {
