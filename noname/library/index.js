@@ -1136,7 +1136,7 @@ export class Library {
 				},
 				update_link: {
 					name: "更新地址",
-					init: "GitHub",
+					init: "github",
 					unfrequent: true,
 					item: {
 						//coding: "URC",
