@@ -1,10 +1,9 @@
 window.config = {
 	extension_sources: {
-		"GitHub Proxy": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/RancherJie/noname_xingbei_extension/master/",
-		gitee: "https://gitee.com/RancherJie/noname_xingbei_extension/raw/master/",
+		gitcode: "https://raw.gitcode.com/RancherJie/noname_xingbei_extension/raw/master/",
 		GitHub: "https://raw.githubusercontent.com/RancherJie/noname_xingbei_extension/master/",
 	},
-	extension_source: "GitHub",
+	extension_source: "gitcode",
 	forbidai: [],
 	forbidai_user: [],
 	forbidall: [],
