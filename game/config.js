@@ -1,9 +1,9 @@
 window.config = {
 	extension_sources: {
-		gitcode: "https://raw.gitcode.com/RancherJie/noname_xingbei_extension/raw/master/",
+		GitCode: "https://raw.gitcode.com/RancherJie/noname_xingbei_extension/raw/master/",
 		GitHub: "https://raw.githubusercontent.com/RancherJie/noname_xingbei_extension/master/",
 	},
-	extension_source: "gitcode",
+	extension_source: "GitCode",
 	forbidai: [],
 	forbidai_user: [],
 	forbidall: [],
