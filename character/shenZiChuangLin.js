@@ -528,13 +528,22 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 ai: {
                     baoShi: true,
                     order: function(event,player){
-                        var num=player.countCards('h',card=>card.nmae=='moRen'||card.name=='yiRen');
-                        if(num>0) return 0;
-                        if((!player.storage.yiRen)&&(!player.storage.moRen)) return 0;
-                        return 3.6;
+                        var num=3;
+                        if(player.storage.yiRen) num+=0.2;
+                        if(player.storage.moRen) num+=0.2;
+                        return num;
                     },
                     result: {
-                        player: 1,
+                        player:function(player){
+                            var players=game.filterPlayer(function(current){
+                                if(current.side==player.side) return false;
+                                return current.hasCard(function(card){
+                                    return get.name(card)=='moRen'||get.name(card)=='yiRen';
+                                });
+                            });
+                            if(players.length>0) return 1;
+                            else return 0;
+                        }
                     },
                 },
             },
