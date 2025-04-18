@@ -1143,7 +1143,7 @@ export class Library {
 						github: "GitHub",
 						gitcode: "GitCode",
 					},
-					intro: "更新下载发呢为离线(无素材)更新包和完整包，GitHub对网络条件要求较高，GitCode对网络要求不高。安卓启动器只能下载完整包，win启动器都可。",
+					intro: "GitHub可同时下载离线(无素材)更新包和完整包，但网络条件要求较高；GitCode仅更新无离线更新包，素材更新请使用单独的‘检测素材更新’；安卓启动器只能下载完整包，win启动器都可。",
 					onclick(item) {
 						game.saveConfig("update_link", item);
 						lib.updateURL = lib.updateURLS[item] || lib.updateURLS.coding;
