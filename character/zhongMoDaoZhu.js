@@ -273,7 +273,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 subSkill:{
                     yiShiWeiJing:{
                         forced:true,
-                        trigger:{player:['daChuPai','discard','gainEnd','addToExpansionEnd']},
+                        trigger:{player:['daChuPai','discard','addToExpansionEnd'],global:'gainEnd'},
                         getIndex(event, player) {
 							const cards = [];
 							for(let i = 0; i < event.cards.length; i++) {
@@ -285,7 +285,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 							return cards;
 						},
                         filter: function(event,player,name){
-                            if(name=='gainEnd'&&event.skill=='jiGuShiDian') return false;
                             var bool=false;
                             for(var card of event.cards){
                                 if(get.name(card)=='shiShuCard'){
@@ -293,6 +292,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                     break;
                                 }
                             }
+                            if(bool&&name=='gainEnd'&&event.player==player) return false;
+                            
                             return bool;
                         },
                         content: async function(event, trigger, player){
@@ -629,23 +630,26 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         forced:true,
                         content:async function (event,trigger,player){
-                            var type=get.type(trigger.cards[0]);
-                            var next=player.chooseCard('h',card=>get.type(card)==_status.event.type);
-                            next.set('ai',function(card){
-                                var player=_status.event.player;
-                                if(player.side!=player.storage.wangQuanBaoZhuX_player.side&&player.countCards('h')+2<=player.getHandcardLimit()) return 0;
-                                return 8-get.value(card);
-                            });
-                            next.set('type',type);
-                            next.set('prompt','请选择一张与【王权宝珠】上牌种类相同的牌,弃置之[展示],否则摸2张牌，铸律者阵营士气-1，若【圣遗物】数<1移除此卡');
-                            var result=await next.forResult();
+                            if(player.getExpansions('wangQuanBaoZhuX_biaoJi').length>0){
+                                var type=get.type(trigger.cards[0]);
+                                var next=player.chooseCard('h',card=>get.type(card)==_status.event.type);
+                                next.set('ai',function(card){
+                                    var player=_status.event.player;
+                                    if(player.side!=player.storage.wangQuanBaoZhuX_player.side&&player.countCards('h')+2<=player.getHandcardLimit()) return 0;
+                                    return 8-get.value(card);
+                                });
+                                next.set('type',type);
+                                next.set('prompt','请选择一张与【王权宝珠】上牌种类相同的牌,弃置之[展示],否则摸2张牌，铸律者阵营士气-1，若【圣遗物】数<1移除此卡');
+                                var result=await next.forResult();
+                            }else var result={bool:false};
+                            
                             if(result.bool){
                                 await player.discard(result.cards[0],'showCards');
                             }else{
                                 await player.draw(2);
                                 await player.changeShiQi(-1,player.storage.wangQuanBaoZhuX_player.side);
                                 if(player.storage.wangQuanBaoZhuX_player.countZhiShiWu('shengYiWu')<1){
-                                    await player.discard(player.getExpansions('wangQuanBaoZhuX_biaoJi'));
+                                    await game.cardsDiscard(player.getExpansions('wangQuanBaoZhuX_biaoJi'));
                                     player.storage.wangQuanBaoZhuX_player.removeSkill('wangQuanBaoZhuX');
                                 }
                             }
@@ -658,7 +662,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             return player.getExpansions('wangQuanBaoZhuX_biaoJi').length>0;
                         },
                         content:async function (event,trigger,player){
-                            await player.getNext().addToExpansion(player.getExpansions('wangQuanBaoZhuX_biaoJi'),player,'gain2').set('type','zhuanYi').gaintag.add('wangQuanBaoZhuX_biaoJi'); 
+                            await player.getNext().addToExpansion(player.getExpansions('wangQuanBaoZhuX_biaoJi'),player,'gain2').set('type','zhuanYi').gaintag.add('wangQuanBaoZhuX_biaoJi').set('special',true); 
                         },     
                     },
                     shenYanYongZan2:{
@@ -704,7 +708,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 }).forResultTargets();
                                 await targets[0].draw(control); 
                             }
-                            await player.discard(player.getExpansions('wangQuanBaoZhuX_biaoJi'));
+                            await game.cardsDiscard(player.getExpansions('wangQuanBaoZhuX_biaoJi'));
                             player.storage.wangQuanBaoZhuX_player.removeSkill('wangQuanBaoZhuX');
                         },
                     }

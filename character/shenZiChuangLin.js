@@ -225,7 +225,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
             },
             ren: {
-                global: ["ren_zhuanHuan1","ren_zhuanHuan2","ren_daChuQiZhi","ren_gaiPai","ren_biaoJi"],
+                global: ["ren_zhuanHuan1","ren_zhuanHuan2","ren_daChuQiZhi","ren_gaiPai","ren_biaoJi",'ren_cardsDiscardEnd'],
                 contentx: function(){
                     for(var card of event.cards){
                         game.broadcastAll(function(card){
@@ -384,6 +384,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 						},
                         forced: true,
                         filter: function(event,player){
+                            if(event.special) return false;
                             var bool=false;
                             for(var card of event.cards){
                                 if(get.name(card)=='moRen'||get.name(card)=='yiRen'){
@@ -404,6 +405,37 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             event.indexedData.destroyed = true;
                             game.log(event.indexedData, "被移除了");
                         },
+                    },
+                    cardsDiscardEnd:{
+                        trigger:{global:'cardsDiscardEnd'},
+                        direct:true,
+                        getIndex(event, player) {
+							const cards = [];
+							for(let i = 0; i < event.cards.length; i++) {
+                                if(get.name(event.cards[i]) == 'moRen' || get.name(event.cards[i]) == 'yiRen') {
+                                    if(event.cards[i].destroyed) continue;
+                                    cards.push(event.cards[i]);
+                                }
+                            }
+							return cards;
+						},
+                        forced: true,
+                        filter: function(event,player){
+                            var bool=false;
+                            for(var card of event.cards){
+                                if(get.name(card)=='moRen'||get.name(card)=='yiRen'){
+                                    bool=true;
+                                    break;
+                                }
+                            }
+                            return bool;
+                        },
+                        content: async function(event, trigger, player){
+                            event.indexedData.fix();
+                            event.indexedData.remove();
+                            event.indexedData.destroyed = true;
+                            game.log(event.indexedData, "被移除了");
+                        }
                     },
                 },
             },
