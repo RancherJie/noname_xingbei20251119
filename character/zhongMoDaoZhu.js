@@ -65,7 +65,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 content:async function (event,trigger,player){
                     for(var current of game.players) current.update();
                     var cards=get.cards(3);
-                    await player.addToExpansion('draw',cards,'log').gaintag.add('yiJi');
+                    await player.addToExpansion('draw',cards,'log').set('gaintag',['wangQuanBaoZhuX_biaoJi']);
                     await player.showHiddenCards(cards);
                 }
             },
@@ -245,7 +245,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         await player.showHiddenCards([card]);
                         cards.push(card);
                     }
-                    await player.addToExpansion('draw',cards,'log').gaintag.add('yiJi');
+                    await player.addToExpansion('draw',cards,'log').set('gaintag',['yiJi']);
                     if(cards.length>3){
                         var targets=await player.chooseTarget(true,cards.length-3,`对${cards.length-3}名目标角色造成2点法术伤害③。`).set('ai',function(target){
                             var player=_status.event.player;
@@ -705,8 +705,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             return player.getExpansions('wangQuanBaoZhuX_biaoJi').length>0;
                         },
                         content:async function (event,trigger,player){
-                            await player.getNext().addToExpansion(player.getExpansions('wangQuanBaoZhuX_biaoJi'),player,'gain2').set('type','zhuanYi').gaintag.add('wangQuanBaoZhuX_biaoJi').set('special',true); 
-                        },     
+                            await player.getNext().addToExpansion(player.getExpansions('wangQuanBaoZhuX_biaoJi'),player,'gain2').set('type','zhuanYi').set('gaintag',['wangQuanBaoZhuX_biaoJi']).set('special',true); 
+                        },
                     },
                     shenYanYongZan2:{
                         trigger:{player:'addToExpansionEnd'},
@@ -780,7 +780,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     await player.addZhiShiWu('shengYiWu',2);
                     if(!player.hasSkill('wangQuanBaoZhuX')) player.addSkill('wangQuanBaoZhuX');
                     for(var current of game.players) current.storage.wangQuanBaoZhuX_player=player;
-                    await player.addToExpansion(event.cards,player,'gain2').set('type','fangZhi').gaintag.add('wangQuanBaoZhuX_biaoJi');
+                    await player.addToExpansion(event.cards,player,'gain2').set('type','fangZhi').set('gaintag',['wangQuanBaoZhuX_biaoJi']);
                 },
                 group:'xinYangChongZhu_teShu',
                 subSkill:{
