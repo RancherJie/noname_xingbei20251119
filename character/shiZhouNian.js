@@ -6982,6 +6982,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.hengZhi();
                 },
                 group:['baiShiHuanLongQuan_zhuDong','baiShiHuanLongQuan_yingZhan','baiShiHuanLongQuan_faShuAndTeShu','baiShiHuanLongQuan_gongJi','baiShiHuanLongQuan_xuLiYiji'],
+                mod:{
+                    aiOrder:function(player,card,num){
+                        if(get.type(card)=='gongJi'&&player.isHengZhi()) return num+1;
+                    }
+                },
                 subSkill:{
                     zhuDong:{
                         trigger:{player:'gongJiBefore'},
