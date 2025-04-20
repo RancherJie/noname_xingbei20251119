@@ -1291,7 +1291,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         }).forResultLinks();
                         game.log(event.targets[0],'获得了1张牌');
                         await event.targets[0].gain(card,'draw');
-                        cards.remove(card);
+                        cards.remove(card[0]);
                     }
                     if(player.getExpansions('yuYan').length>=6) return;
                     if(player.hasExpansions('yuYan')&&cards.length>0){
