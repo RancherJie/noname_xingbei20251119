@@ -7063,7 +7063,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 filter:function(event,player){
                     if(!player.hasZhiShiWu('douQi')) return false;
                     if(event.customArgs.xuLiYiji) return false;
-                    return true;
+                    return event.yingZhan!=true;
                 },
                 content:function(){
                     'step 0'
