@@ -708,6 +708,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 game.broadcastAll(function(current){
                                     current.init('hongYiZhuJiao');
                                 },player);
+                                player.update();
                                 if(player.hasZhiShiWu('shengYiWu')) player.markSkill('shengYiWu');
                                 if(player.hasZhiShiWu('yinZhiZiDan')) player.markSkill('yinZhiZiDan');
                             }else if(control=='选项二'){
