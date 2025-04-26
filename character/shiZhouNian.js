@@ -7957,7 +7957,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     shangHai:{
                         trigger:{source:'zaoChengShangHai'},
                         filter:function(event,player){
-                            return player.isHengZhi()&&event.player.isHengZhi();
+                            return player.isHengZhi()&&event.player.isHengZhi()&&event.faShu!=true;
                         },
                         forced:true,
                         content:function(){
