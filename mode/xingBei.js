@@ -703,7 +703,7 @@ export default () => {
 							lib.playerOL[i].side=false;
 							red--;
 						}
-						else if(blue>number/2){
+						if(blue>number/2){
 							lib.playerOL[i].side=true;
 							blue--;
 						}
@@ -724,7 +724,7 @@ export default () => {
 							lib.playerOL[i].side=false;
 							red--;
 						}
-						else if(blue>number/2){
+						if(blue>number/2){
 							lib.playerOL[i].side=true;
 							blue--;
 						}
