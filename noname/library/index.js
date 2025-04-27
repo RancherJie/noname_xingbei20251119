@@ -4742,31 +4742,30 @@ export class Library {
 		xingBei:{
 			name:'星杯传说',
 			connect:{
-				update:function(config,map){
-					if(config.connect_choose_mode=='多选1'){
-						map.connect_choose_number.show();
-					}else{
-						map.connect_choose_number.hide();
-					}
-					if(config.connect_choose_mode=='CM02'){
-						map.connect_team_sequence.hide();
-					}else{
-						map.connect_team_sequence.show();
-					}
-					if(config.connect_choose_mode=='BP01' || config.connect_choose_mode=='BP02'){
-						map.connect_BPchoose_number.show();
-					}else{
-						map.connect_BPchoose_number.hide();
-					}
+				update:function(config,map){				
 					if(config.connect_versus_mode=='4v4'){
 						map.connect_team_sequence.hide();
 						map.connect_choose_mode.hide();
 						map.connect_choose_number.show();
 						map.connect_BPchoose_number.hide();
 					}else{
-						map.connect_team_sequence.show();
+						if(config.connect_choose_mode=='CM02'){
+							map.connect_team_sequence.hide();
+						}else{
+							map.connect_team_sequence.show();
+						}
+						if(config.connect_choose_mode=='BP01' || config.connect_choose_mode=='BP02'){
+							map.connect_BPchoose_number.show();
+						}else{
+							map.connect_BPchoose_number.hide();
+						}
+						if(config.connect_choose_mode=='多选1'){
+							map.connect_choose_number.show();
+						}else{
+							map.connect_choose_number.hide();
+						}
 						map.connect_choose_mode.show();
-					}	
+					}
 				},
 				/*
 				connect_remark:{
