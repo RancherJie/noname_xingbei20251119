@@ -203,7 +203,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 cost: async function (event,trigger,player){
                     var list=lib.xiBie.slice();
                     list.push('cancel2');
-                    var dialog = ui.create.dialog("选淬精炼：选择视为的系别",[[event.indexedData], "card"]);
+                    var dialog = ["选淬精炼：选择视为的系别",[[event.indexedData], "card"]];
                     var next=player.chooseControl(list);
                     next.set('dialog',dialog);
                     next.set('xiBie',trigger.xiBie);
