@@ -1247,13 +1247,14 @@ export default () => {
 					//角色列表
 					var list = get.charactersOL();
 					event.list = get.characterGets(list,event.choose_number);
+					game.log('本局可选角色：',event.list);
 					event.choosing=game.red_leader;
 					event.videoId = lib.status.videoId++;
 					event.red_chooseList = [];
 					event.blue_chooseList = [];
 
 					var createDialog = function (list, id, list1, list2) {
-						var dialog = ui.create.dialog("Ban角色", [list, "characterx"]);
+						var dialog = ui.create.dialog("Ban角色1名", [list, "characterx"]);
 						dialog.classList.add("fullwidth");
 						dialog.classList.add("fullheight");
 						dialog.classList.add("noslide");
@@ -1271,9 +1272,9 @@ export default () => {
 							}
 						} else {
 							if (list1 != game.me&&list1==game.red_leader) {
-								dialog.content.firstChild.innerHTML = "等待<span style='color:red;'>红方</span>队长选择";
+								dialog.content.firstChild.innerHTML = "等待<span style='color:red;'>红方</span>队长Ban选";
 							}else if(list1!=game.me&&list1==game.blue_leader){
-								dialog.content.firstChild.innerHTML = "等待<span style='color:lightblue;'>蓝方</span>队长选择";
+								dialog.content.firstChild.innerHTML = "等待<span style='color:lightblue;'>蓝方</span>队长Ban选";
 							}
 						}
 					};
@@ -1305,12 +1306,13 @@ export default () => {
 							var dialog = get.idDialog(id);
 							if (dialog) {
 								if (choosing == game.red_leader) {
-									choosing = "<span style='color:red;'>红方</span>队长";
+									choosing1 = "<span style='color:red;'>红方</span>队长";
+									choosing2 = "<span style='color:lightblue;'>蓝方</span>队长";
 								} else {
-									choosing = "<span style='color:lightblue;'>蓝方</span>队长";
+									choosing2 = "<span style='color:lightblue;'>蓝方</span>队长";
 								}
 								dialog.content.firstChild.innerHTML =
-									choosing + "Ban了" + get.translation(links);
+									choosing1 + "Ban了" + get.translation(links)+`，等待` + choosing2 + "Ban角色2名";
 								for (var i = 0; i < dialog.buttons.length; i++) {
 									if ((dialog.buttons[i].link == links[0])||(dialog.buttons[i].link == links[1])) {
 										if (first) {
@@ -1333,6 +1335,13 @@ export default () => {
 					}else{
 						event.red_chooseList.addArray(result.links);
 					}
+
+					if (event.choosing == game.red_leader) {
+						var str = "<span style='color:red;'>红方</span>队长";
+					} else {
+						var str = "<span style='color:lightblue;'>蓝方</span>队长";
+					}
+					game.log(str,'Ban',result.links);
 
 					for(var i=0;i<result.links.length;i++){
 						var index=event.list.indexOf(result.links[i]);
@@ -1481,6 +1490,13 @@ export default () => {
 							event.choosed.node.name.innerHTML					
 						);
 						event.selected.push(result.links[0]);
+
+						if (event.choosing == game.red_leader) {
+							var str = "<span style='color:red;'>红方</span>队长";
+						} else {
+							var str = "<span style='color:lightblue;'>蓝方</span>队长";
+						}
+						game.log(str,'插入Ban',result.links[0]);
 					}
 
 					if(event.choosing==game.blue_leader){
@@ -1524,6 +1540,14 @@ export default () => {
 					});
 					"step 14";
 					event.selected.push(result.links[0]);
+					var choosed=event.choosed.node.name.innerHTML
+					if (event.choosing == game.red_leader) {
+						var str = `<span style="color:red;">红方</span>队长为${choosed}`;
+					} else {
+						var str = `<span style="color:lightblue;">蓝方</span>队长为${choosed}`;
+					}
+					game.log(str,'选择了',result.links[0]);
+
 					if(event.choosing==game.red_leader){
 						event.red_chooseList.push(result.links[0]);
 						var id=event.red_list.shift().playerid;
