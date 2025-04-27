@@ -769,7 +769,7 @@ export default () => {
 				if(_status.connectMode){
 					number=lib.configOL.number;
 					team_sequence=lib.configOL.team_sequence;
-					mode=lib.configOL.versus_mode;
+					mode=lib.configOL.choose_mode;
 					if(mode=='CM02'){
 						team_sequence='CM';
 					}
