@@ -666,7 +666,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 await player.draw(2);
                                 await player.changeShiQi(-1,player.storage.wangQuanBaoZhuX_player.side);
                                 if(player.storage.wangQuanBaoZhuX_player.countZhiShiWu('shengYiWu')<1){
-                                    await game.cardsDiscard(player.getExpansions('wangQuanBaoZhuX_biaoJi'));
+                                    await player.loseToDiscardpile(player.getExpansions('wangQuanBaoZhuX_biaoJi'));
                                     player.storage.wangQuanBaoZhuX_player.removeSkill('wangQuanBaoZhuX');
                                 }
                             }
@@ -726,7 +726,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 }).forResultTargets();
                                 await targets[0].draw(control); 
                             }
-                            await game.cardsDiscard(player.getExpansions('wangQuanBaoZhuX_biaoJi'));
+                            await player.loseToDiscardpile(player.getExpansions('wangQuanBaoZhuX_biaoJi'));
                             player.storage.wangQuanBaoZhuX_player.removeSkill('wangQuanBaoZhuX');
                         },
                     }
