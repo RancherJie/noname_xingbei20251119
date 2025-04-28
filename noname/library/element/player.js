@@ -2660,6 +2660,8 @@ export class Player extends HTMLDivElement {
 		if (this.storage.nohp) {
 			this.node.hp.hide();
 		}
+		//队伍彼边框显示
+		if(lib.config.border_style=='side') this.node.framebg.dataset.auto=this.side;
 
 		return this;
 	}
