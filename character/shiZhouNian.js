@@ -348,6 +348,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 prompt:'目标角色+2[治疗]',
                 position:'h',
                 duYou:'zhiLiaoShu',
+                useCard:true,
                 filterCard:function(card){
                     return card.hasDuYou('zhiLiaoShu');
                 },
