@@ -7927,7 +7927,7 @@ export class Player extends HTMLDivElement {
 			} else {
 				node = ui.create.div(".card.mark.drawinghidden");
 				//将能量和红蓝灯放到单独的marks2里显示
-				if(name=='_tiLian_baoShi'||name=='_tiLian_shuiJing'||(lib.skill[name] &&(lib.skill[name].markimage=='image/card/zhiShiWu/hong.png'||lib.skill[name].markimage=='image/card/zhiShiWu/lan.png'))){
+				if(lib.config.separateEnergyAndMarkers&&(name=='_tiLian_baoShi'||name=='_tiLian_shuiJing'||(lib.skill[name] &&(lib.skill[name].markimage=='image/card/zhiShiWu/hong.png'||lib.skill[name].markimage=='image/card/zhiShiWu/lan.png')))){
 					this.node.marks2.appendChild(node);
 				}else this.node.marks.insertBefore(node, this.node.marks.childNodes[1]);
 				if (lib.skill[name] && lib.skill[name].markimage) {
