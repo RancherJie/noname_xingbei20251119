@@ -119,8 +119,9 @@ export default () => {
 				if (added) return uiintro;
 			},
 
-			checkResult:function(me){
-				if(game.players[0].side==true){
+			checkResult:function(){
+				var me = game.me._trueMe || game.me;
+				if(me.side==true){
 					if(game.hongShiQi<=0||game.lanXingBei>=game.xingBeiMax){
 						game.over(false);
 					}else if(game.lanShiQi<=0||game.hongXingBei>=game.xingBeiMax){
@@ -128,7 +129,7 @@ export default () => {
 					}
 
 				}
-				else if(game.players[0].side==false){
+				else if(me.side==false){
 					if(game.lanShiQi<=0||game.hongXingBei>=game.xingBeiMax){
 						game.over(false);
 					}else if(game.hongShiQi<=0||game.lanXingBei>=game.xingBeiMax){
