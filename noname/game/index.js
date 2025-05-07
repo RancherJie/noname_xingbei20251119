@@ -3829,6 +3829,7 @@ export class Game extends GameCompatible {
 				} else {
 					player.removeLink();
 				}
+				ui.updatem(player);
 			} else {
 				console.log(player);
 			}
