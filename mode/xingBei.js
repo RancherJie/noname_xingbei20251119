@@ -690,44 +690,48 @@ export default () => {
 					var blue=0;
 					var number=lib.configOL.number;
 					for (var i in result) {//优先计算真人的选择
-						//if(result[i].confirm!='ok') continue;
-						if(!lib.playerOL[i].isOnline()) continue;
-						if (result[i].links[0] == "红方") {
-							lib.playerOL[i].side=true;
-						}else{
-							lib.playerOL[i].side=false;
-						}
-
-						if(lib.playerOL[i].side==true) red++;
-						else blue++;
-						if(red>number/2){
-							lib.playerOL[i].side=false;
-							red--;
-						}
-						if(blue>number/2){
-							lib.playerOL[i].side=true;
-							blue--;
+						if(lib.playerOL[i].isOnline() || (lib.playerOL[i]==game.me&& !game.me.isAuto)){
+							if (result[i].links[0] == "红方") {
+								lib.playerOL[i].side=true;
+							}else{
+								lib.playerOL[i].side=false;
+							}
+	
+							if(lib.playerOL[i].side==true) red++;
+							else blue++;
+							if(red>number/2){
+								lib.playerOL[i].side=false;
+								red--;
+							}
+							if(blue>number/2){
+								lib.playerOL[i].side=true;
+								blue--;
+							}
 						}
 					}
 
 					for (var i in result) {//计算ai的选择
-						//if(result[i].confirm=='ok') continue;
-						if(lib.playerOL[i].isOnline()) continue;
-						if (result[i].links[0] == "红方") {
-							lib.playerOL[i].side=true;
-						}else{
-							lib.playerOL[i].side=false;
-						}
-
-						if(lib.playerOL[i].side==true) red++;
-						else blue++;
-						if(red>number/2){
-							lib.playerOL[i].side=false;
-							red--;
-						}
-						if(blue>number/2){
-							lib.playerOL[i].side=true;
-							blue--;
+						if(!lib.playerOL[i].isOnline() || (lib.playerOL[i]==game.me&& game.me.isAuto)){
+							if (result[i].links[0] == "红方") {
+								lib.playerOL[i].side=true;
+							}else{
+								lib.playerOL[i].side=false;
+							}
+	
+							if(lib.playerOL[i].side==true) red++;
+							else blue++;
+							if(red>number/2){
+								lib.playerOL[i].side=false;
+								red--;
+							}
+							if(blue>number/2){
+								lib.playerOL[i].side=true;
+								blue--;
+							}
+						}	
+					}
+				});
+			},
 						}
 					}
 				});
