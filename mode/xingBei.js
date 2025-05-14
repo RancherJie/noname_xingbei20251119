@@ -699,13 +699,15 @@ export default () => {
 	
 							if(lib.playerOL[i].side==true) red++;
 							else blue++;
+
 							if(red>number/2){
 								lib.playerOL[i].side=false;
 								red--;
-							}
-							if(blue>number/2){
+								blue++;
+							}else if(blue>number/2){
 								lib.playerOL[i].side=true;
 								blue--;
+								red++;
 							}
 						}
 					}
@@ -723,19 +725,19 @@ export default () => {
 							if(red>number/2){
 								lib.playerOL[i].side=false;
 								red--;
-							}
-							if(blue>number/2){
+								blue++;
+							}else if(blue>number/2){
 								lib.playerOL[i].side=true;
 								blue--;
+								red++;
 							}
+							
 						}	
 					}
 				});
 			},
-						}
-					}
-				});
-			},
+
+			
 
 			moveSeat:function(list,ref){
 				var players=game.players;
