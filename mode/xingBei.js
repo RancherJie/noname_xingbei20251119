@@ -690,7 +690,7 @@ export default () => {
 					var blue=0;
 					var number=lib.configOL.number;
 					for (var i in result) {//优先计算真人的选择
-						if(lib.playerOL[i].isOnline() || (lib.playerOL[i]==game.me&& !game.me.isAuto)){
+						if(lib.playerOL[i].isOnline() || (lib.playerOL[i]==game.me&& !_status.auto)){
 							if (result[i].links[0] == "红方") {
 								lib.playerOL[i].side=true;
 							}else{
@@ -713,7 +713,7 @@ export default () => {
 					}
 
 					for (var i in result) {//计算ai的选择
-						if((lib.playerOL[i]!=game.me && !lib.playerOL[i].isOnline()) || (lib.playerOL[i]==game.me && game.me.isAuto)){
+						if((lib.playerOL[i]!=game.me && !lib.playerOL[i].isOnline()) || (lib.playerOL[i]==game.me && _status.auto)){
 							if (result[i].links[0] == "红方") {
 								lib.playerOL[i].side=true;
 							}else{
