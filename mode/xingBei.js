@@ -1930,12 +1930,13 @@ export default () => {
 							if (dialog) {
 								if (choosing.side == true) {
 									choosing = "<span style='color:red;'>红方</span>";
-									var choosing2 = "<span style='color:lightblue;'>蓝方</span>";
+									var choosing2 = "，等待<span style='color:lightblue;'>蓝方</span>Ban角色1名";
 								} else {
 									choosing = "<span style='color:lightblue;'>蓝方</span>";
+									var choosing2 = "";
 								}
 								dialog.content.firstChild.innerHTML =
-									choosing + "Ban了" + get.translation(links)+`，等待` + choosing2 + "Ban角色1名";
+									choosing + "Ban了" + get.translation(links)+ choosing2;
 								for (var i = 0; i < dialog.buttons.length; i++) {
 									if ((dialog.buttons[i].link == links[0])||(dialog.buttons[i].link == links[1])) {
 										if (first) {
@@ -2299,12 +2300,13 @@ export default () => {
 							if (dialog) {
 								if (choosing.side == true) {
 									choosing = "<span style='color:red;'>红方</span>";
-									choosing2 = "<span style='color:lightblue;'>蓝方</span>";
+									var choosing2 = "，等待<span style='color:lightblue;'>蓝方</span>Ban角色1名";
 								} else {
 									choosing = "<span style='color:lightblue;'>蓝方</span>";
+									var choosing2 = "";
 								}
 								dialog.content.firstChild.innerHTML =
-									choosing + "Ban了" + get.translation(links)+`，等待` + choosing2 + "Ban角色1名";
+									choosing + "Ban了" + get.translation(links)+ choosing2;
 								for (var i = 0; i < dialog.buttons.length; i++) {
 									if ((dialog.buttons[i].link == links[0])||(dialog.buttons[i].link == links[1])) {
 										if (first) {
