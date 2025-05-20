@@ -10048,6 +10048,11 @@ export class Library {
 			},
 			content:function(){
 				'step 0'
+				game.broadcastAll(function(){
+					if(lib.config.background_audio){
+						game.playAudio('skill','_gouMai');
+					}
+				});
 				event.trigger('gouMai');
 				'step 1'
 				player.draw(3).set('cause','teShuXingDong');
@@ -10124,6 +10129,11 @@ export class Library {
 						content:function(){
 							'step 0'
 							event.links=lib.skill._heCheng_backup.links;
+							game.broadcastAll(function(){
+								if(lib.config.background_audio){
+									game.playAudio('skill','_heCheng');
+								}
+							});
 							event.trigger('heCheng');
 							'step 1'
 							player.draw(3).set('cause','teShuXingDong');
@@ -10237,6 +10247,11 @@ export class Library {
 						content:function(){
 							'step 0'
 							event.links=lib.skill._tiLian_backup.links;
+							game.broadcastAll(function(){
+								if(lib.config.background_audio){
+									game.playAudio('skill','_tiLian');
+								}
+							});
 							event.trigger('tiLian');
 							'step 1'
 							event.dict={"baoShi":0,"shuiJing":0};
@@ -10341,6 +10356,11 @@ export class Library {
 			},
 			content:function(){
 				'step 0'
+				game.broadcastAll(function(){
+					if(lib.config.background_audio){
+						game.playAudio('card','male','xuRuo');
+					}
+				});
 				var list=['摸三张牌','跳过行动阶段'];
 				player.chooseControl().set('choiceList',list).set('prompt','虚弱：选择一项').set('ai',function(){
 					var player=_status.event.player;
@@ -10387,6 +10407,11 @@ export class Library {
 				return player.hasExpansions('_zhongDu');
 			},
 			content:async function(event,trigger,player){
+				game.broadcastAll(function(){
+					if(lib.config.background_audio){
+						game.playAudio('card','male','zhongDu');
+					}
+				});
 				var target;
 				while(player.storage.zhongDu.length){
 					target=player.storage.zhongDu.pop();
@@ -10414,6 +10439,11 @@ export class Library {
 			},
 			content:function(){
 				'step 0'
+				game.broadcastAll(function(){
+					if(lib.config.background_audio){
+						game.playAudio('card','male','shengDun');
+					}
+				});
 				player.discard(player.getExpansions('_shengDun'),'_shengDun').set('visible',true);
 				trigger.weiMingZhong();
 				'step 1'

@@ -4207,6 +4207,13 @@ export const Content = {
 			player.getStat().isMe = true;
 		}
 		'step 2';
+		if(player==game.me){
+			game.playAudio('effect', 'phaseStart');	
+		}else{
+			player.send(function(){
+				game.playAudio('effect', 'phaseStart');
+			});
+		}
 		event.trigger("phaseBefore");
 		'step 3';
 		//回合开始后
@@ -11962,6 +11969,9 @@ export const Content = {
 		'step 0'
 		player.zhiLiao+=num;
 		if(num>=0){
+			game.broadcastAll(function(){
+				game.playAudio("effect", "heal");
+			});
 			if(event.yiChu==true){
 				if(event.source) game.log(event.source,'使',player,'获得了'+num+'点','[治疗]','，','[治疗]','溢出');
 				else game.log(player,'获得了'+num+'点','[治疗]','，','[治疗]','溢出');
