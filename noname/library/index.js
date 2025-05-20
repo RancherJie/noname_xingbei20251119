@@ -11692,6 +11692,18 @@ export class Library {
 						ui.window.classList.add("single-handcard");
 						ui.fakeme = ui.create.div(".fakeme.avatar");
 						ui.me.appendChild(ui.fakeme);
+
+						let name=game.me.name;
+						if(ui.fakeme&&ui.fakeme.current!=name){
+							ui.fakeme.current=name;
+							if(ui.versushighlight&&ui.versushighlight!=game.me){
+								ui.versushighlight.classList.remove('current_action');
+							}
+							ui.versushighlight=game.me;
+							game.me.classList.add('current_action');
+
+							ui.fakeme.style.backgroundImage=game.me.node.avatar.style.backgroundImage;
+						}
 					}
 					game.arrangePlayers();
 					//xingBei更新战绩区
