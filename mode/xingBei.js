@@ -1454,8 +1454,7 @@ export default () => {
 					game.log(str,'Ban',result.links);
 
 					for(var i=0;i<result.links.length;i++){
-						var index=event.list.indexOf(result.links[i]);
-						if(index!=-1) event.list.splice(index,1);
+						event.list.remove(result.links[i]);
 					}
 					if(event.choosing==game.blue_leader){
 						event.choosing=game.red_leader;
@@ -1991,8 +1990,7 @@ export default () => {
 					}
 
 					for(var i=0;i<result.links.length;i++){
-						var index=event.list.indexOf(result.links[i]);
-						if(index!=-1) event.list.splice(index,1);
+						event.list.remove(result.links[i]);
 					}
 
 					//因仅循环两次，故不在进行判断，直接对当前选择者进行赋值
@@ -2377,8 +2375,7 @@ export default () => {
 					}
 
 					for(var i=0;i<result.links.length;i++){
-						var index=event.list.indexOf(result.links[i]);
-						if(index!=-1) event.list.splice(index,1);
+						event.list.remove(result.links[i]);
 					}
 
 					//因仅循环两次，故不在进行判断，直接对当前选择者进行赋值
