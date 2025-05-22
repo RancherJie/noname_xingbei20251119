@@ -1775,6 +1775,15 @@ export default () => {
 					}, event.videoId);
 					
 					'step 17'
+					_status.characterList=[];
+					if(game.me.side==true) var list=event.red_chooseList;
+					else var list=event.blue_chooseList;
+					for(var player of game.players){
+						if(list.includes(player.name1)){
+							_status.characterList.push(player.name1);
+						}
+					}
+
 					if(get.phaseswap()){
 						for(var player of game.players){
 							if(player==game.me || player.isOnline2()){
@@ -2162,6 +2171,15 @@ export default () => {
 					}, event.videoId);
 					
 					'step 12'
+					_status.characterList=[];
+					if(game.me.side==true) var list=event.red_chooseList;
+					else var list=event.blue_chooseList;
+					for(var player of game.players){
+						if(list.includes(player.name1)){
+							_status.characterList.push(player.name1);
+						}
+					}
+
 					if(get.phaseswap()){
 						for(var player of game.players){
 							if(player==game.me || player.isOnline2()){
@@ -2547,6 +2565,15 @@ export default () => {
 					}, event.videoId);
 					
 					'step 12'
+					_status.characterList=[];
+					if(game.me.side==true) var list=event.red_chooseList;
+					else var list=event.blue_chooseList;
+					for(var player of game.players){
+						if(list.includes(player.name1)){
+							_status.characterList.push(player.name1);
+						}
+					}
+
 					if(get.phaseswap()){
 						for(var player of game.players){
 							if(player==game.me || player.isOnline2()){
@@ -2676,6 +2703,7 @@ export default () => {
 						}else{
 							chooseList.blue=result[i].links;
 						}
+						if(lib.playerOL[i]==game.me) _status.characterList=result[i].links;
 					}
 					var list=[];
 					var ref=_status.firstAct;
