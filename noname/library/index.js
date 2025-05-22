@@ -10178,7 +10178,7 @@ export class Library {
 			},
 			ai:{
 				order:function(item,player){
-					var num=3.5;
+					var num=3.1;
 					var shiQi=get.shiQi(!player.side);
 					if(shiQi<=5){
 						num+=(0.4*(5-shiQi));
