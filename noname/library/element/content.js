@@ -8470,9 +8470,10 @@ export const Content = {
 				player.tryCardAnimate(card, event.card.name, "metal");
 			}
 		}
-		if (event.audio === false) {
+		if (event.audio === false || event.getParent().name=='useSkill') {
 			cardaudio = false;
 		}
+		/*
 		if (cardaudio)
 			game.broadcastAll(
 				(player, card) => {
@@ -8480,7 +8481,7 @@ export const Content = {
 				},
 				player,
 				card
-			);
+			);*/
 		event.id = get.id();
 		if (typeof event.customArgs != "object") event.customArgs = { };
 		if (typeof event.damageNum != "number") event.damageNum = get.info(card, false).damageNum || 2;
@@ -8584,6 +8585,32 @@ export const Content = {
 			event.type='faShu';
 		}else if(card.name=='shengGuang'){
 			event.type='shengGuang';
+		}
+		if (cardaudio){
+			if(type=='gongJi'){
+				let xiBie=get.xiBie(card);
+				let audio;
+				switch(xiBie){
+					case 'shui':audio='atk_shui';break;
+					case 'huo':audio='atk_huo';break;
+					case 'feng':audio='atk_feng';break;
+					case 'an':audio='atk_an';break;
+					case 'lei':audio='atk_lei';break;
+					case 'di':audio='atk_di';break;
+				}
+				game.broadcastAll(function(audio){
+					if(lib.config.background_audio){
+						game.playAudio('card',audio);
+					}
+				},audio);
+			}else{
+				game.broadcastAll(
+					(player, card) => {
+						game.playCardAudio(card, player);
+					},
+					player,
+					card);
+			}
 		}
 		"step 1";
 		if(event.type=='gongJi' || event.type=='faShu'){
