@@ -6360,14 +6360,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 trigger:{global:'yongHengYueZhang'},
                 forced:true,
                 filter:function(event,player){
-                    return event.player==player.storage.yongHengYueZhang_target||event.player==player;
+                    return event.player==player.storage.yongHengYueZhang_target;
                 },
                 content:async function(event,trigger,player){
                     var info=get.info('lingGan');
                     if(player.countZhiShiWu('lingGan')<info.intro.max){
                         await player.addZhiShiWu('lingGan');
-                        await player.storage.yongHengYueZhang_target.removeZhiShiWu('yongHengYueZhang');
-                        player.storage.yongHengYueZhang_target=undefined;
+                        if(player.storage.yongHengYueZhang_targe){
+                            await player.storage.yongHengYueZhang_target.removeZhiShiWu('yongHengYueZhang');
+                            delete player.storage.yongHengYueZhang_target;
+                        }
                     }else{
                         await player.faShuDamage(3,player);
                         await player.hengZhi();
