@@ -8763,8 +8763,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var cards=player.getExpansions('jian');
                     var result=await player.chooseCardButton(cards,"是否发动【朝圣】,移除1个【茧】,抵御1点该来源的伤害,目前伤害量"+trigger.num)
                     .set('ai',function(button){
-                        return 0;
-                    })
+                        var player=_status.event.player;
+                        var num=_status.event.num;
+                        var shiQiXiaJiang=_status.event.shiQiXiaJiang;
+                        if(shiQiXiaJiang!=false&&player.countCards('h')+num>player.getHandcardLimit()){
+                            if(get.type(button.link)=='faShu') return 1;
+                            else return 2;
+                        }else return 0;
+                    }).set('num',trigger.num).set('shiQiXiaJiang',trigger.shiQiXiaJiang)
                     .forResult();
                     event.result={
                         bool:result.bool,
