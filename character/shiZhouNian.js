@@ -3590,8 +3590,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.addGongJi();
                 },
                 check:function(event,player){
-                    var shiQi=get.shiQi(player.side);
-                    return shiQi>5;
+                    if(player.countZhiShiWu('xianXue')>=2) return true;
+                    if(player.countCards('h',card=>get.xiBie(card)=='an')>0) return true;
+
+                    if(player.countCards('h')+2>player.getHandcardLimit()) return false;
+                    else return true;
                 }
 
             },
