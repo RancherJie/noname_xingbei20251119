@@ -5366,11 +5366,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 ai:{
                     baoShi:true,
-                    order:3.7,
+                    order:3.5,
                     result:{
                         target:function(player,target){
-                            if(player.countTongXiPai()<3) return 0;
-                            return get.damageEffect(target,2);
+                            if(player.countYiXiPai()<3) return 0;
+                            return get.damageEffect(target,player.countYiXiPai()-1);
                         },
                     }
                 }
