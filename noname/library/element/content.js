@@ -4178,7 +4178,7 @@ export const Content = {
 				custom: [],
 				useSkill: [],
 			});
-			current.stat.push({ card: {}, skill: {} ,gongJi: {all:0,zhuDong:0,yingZhan:0} });
+			current.stat.push({ card: {}, skill: {} ,gongJi: {all:[],zhuDong:[],yingZhan:[]}});
 			if (isRound) {
 				current.getHistory().isRound = true;
 				current.getStat().isRound = true;
@@ -8575,6 +8575,15 @@ export const Content = {
 			event.canShengGuang=true;
 			event.canShengDun=true;
 			event.canAnMie=true;
+			//记录攻击次数
+			let dict={name:get.name(card),xiBie: get.xiBie(card),mingGe:card.mingGe,duYou:card.duYou};
+			player.stat[player.stat.length - 1].gongJi.all.push(dict);
+			if(event.yingZhan){
+				player.stat[player.stat.length - 1].gongJi.yingZhan.push(dict);
+			}else{
+				player.stat[player.stat.length - 1].gongJi.zhuDong.push(dict);
+			}
+
 		}else if(type=='faShu'&&get.is.xingDong(event)){//防止传递魔弹时触发该时机
 			event.type='faShu';
 		}else if(card.name=='shengGuang'){
@@ -8625,13 +8634,6 @@ export const Content = {
 				}else{
 					event.yingZhan=false;
 					yingZhan_str='，主动攻击';
-				}
-				//记录攻击次数
-				player.stat[player.stat.length - 1].gongJi.all++;
-				if (event.yingZhan==true) {
-					player.stat[player.stat.length - 1].gongJi.yingZhan++;
-				} else {
-					player.stat[player.stat.length - 1].gongJi.zhuDong++;
 				}
 			}
 
