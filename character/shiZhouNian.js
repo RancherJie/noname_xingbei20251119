@@ -239,7 +239,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.addGongJi();
                 },
                 check:function(event,player){
-                    if(player.storage.gongJi.zhuDong>=3) return false;
+                    if(player.getLastStat('gongJi').zhuDong.length>=3) return false;
                     return player.canGongJi();
                 },
                 ai:{
