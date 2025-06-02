@@ -6362,9 +6362,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             jinJiShiPian:{
                 trigger:{global:'yongHengYueZhang'},
                 forced:true,
-                filter:function(event,player){
-                    return event.player==player.storage.yongHengYueZhang_target;
-                },
                 content:async function(event,trigger,player){
                     var info=get.info('lingGan');
                     if(player.countZhiShiWu('lingGan')<info.intro.max){
