@@ -486,7 +486,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             //暗杀者
             fanShi:{
-                trigger:{player:"chengShouShangHai"},
+                trigger:{player:"chengShouShangHaiAfter"},
                 forced:true,
                 filter:function(event){
                     return event.faShu!=true;
@@ -9102,7 +9102,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 
             //暗杀者
             fanShi:"[被动]反噬",
-            fanShi_info:"<span class='tiaoJian'>(承受攻击伤害时发动⑥)</span>攻击你的对手摸1张牌[强制]。",
+            fanShi_info:"<span class='tiaoJian'>(承受攻击伤害后发动⑥)</span>攻击你的对手摸1张牌[强制]。",
             shuiYing:"[响应]水影",
             shuiYing_info:"<span class='tiaoJian'>(除【特殊行动】外，当你摸牌前发动)</span>弃X张水系牌[展示]；<span class='tiaoJian'>(若你处于【潜行】效果下)</span>你可额外弃1张法术牌[展示]。",
             qianXing:"[启动]潜行",
