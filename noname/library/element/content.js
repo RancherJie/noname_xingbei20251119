@@ -11538,6 +11538,7 @@ export const Content = {
 			isLinked
 		);
 		game.addVideo("link", player, player.isLinked());
+		player.update();
 	},
 	/**
 	 * @deprecated
