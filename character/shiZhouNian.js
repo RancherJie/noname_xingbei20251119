@@ -5928,13 +5928,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     if(target.countCards('h')>0){
                         if(player.side==target.side){
                             target.chooseToDiscard('h').set('ai',function(card){
-                                if(get.type(card)=='faShu'||get.xiBie(card)=='lei') return 1;
-                                return 0;
-                            }).set('showCards',true);
+                                if(get.type(card)=='faShu'||get.xiBie(card)=='lei') return 6;
+                                return 6-get.value(card);
+                            }).set('showCards',true); 
                         }else{
                             target.chooseToDiscard('h',true).set('ai',function(card){
                                 if(get.type(card)=='faShu'||get.xiBie(card)=='lei') return 0;
-                                return 1;
+                                return 6-get.value(card);
                             }).set('showCards',true);
                         }
                     }
