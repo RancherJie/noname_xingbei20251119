@@ -1363,7 +1363,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var xiBie2=get.xiBie(card);
                     if(xiBie==xiBie2){
                         await player.discard(card,'yuYan');
-                        await player.addZhanJi('shuiJing');
+                        await player.addZhanJi('baoShi');
                         await event.trigger('xianJi');
                     }
                     else{
@@ -1762,7 +1762,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shenPanYJT:"[响应]审判",
             shenPanYJT_info:"<span class='tiaoJian'>(你的回合结束时，若本回合你对目标对手造成伤害③)</span>我方所有角色各弃1张牌[展示]，然后各摸1张牌[强制]，你将其中1张弃牌加入该对手手牌[强制]。<span class='tiaoJian'>(若【末日预言】在场)</span>将其余弃牌面朝下洗混放置到【末日预言】的【预言】堆顶部作为【预言】。",
             xianJi:"[启动]献祭",
-            xianJi_info:"<span class='tiaoJian'>(仅【末日语言】在场时，指定1种系别)</span>展示【预言】堆顶部1张【预言】[展示]；<span class='tiaoJian'>(若该【预言】与你指定的系别相同)</span>移除该【预言】，我方【战绩区】+1[水晶]；<span class='tiaoJian'>(若不同)</span>将牌堆顶1张牌与该【预言】交换，然后将该【预言】加入你手牌[强制]。",
+            xianJi_info:"<span class='tiaoJian'>(仅【末日预言】在场时，指定1种系别)</span>展示【预言】堆顶部1张【预言】[展示]；<span class='tiaoJian'>(若该【预言】与你指定的系别相同)</span>移除该【预言】，我方【战绩区】+1[宝石]；<span class='tiaoJian'>(若不同)</span>将牌堆顶1张牌与该【预言】交换，然后将该【预言】加入你手牌[强制]。",
             moRiYuYan:"(专)末日预言",
             moRiYuYan_info:`
             <span class="greentext">[被动]末日预言</span><br>
