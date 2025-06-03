@@ -6366,7 +6366,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var info=get.info('lingGan');
                     if(player.countZhiShiWu('lingGan')<info.intro.max){
                         await player.addZhiShiWu('lingGan');
-                        if(player.storage.yongHengYueZhang_targe){
+                        if(player.storage.yongHengYueZhang_target){
                             await player.storage.yongHengYueZhang_target.removeZhiShiWu('yongHengYueZhang');
                             delete player.storage.yongHengYueZhang_target;
                         }
