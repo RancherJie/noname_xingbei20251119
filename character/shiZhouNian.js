@@ -2429,7 +2429,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             shenPanLangChao:{
                 forced:true,
-                trigger:{player:'chengShouShangHai'},
+                trigger:{player:'chengShouShangHaiAfter'},
                 content:function(){
                     player.addZhiShiWu('shenPan',1);
                 },
@@ -9231,7 +9231,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             moRiShenPan:"[法术]末日审判",
             moRiShenPan_info:"<span class='tiaojian'>(移除所有</span><span class='hong'>【审判】</span><span class='tiaojian'>)</span>对目标角色造成等量的法术伤害③；在你的行动阶段开始时，若<span class='hong'>【审判】</span>已达到上限，该行动阶段你必须发动【末日审判】。",
             shenPanLangChao:"[被动]审判浪潮",
-            shenPanLangChao_info:"<span class='tiaoJian'>(你每承受一次伤害⑥)</span>你+1<span class='hong'>【审判】</span>。",
+            shenPanLangChao_info:"<span class='tiaoJian'>(你每承受一次伤害后⑥)</span>你+1<span class='hong'>【审判】</span>。",
             zhongCaiYiShi:"[启动]仲裁仪式[持续]",
             zhongCaiYiShi_info:"[宝石][横置]转为【审判形态】，你的手牌上限恒定为5[恒定]；每次你的回合开始时，你+1<span class='hong'>【审判】</span>。",
             panJueTianPing:"[法术]判决天平",
