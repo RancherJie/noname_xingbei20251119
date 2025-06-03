@@ -1432,7 +1432,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 mod:{
                     maxHandcardWuShi:function(player,num){
-                        if(player.storage.fangZhu) return 99;
+                        if(player.storage.fangZhu) return Infinity;
                     },
                     aiOrder:function(player,item,num){
                         if(item=='_tiLian'&&player.hasExpansions('yuYan')<=1&&player.countNengLiang()<1) return num+1;
