@@ -8468,9 +8468,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         await player.storage.tongShengGongSi_target.removeZhiShiWu('tongShengGongSi_xiaoGuo');
                         var target=result.targets[0];
                         if(!target.hasSkill('tongShengGongSi_xiaoGuo')){
-                            target.storage.tongShengGongSi_player=player;
                             target.addSkill('tongShengGongSi_xiaoGuo');                
                         }
+                        target.storage.tongShengGongSi_player=player;
                         player.storage.tongShengGongSi_target=target;
                         await target.addZhiShiWu('tongShengGongSi_xiaoGuo');
                     }else{
@@ -8608,9 +8608,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.storage.tongShengGongSi_use=true;
                     
                     if(!target.hasSkill('tongShengGongSi_xiaoGuo')){
-                        target.storage.tongShengGongSi_player=player;
                         target.addSkill('tongShengGongSi_xiaoGuo');
                     }
+                    target.storage.tongShengGongSi_player=player;
                     'step 2'
                     target.addZhiShiWu('tongShengGongSi_xiaoGuo');
                 },
