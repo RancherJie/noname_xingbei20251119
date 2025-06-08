@@ -5710,9 +5710,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.chooseTarget(true,'目标角色弃1张牌').set('ai',function(target){
                         var player=_status.event.player;
                         if(target.side==player.side){
-                            return 10;
+                            return 15-(target.getHandcardLimit()-target.countCards('h'));
                         }
-                        return target.countCards('h');
+                        return target.countCards('h')*0.5;
                     });
                     'step 4'
                     result.targets[0].chooseToDiscard('h',true);
