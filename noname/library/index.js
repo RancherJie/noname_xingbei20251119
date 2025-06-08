@@ -12712,6 +12712,14 @@ export class Library {
 				},
 			},
 		],
+		[
+			"农",
+			{
+				showName: "农",
+				color: "#672e3d",
+				nature: "purplemm",
+			},
+		],
 	]);
 	groupnature = {
 		shen: "shen",
