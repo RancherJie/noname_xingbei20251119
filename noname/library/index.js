@@ -10575,6 +10575,9 @@ export class Library {
 				next.set('canYingZhan',trigger.canYingZhan);
 				next.set('canShengGuang',trigger.canShengGuang);
 				next.set('canAnMie',trigger.canAnMie);
+				next.set('oncard',function(card,player){
+					_status.event.yingZhan=true;//设置本次攻击为应战攻击
+				});
 				'step 1'
 				if(result.bool){
 					trigger.weiMingZhong();
@@ -10593,7 +10596,7 @@ export class Library {
 			},
 			content:function(){
 				'step 0'
-				trigger.yingZhan=true;//设置本次攻击为应战攻击
+				//trigger.yingZhan=true;//设置本次攻击为应战攻击
 
 				event.customArgs=trigger.getParent(5).customArgs;
 				event.source=trigger.getParent().source;//攻击来源
