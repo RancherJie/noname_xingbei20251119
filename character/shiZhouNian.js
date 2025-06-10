@@ -1045,7 +1045,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             'step 0'
                             var x=0;
                             for(var p of game.players){
-                                for(var xiaoGuo of game.jiChuXiaoGuo.fengYinShi){
+                                for(var xiaoGuo of game.jiChuXiaoGuo.fengYinShi_xiaoGuo){
                                     if(p.hasExpansions(xiaoGuo)){
                                         x++;
                                     }
