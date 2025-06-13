@@ -619,13 +619,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 useCard:true,
                 content:function(){
-                    'step 0'
-                    if(!target.hasSkill('diZhiFengYin_xiaoGuo')){
-                        target.addSkill('diZhiFengYin_xiaoGuo');
-                    }
-                    'step 1'
-                    target.storage.fengYin=player;
-                    target.addToExpansion(cards,'gain2',player).gaintag.add('diZhiFengYin_xiaoGuo');
+                    target.addFengYin('diZhiFengYin_xiaoGuo',cards,player);
                 },
                 subSkill:{
                     xiaoGuo:{
@@ -654,13 +648,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             }
                             return false;
                         },
-                        content:function(){
-                            'step 0'
-                            player.discard(player.getExpansions('diZhiFengYin_xiaoGuo'),'diZhiFengYin_xiaoGuo').set('visible',true);
-                            'step 1'
-                            player.removeSkill('diZhiFengYin_xiaoGuo');
-                            'step 2'
-                            player.faShuDamage(player.storage.fengYin,3); 
+                        content:async function(event,trigger,player){
+                            var fengYin=event.name;
+                            var cards=player.getExpansions(fengYin);
+                            var source=player.storage.fengYin;
+                            await player.discard(cards,fengYin).set('visible',true);
+                            player.removeSkill(fengYin);
+                            await player.faShuDamage(source,3); 
                         },
                         tag:{
                             jiChuXiaoGuo:true,
@@ -700,13 +694,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 useCard:true,
                 content:function(){
-                    'step 0'
-                    if(!target.hasSkill('shuiZhiFengYin_xiaoGuo')){
-                        target.addSkill('shuiZhiFengYin_xiaoGuo');
-                    }
-                    'step 1'
-                    target.storage.fengYin=player;
-                    target.addToExpansion(cards,'gain2',player).gaintag.add('shuiZhiFengYin_xiaoGuo');
+                    target.addFengYin('shuiZhiFengYin_xiaoGuo',cards,player);
                 },
                 subSkill:{
                     xiaoGuo:{
@@ -735,13 +723,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             }
                             return false;
                         },
-                        content:function(){
-                            'step 0'
-                            player.discard(player.getExpansions('shuiZhiFengYin_xiaoGuo'),'shuiZhiFengYin_xiaoGuo').set('visible',true);
-                            'step 1'
-                            player.removeSkill('shuiZhiFengYin_xiaoGuo');
-                            'step 2'
-                            player.faShuDamage(player.storage.fengYin,3); 
+                        content:async function(event,trigger,player){
+                            var fengYin=event.name;
+                            var cards=player.getExpansions(fengYin);
+                            var source=player.storage.fengYin;
+                            await player.discard(cards,fengYin).set('visible',true);
+                            player.removeSkill(fengYin);
+                            await player.faShuDamage(source,3); 
                         },
                         tag:{
                             jiChuXiaoGuo:true,
@@ -781,13 +769,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 useCard:true,
                 content:function(){
-                    'step 0'
-                    if(!target.hasSkill('huoZhiFengYin_xiaoGuo')){
-                        target.addSkill('huoZhiFengYin_xiaoGuo');
-                    }
-                    'step 1'
-                    target.storage.fengYin=player;
-                    target.addToExpansion(cards,'gain2',player).gaintag.add('huoZhiFengYin_xiaoGuo');
+                    target.addFengYin('huoZhiFengYin_xiaoGuo',cards,player);
                 },
                 subSkill:{
                     xiaoGuo:{
@@ -817,13 +799,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             }
                             return false;
                         },
-                        content:function(){
-                            'step 0'
-                            player.discard(player.getExpansions('huoZhiFengYin_xiaoGuo'),'huoZhiFengYin_xiaoGuo').set('visible',true);
-                            'step 1'
-                            player.removeSkill('huoZhiFengYin_xiaoGuo');
-                            'step 2'
-                            player.faShuDamage(player.storage.fengYin,3); 
+                        content:async function(event,trigger,player){
+                            var fengYin=event.name;
+                            var cards=player.getExpansions(fengYin);
+                            var source=player.storage.fengYin;
+                            await player.discard(cards,fengYin).set('visible',true);
+                            player.removeSkill(fengYin);
+                            await player.faShuDamage(source,3); 
                         },
                         tag:{
                             jiChuXiaoGuo:true,
@@ -863,13 +845,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 useCard:true,
                 content:function(){
-                    'step 0'
-                    if(!target.hasSkill('fengZhiFengYin_xiaoGuo')){
-                        target.addSkill('fengZhiFengYin_xiaoGuo');
-                    }
-                    'step 1'
-                    target.storage.fengYin=player;
-                    target.addToExpansion(cards,'gain2',player).gaintag.add('fengZhiFengYin_xiaoGuo');
+                    target.addFengYin('fengZhiFengYin_xiaoGuo',cards,player);
                 },
                 subSkill:{
                     xiaoGuo:{
@@ -899,13 +875,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             }
                             return false;
                         },
-                        content:function(){
-                            'step 0'
-                            player.discard(player.getExpansions('fengZhiFengYin_xiaoGuo'),'fengZhiFengYin_xiaoGuo').set('visible',true);
-                            'step 1'
-                            player.removeSkill('fengZhiFengYin_xiaoGuo');
-                            'step 2'
-                            player.faShuDamage(player.storage.fengYin,3); 
+                        content:async function(event,trigger,player){
+                            var fengYin=event.name;
+                            var cards=player.getExpansions(fengYin);
+                            var source=player.storage.fengYin;
+                            await player.discard(cards,fengYin).set('visible',true);
+                            player.removeSkill(fengYin);
+                            await player.faShuDamage(source,3); 
                         },
                         tag:{
                             jiChuXiaoGuo:true,
@@ -947,13 +923,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 prepare:'useCard',
                 discard:false,
                 content:function(){
-                    'step 0'
-                    if(!target.hasSkill('leiZhiFengYin_xiaoGuo')){
-                        target.addSkill('leiZhiFengYin_xiaoGuo');
-                    }
-                    'step 1'
-                    target.storage.fengYin=player;
-                    target.addToExpansion(cards,'gain2',player).gaintag.add('leiZhiFengYin_xiaoGuo');
+                    target.addFengYin('leiZhiFengYin_xiaoGuo',cards,player);
                 },
                 subSkill:{
                     xiaoGuo:{
@@ -983,13 +953,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             }
                             return false;
                         },
-                        content:function(){
-                            'step 0'
-                            player.discard(player.getExpansions('leiZhiFengYin_xiaoGuo'),'leiZhiFengYin_xiaoGuo').set('visible',true);
-                            'step 1'
-                            player.removeSkill('leiZhiFengYin_xiaoGuo');
-                            'step 2'
-                            player.faShuDamage(player.storage.fengYin,3);
+                        content:async function(event,trigger,player){
+                            var fengYin=event.name;
+                            var cards=player.getExpansions(fengYin);
+                            var source=player.storage.fengYin;
+                            await player.discard(cards,fengYin).set('visible',true);
+                            player.removeSkill(fengYin);
+                            await player.faShuDamage(source,3); 
                         },
                         tag:{
                             jiChuXiaoGuo:true,

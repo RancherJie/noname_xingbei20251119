@@ -11401,6 +11401,16 @@ export class Player extends HTMLDivElement {
 		return false;
 	}
 
+	addFengYin(fengYin,cards,source){
+		if(!source) source = this;
+		if(!this.hasSkill(fengYin)){
+			this.addSkill(fengYin);
+		}
+		this.storage.fengYin=source;
+		return this.addToExpansion(cards,source,'gain2').set('gaintag',[fengYin]);
+	}
+
+	
 
 	$drawAuto(cards, target) {
 		if (this.isUnderControl(true, target)) {
