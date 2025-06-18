@@ -463,9 +463,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             return bool;
                         },
                         content: async function(event, trigger, player){
-                            event.indexedData.fix();
-                            event.indexedData.remove();
-                            event.indexedData.destroyed = true;
+                            let name=get.name(event.indexedData);
+                            event.indexedData.storage.renMaster.storage[name]=false;
+                            game.broadcastAll(function(card){
+                                card.fix();
+                                card.remove();
+                                card.destroyed = true;
+                            },event.indexedData);
                             game.log(event.indexedData, "被移除了");
                         }
                     },
@@ -552,18 +556,22 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 player.storage.moRen=false;
                                 let card=cards[j];
                                 await current.lose(card);
-                                card.fix();
-                                card.remove();
-                                card.destroyed = true;
+                                game.broadcastAll(function(card){
+                                    card.fix();
+                                    card.remove();
+                                    card.destroyed = true;
+                                },card);
                                 game.log(card, "被移除了");
                             }else if(cards[j].name=='yiRen'){
                                 players.push(current);
                                 player.storage.yiRen=false;
                                 let card=cards[j];
                                 await current.lose(card);
-                                card.fix();
-                                card.remove();
-                                card.destroyed = true;
+                                game.broadcastAll(function(card){
+                                    card.fix();
+                                    card.remove();
+                                    card.destroyed = true;
+                                },card);
                                 game.log(card, "被移除了");
                             }
                             if(players.length>=2) break;
