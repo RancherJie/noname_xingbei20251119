@@ -9067,7 +9067,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             zhiYuZhiGuang:"(独)[法术]治愈之光",
             zhiYuZhiGuang_info:"指定最多3名角色各+1[治疗]。",
             lianMin:"[启动]怜悯[持续]",
-            lianMin_info:"[宝石][横置]你的手牌上限恒定为7[持续]，你+1[水晶]。",
+            lianMin_info:"[宝石][横置]你的手牌上限恒定为7[恒定]，你+1[水晶]。",
             shengLiao:"[法术]圣疗[回合限定]",
             shengLiao_info:"[水晶]任意分配3[治疗]给1~3名角色，额外+1[攻击行动]或[法术行动]。",
 
