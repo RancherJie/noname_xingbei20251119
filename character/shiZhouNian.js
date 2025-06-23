@@ -5717,7 +5717,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var choiceList=['目标角色弃1张牌','你摸3张牌[强制]'];
                     player.chooseControl().set('prompt','魔眼').set('choiceList',choiceList).set('ai',function(){
                         var player=_status.event.player;
-                        if(player.countCards('h')<2){
+                        if(!(player.canGongJi()||player.canFaShu())){
                             return '选项二'
                         }else{
                             return '选项一'
@@ -5757,6 +5757,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.addToExpansion('draw',result.cards,'log').gaintag.add('chongNengPai');
                     'step 8'
                     player.addNengLiang('shuiJing',1);
+                },
+                check:function(event,player){
+                    if(!(player.canGongJi()||player.canFaShu())){
+                        if(player.countCards('h')+3<=player.getHandcardLimit()){
+                            return true;
+                        }else{
+                            return false;
+                        }
+                    }
+                    return true;
                 },
                 ai:{
                     baoShi:true,
