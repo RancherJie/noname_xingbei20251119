@@ -74,7 +74,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 enable:'faShu',
                 content:async function (event,trigger,player){
                     var cards=get.cards(2);
-                    game.cardsGotoOrdering(cards);
+                    await game.cardsGotoOrdering(cards);
                     await player.showHiddenCards(cards);
                     var next=player.chooseCardButton(cards);
                     next.set('prompt','你可选择1张牌打出，并弃1张牌');
