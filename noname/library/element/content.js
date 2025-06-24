@@ -6558,15 +6558,22 @@ export const Content = {
 						if (event.position == "e") str += "装备";
 						str += "牌";
 					}
-					event.dialog = ui.create.dialog(str);
-					if (event.prompt2) {
-						event.dialog.addText(event.prompt2, event.prompt2.length <= 20);
-					}
-					if (Array.isArray(event.promptx)) {
-						for (var i = 0; i < event.promptx.length; i++) {
-							event.dialog.add(event.promptx[i]);
+					if(Array.isArray(event.dialog)){
+						event.dialog=ui.create.dialog.apply(this,event.dialog);
+						event.dialog.open();
+						event.dialog.classList.add('noselect');
+					}else{
+						event.dialog = ui.create.dialog(str);
+						if (event.prompt2) {
+							event.dialog.addText(event.prompt2, event.prompt2.length <= 20);
+						}
+						if (Array.isArray(event.promptx)) {
+							for (var i = 0; i < event.promptx.length; i++) {
+								event.dialog.add(event.promptx[i]);
+							}
 						}
 					}
+					
 					if (Array.isArray(event.selectCard)) {
 						event.promptbar = event.dialog.add("0/" + get.numStr(event.selectCard[1], "card"));
 						event.custom.add.card = function () {

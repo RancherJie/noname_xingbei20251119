@@ -5093,6 +5093,9 @@ export class Player extends HTMLDivElement {
 					next.selectCard = arguments[i];
 				} else if (typeof arguments[i] == "boolean") {
 					next.forced = arguments[i];
+				}else if (get.itemtype(arguments[i]) == "dialog") {
+					next.dialog = arguments[i];
+					next.prompt = false;
 				} else if (get.itemtype(arguments[i]) == "position") {
 					next.position = arguments[i];
 				} else if (typeof arguments[i] == "function") {
