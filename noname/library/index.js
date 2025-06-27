@@ -12723,6 +12723,14 @@ export class Library {
 				nature: "purplemm",
 			},
 		],
+		[
+			"trick",
+			{
+				showName: "trick",
+				color: "#672e3d",
+				nature: "metal",
+			},
+		],
 	]);
 	groupnature = {
 		shen: "shen",
