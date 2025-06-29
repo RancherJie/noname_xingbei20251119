@@ -6544,7 +6544,11 @@ export const Content = {
 					ui.click.cancel();
 					return;
 				}
-				if (event.prompt != false) {
+				if(Array.isArray(event.dialog)){
+					event.dialog=ui.create.dialog.apply(this,event.dialog);
+					event.dialog.open();
+					event.dialog.classList.add('noselect');
+				}else if (event.prompt != false) {
 					var str;
 					if (typeof event.prompt == "string") str = event.prompt;
 					else {
@@ -6558,19 +6562,13 @@ export const Content = {
 						if (event.position == "e") str += "装备";
 						str += "牌";
 					}
-					if(Array.isArray(event.dialog)){
-						event.dialog=ui.create.dialog.apply(this,event.dialog);
-						event.dialog.open();
-						event.dialog.classList.add('noselect');
-					}else{
-						event.dialog = ui.create.dialog(str);
-						if (event.prompt2) {
-							event.dialog.addText(event.prompt2, event.prompt2.length <= 20);
-						}
-						if (Array.isArray(event.promptx)) {
-							for (var i = 0; i < event.promptx.length; i++) {
-								event.dialog.add(event.promptx[i]);
-							}
+					event.dialog = ui.create.dialog(str);
+					if (event.prompt2) {
+						event.dialog.addText(event.prompt2, event.prompt2.length <= 20);
+					}
+					if (Array.isArray(event.promptx)) {
+						for (var i = 0; i < event.promptx.length; i++) {
+							event.dialog.add(event.promptx[i]);
 						}
 					}
 					
@@ -6580,6 +6578,9 @@ export const Content = {
 							_status.event.promptbar.innerHTML = ui.selected.cards.length + "/" + get.numStr(_status.event.selectCard[1], "card");
 						};
 					}
+				}else if(get.itemtype(event.dialog)=='dialog'){
+					event.dialog.style.display='';
+					event.dialog.open();
 				}
 			} else if (event.isOnline()) {
 				event.send();
@@ -6665,7 +6666,7 @@ export const Content = {
 				event.result.targets[i].addTempClass("target");
 			}
 		}
-		if (event.dialog) event.dialog.close();
+		if (event.dialog&&event.dialog.close) event.dialog.close();
 		event.resume();
 		"step 2";
 		if (event.onresult) {
