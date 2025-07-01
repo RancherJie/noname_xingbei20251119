@@ -8513,24 +8513,23 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }).forResult();
                     
                     if(result.bool){
+                        lib.skill.tongShengGongSi.removeTongShengGongSiSkill(player,player.storage.tongShengGongSi_target);
                         await player.storage.tongShengGongSi_target.removeZhiShiWu('tongShengGongSi_xiaoGuo');
-                        player.storage.tongShengGongSi_target.removeSkill('tongShengGongSi_xiaoGuo');
+
                         var target=result.targets[0];
-                        if(!target.hasSkill('tongShengGongSi_xiaoGuo')){
-                            target.addSkill('tongShengGongSi_xiaoGuo');                
-                        }
-                        target.storage.tongShengGongSi_player=player;
                         player.storage.tongShengGongSi_target=target;
                         await target.addZhiShiWu('tongShengGongSi_xiaoGuo');
+                        lib.skill.tongShengGongSi.addTongShengGongSiSkill(player,target);
                     }else{
+                        lib.skill.tongShengGongSi.removeTongShengGongSiSkill(player,player.storage.tongShengGongSi_target);
+                        await player.storage.tongShengGongSi_target.removeZhiShiWu
+                        ('tongShengGongSi_xiaoGuo');
+                        delete player.storage.tongShengGongSi_target;
                         player.storage.tongShengGongSi_use=false;
-                        await player.storage.tongShengGongSi_target.removeZhiShiWu('tongShengGongSi_xiaoGuo');
-                        player.storage.tongShengGongSi_target.removeSkill('tongShengGongSi_xiaoGuo');
-                        player.storage.tongShengGongSi_target=undefined; 
                     }
                 },
                 check:function(event,player){
-                    if(player.isHengZhi()&&player.storage.tongShengGongSi_target.side==player.side) return false;
+                    if(player.isHengZhi()&&player.storage.tongShengGongSi_target&&player.storage.tongShengGongSi_target.side==player.side) return false;
                     if(!(player.canGongJi()||player.canFaShu())) return false;
                     var minus=player.getHandcardLimit()-player.countCards('h');
                     return minus>=2;
@@ -8657,18 +8656,28 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 0'
                     player.draw(2);
                     'step 1'
-                    player.storage.tongShengGongSi_target=target;
                     player.storage.tongShengGongSi_use=true;
-                    
-                    if(!target.hasSkill('tongShengGongSi_xiaoGuo')){
-                        target.addSkill('tongShengGongSi_xiaoGuo');
-                    }
-                    target.storage.tongShengGongSi_player=player;
-                    'step 2'
+                    player.storage.tongShengGongSi_target=target;
+
                     target.addZhiShiWu('tongShengGongSi_xiaoGuo');
+                    lib.skill.tongShengGongSi.addTongShengGongSiSkill(player,target);
                 },
-                group:'tongShengGongSi_xiaoGuo',
+                global:'tongShengGongSi_xiaoGuo',
+                group:'tongShengGongSi_hengZhiChongZhi',
                 subSkill:{
+                    hengZhiChongZhi:{
+                        trigger:{player:['hengZhiEnd','chongZhiEnd']},
+                        direct:true,
+                        priority:-0.1,
+                        filter:function(event,player){
+                            return player.storage.tongShengGongSi_use;
+                        },
+                        content:function(){
+                            lib.skill.tongShengGongSi.removeTongShengGongSiSkill(player,player.storage.tongShengGongSi_target);
+                            lib.skill.tongShengGongSi.addTongShengGongSiSkill(player,player.storage.tongShengGongSi_target);
+                        }
+                    },
+
                     xiaoGuo:{
                         intro:{
                             content:"<span class='tiaoJian'>(在【普通形态】下)</span>你和他手牌上限各-2。 <span class='tiaoJian'>(在【流血形态】下)</span>你和他手牌上限各+1。",
@@ -8676,22 +8685,18 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         onremove:'storage',
                         markimage:'image/card/zhuanShu/tongShengGongSi.png',
-
+                    },
+                    jiangDi:{
                         mod:{
                             maxHandcard:function(player,num){
-                                if(player.storage.tongShengGongSi_use){
-                                    if(player.isHengZhi()){
-                                        return num+1;
-                                    }else{
-                                        return num-2;
-                                    }
-                                }else if(player.hasZhiShiWu('tongShengGongSi_xiaoGuo')){
-                                        if(player.storage.tongShengGongSi_player.isHengZhi()){
-                                            return num+1;
-                                        }else{
-                                            return num-2;
-                                    }
-                                }
+                                return num-2;
+                            }
+                        }
+                    },
+                    zengJia:{
+                        mod:{
+                            maxHandcard:function(player,num){
+                                return num+1;
                             }
                         }
                     }
@@ -8706,6 +8711,29 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         target:function(player,target){
                             return -target.countCards('h');
                         },
+                    }
+                },
+                addTongShengGongSiSkill:function(player,target){
+                    if(target!=player){
+                        if(player.isHengZhi()){
+                            player.addSkill('tongShengGongSi_zengJia');
+                            target.addSkill('tongShengGongSi_zengJia');
+                        }else{
+                            player.addSkill('tongShengGongSi_jiangDi');
+                            target.addSkill('tongShengGongSi_jiangDi');
+                        }
+                        player.update();
+                        target.update();
+                    }
+                },
+                removeTongShengGongSiSkill:function(player,target){
+                    if(target!=player){
+                        player.removeSkill('tongShengGongSi_zengJia');
+                        target.removeSkill('tongShengGongSi_zengJia');
+                        player.removeSkill('tongShengGongSi_jiangDi');
+                        target.removeSkill('tongShengGongSi_jiangDi');
+                        player.update();
+                        target.update();
                     }
                 }
             },
