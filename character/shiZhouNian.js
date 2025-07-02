@@ -1460,7 +1460,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 trigger:{player:'useCardBefore'},
                 forced:true,
                 filter:function(event,player){
-                    if(player.storage.moDan==true) return false;
+                    if(player.hasMark('_moDan')) return false;
                     if(get.name(event.card)!='moDan') return false;
                     var range_l=0,range_r=0;
                     var target=player;
@@ -1485,12 +1485,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 mod:{
                     playerEnabled:function(card,player,target){
-                        if(player.storage.moDan==true) return;
+                        if(player.hasMark('_moDan')) return;
                         if(get.name(card)=='moDan'){
                             var mubiao=player.getPrevious();
                             while(mubiao.side==player.side){
                                 mubiao=mubiao.getPrevious();
-                                while(mubiao.storage.moDan==true){
+                                while(mubiao.hasMark('_moDan')){
                                     mubiao=mubiao.getPrevious();
                                 }
                             }
