@@ -4796,11 +4796,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     event.source=trigger.player;
 					event.yingZhan=trigger.yingZhan;
 					event.card=trigger.card;
-					var name=get.translation(event.source);
-                    var name2=get.translation(trigger.target);
-					var propmt=`${name2}受到${name}的`;
+					var name=get.colorName(event.source);
+                    var name2=get.colorName(trigger.target);
+					var propmt=get.prompt('shiShenZhouShu');
 					propmt+=get.translation(get.xiBie(event.card))+'系主动攻击，';
-					propmt+=get.prompt('shiShenZhouShu');
+					propmt+=`${name2}受到${name}的`;
 					event.result=await player.yingZhan(propmt)
                     .set('filterCard',function(card,player,event){
 						if(get.type(card)=='gongJi'){
@@ -4831,6 +4831,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     .set('oncard',function(card,player){
                         _status.event.yingZhan=true;//设置本次攻击为应战攻击
                     })
+                    .set('shiShenZhouShu',true)
                     .forResult();
                 },
                 content:function(){
@@ -4854,7 +4855,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 listx.push([list[i],get.translation(list[i])]);
                             }
                             var next=player.chooseButton([
-                                '移除1[宝石]1[水晶]',
+                                '式神咒束：移除1[宝石]1[水晶]',
                                 [listx,'tdnodes'],
                             ]);
                             next.set('forced',true);
