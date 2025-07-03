@@ -6610,7 +6610,7 @@ export const Content = {
 				event.result.cards[i].classList.add("glow");
 			}
 		}
-		if (event.dialog) event.dialog.close();
+		if (event.dialog&&event.dialog.close) event.dialog.close();
 	},
 	chooseTarget: function () {
 		"step 0";
