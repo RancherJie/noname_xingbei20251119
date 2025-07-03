@@ -488,6 +488,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         player.changeShiQi(-1);
                     }
                 },
+                onremove: function (){
+                   if(lib.skill.global.includes('shenLvFengSuo_shangXian')){ 
+                        game.removeGlobalSkill('shenLvFengSuo_shangXian');
+                        for(var current of game.players){
+                            current.update();
+                        }
+                    } 
+                },
                 //global:'shenLvFengSuo_shangXian',
                 group:'shenLvFengSuo_zhiLiao',
                 subSkill:{
