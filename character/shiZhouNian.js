@@ -8799,11 +8799,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 check:function(card){
                     var player = _status.event.player;
-                    if(player.countCards('h')>2) return 5-get.value(card);
+                    if(player.countCards('h')>2) return 7-get.value(card);
                     else return 0;
                 },
                 ai:{
-                    order:3.6,
+                    order:3.4,
                     result:{
                         player:function(player){
                             return player.getExpansions('jian').length<=6?1:0;
@@ -9034,7 +9034,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 ai:{
                     shuiJing:true,
-                    order:3.5,
+                    order:3.3,
                     result:{
                         player:1,
                     }
