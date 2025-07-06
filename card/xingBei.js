@@ -21,8 +21,8 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				},
 				ai:{
 					basic:{
-						useful:[8,3,1],
-						value:[6,4,3],
+						useful:8,
+						value:[7,7,3],
 					},
 					order:function(item,player){
 						return 3.05;
@@ -52,8 +52,8 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				ai:{
 
 					basic:{
-						useful:[5,3,1],
-						value:[5,3,1],
+						useful:[4,3,1],
+						value:[4,3,1],
 					},
 					order:function(item,player){
 						return 3.05;
@@ -83,8 +83,8 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				ai:{
 
 					basic:{
-						useful:[5,3,1],
-						value:[5,3,1],
+						useful:[4,3,1],
+						value:[4,3,1],
 					},
 					order:function(item,player){
 						return 3.05;
@@ -114,8 +114,8 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				ai:{
 
 					basic:{
-						useful:[5,3,1],
-						value:[5,3,1],
+						useful:[4,3,1],
+						value:[4,3,1],
 					},
 					order:function(item,player){
 						return 3.05;
@@ -145,8 +145,8 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				ai:{
 
 					basic:{
-						useful:[5,3,1],
-						value:[5,3,1],
+						useful:[4,3,1],
+						value:[4,3,1],
 					},
 					order:function(item,player){
 						return 3.05;
@@ -175,8 +175,8 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				},
 				ai:{
 					basic:{
-						useful:[5,3,1],
-						value:[5,3,1],
+						useful:[4,3,1],
+						value:[4,3,1],
 					},
 					order:function(item,player){
 						return 3.05;
@@ -198,8 +198,8 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				ai:{
 					order:2.7,
 					basic:{
-						useful:[4,3,2],
-						value:[7,4,2],
+						useful:[5,4,2],
+						value:[7,4,1.1],
 					},
 					result:{player:1},
 				}
@@ -231,7 +231,7 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 						}
 					},
 					basic:{
-						useful:4,
+						useful:[3,2,0],
 						value:[3,2,0],
 					},
 					result:{
@@ -269,7 +269,7 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 						}
 					},
 					basic:{
-						useful:[4,2,1],
+						useful:[4,1],
 						value:[5,3,1],
 					},
 					result:{
@@ -295,8 +295,8 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				ai:{
 					order:3,
 					basic:{
-						useful:3,
-						value:[3,2,0],
+						useful:[3,0],
+						value:[3,1],
 					},
 					result:{
                         target:function(player,target){
@@ -340,7 +340,7 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				},
 				ai:{
 					basic:{
-						useful:4,
+						useful:[3,1],
 						value:[4,2,0],
 					},
 					order:function(item,player){
