@@ -1,6 +1,6 @@
 window.noname_asset_list=
 [
-	"v1.3.0",
+	"v1.3.1",
 	"audio/background/music_default.mp3",
 	"audio/card/default.mp3",
 	'audio/card/atk_an.mp3',
@@ -356,4 +356,5 @@ window.noname_skin_list=
 	shengTingJianChaShi:1,
 	wenYiFaShi:1,
 	nong_baoShiShaoNv:1,
+	yuanChuZhiGong:1,
 };
