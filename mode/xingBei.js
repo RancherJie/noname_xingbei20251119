@@ -165,6 +165,7 @@ export default () => {
 						case 'CM02':uiintro.add('<div class="text chat">选角模式：CM02');break;
 						case 'BP01':uiintro.add('<div class="text chat">选角模式：BP01');break;
 						case 'BP02':uiintro.add('<div class="text chat">选角模式：BP02');break;
+						case 'jiuGuan':uiintro.add('<div class="text chat">选角模式：酒馆');break;
 					}
 					if(lib.configOL.choose_mode!='CM02'){
 						switch(lib.configOL.team_sequence){
@@ -686,6 +687,7 @@ export default () => {
 						case 'CM02':game.chooseCharacterOLCM02();break;
 						case 'BP01':game.chooseCharacterOLBP01();break;
 						case 'BP02':game.chooseCharacterOLBP02();break;
+						case 'jiuGuan':game.chooseCharacterOLJiuGuan();break;
 					}
 				}else if(lib.configOL.versus_mode=='4v4'){
 					game.chooseCharacterOLDuoXuanYi();
@@ -695,6 +697,7 @@ export default () => {
 						case 'CM02':game.chooseCharacterOLCM02();break;
 						case 'BP01':game.chooseCharacterOLBP01();break;
 						case 'BP02':game.chooseCharacterOLBP02();break;
+						case 'jiuGuan':game.chooseCharacterOLJiuGuan();break;
 					}	
 				}
 			},
@@ -2739,6 +2742,302 @@ export default () => {
 						if(player==game.me || player.isOnline2()){
 							game.onSwapControl(player);
 						}
+					}
+				});
+			},
+
+			chooseCharacterOLJiuGuan:function(){
+				var next=game.createEvent('chooseCharacterOL');
+				next.setContent(function(){
+					'step 0'
+					event.number=lib.configOL.number;
+
+					var chooseSide=lib.configOL.chooseSide;
+					if(chooseSide){//自由选择队伍
+						game.chooseSideAuto();
+					}
+					'step 1'
+					var team_sequence=lib.configOL.team_sequence;
+					var chooseSide=lib.configOL.chooseSide;
+					if(chooseSide){
+						var ref=game.getFirstRed();
+						if(team_sequence!='random') game.moveSeat(ref);
+					}else{
+						var ref=game.assignPlayerSides();
+					}
+
+					event.red_list=[];
+					event.blue_list=[];
+					event.choose_list=[];
+
+					var firstChoose=ref;
+
+					_status.firstAct=firstChoose;
+					for(var i=0;i<event.number;i++){
+						firstChoose.node.name.innerHTML=get.verticalStr(get.cnNumber(i+1,true)+'号位');
+						if(firstChoose.side==true){
+							event.red_list.push(firstChoose);
+						}else{
+							event.blue_list.push(firstChoose);
+						}
+						firstChoose=firstChoose.next;
+					}
+					//选角顺序
+					if(event.number==4){
+						event.choose_list=[event.red_list[0],event.blue_list[0],event.red_list[1],event.blue_list[1]];
+					}else{
+						event.choose_list=[event.red_list[0],event.blue_list[0],event.red_list[1],event.blue_list[1],event.red_list[2],event.blue_list[2]];
+					}
+
+					for(var i=0;i<game.players.length;i++){
+						if(game.players[i].side==true){
+							game.players[i].node.identity.firstChild.innerHTML='红';
+						}
+						else if(game.players[i].side==false){
+							game.players[i].node.identity.firstChild.innerHTML='蓝';
+						}
+						game.players[i].node.identity.dataset.color=game.players[i].side+'zhu';
+					}
+
+					
+					if(get.phaseswap()){
+						for (var i = 0; i < game.players.length; i++) {
+							ref.dataset.position = i + 1;
+							ref=ref.next;
+						}
+					}
+
+					var map={};
+					for(var i=0;i<event.number;i++){
+						map[game.players[i].playerid]=[game.players[i].side,game.players[i].node.identity.firstChild.innerHTML,game.players[i].node.name.innerHTML];
+						if(get.phaseswap()) map[game.players[i].playerid].push(game.players[i].dataset.position);
+					}
+
+					var func=function(map){
+						for(var i in map){
+							var player=lib.playerOL[i];
+							if(player){
+								player.side=map[i][0];
+								player.node.identity.firstChild.innerHTML=map[i][1];
+								player.node.name.innerHTML=map[i][2];
+								player.node.identity.dataset.color=player.side+'zhu';
+								if(map[i][3]) player.dataset.position=map[i][3];
+							}
+						}
+						if(lib.configOL.phaseswap){
+							ui.arena.setNumber(lib.configOL.number+1);
+							game.singleHandcard = true;
+							ui.arena.classList.add("single-handcard");
+							ui.window.classList.add("single-handcard");
+							ui.fakeme = ui.create.div(".fakeme.avatar");
+							ui.me.appendChild(ui.fakeme);
+						}
+					}
+					game.broadcastAll(func,map);
+
+					if(get.phaseswap()){
+						game.addGlobalSkill('autoswap');
+					}
+
+					event.allCharacterList=get.charactersOL();
+					event.characterList=event.allCharacterList.randomRemove(4);
+					game.log('开局酒馆角色：',event.characterList);
+					event.banList=[event.red_list[0],event.blue_list[0]];
+					'step 2'
+					event.choosing=event.banList.shift();
+					event.videoId = lib.status.videoId++;
+
+					var createDialog = function (list, id, choosing) {
+						var dialog = ui.create.dialog("Ban1名角色", [list, "character"]);
+						dialog.classList.add("noslide");
+						dialog.classList.add("fixed");
+						dialog.classList.add('noanimation');
+						dialog.videoId = id;
+						if (choosing != game.me) {
+							var str;
+							if(choosing.side==true) str="<span style='color:red;'>红方</span>";
+							else str="<span style='color:lightblue;'>蓝方</span>";
+							str+='选择Ban角色1名';
+							dialog.content.firstChild.innerHTML = str;
+						}
+					};
+					
+					game.broadcastAll(createDialog, event.characterList, event.videoId, event.choosing);
+					
+					_status.side = event.choosing.side;
+
+					var next = event.choosing.chooseButton(event.videoId, 1, true);
+					next.set("ai", function () {
+						return Math.random();
+					});
+					'step 3'
+					game.broadcastAll(
+						function (links, choosing, first, id) {
+							var dialog = get.idDialog(id);
+							if (dialog) {
+								if (choosing.side == true) {
+									choosing = "<span style='color:red;'>红方</span>";
+									var choosing2 = "，等待<span style='color:lightblue;'>蓝方</span>Ban角色1名";
+								} else {
+									choosing = "<span style='color:lightblue;'>蓝方</span>";
+									var choosing2 = "";
+								}
+								dialog.content.firstChild.innerHTML =
+									choosing + "Ban了" + get.translation(links)+ choosing2;
+								for (var i = 0; i < dialog.buttons.length; i++) {
+									if ((dialog.buttons[i].link == links[0])||(dialog.buttons[i].link == links[1])) {
+										if (first) {
+											dialog.buttons[i].classList.add("selectedx");
+										} else {
+											dialog.buttons[i].classList.add("glow");
+										}
+									}
+								}
+							}
+						},
+						result.links,
+						event.choosing,
+						event.choosing.side == _status.side,
+						event.videoId
+					);
+					
+					event.characterList.remove(result.links[0]);
+					var addedCharacter=event.allCharacterList.randomRemove();
+					event.characterList.push(addedCharacter);
+
+					if (event.choosing.side == true) {
+						var str = "<span style='color:red;'>红方</span>";
+					} else {
+						var str = "<span style='color:lightblue;'>蓝方</span>";
+					}
+					game.log(str,'Ban了',result.links,',酒馆区新增角色',addedCharacter);
+					'step 4'
+					game.delay(1);
+					'step 5'
+					game.broadcastAll(function (id) {
+						ui.arena.classList.remove("playerhidden");
+						var dialog = get.idDialog(id);
+						if (dialog) {
+							dialog.close();
+						}
+					}, event.videoId);
+					if(event.banList.length>0){
+						event.goto(2);
+					}
+
+					'step 6'
+					event.redRandomed=false;
+					event.blueRandomed=false;
+
+					'step 7'
+					event.choosing=event.choose_list.shift();
+					event.videoId = lib.status.videoId++;
+					var nextName=event.choosing.node.name.innerHTML;
+
+					var createDialog = function (list, id, choosing,red_ban,blue_ban, nextName) {
+						if((choosing.side==true&&!red_ban)||(choosing.side==false&&!blue_ban)) var dialog = ui.create.dialog("选择1名角色或者从角色堆里随机选择1名角色", [list, "character"]); 
+						else var dialog = ui.create.dialog("选择1名角色", [list, "character"]);
+						dialog.classList.add("noslide");
+						dialog.classList.add("fixed");
+						dialog.classList.add('noanimation');
+						dialog.videoId = id;
+						if (choosing != game.me) {
+							var str;
+							if(choosing.side==true) str=`等待<span style='color:red;'>${nextName}</span>`;
+							else str=`等待<span style='color:lightblue;'>${nextName}</span>`;
+							if((choosing.side==true&&!red_ban)||(choosing.side==false&&!blue_ban)) str+='选择1名角色或者从角色堆里随机选择1名角色';
+							else str+='选择1名角色';
+							dialog.content.firstChild.innerHTML = str;
+						}
+					};
+					
+					game.broadcastAll(createDialog, event.characterList, event.videoId, event.choosing,event.redRandomed,event.blueRandomed,nextName);
+
+					var next = event.choosing.chooseButton(event.videoId, 1);
+					if(event.choosing.side==true&&event.redRandomed) next.set('forced',true);
+					else if(event.choosing.side==false&&event.blueRandomed) next.set('forced',true);
+					next.set("ai", function () {
+						return Math.random();
+					});
+					'step 8'
+					var id=event.choosing.playerid;
+					if(result.bool){
+						var link=result.links[0];
+						event.characterList.remove(link);
+						if(event.choosing.side==true){
+							var addedCharacterList=event.allCharacterList.randomRemove(2);
+							event.characterList.addArray(addedCharacterList);
+						}
+						game.log(event.choosing.node.name.innerHTML,'选择了',link);
+						if(addedCharacterList){
+							game.log('酒馆区新增角色',addedCharacterList);
+						}
+					}else{
+						if(event.choosing.side==true) event.redRandomed=true;
+						else{
+							event.blueRandomed=true;
+							var flag=true;
+						}
+						var link=event.allCharacterList.randomRemove();
+						if(event.choosing.side==true){	
+							var addedCharacter=event.allCharacterList.randomRemove();
+							event.characterList.push(addedCharacter);
+						}
+						game.log(event.choosing.node.name.innerHTML,'从角色堆随机选择了',link);
+						if(addedCharacter){
+							game.log('酒馆区新增角色',addedCharacter);
+						}
+					}
+					game.broadcastAll(function(id,link){
+						if(!lib.playerOL[id].name1){
+							lib.playerOL[id].init(link);
+							lib.playerOL[id].update();
+						}
+					},id,link);
+
+					console.log(flag);
+					if(flag){
+						game.broadcastAll(
+							function (choosing, id) {
+								var dialog = get.idDialog(id);
+								if (dialog) {
+									var str='';
+									if(choosing==game.me) var str='Ban1名角色';
+									else{
+										if(choosing.side==true) str=`等待<span style='color:red;'>${choosing.node.name.innerHTML}</span>`;
+										else str=`等待<span style='color:lightblue;'>${choosing.node.name.innerHTML}</span>`;
+										str+='Ban1名角色';
+									}
+									dialog.content.firstChild.innerHTML =str;
+								}
+							},
+							event.choosing,
+							event.videoId,
+						);
+
+						var next=event.choosing.chooseButton(event.videoId, 1,true);
+						next.set("ai", function () {
+							return Math.random();
+						});
+					}else{
+						event.goto(10);
+					}
+					game.delay(0.5);
+					'step 9'
+					if(result.bool){
+						game.log(event.choosing.node.name.innerHTML,'选择了',result.links[0]);
+						event.characterList.removeArray(result.links);
+					}
+					'step 10'
+					game.broadcastAll(function (id) {
+						ui.arena.classList.remove("playerhidden");
+						var dialog = get.idDialog(id);
+						if (dialog) {
+							dialog.close();
+						}
+					}, event.videoId);
+					if(event.choose_list.length>0){
+						event.goto(7);
 					}
 				});
 			},

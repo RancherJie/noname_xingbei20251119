@@ -4812,6 +4812,7 @@ export class Library {
 						'CM02':"CM02",
 						'BP01':"BP01",
 						'BP02':"BP02",
+						'jiuGuan':'酒馆',
 					},
 					frequent:true,
 				},
@@ -7301,6 +7302,7 @@ export class Library {
 		jiGroupColor:"#A5BE7D",
 		shengGroupColor:"#22A3C3",
 		huanGroupColor:"#635282",
+		jiuGuan:"酒馆",
 
 		zhiLiao:"治疗",
 

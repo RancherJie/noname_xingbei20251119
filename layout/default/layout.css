@@ -1753,6 +1753,10 @@ div:not(.handcards) > .card > .info > span,
 	left: calc(5% + 60px) !important;
 	width: calc(90% - 120px) !important;
 }
+.dialog.noanimation {
+	transition: none !important;
+	animation: none !important;
+}
 .dialog.halfleft,
 .dialog.halfright {
 	width: 43% !important;
