@@ -1,6 +1,6 @@
 window.noname_asset_list=
 [
-	"v1.3.1",
+	"v1.3.2",
 	"audio/background/music_default.mp3",
 	"audio/card/default.mp3",
 	'audio/card/atk_an.mp3',
@@ -305,6 +305,8 @@ window.noname_asset_list=
 	"image/splash/style2/xingBei.jpg",
 	"image/splash/style1/tutorial.jpg",
 	"image/splash/style2/tutorial.jpg",
+	"image/splash/style1/illustration.jpg",
+	"image/splash/style2/illustration.jpg",
 
 ];
 window.noname_skin_list=

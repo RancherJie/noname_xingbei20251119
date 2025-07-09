@@ -5230,6 +5230,20 @@ export class Library {
 				},
 			},
 		},
+		illustration:{
+			name:'图鉴',
+			config:{
+				viewAll:{
+					name:'查看所有角色',
+					init:true,
+					onclick(bool){
+						game.saveConfig('viewAll',bool,this._link.config.mode);
+					},
+					intro:'关闭后仅能查看已启用的角色包',
+					frequent:true,
+				},
+			}
+		},
 		tutorial:{
 			name:'新手向导',
 			config:{
@@ -5238,7 +5252,7 @@ export class Library {
 					frequent:true,
 				}
 			}
-		}
+		},
 	};
 	status = {
 		running: false,

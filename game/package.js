@@ -17,6 +17,7 @@ window.noname_package = {
 	mode: {
 		xingBei: "星杯传说",
 		connect: "联机",
+		illustration: "图鉴",
 		tutorial: "新手向导",
 	},
 	submode: {
