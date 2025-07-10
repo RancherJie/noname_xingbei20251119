@@ -1300,7 +1300,7 @@ export default () => {
 						var ref=game.assignPlayerSides();
 					}
 					var mode=lib.configOL.choose_mode;
-					console.log('mode',mode);
+					//console.log('mode',mode);
 					if(event.number==4){
 						event.red_list=[ref,ref.previous];
 						event.blue_list=[ref.next,ref.next.next];
@@ -1323,7 +1323,7 @@ export default () => {
 						else event.choose_list=[R1,B1,R2,B2,R3,B3];
 					}
 					
-					console.log('choose_list',event.choose_list);
+					//console.log('choose_list',event.choose_list);
 					var firstChoose=ref;
 					_status.firstAct=firstChoose;
 					for(var i=0;i<event.number;i++){
