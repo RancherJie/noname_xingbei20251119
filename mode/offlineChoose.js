@@ -188,7 +188,7 @@ export default () => {
                         ref.side=list[i];
                         ref=ref.next;
                     }
-                    
+                    var mode=get.config('choose_mode');
                     if(event.number==4){
 						event.red_list=[ref,ref.previous];
 						event.blue_list=[ref.next,ref.next.next];
