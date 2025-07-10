@@ -482,7 +482,7 @@ export default () => {
 					}
 					event.list.remove(game.me.name1);
 					if(lib.characterReplace[game.me.name1]&&lib.characterReplace[game.me.name1].length){
-						event.list=event.list.filter(item=>!lib.characterReplace[game.me.name1].includes(item));
+						event.list.removeArray(lib.characterReplace[game.me.name1]);
 					}
 					let count=0;
 					for(var i=0;i<game.players.length;i++){
@@ -663,6 +663,9 @@ export default () => {
 					for(var i=0;i<result.links.length;i++){
 						game.addRecentCharacter(result.links[i]);
 						event.list.remove(result.links[i]);
+						if(lib.characterReplace[result.links[i]]&&lib.characterReplace[result.links[i]].length){
+							event.list.removeArray(lib.characterReplace[result.links[i]]);
+						}
 					}
 					let count=0;
 					var player=_status.firstAct;
