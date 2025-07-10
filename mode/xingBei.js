@@ -1168,6 +1168,104 @@ export default () => {
 				});
 			},
 
+			choose18CharacterCM02: function(red_leader,blue_leader){
+				var next=game.createEvent('choose18CharacterCM02');
+				next.set('red_leader',red_leader);
+				next.set('blue_leader',blue_leader);
+				next.setContent(function(){
+					'step 0'
+					event.choose_number=27;
+					var list = get.charactersOL();
+					list = get.characterGets(list,event.choose_number);
+					//9个一堆
+					event.list1 = list.slice(0, 9);
+					event.list2 = list.slice(9, 18);
+					event.list3 = list.slice(18, 27);
+					event.videoId = lib.status.videoId++;
+					event.list = [];
+
+					game.log('<span style="color: blue;">蓝色堆</span>：', event.list1);
+					game.log('<span style="color: green;">绿色堆</span>：', event.list2);
+					game.log('<span style="color: red;">红色堆</span>：', event.list3);
+
+					var createDialog = function(list,list1,list2,list3,id, choosing){
+						var dialog = ui.create.dialog('<span style="color:red;">红方</span>队长选择9个角色', [list, 'character']);
+						dialog.classList.add("fullwidth");
+						dialog.classList.add("fullheight");
+						dialog.classList.add("noslide");
+						dialog.classList.add("fixed");
+						dialog.videoId = id;
+						if (choosing != game.me) {
+							dialog.content.firstChild.innerHTML = "等待<span style='color:red;'>红方</span>队长选择9名角色";
+						}
+						for (var i = 0; i < dialog.buttons.length; i++) {
+							var button = dialog.buttons[i];
+							if (list1.includes(button.link)) {
+								button.classList.add("glow");
+							} else if (list2.includes(button.link)) {
+								button.classList.add("glow2");
+							}else if (list3.includes(button.link)) {
+								button.classList.add("selectedx");
+							}
+						}
+					};
+					game.broadcastAll(createDialog, list, event.list1, event.list2, event.list3, event.videoId, event.red_leader);
+					event.chooseList=['蓝色','绿色','红色'];
+					var next= event.red_leader.chooseControl(event.chooseList);
+					next.set('dialog', event.videoId);
+					'step 1'
+					event.chooseList.remove(result.control);
+					var str='<span style="color: red;">红方</span>队长选择了';
+					if(result.control=='蓝色'){
+						str+='<span style="color: blue;">蓝色</span>堆';
+						event.list.addArray(event.list1);
+					}else if(result.control=='绿色'){
+						str+='<span style="color: green;">绿色</span>堆';
+						event.list.addArray(event.list2);
+					}else if(result.control=='红色'){
+						str+='<span style="color: red;">红色</span>堆';
+						event.list.addArray(event.list3);
+					}
+					game.log(str);
+					var changeDialogContent=function(id,choosing) {
+						var dialog = get.idDialog(id);
+						var str;
+						if(game.me!=choosing){
+							str="等待<span style='color:blue;'>蓝方</span>队长选择9名角色";
+						}else{
+							str="<span style='color:blue;'>蓝方</span>队长选择9名角色";
+						}
+						dialog.content.firstChild.innerHTML = str;
+					};
+					game.broadcastAll(changeDialogContent, event.videoId,event.blue_leader);
+					'step 2'
+					var next= event.blue_leader.chooseControl(event.chooseList);
+					next.set('dialog', event.videoId);
+					'step 3'
+					var str='<span style="color: blue;">蓝方</span>队长选择了';
+					if(result.control=='蓝色'){
+						str+='<span style="color: blue;">蓝色</span>堆';
+						event.list.addArray(event.list1);
+					}else if(result.control=='绿色'){
+						str+='<span style="color: green;">绿色</span>堆';
+						event.list.addArray(event.list2);
+					}else if(result.control=='红色'){
+						str+='<span style="color: red;">红色</span>堆';
+						event.list.addArray(event.list3);
+					}
+					game.log(str);
+					event.getParent().list= event.list;
+
+					var closeDialog = function(id) {
+						var dialog = get.idDialog(id);
+						if (dialog) {
+							dialog.close();
+						}
+					};
+					game.broadcastAll(closeDialog, event.videoId);
+				});
+			},
+
 			chooseCharacterOLCM02:function(){
 				var next=game.createEvent('chooseCharacterOL');
 				next.setContent(function(){
@@ -1175,8 +1273,6 @@ export default () => {
 					//console.log('chooseCharacterOLCM02');
 					//var ref=game.players[0];
 					event.number=lib.configOL.number;
-					event.choose_number=18;
-
 					var chooseSide=lib.configOL.chooseSide;
 					if(chooseSide){
 						game.chooseSideAuto();
@@ -1364,11 +1460,12 @@ export default () => {
 						game.red_leader=red_leader;
 						game.blue_leader=blue_leader;
 					},event.red_leader,event.blue_leader);
-					game.delay(4);
+					game.delay(2);
+
+					event.list=[];
+					game.choose18CharacterCM02(event.red_leader,event.blue_leader);
 					'step 5'//ban角色
 					//角色列表
-					var list = get.charactersOL();
-					event.list = get.characterGets(list,event.choose_number);
 					game.log('本局可选角色：',event.list);
 					event.choosing=game.red_leader;
 					event.videoId = lib.status.videoId++;
@@ -1481,7 +1578,6 @@ export default () => {
 					game.delay(2);
 					'step 9'
 					game.broadcastAll(function (id) {
-						ui.arena.classList.remove("playerhidden");
 						var dialog = get.idDialog(id);
 						if (dialog) {
 							dialog.close();
