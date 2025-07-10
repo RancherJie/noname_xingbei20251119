@@ -6725,6 +6725,11 @@ export const Content = {
 	},
 	chooseControl: function () {
 		"step 0";
+		event.closeDialog = true;
+		if (typeof event.dialog == "number") {
+			event.dialog = get.idDialog(event.dialog);
+			event.closeDialog = false;
+		}
 		if (event.controls.length == 0) {
 			if (event.sortcard) {
 				var sortnum = 2;
@@ -6892,7 +6897,7 @@ export const Content = {
 		event.result.index = event.controls.indexOf(event.result.control);
 		event.choosing = false;
 		_status.imchoosing = false;
-		if (event.dialog && event.dialog.close) event.dialog.close();
+		if (event.closeDialog&&event.dialog && event.dialog.close) event.dialog.close();
 		if (event.controlbar) event.controlbar.close();
 		if (event.controlbars) {
 			for (var i = 0; i < event.controlbars.length; i++) {
