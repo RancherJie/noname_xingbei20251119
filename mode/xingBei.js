@@ -167,12 +167,13 @@ export default () => {
 				}else{
 					switch(lib.configOL.choose_mode){
 						case '多选1':uiintro.add('<div class="text chat">选角模式：多选1');break;
+						case 'CM01':uiintro.add('<div class="text chat">选角模式：CM01');break;
 						case 'CM02':uiintro.add('<div class="text chat">选角模式：CM02');break;
 						case 'BP01':uiintro.add('<div class="text chat">选角模式：BP01');break;
 						case 'BP02':uiintro.add('<div class="text chat">选角模式：BP02');break;
 						case 'jiuGuan':uiintro.add('<div class="text chat">选角模式：酒馆');break;
 					}
-					if(lib.configOL.choose_mode!='CM02'){
+					if(lib.configOL.choose_mode!='CM02'&&lib.configOL.choose_mode!='CM01'){
 						switch(lib.configOL.team_sequence){
 							case 'random':uiintro.add('<div class="text chat">队伍顺序：随机');break;
 							case 'near':uiintro.add('<div class="text chat">队伍顺序：临近');break;
@@ -186,13 +187,15 @@ export default () => {
 						}
 					}
 				}
-				switch(lib.configOL.viewHandcard){
-					case true:uiintro.add('<div class="text chat">可见队友手牌：是');break;
-					case false:uiintro.add('<div class="text chat">可见队友手牌：否');break;
-				}
-				switch(lib.configOL.chooseSide){
-					case true:uiintro.add('<div class="text chat">手动选择选队：是');break;
-					case false:uiintro.add('<div class="text chat">手动选择选队：否');break;
+				if(!lib.configOL.phaseswap){
+					switch(lib.configOL.viewHandcard){
+						case true:uiintro.add('<div class="text chat">可见队友手牌：是');break;
+						case false:uiintro.add('<div class="text chat">可见队友手牌：否');break;
+					}
+					switch(lib.configOL.chooseSide){
+						case true:uiintro.add('<div class="text chat">手动选择选队：是');break;
+						case false:uiintro.add('<div class="text chat">手动选择选队：否');break;
+					}
 				}
 				var last=uiintro.add('<div class="text chat">出牌时限：'+lib.configOL.choose_timeout+'秒');
 				if(lib.configOL.banned.length){
@@ -692,7 +695,8 @@ export default () => {
 				if(get.phaseswap()){
 					switch(lib.configOL.choose_mode){
 						case '多选1':game.chooseCharacterOLPhaseswapDuoXuanYi();break;
-						case 'CM02':game.chooseCharacterOLCM02();break;
+						case 'CM01':game.chooseCharacterOLCM();break;
+						case 'CM02':game.chooseCharacterOLCM();break;
 						case 'BP01':game.chooseCharacterOLBP01();break;
 						case 'BP02':game.chooseCharacterOLBP02();break;
 						case 'jiuGuan':game.chooseCharacterOLJiuGuan();break;
@@ -702,7 +706,8 @@ export default () => {
 				}else{
 					switch(lib.configOL.choose_mode){
 						case '多选1':game.chooseCharacterOLDuoXuanYi();break;
-						case 'CM02':game.chooseCharacterOLCM02();break;
+						case 'CM01':game.chooseCharacterOLCM();break;
+						case 'CM02':game.chooseCharacterOLCM();break;
 						case 'BP01':game.chooseCharacterOLBP01();break;
 						case 'BP02':game.chooseCharacterOLBP02();break;
 						case 'jiuGuan':game.chooseCharacterOLJiuGuan();break;
@@ -875,7 +880,7 @@ export default () => {
 					number=lib.configOL.number;
 					team_sequence=lib.configOL.team_sequence;
 					mode=lib.configOL.choose_mode;
-					if(mode=='CM02'){
+					if(mode=='CM02'||mode=='CM01'){
 						team_sequence='CM';
 					}
 				}else{
@@ -1171,19 +1176,27 @@ export default () => {
 				});
 			},
 
-			choose18CharacterCM02: function(red_leader,blue_leader){
+			chooseCMCharacter: function(red_leader,blue_leader){
 				var next=game.createEvent('choose18CharacterCM02');
 				next.set('red_leader',red_leader);
 				next.set('blue_leader',blue_leader);
 				next.setContent(function(){
 					'step 0'
-					event.choose_number=27;
+					var mode=lib.configOL.choose_mode;
+					if(mode=='CM02'){
+						event.choose_number=27;
+						var splitNum=9;
+					}else if(mode=='CM01'){
+						event.choose_number=24;
+						var splitNum=8;
+					}
+
 					var list = get.charactersOL();
 					list = get.characterGets(list,event.choose_number);
-					//9个一堆
-					event.list1 = list.slice(0, 9);
-					event.list2 = list.slice(9, 18);
-					event.list3 = list.slice(18, 27);
+					//三堆
+					event.list1 = list.slice(0, splitNum);
+					event.list2 = list.slice(splitNum, 2*splitNum);
+					event.list3 = list.slice(2*splitNum, 3*splitNum);
 					event.videoId = lib.status.videoId++;
 					event.list = [];
 
@@ -1192,14 +1205,14 @@ export default () => {
 					game.log('<span style="color: red;">红色堆</span>：', event.list3);
 
 					var createDialog = function(list,list1,list2,list3,id, choosing){
-						var dialog = ui.create.dialog('<span style="color:red;">红方</span>队长选择9个角色', [list, 'character']);
+						var dialog = ui.create.dialog('<span style="color:red;">红方</span>队长选择角色堆', [list, 'character']);
 						dialog.classList.add("fullwidth");
 						dialog.classList.add("fullheight");
 						dialog.classList.add("noslide");
 						dialog.classList.add("fixed");
 						dialog.videoId = id;
 						if (choosing != game.me) {
-							dialog.content.firstChild.innerHTML = "等待<span style='color:red;'>红方</span>队长选择9名角色";
+							dialog.content.firstChild.innerHTML = "等待<span style='color:red;'>红方</span>队长选择角色堆";
 						}
 						for (var i = 0; i < dialog.buttons.length; i++) {
 							var button = dialog.buttons[i];
@@ -1234,9 +1247,9 @@ export default () => {
 						var dialog = get.idDialog(id);
 						var str;
 						if(game.me!=choosing){
-							str="等待<span style='color:blue;'>蓝方</span>队长选择9名角色";
+							str="等待<span style='color:blue;'>蓝方</span>队长选择角色堆";
 						}else{
-							str="<span style='color:blue;'>蓝方</span>队长选择9名角色";
+							str="<span style='color:blue;'>蓝方</span>队长选择角色堆";
 						}
 						dialog.content.firstChild.innerHTML = str;
 					};
@@ -1269,12 +1282,10 @@ export default () => {
 				});
 			},
 
-			chooseCharacterOLCM02:function(){
+			chooseCharacterOLCM:function(){
 				var next=game.createEvent('chooseCharacterOL');
 				next.setContent(function(){
 					'step 0'
-					//console.log('chooseCharacterOLCM02');
-					//var ref=game.players[0];
 					event.number=lib.configOL.number;
 					var chooseSide=lib.configOL.chooseSide;
 					if(chooseSide){
@@ -1288,7 +1299,8 @@ export default () => {
 					}else{
 						var ref=game.assignPlayerSides();
 					}
-					
+					var mode=lib.configOL.choose_mode;
+					console.log('mode',mode);
 					if(event.number==4){
 						event.red_list=[ref,ref.previous];
 						event.blue_list=[ref.next,ref.next.next];
@@ -1296,7 +1308,8 @@ export default () => {
 						var R2=ref.next.next.next;
 						var B1=ref.next;
 						var B2=ref.next.next;
-						event.choose_list=[R1,B1,B2,R2];
+						if(mode=='CM02') event.choose_list=[R1,B1,B2,R2];
+						else event.choose_list=[R1,B1,R2,B2];
 					}else{
 						event.red_list=[ref,ref.next.next.next,ref.next.next.next.next];
 						event.blue_list=[ref.next,ref.next.next,ref.previous];
@@ -1306,10 +1319,11 @@ export default () => {
 						var B1=ref.next;
 						var B2=ref.next.next;
 						var B3=ref.previous;
-						event.choose_list=[R1,B1,R2,B2,B3,R3];
+						if(mode=='CM02') event.choose_list=[R1,B1,R2,B2,B3,R3];
+						else event.choose_list=[R1,B1,R2,B2,R3,B3];
 					}
 					
-
+					console.log('choose_list',event.choose_list);
 					var firstChoose=ref;
 					_status.firstAct=firstChoose;
 					for(var i=0;i<event.number;i++){
@@ -1466,7 +1480,7 @@ export default () => {
 					game.delay(2);
 
 					event.list=[];
-					game.choose18CharacterCM02(event.red_leader,event.blue_leader);
+					game.chooseCMCharacter(event.red_leader,event.blue_leader);
 					'step 5'//ban角色
 					//角色列表
 					game.log('本局可选角色：',event.list);
@@ -1682,7 +1696,7 @@ export default () => {
 						}
 						var list=result.links.slice();
 						for(var link of list){
-							if(lib.characterReplace[link]){
+							if(lib.characterReplace[link]&&lib.characterReplace[link].length>0){
 								for(var character of lib.characterReplace[link]){
 									if(!result.links.includes(character)){
 										result.links.push(character);
