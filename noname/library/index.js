@@ -5248,7 +5248,7 @@ export class Library {
 				},
 				versus_mode: {
 					name: "游戏模式",
-					init: "two",
+					init: "three",
 					item: {
 						"two": "2v2",
 						"three": "3v3",
