@@ -1434,8 +1434,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         return get.type(card)=='faShu';
                     })
                     .set('showCards',true)
-                    .set('ai',function(){
-                        return 1;
+                    .set('ai',function(card){
+                        return 6-get.value(card);
                     });
                     'step 1'
                     if(!result.bool){
