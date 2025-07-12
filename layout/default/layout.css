@@ -5039,6 +5039,16 @@ div[data-decoration="bronze"]::after {
 	top:-20px;
 }*/
 
+.pool-red {
+  border: 6px solid #e74c3c;
+}
+.pool-blue {
+  border: 6px solid #2980b9;
+}
+.pool-green {
+  border: 6px solid #27ae60;
+}
+
 #me .card.glows {
 	opacity: 1;
 	box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgb(255, 153, 51) 0 0 5px, rgba(255, 153, 51, 1) 0 0 10px;

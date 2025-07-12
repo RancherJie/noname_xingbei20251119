@@ -1205,7 +1205,8 @@ export default () => {
 					game.log('<span style="color: red;">红色堆</span>：', event.list3);
 
 					var createDialog = function(list,list1,list2,list3,id, choosing){
-						var dialog = ui.create.dialog('<span style="color:red;">红方</span>队长选择角色堆', [list, 'character']);
+						ui.arena.classList.add('choose-character');
+						var dialog = ui.create.dialog('<span style="color:red;">红方</span>队长选择特定颜色角色堆', [list, 'character']);
 						dialog.classList.add("fullwidth");
 						dialog.classList.add("fullheight");
 						dialog.classList.add("noslide");
@@ -1215,15 +1216,15 @@ export default () => {
 							dialog.content.firstChild.innerHTML = "等待<span style='color:red;'>红方</span>队长选择角色堆";
 						}
 						for (var i = 0; i < dialog.buttons.length; i++) {
-							var button = dialog.buttons[i];
-							if (list1.includes(button.link)) {
-								button.classList.add("glow");
-							} else if (list2.includes(button.link)) {
-								button.classList.add("glow2");
-							}else if (list3.includes(button.link)) {
-								button.classList.add("selectedx");
-							}
-						}
+                            var button = dialog.buttons[i];
+                            if (list1.includes(button.link)) {
+                                button.classList.add("pool-blue");
+                            } else if (list2.includes(button.link)) {
+                                button.classList.add("pool-green");
+                            }else if (list3.includes(button.link)) {
+                                button.classList.add("pool-red");
+                            }
+                        }
 					};
 					game.broadcastAll(createDialog, list, event.list1, event.list2, event.list3, event.videoId, event.red_leader);
 					event.chooseList=['蓝色','绿色','红色'];
@@ -1247,9 +1248,9 @@ export default () => {
 						var dialog = get.idDialog(id);
 						var str;
 						if(game.me!=choosing){
-							str="等待<span style='color:blue;'>蓝方</span>队长选择角色堆";
+							str="等待<span style='color:blue;'>蓝方</span>队长选择特定颜色角色堆";
 						}else{
-							str="<span style='color:blue;'>蓝方</span>队长选择角色堆";
+							str="<span style='color:blue;'>蓝方</span>队长选择特定颜色角色堆";
 						}
 						dialog.content.firstChild.innerHTML = str;
 					};
@@ -1273,6 +1274,7 @@ export default () => {
 					event.getParent().list= event.list;
 
 					var closeDialog = function(id) {
+						ui.arena.classList.remove('choose-character');
 						var dialog = get.idDialog(id);
 						if (dialog) {
 							dialog.close();
