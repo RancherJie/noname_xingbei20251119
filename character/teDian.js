@@ -2870,7 +2870,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             mengXiangJian: "[被动]梦想剑",
             mengXiangJian_info: "<span class='tiaoJian'>(本回合第一次[攻击行动]后)</span>回合内你的主动攻击无视【圣盾】。<span class='tiaoJian'>(本回合第二次[攻击行动]后)</span>回合内你的主动攻击对方无法应战。<span class='tiaoJian'>(本回合第四次[攻击行动]后)</span>回合内你的主动攻击强制命中。",
 
-            jianYingDuanNian: "[响应]剑影·断念[回合限定]",
+            jianYingDuanNian: "[响应]剑影*断念[回合限定]",
             jianYingDuanNian_info: "[宝石]<span class='tiaoJian'>([攻击行动]结束时发动)</span>弃2张牌，摸1张牌[强制]，额外+1攻击行动。",
             
             //节日魔导
