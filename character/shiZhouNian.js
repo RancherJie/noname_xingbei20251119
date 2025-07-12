@@ -504,9 +504,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 async cost(event, trigger, player) {
 					event.result = await player
-						.chooseCard("水影：弃X张水系牌",[1,Infinity],function(card){
+						.chooseCard([1,Infinity],function(card){
                             return get.xiBie(card)=='shui';
                         })
+                        .set('prompt',get.prompt('shuiYing'))
+                        .set('prompt2',lib.translate.shuiYing_info)
 						.set("ai",function(card){
 							return 6 - get.value(card);
 						})
