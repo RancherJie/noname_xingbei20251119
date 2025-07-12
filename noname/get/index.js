@@ -58,7 +58,7 @@ export class Get extends GetCompatible {
 			name2 = _status.event.getParent(3).name;
 			evt2 = _status.event.getParent(3);
 		}
-		let banned = ["phaseJudge", "equip", "phaseUse"];
+		let banned = ["phaseJudge", "equip", "xingDong"];
 		if (banned.includes(name1)) name1 = false;
 		if (banned.includes(name2)) name2 = false;
 		if (name1 && !info[name1]) {
@@ -1565,7 +1565,7 @@ export class Get extends GetCompatible {
 			}
 		}
 		if (type && type.includes("in")) {
-			if (info.enable == "phaseUse") num += 0.5;
+			if (info.enable == "xingDong") num += 0.5;
 			if (info.trigger && info.trigger.player) {
 				var list = Array.isArray(info.trigger.player) ? info.trigger.player : [info.trigger.player];
 				var add = false;
@@ -5724,6 +5724,15 @@ export class Get extends GetCompatible {
 				result=result.filter(item=>item!='shengNv');
 			}else{
 				result=result.filter(item=>item!='jinGuiZhiNv');
+			}
+			result.push(list.randomRemove());
+		}
+		if(result.includes('fengZhiJianSheng')&&result.includes('jianZhiZi')){
+			var num=Math.random();
+			if(num<0.5){
+				result=result.filter(item=>item!='fengZhiJianSheng');
+			}else{
+				result=result.filter(item=>item!='jianZhiZi');
 			}
 			result.push(list.randomRemove());
 		}

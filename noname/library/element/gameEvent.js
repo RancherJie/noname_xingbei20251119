@@ -695,9 +695,9 @@ export class GameEvent {
 	notLink() {
 		return this.getParent().name != "_lianhuan" && this.getParent().name != "_lianhuan2";
 	}
-	isPhaseUsing(player) {
-		var evt = this.getParent("phaseUse");
-		if (!evt || evt.name != "phaseUse") return false;
+	isXingDong(player) {
+		var evt = this.getParent("xingDong");
+		if (!evt || evt.name != "xingDong") return false;
 		return !player || player == evt.player;
 	}
 	addTrigger(skills, player) {

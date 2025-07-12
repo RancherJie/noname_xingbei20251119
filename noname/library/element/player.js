@@ -2387,10 +2387,10 @@ export class Player extends HTMLDivElement {
 	 * 返回玩家是否处于出牌阶段
 	 * @param { boolean } [notmeisok]
 	 */
-	isPhaseUsing(notmeisok) {
+	isXingDong(notmeisok) {
 		if (!notmeisok && _status.currentPhase != this) return false;
 		// @ts-ignore
-		return _status.event.name == "phaseUse" || _status.event.getParent("phaseUse").name == "phaseUse";
+		return _status.event.name == "xingDong" || _status.event.getParent("xingDong").name == "xingDong";
 	}
 	/**
 	 * 与target交换装备区里的牌
@@ -4653,10 +4653,10 @@ export class Player extends HTMLDivElement {
 		next.setContent("phaseDraw");
 		return next;
 	}
-	phaseUse() {
-		var next = game.createEvent("phaseUse", false);
+	xingDong() {
+		var next = game.createEvent("xingDong", false);
 		next.player = this;
-		next.setContent("phaseUse");
+		next.setContent("xingDong");
 		return next;
 	}
 	phaseDiscard() {
