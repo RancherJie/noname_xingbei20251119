@@ -65,9 +65,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 async cost(event, trigger, player) {
 					event.result = await player
-						.chooseCard("水影：弃X张水系牌",[1,Infinity],function(card){
+						.chooseCard([1,Infinity],function(card){
                             return get.xiBie(card)=='shui';
                         })
+                        .set('prompt',get.prompt('shuiYing'))
+                        .set('prompt2',lib.translate.shuiYing_info)
 						.set("ai",function(card){
 							return 6 - get.value(card);
 						})
@@ -219,7 +221,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 0'
                     var next=player.chooseTarget(true,'目标角色+1[治疗]').set('ai',function(target){
                         var player=_status.event.player;
-						return get.zhiLiaoEffect2(player,target,1);
+						return get.zhiLiaoEffect2(target,player,1);
 					});
                     'step 1'
 					if(result.bool){
@@ -464,7 +466,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
 
             san_maoXianJiaTianTang:{
-                enable:'phaseUse',
+                enable:'xingDong',
                 type:'teShu',
                 filter:function(event,player){
                     var side=player.side;
@@ -827,7 +829,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return player.canGongJi()||player.canFaShu();
                 },
                 ai:{
-                    shuiJing:true,
+                    baoShi:true,
                 }
             },
             san_lingGan:{

@@ -18,7 +18,7 @@ window.config = {
 		sgscharacters:['shiZhouNian'],
 		sgscards:['xingBei'],
 		sgsmodes:['connect','xingBei'],
-		stockmode:['connect','xingBei','tutorial'],
+		stockmode:['connect','xingBei','offlineChoose','illustration','tutorial'],
 		stockextension:[],
 		layout:['default','newlayout'],
 		theme:['woodden','music','simple'],
@@ -32,8 +32,8 @@ window.config = {
 	hoveration: 1000,
 	doubleclick_intro: true,
 	cheat: false,
-	volumn_background: 4,
-	volumn_audio: 4,
+	volumn_background: 1,
+	volumn_audio: 1,
 
 	connect_avatar: "fengZhiJianSheng",
 	connect_nickname: "无名玩家",
@@ -74,7 +74,7 @@ window.config = {
 	alteredSkills: [],
 	brokenFile: [],
 
-	theme: "woodden",
+	theme: "music",
 	layout: "nova",
 	card_style: "default",
 	cardback_style: "xingBei",

@@ -1195,69 +1195,221 @@ export class Click {
 		uiintro.listen(function (e) {
 			e.stopPropagation();
 		});
+		
+		// 背景音乐音量控制
 		uiintro.add("背景音乐");
-		var vol1 = ui.create.div(".volumn");
+		var vol1 = ui.click.createVolumeSlider(lib.config.volumn_background, ui.click.volumn_background);
 		uiintro.add(vol1);
-		for (var i = 0; i < 8; i++) {
-			var span = document.createElement("span");
-			span.link = i + 1;
-			span.addEventListener(lib.config.touchscreen ? "touchend" : "click", ui.click.volumn_background);
-			if (i < lib.config.volumn_background) {
-				span.innerHTML = "●";
-			} else {
-				span.innerHTML = "○";
-			}
-			vol1.appendChild(span);
-		}
+		
+		// 游戏音效音量控制
 		uiintro.add("游戏音效");
-
-		var vol2 = ui.create.div(".volumn");
+		var vol2 = ui.click.createVolumeSlider(lib.config.volumn_audio, ui.click.volumn_audio);
 		uiintro.add(vol2);
-		for (var i = 0; i < 8; i++) {
-			var span = document.createElement("span");
-			span.link = i + 1;
-			span.addEventListener(lib.config.touchscreen ? "touchend" : "click", ui.click.volumn_audio);
-			if (i < lib.config.volumn_audio) {
-				span.innerHTML = "●";
-			} else {
-				span.innerHTML = "○";
-			}
-			vol2.appendChild(span);
-		}
+		
 		uiintro.add(ui.create.div(".placeholder"));
 		return uiintro;
+	}
+	
+	createVolumeSlider(currentValue, callback) {
+		var container = ui.create.div(".volumn");
+		
+		// 创建滑条容器
+		var slider = ui.create.div(".volume-slider");
+		
+		// 创建音量轨道
+		var track = ui.create.div(".volume-track");
+		
+		// 创建拖拽手柄
+		var handle = ui.create.div(".volume-handle");
+		
+		// 创建刻度标记
+		var marks = ui.create.div(".volume-marks");
+		container._markElements = [];
+		for (var i = 0; i <= 8; i++) {
+			var mark = ui.create.div(".volume-mark");
+			mark.style.left = (i / 8 * 100) + "%";
+			mark._markIndex = i;
+			container._markElements.push(mark);
+			marks.appendChild(mark);
+		}
+		
+		// 创建数值显示
+		var valueDisplay = ui.create.div(".volume-value");
+		
+		// 音量级别描述
+		var volumeLabels = ["静音", "一", "二", "三", "四", "五", "六", "七", "八"];
+		
+		var updateValueDisplay = function(value) {
+			valueDisplay.innerHTML = value + (value === 0 ? " (静音)" : "");
+		};
+		
+		updateValueDisplay(currentValue);
+		
+		// 组装滑条
+		slider.appendChild(track);
+		slider.appendChild(marks);
+		slider.appendChild(handle);
+		container.appendChild(slider);
+		container.appendChild(valueDisplay);
+		
+		// 存储当前值
+		container._currentValue = currentValue;
+		
+		// 更新滑条显示
+		var updateSlider = function(value) {
+			container._currentValue = value;
+			var percentage = value / 8 * 100;
+			track.style.width = percentage + "%";
+			handle.style.left = percentage + "%";
+			updateValueDisplay(value);
+			
+			// 更新刻度标记的激活状态
+			if (container._markElements) {
+				container._markElements.forEach(function(mark, index) {
+					if (index <= value) {
+						mark.classList.add("active");
+					} else {
+						mark.classList.remove("active");
+					}
+				});
+			}
+		};
+		
+		// 初始化显示
+		updateSlider(currentValue);
+		
+		// 处理点击和拖拽事件
+		var isDragging = false;
+		
+		var getValueFromPosition = function(clientX) {
+			var rect = slider.getBoundingClientRect();
+			var x = clientX - rect.left;
+			var percentage = x / rect.width;
+			percentage = Math.max(0, Math.min(1, percentage));
+			return Math.round(percentage * 8);
+		};
+		
+		var handleInteraction = function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			
+			var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+			var newValue = getValueFromPosition(clientX);
+			
+			// 只有值发生变化时才更新
+			if (newValue !== container._currentValue) {
+				// 更新显示
+				updateSlider(newValue);
+				
+				// 创建模拟事件对象
+				var fakeEvent = {
+					stopPropagation: function() {},
+					preventDefault: function() {}
+				};
+				
+				// 创建模拟元素对象
+				var fakeElement = {
+					link: newValue,
+					parentNode: container
+				};
+				
+				// 触发回调
+				callback.call(fakeElement, fakeEvent);
+			}
+		};
+		
+		// 鼠标事件
+		var handleMouseDown = function(e) {
+			if (e.button !== 0) return; // 只处理左键
+			isDragging = true;
+			handleInteraction(e);
+			
+			var handleMouseMove = function(e) {
+				if (isDragging) {
+					handleInteraction(e);
+				}
+			};
+			
+			var handleMouseUp = function(e) {
+				isDragging = false;
+				document.removeEventListener("mousemove", handleMouseMove);
+				document.removeEventListener("mouseup", handleMouseUp);
+			};
+			
+			document.addEventListener("mousemove", handleMouseMove);
+			document.addEventListener("mouseup", handleMouseUp);
+		};
+		
+		// 触摸事件（手机端）
+		var handleTouchStart = function(e) {
+			isDragging = true;
+			handleInteraction(e);
+			
+			var handleTouchMove = function(e) {
+				if (isDragging) {
+					handleInteraction(e);
+				}
+			};
+			
+			var handleTouchEnd = function(e) {
+				isDragging = false;
+				slider.removeEventListener("touchmove", handleTouchMove);
+				slider.removeEventListener("touchend", handleTouchEnd);
+			};
+			
+			slider.addEventListener("touchmove", handleTouchMove, { passive: false });
+			slider.addEventListener("touchend", handleTouchEnd, { passive: false });
+		};
+		
+		// 绑定事件
+		slider.addEventListener("mousedown", handleMouseDown);
+		handle.addEventListener("mousedown", handleMouseDown);
+		slider.addEventListener("touchstart", handleTouchStart, { passive: false });
+		handle.addEventListener("touchstart", handleTouchStart, { passive: false });	
+		// 存储更新函数供外部调用
+		container._updateSlider = updateSlider;
+		
+		return container;
 	}
 	volumn_background(e) {
 		if (_status.dragged) return;
 		var volume = this.link;
-		if (volume === 1 && lib.config.volumn_background === 1) {
-			volume = 0;
-		}
+		
+		// 支持0-8的9个挡位
+		if (volume < 0) volume = 0;
+		if (volume > 8) volume = 8;
+		
 		game.saveConfig("volumn_background", volume);
 		ui.backgroundMusic.volume = volume / 8;
-		for (var i = 0; i < 8; i++) {
-			if (i < lib.config.volumn_background) {
-				this.parentNode.childNodes[i].innerHTML = "●";
-			} else {
-				this.parentNode.childNodes[i].innerHTML = "○";
-			}
+		
+		// 更新lib.config中的值
+		lib.config.volumn_background = volume;
+		
+		// 更新UI显示
+		if (this.parentNode && this.parentNode._updateSlider) {
+			this.parentNode._updateSlider(volume);
 		}
+		
 		e.stopPropagation();
 	}
 	volumn_audio(e) {
 		if (_status.dragged) return;
 		var volume = this.link;
-		if (volume === 1 && lib.config.volumn_audio === 1) {
-			volume = 0;
-		}
+		
+		// 支持0-8的9个挡位
+		if (volume < 0) volume = 0;
+		if (volume > 8) volume = 8;
+		
 		game.saveConfig("volumn_audio", volume);
-		for (var i = 0; i < 8; i++) {
-			if (i < lib.config.volumn_audio) {
-				this.parentNode.childNodes[i].innerHTML = "●";
-			} else {
-				this.parentNode.childNodes[i].innerHTML = "○";
-			}
+		
+		// 更新lib.config中的值
+		lib.config.volumn_audio = volume;
+		
+		// 更新UI显示
+		if (this.parentNode && this.parentNode._updateSlider) {
+			this.parentNode._updateSlider(volume);
 		}
+		
 		e.stopPropagation();
 	}
 	hoverpopped() {

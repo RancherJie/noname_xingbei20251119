@@ -1339,7 +1339,7 @@ export class Library {
 			config: {
 				theme: {
 					name: "主题",
-					init: "woodden",
+					init: "music",
 					item: {},
 					visualMenu: function (node, link) {
 						if (!node.menu) {
@@ -3879,7 +3879,7 @@ export class Library {
 					unfrequent: true,
 				},
 				show_phaseuse_prompt: {
-					name: "出牌阶段提示",
+					name: "行动阶段提示",
 					intro: "在你出牌时显示提示文字",
 					init: true,
 					unfrequent: true,
@@ -4445,7 +4445,7 @@ export class Library {
 				},
 				volumn_audio: {
 					name: "音效音量",
-					init: 8,
+					init: 1,
 					item: {
 						0: "〇",
 						1: "一",
@@ -4462,8 +4462,8 @@ export class Library {
 					},
 				},
 				volumn_background: {
-					name: "音乐音量",
-					init: 8,
+					name: "背景音乐",
+					init: 1,
 					item: {
 						0: "〇",
 						1: "一",
@@ -4768,7 +4768,7 @@ export class Library {
 						map.connect_choose_number.show();
 						map.connect_BPchoose_number.hide();
 					}else{
-						if(config.connect_choose_mode=='CM02'){
+						if(config.connect_choose_mode=='CM02' || config.connect_choose_mode=='CM01'){
 							map.connect_team_sequence.hide();
 						}else{
 							map.connect_team_sequence.show();
@@ -4809,9 +4809,11 @@ export class Library {
 					init:"多选1",
 					item:{
 						'多选1':'多选1',
+						'CM01':"CM01",
 						'CM02':"CM02",
 						'BP01':"BP01",
 						'BP02':"BP02",
+						'jiuGuan':'酒馆',
 					},
 					frequent:true,
 				},
@@ -4917,6 +4919,15 @@ export class Library {
 						game.saveConfig('connect_AItiLian',bool,this._link.config.mode);
 					},
 				},
+				connect_onlyChooseCharacter:{
+					name:'仅选择角色',
+					init:false,
+					intro:'选择角色后不会开始游戏，适合推新时使用，方便新人通过手机了解其他玩家角色，房主不要关游戏',
+					onclick:function(bool){
+						game.saveConfig('connect_onlyChooseCharacter',bool,this._link.config.mode);
+					},
+					frequent:true,
+				}
 			},
 			config:{
 				update:function(config,map){
@@ -5220,6 +5231,84 @@ export class Library {
 				},
 			},
 		},
+		offlineChoose: {
+			name: "线下选角",
+			config: {
+				update:function(config,map){
+					if(config.choose_mode=='CM02' || config.choose_mode=='CM01'){
+						map.team_sequence.hide();
+					}else{
+						map.team_sequence.show();
+					}
+					if(config.choose_mode=='BP01' || config.choose_mode=='BP02'){
+						map.BPchoose_number.show();
+					}else{
+						map.BPchoose_number.hide();
+					}
+				},
+				versus_mode: {
+					name: "游戏模式",
+					init: "three",
+					item: {
+						"two": "2v2",
+						"three": "3v3",
+						//"four": "4v4",
+					},
+					frequent: true,
+					restart: true,
+				},
+				choose_mode: {
+					name: "选角模式",
+					init: "CM02",
+					item: {
+						'CM01': "CM01",
+						"CM02": "CM02",
+						"BP01": "BP01",
+						"BP02": "BP02",
+					},
+					frequent: true,
+					restart: true,
+				},
+				team_sequence:{
+					name:"队伍顺序",
+					init:"random",
+					item:{
+						random:'随机',
+						crossed:'交叉',
+						near:'临近',
+						CM:"CM",
+					},
+					frequent:true,
+					restart:true,
+				},
+				BPchoose_number:{
+					name:'可选角色数',
+					init:16,
+					item:{
+						12:'12',
+						16:'16',
+						20:'20',
+						24:'24',
+						30:'30',
+					},
+					frequent:true,
+				},
+			}
+		},
+		illustration:{
+			name:'图鉴',
+			config:{
+				viewAll:{
+					name:'查看所有角色',
+					init:true,
+					onclick(bool){
+						game.saveConfig('viewAll',bool,this._link.config.mode);
+					},
+					intro:'关闭后仅能查看已启用的角色包',
+					frequent:true,
+				},
+			}
+		},
 		tutorial:{
 			name:'新手向导',
 			config:{
@@ -5228,7 +5317,7 @@ export class Library {
 					frequent:true,
 				}
 			}
-		}
+		},
 	};
 	status = {
 		running: false,
@@ -7301,6 +7390,7 @@ export class Library {
 		jiGroupColor:"#A5BE7D",
 		shengGroupColor:"#22A3C3",
 		huanGroupColor:"#635282",
+		jiuGuan:"酒馆",
 
 		zhiLiao:"治疗",
 
@@ -7741,7 +7831,7 @@ export class Library {
 			const checkEnable = enable => {
 				if (typeof enable === "function") return enable(event);
 				if (Array.isArray(enable)) return enable.some(i => checkEnable(i));
-				if (enable === "phaseUse") return event.type === "phase";
+				if (enable === "xingDong") return event.type === "phase";
 				if(enable==='wuFaXingDong') return event.firstAction === true;//专门无法行动设置启用参数
 				if(enable==='gongJiOrFaShu') return event.name=='gongJi' || event.name=='faShu' || event.name=='gongJiOrFaShu';//专门攻击或法术设置启用参数
 				if(enable=='faShu') return event.name=='faShu' || event.name=='gongJiOrFaShu';//专门法术设置启用参数
@@ -7875,11 +7965,11 @@ export class Library {
 		cardUsable2: function (card, player, event) {
 			card = get.autoViewAs(card);
 			var info = get.info(card);
-			if (info.updateUsable == "phaseUse") {
+			if (info.updateUsable == "xingDong") {
 				event = event || _status.event;
 				if (event.type == "chooseToUse_button") event = event.getParent();
 				if (player != _status.event.player) return true;
-				if (event.getParent().name != "phaseUse") return true;
+				if (event.getParent().name != "xingDong") return true;
 				if (event.getParent().player != player) return true;
 			}
 			var num = info.usable;
@@ -7894,8 +7984,8 @@ export class Library {
 			event = event || _status.event;
 			if (event.type == "chooseToUse_button") event = event.getParent();
 			if (player != _status.event.player) return true;
-			if (info.updateUsable == "phaseUse") {
-				if (event.getParent().name != "phaseUse") return true;
+			if (info.updateUsable == "xingDong") {
+				if (event.getParent().name != "xingDong") return true;
 				if (event.getParent().player != player) return true;
 			}
 			event.addCount_extra = true;
@@ -9899,8 +9989,8 @@ export class Library {
 				return get.info(event.skill)&&get.info(event.skill).type=='qiDong';
 			},
 			content:function(){
-				trigger.getParent('phaseUse').canTeShu=false;
-				trigger.getParent('phaseUse').qiDongGuo=true;
+				trigger.getParent('xingDong').canTeShu=false;
+				trigger.getParent('xingDong').qiDongGuo=true;
 			},
 		},
 		_wuFaXingDong:{
@@ -9908,7 +9998,7 @@ export class Library {
 				//console.log('--------------------------------');
 				//拥有挑衅直接false
 				//无可启动技跳过启动前后无法行动
-				if(event.name=='phaseUse'){
+				if(event.name=='xingDong'){
 					if(event.canQiDong==false) return false;
 					var next=game.createEvent('gongJiOrFaShu',false);
 					next.setContent('emptyEvent');
@@ -9924,7 +10014,7 @@ export class Library {
 				for(var i=0;i<skills.length;i++){
 					//排除提炼和无法行动（避免判断可触发时循环嵌套）
 					if(skills[i]=='_tiLian' || skills[i]=='_wuFaXingDong') continue;
-					if(event.name=='phaseUse') var enable=lib.filter.filterEnable(next, player, skills[i]);
+					if(event.name=='xingDong') var enable=lib.filter.filterEnable(next, player, skills[i]);
 					else var enable=lib.filter.filterEnable(event, player, skills[i]);
 					if(enable) return false;
 				}
@@ -9945,8 +10035,8 @@ export class Library {
 				"step 0"
 				player.wuFaXingDong();
 				player.addGongJiOrFaShu();
-				event.getParent('phaseUse').canTeShu=false;
-				event.getParent('phaseUse').firstAction=true;
+				event.getParent('xingDong').canTeShu=false;
+				event.getParent('xingDong').firstAction=true;
 			},
 			contentx:function(){
 				"step 0"
@@ -10124,7 +10214,7 @@ export class Library {
 			}
 		},
 		_gouMai:{
-			enable:'phaseUse',
+			enable:'xingDong',
 			type:'teShu',
 			filter:function(event,player){
 				return player.countCards('h')+3<=player.getHandcardLimit();
@@ -10186,7 +10276,7 @@ export class Library {
 			}
 		},
 		_heCheng:{
-			enable:'phaseUse',
+			enable:'xingDong',
 			type:'teShu',
 			filter:function(event,player){
 				var xingShi=get.zhanJi(player.side);
@@ -10303,7 +10393,7 @@ export class Library {
 					markimage:'image/card/xingShi/shuiJing.png',
 				},
 			},
-			enable:'phaseUse',
+			enable:'xingDong',
 			type:'teShu',
 			filter:function(event,player){
 				var nengLiang_num=player.countNengLiangAll();
@@ -10393,8 +10483,9 @@ export class Library {
 			ai:{
 				order:function(item,player){
 					var num=3.15;
+					if((_status.connectMode&&lib.configOL.AItiLian)||(!_status.connectMode&&get.config('AItiLian'))) num+=0.05;
 					num+=(0.05*(player.getNengLiangLimit()-player.countNengLiangAll()));
-					num+=(0.05*get.zhanJi(player.side).length);
+					num+=(0.06*get.zhanJi(player.side).length);
 					return num;
 				},
 				result:{
@@ -10471,6 +10562,7 @@ export class Library {
 						return event.xuRuo==true;
 					},
 					content:function(){
+						event.trigger('xingDongSkipped');
 						trigger.cancel();
 					}
 				},

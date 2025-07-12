@@ -4258,7 +4258,7 @@ export const Content = {
 		"step 4";
 		event.trigger("phaseBegin");
 		"step 5";
-		player.phaseUse();
+		player.xingDong();
 		"step 6";
 		//回合结束前
 		event.trigger("phaseEndBefore");
@@ -4447,7 +4447,7 @@ export const Content = {
 		"step 6";
 		event.trigger("phaseUseAfter");
 	},*/
-	phaseUse:function(){
+	xingDong:function(){
 		"step 0";
 		//xingBei设置
 		player.storage.gongJiOrFaShu=1;
@@ -4475,8 +4475,8 @@ export const Content = {
 			const info = lib.skill[i];
 			if (!info) continue;
 			if (info.enable != undefined) {
-				if (typeof info.enable == "string" && info.enable == "phaseUse") bool = true;
-				else if (typeof info.enable == "object" && info.enable.includes("phaseUse")) bool = true;
+				if (typeof info.enable == "string" && info.enable == "xingDong") bool = true;
+				else if (typeof info.enable == "object" && info.enable.includes("xingDong")) bool = true;
 			}
 			if (bool) stat.skill[i] = 0;
 		}
@@ -4484,7 +4484,7 @@ export const Content = {
 			let bool = false;
 			const info = lib.card[i];
 			if (!info) continue;
-			if (info.updateUsable == "phaseUse") stat.card[i] = 0;
+			if (info.updateUsable == "xingDong") stat.card[i] = 0;
 		}
 		"step 1";
 		//event.trigger("phaseUseBefore");
@@ -6725,6 +6725,11 @@ export const Content = {
 	},
 	chooseControl: function () {
 		"step 0";
+		event.closeDialog = true;
+		if (typeof event.dialog == "number") {
+			event.dialog = get.idDialog(event.dialog);
+			event.closeDialog = false;
+		}
 		if (event.controls.length == 0) {
 			if (event.sortcard) {
 				var sortnum = 2;
@@ -6892,7 +6897,7 @@ export const Content = {
 		event.result.index = event.controls.indexOf(event.result.control);
 		event.choosing = false;
 		_status.imchoosing = false;
-		if (event.dialog && event.dialog.close) event.dialog.close();
+		if (event.closeDialog&&event.dialog && event.dialog.close) event.dialog.close();
 		if (event.controlbar) event.controlbar.close();
 		if (event.controlbars) {
 			for (var i = 0; i < event.controlbars.length; i++) {
@@ -8442,7 +8447,15 @@ export const Content = {
 			return;
 		}
 		if (!get.info(card, false).noForceDie) event.forceDie = true;
-		if (cards.length) {
+		if(event.skill) var info=get.info(event.skill);
+		if(info&&info.viewAs&&info.discard==true&&cards.length){
+			var next=player.discard(cards);
+			event.animate=false;
+			event.cards=[];//因为是弃置视为打出，清空卡牌
+			card.cards=[];
+			if(info.showCards) next.set("showCards", info.showCards);
+		}
+		else if (cards.length) {
 			var owner = get.owner(cards[0]) || player;
 			var next = owner.lose(cards, "visible", ui.ordering).set("type", "use");
 			var directDiscard = [];
@@ -10787,8 +10800,10 @@ export const Content = {
 		if(event.chanShengShangHaiMax<event.num){
 			event.num=event.chanShengShangHaiMax;
 		}
-		event.trigger('chengShouShangHai');
+		event.trigger('chengShouShangHaiBefore');
 		"step 5"
+		event.trigger('chengShouShangHai');
+		'step 6'
 		if(event.chengShouShangHaiMax<event.num){
 			num=event.chengShouShangHaiMax;
 			event.num=event.chengShouShangHaiMax;
@@ -10838,7 +10853,7 @@ export const Content = {
 		if(event.animate!==false){
 			player.$damage(source);
 		}
-		"step 6"
+		"step 7"
 		if(source&&lib.config.border_style=='auto'){
 			var dnum=0;
 			for(var j=0;j<source.stat.length;j++){
@@ -10879,9 +10894,9 @@ export const Content = {
 				}
 			}
 		}
-		"step 7"
+		"step 8"
 		event.trigger('chengShouShangHaiAfter');
-		'step 8'
+		'step 9'
 		event.trigger('shouDaoShangHaiAfter');
 	},
 	recover: function () {

@@ -1138,7 +1138,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                 },
                 content:async function (event,trigger,player){
-                    console.log(trigger.name);
+                    //console.log(trigger.name);
                     await player.changeZhiLiao(-1);
                     game.log(player.storage.luBiaoTarget,'获得了1张牌',);
                     await player.storage.luBiaoTarget.gain(trigger.cards,'draw').set('shiFeng',true);

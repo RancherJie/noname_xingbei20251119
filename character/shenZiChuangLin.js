@@ -313,8 +313,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             next.player=player;
                             next.setContent(lib.skill.ren.contentx);
                             if(_status.currentPhase==player){
-                                player.storage[event.getParent('phaseUse').xingDong]++;
-                                if(event.getParent().firstAction) event.getParent('phaseUse').firstAction=true;
+                                player.storage[event.getParent('xingDong').xingDong]++;
+                                if(event.getParent().firstAction) event.getParent('xingDong').firstAction=true;
                             }
                         },
                     },

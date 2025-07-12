@@ -1753,6 +1753,10 @@ div:not(.handcards) > .card > .info > span,
 	left: calc(5% + 60px) !important;
 	width: calc(90% - 120px) !important;
 }
+.dialog.noanimation {
+	transition: none !important;
+	animation: none !important;
+}
 .dialog.halfleft,
 .dialog.halfright {
 	width: 43% !important;
@@ -1881,7 +1885,94 @@ div:not(.handcards) > .card > .info > span,
 .dialog .content > .volumn {
 	margin: 0;
 	font-family: "xinwei";
+	position: relative;
+	/*width: 200px;*/
+	height: 8px;
+	display: flex;
+	align-items: center;
+	padding: 10px 0;
 }
+
+.dialog .content > .volumn > .volume-slider {
+	position: relative;
+	width: 200px;
+	height: 6px;
+	background: rgba(255, 255, 255, 0.3);
+	border-radius: 3px;
+	cursor: pointer;
+	margin: 0 10px;
+}
+
+.dialog .content > .volumn > .volume-slider > .volume-track {
+	left: 0;
+	top: 0;
+	position: absolute;
+	height: 100%;
+	background: linear-gradient(to right, #4CAF50, #2196F3);
+	border-radius: 3px;
+	transition: width 0.2s ease;
+	min-width: 0;
+}
+
+.dialog .content > .volumn > .volume-slider > .volume-handle {
+	position: absolute;
+	width: 12px;
+	height: 12px;
+	background: white;
+	border: 2px solid #2196F3;
+	border-radius: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	z-index: 2;
+}
+
+.dialog .content > .volumn > .volume-slider > .volume-handle:hover {
+	transform: translate(-50%, -50%) scale(1.2);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+	border-color: #1976D2;
+}
+
+.dialog .content > .volumn > .volume-slider > .volume-handle:active {
+	transform: translate(-50%, -50%) scale(1.3);
+	border-color: #0D47A1;
+}
+
+.dialog .content > .volumn > .volume-slider > .volume-marks {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	pointer-events: none;
+}
+
+.dialog .content > .volumn > .volume-slider > .volume-marks > .volume-mark {
+	position: absolute;
+	width: 2px;
+	height: 12px;
+	background: rgba(255, 255, 255, 0.6);
+	top: 50%;
+	transform: translate(-50%, -50%);
+	transition: all 0.2s ease;
+}
+
+.dialog .content > .volumn > .volume-slider > .volume-marks > .volume-mark.active {
+	background: rgba(33, 150, 243, 0.8);
+	height: 16px;
+}
+
+.dialog .content > .volumn > .volume-value {
+	min-width: 20px;
+	text-align: center;
+	margin-left: 10px;
+	font-size: 14px;
+	color: white;
+}
+
+
 .dialog .content > .volumn > span {
 	margin-left: 2px;
 	margin-right: 2px;
@@ -4947,6 +5038,16 @@ div[data-decoration="bronze"]::after {
 #me>div:not(.scrollh)>.handcards>.card.selected{
 	top:-20px;
 }*/
+
+.pool-red {
+  border: 6px solid #e74c3c;
+}
+.pool-blue {
+  border: 6px solid #2980b9;
+}
+.pool-green {
+  border: 6px solid #27ae60;
+}
 
 #me .card.glows {
 	opacity: 1;

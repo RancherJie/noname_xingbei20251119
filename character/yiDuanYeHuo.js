@@ -59,7 +59,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shenWei:{
                 trigger:{player:'gongJiBefore'},
                 filter:function(event,player){
-                    if(event.getParent('phaseUse').shenWei==false) return false;
+                    if(event.getParent('xingDong').shenWei==false) return false;
                     return player.countZhiShiWu('shengYin')>=2&&get.is.zhuDongGongJi(event);
                 },
                 content:function(){
@@ -262,7 +262,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 1'
                     player.addZhiShiWu('shengYin',2,4);
                     player.addGongJi();
-                    event.getParent('phaseUse').shenWei=false;
+                    event.getParent('xingDong').shenWei=false;
                 },
                 ai:{
                     shuiJing:true,
@@ -358,7 +358,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 }   
             },
             enDianShenShou:{
-                enable:'phaseUse',
+                enable:'xingDong',
                 type:'teShu',
                 filter:function(event,player){
                     if(event.getParent().canTeShu==false) return false;

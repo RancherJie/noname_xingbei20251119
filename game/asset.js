@@ -1,6 +1,6 @@
 window.noname_asset_list=
 [
-	"v1.3.1",
+	"v1.3.2",
 	"audio/background/music_default.mp3",
 	"audio/card/default.mp3",
 	'audio/card/atk_an.mp3',
@@ -201,6 +201,9 @@ window.noname_asset_list=
 	'image/character/jianZhiMoNv.jpg',
 	'image/character/jieRiMoDao.jpg',
 	'image/character/lingXiZhiChao.jpg',
+	'image/character/daiDuoShaoNv.jpg',
+	'image/character/jiDuShaoNv.jpg',
+	'image/character/jianZhiZi.jpg',
 
 	"image/emotion/xingBei_emotion/1.gif",
 	"image/emotion/xingBei_emotion/2.gif",
@@ -305,7 +308,10 @@ window.noname_asset_list=
 	"image/splash/style2/xingBei.jpg",
 	"image/splash/style1/tutorial.jpg",
 	"image/splash/style2/tutorial.jpg",
-
+	"image/splash/style1/illustration.jpg",
+	"image/splash/style2/illustration.jpg",
+	"image/splash/style1/offlineChoose.jpg",
+	"image/splash/style2/offlineChoose.jpg",
 ];
 window.noname_skin_list=
 {
