@@ -77,6 +77,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 ["yuanZiXiShou", "yuanZiChongSu", "yuanSuXueTu", "leiJiBianYi", "yueYun", "yuanZi"],
                 ["des:暂无介绍"],
             ],
+            daiDuoShaoNv: [
+                "moFaShaoNv_name",
+                "shengGroup",
+                3,
+                ["bieFanWo", "rangWoTangPing", "xiangYongMoDan", "buXiangTiLian", "zaiShuiYiXia"],
+                ["des:暂无介绍"],
+            ],
         },
 
         characterIntro: {
@@ -2501,6 +2508,176 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 onremove: "storage",
                 markimage: "image/card/zhiShiWu/hong.png",
             },
+
+            //怠惰少女
+            bieFanWo:{
+                type:'faShu',
+                enable:'faShu',
+                selectTarget:-1,
+                filter: function (event, player) {
+                    return player.countCards('h') > 0;
+                },
+                filterTarget: function (card, player, target) {
+                    var muBiao=player;
+                    while(muBiao.side!=player.side||muBiao==player){
+                        muBiao=muBiao.getNext();
+                    }
+                    return target==muBiao;
+                },
+                content: async function(event, trigger, player) {
+                    var card=player.getCards('h').randomGet();
+                    if(card){
+                        await player.discard(card,event.target,'notBySelf');
+                    }
+                    var targets=await event.target.chooseTarget('选择1名目标对手摸1张牌',true,function(card, player, target) {
+                        return target.side!=player.side;
+                    }).set('ai', function (target) {
+                        return target.countCards('h') + 0.5;
+                    }).forResultTargets();
+                    var target=targets[0];
+                    if(target){
+                        await target.draw(1);
+                    }
+                    await player.addZhanJi('shuiJing', 1);
+
+                    var colorName= get.colorName(event.target);
+                    var result = await target.chooseToDiscard('h','showCards', 1, `弃1张法术牌[展示]，否则你摸1张牌、${colorName}加1[治疗]`,function(card) {
+                        return get.type(card) == 'faShu';
+                    }).set('ai',function(card) {
+                        return 6-get.value(card);
+                    }).forResult();
+                    if(!result.bool){
+                        await target.draw(1);
+                        await event.target.changeZhiLiao(1);
+                    }
+                },
+                ai:{
+                    order: 3.2,
+                    result:{
+                        player: function(player) {
+                            var zhanJi=get.zhanJi(player.side);
+                            if(zhanJi.length<game.zhanJiMax) return 1;
+                            var targets=game.filterPlayer(function(current){
+                                return current.side!=player.side&&current.countCards('h')+1>=current.getHandcardLimit();
+                            });
+                            if(targets.length>0) return 1;
+                            return 0;
+                        },
+                    }
+                }
+            },
+            rangWoTangPing: {
+                trigger: { player: "phaseBegin" },
+                filter: function (event, player) {
+                    return player.countCards('h') > 3;
+                },
+                async cost(event, trigger, player) {
+                    var next= player.chooseTarget(1,function(card, player, target) {
+                        return target.side==player.side&& target!=player;
+                    });
+                    next.set('prompt',get.prompt('rangWoTangPing'));
+                    next.set('prompt2',lib.translate['rangWoTangPing_info']);
+                    next.set('ai', function (target) {
+                        return get.zhiLiaoEffect(target, 1);
+                    });
+                    event.result = await next.forResult();
+                },
+                content: async function(event, trigger, player) {
+                    await event.targets[0].changeZhiLiao(1);
+                    player.skip('xingDong');
+                },
+            },
+            xiangYongMoDan: {
+                enable:['faShu','moDan'],
+                type:'faShu',
+                selectCard:2,
+                filterCard: function(card) {
+                    return get.xuanZeTongXiPai(card);
+                },
+                complexCard: true,
+                discard: true,
+                showCards: true,
+                viewAs:{name:'moDan'},
+                viewAsFilter: function(player) {
+                    return player.countTongXiPai() >=2;
+                },
+                ai: {
+                    order:3.1,
+                    result:{
+                        player:1,
+                    }
+                },
+                check: function(card) {
+                    return 5-get.value(card);
+                },
+            },
+            buXiangTiLian: {
+                init:function(player){
+                    player.tempBanSkill('_tiLian','forever');
+                },
+                onremove:function(player){
+                    delete player.storage.temp_ban__tiLian;
+                },
+                trigger:{global:'_tiLian_backupEnd'},
+                forced:true,
+                filter:function(event,player){
+                    return event.player.side==player.side&&event.player!=player;
+                },
+                content: async function(event, trigger, player) {
+                    await player.addNengLiang('baoShi', 1);
+                    var zhanJi=get.zhanJi(player.side);
+                    if(zhanJi.length>0){
+                        var list=[];
+                        for(var i=0;i<zhanJi.length;i++){
+                            list.push([zhanJi[i],get.translation(zhanJi[i])]);
+                        }
+                        var next=player.chooseButton([
+                            `移除我方【战绩区】1星石`,
+                            [list,'tdnodes'],
+                        ]);
+                        next.set('forced',true);
+                        var links=await next.forResultLinks();
+                        await player.removeZhanJi(links[0],1);
+                    }
+                },
+            },
+            zaiShuiYiXia:{
+                trigger: { player: "xingDongSkipped" },
+                forced: true,
+                filter: function (event, player) {
+                    return player.canBiShaBaoShi();
+                },
+                content: async function(event, trigger, player) {
+                    await player.removeBiShaBaoShi();
+                    await player.chooseToDiscard(1,true,'在睡一下：弃1张牌');
+                    player.addSkill('zaiShuiYiXia_yiChu');
+                    event.yiChu=false;
+                    for(var current of game.players){
+                        if(current!=player&&player.side==current.side){
+                            await current.changeZhiLiao(1).set('zaiShuiYiXia',true);
+                        }
+                    }
+                    player.removeSkill('zaiShuiYiXia_yiChu');
+                    if(event.yiChu){
+                        await player.changeShiQi(1);
+                    }
+                },
+                subSkill:{
+                    yiChu:{
+                        trigger:{global:'zhiLiaoYiChu'},
+                        direct:true,
+                        filter:function(event,player){
+                            return event.zaiShuiYiXia&&event.player.side==player.side&&event.player!=player;
+                        },
+                        content: async function(event, trigger, player) {
+                            event.getParent('zaiShuiYiXia').yiChu=true;
+                        }
+                    }
+                },
+                ai:{
+                    baoShi:true,
+                }
+            },
         },
         
         translate:{
@@ -2522,6 +2699,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             trick_maoXianJia_prefix: "trick",
             luoLiFanZhang: "萝莉番长",
             jianXiZhiPian: "见习制片",
+            daiDuoShaoNv: "怠惰少女",
                           
             jianZhiMoNv_name:"席拉",
             lingXiZhiChao_name: "濯香姬",
@@ -2724,6 +2902,17 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             yuanZi: "元子",
             yuanZi_info: "<span class='hong'>【元子】</span>为见习制片专有的指示物，上限为3。",
 
+            //怠惰少女
+            bieFanWo:"[法术]别烦我……",
+            bieFanWo_info:"<span class='tiaoJian'>(你右手边最近的队友随机丢弃你1张手牌并指定目标对手摸1张牌[强制])</span>我方【战绩区】+1[水晶]，该对手弃1张法术牌[展示]；<span class='tiaoJian'>(若该对手不如此做)</span>他摸1张牌[强制]，你右手边最近的队友+1[治疗]。",
+            rangWoTangPing:"[响应]让我躺平",
+            rangWoTangPing_info:"<span class='tiaoJian'>(你的回合开始时，若你手牌>3)</span>目标队友+1[治疗]，然后跳过你的行动阶段。",
+            xiangYongMoDan:"[响应]想用魔弹",
+            xiangYongMoDan_info:"<span class='tiaoJian'>(你需要使用魔弹时，弃2张同系牌[展示])</span>视为使用【魔弹】。",
+            buXiangTiLian:"[被动]不想提炼",
+            buXiangTiLian_info:"你无法执行【提炼】。<span class='tiaoJian'>(目标队友指定【提炼】时)</span>你+1[宝石]，移除我方【战绩区】1星石",
+            zaiShuiYiXia:"[被动]再睡一下",
+            zaiShuiYiXia_info:"[宝石]<span class='tiaoJian'>(你跳过行动阶段后强制触发[强制])</span>弃1张牌，所有队友各+1[治疗]。<span class='tiaoJian'>(若如此导致有队友[治疗]溢出)</span>我方+1【士气】。",
         },
     };
 });
