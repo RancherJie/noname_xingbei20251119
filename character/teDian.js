@@ -2594,7 +2594,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             erChongJianYing_info: "<span class='tiaoJian'>([攻击行动]结束时，若本次攻击命中②)</span>额外加1系别相同的[攻击行动]。",
             fuMoZhiShu: "[响应]附魔之术",
             fuMoZhiShu_info:
-                "<span class='tiaoJian'>(你执行提炼时，若你未拥有【子弹】)</span>消耗你提炼的1能量，将1张手牌面朝下置于你的角色旁，作为【子弹】。",
+                "<span class='tiaoJian'>(你执行【提炼】时，若你未拥有【子弹】)</span>消耗你提炼的1能量，将1张手牌面朝下置于你的角色旁，作为【子弹】。",
             jingLingDeJianWu: "[响应]精灵的剑舞",
             jingLingDeJianWu_info: "[水晶]<span class='tiaoJian'>(主动攻击前①)</span>本次你的攻击牌系别视为风系。",
             ziDan: "子弹",
