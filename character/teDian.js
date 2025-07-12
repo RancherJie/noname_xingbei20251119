@@ -84,6 +84,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 ["bieFanWo", "rangWoTangPing", "xiangYongMoDan", "buXiangTiLian", "zaiShuiYiXia"],
                 ["des:暂无介绍"],
             ],
+            jiDuShaoNv: [
+                "moFaShaoNv_name",
+                "jiGroup",
+                3,
+                ["cuYiXiuXin", "xuRongZhangWo", "xiangSiBing", "jiDuZhuiFang"],
+                ["des:暂无介绍"],
+            ],
         },
 
         characterIntro: {
@@ -2682,6 +2689,144 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     baoShi:true,
                 }
             },
+
+            //嫉妒少女
+            cuYiXiuXin: {
+                trigger: { source: "gongJiWeiMingZhong" },
+                filter: function (event, player) {
+                    return event.yingZhan!=true;
+                },
+                async cost(event, trigger, player) {
+                    var next= player.chooseTarget(1);
+                    next.set('prompt',get.prompt('cuYiXiuXin'));
+                    next.set('prompt2',lib.translate['cuYiXiuXin_info']);
+                    next.set('ai', function (target) {
+                        var player=_status.event.player;
+                        return get.damageEffect2(target, player, 1);
+                    });
+                    event.result = await next.forResult();
+                },
+                content: async function(event, trigger, player) {
+                    var target=event.targets[0];
+                    var colorName=get.colorName(player);
+                    var result=await target.chooseToDiscard('h','showCards', 1, `弃1张法术牌[展示]，否则${colorName}对你造成2点法术伤害③、对方【战绩区】+1[水晶]`,function(card) {
+                        return get.type(card) == 'faShu';
+                    })
+                    .set('ai',function(card) {
+                        return 6-get.value(card);
+                    }).forResult();
+                    if(!result.bool){
+                        await target.faShuDamage(2,player);
+                        await player.addZhanJi('shuiJing', 1);
+                    }
+                },
+            },
+            xuRongZhangWo:{
+                trigger: { player: "gongJiMingZhong" },
+                filter: function (event, player) {
+                    return event.yingZhan!=true;
+                },
+                content: async function(event, trigger, player) {
+                    player.storage.extraXingDong.push({
+                        xingDong:'faShu',
+                        filterCard:function(card,player,event){
+                            if(get.name(card)!='moDan') return false;
+                            return lib.filter.cardEnabled(card,player,'forceEnable');
+                        },
+                        filterTarget:function(card, player, target){
+                            if(get.name(card)=='moDan'){
+                                var mubiao=player.getPrevious();
+                                while(mubiao.side==player.side){
+                                    mubiao=mubiao.getPrevious();
+                                }
+                                if(target==mubiao) return true;
+                                var mubiao=player.getNext();
+                                while(mubiao.side==player.side){
+                                    mubiao=mubiao.getNext();
+                                }
+                                if(target==mubiao) return true;
+                            }
+                        },
+                        prompt:'虚荣掌握：魔弹[法术行动]',
+                    });
+                },
+                group: ['xuRongZhangWo_zuoChuan'],
+                subSkill:{
+                    zuoChuan:{
+                        trigger:{player:'useCardBefore'},
+                        direct:true,
+                        filter:function(event,player){
+                            if(player.hasMark('_moDan')) return false;
+                            if(get.name(event.card)!='moDan') return false;
+                            var range_l=0,range_r=0;
+                            var target=player;
+                            while(target!=event.targets[0]){
+                                target=target.getPrevious();
+                                range_l++;
+                            }
+                            target=player;
+                            while(target!=event.targets[0]){
+                                target=target.getNext();
+                                range_r++;
+                            }
+                            if(range_l==range_r){
+                                return !(player.side==player.getNext().side);
+                            }
+                            return range_l<range_r;
+                        },
+                        content:function(){
+                            game.broadcastAll(function(){
+                                game.moDanFangXiang='zuo';
+                            });
+                        },
+                    }
+                },
+            },
+            xiangSiBing:{
+                enable:['faShu','moDan'],
+				filterCard:function(card){
+                    return get.xiBie(card)=='di'||get.xiBie(card)=='feng';
+				},
+				position:'h',
+				viewAs:{name:'moDan'},
+				viewAsFilter:function(player){
+                    return player.hasCard(function(card){
+                        return lib.skill.xiangSiBing.filterCard(card);
+                    });
+				},
+                ai:{
+                    order:3.2,
+                }
+            },
+            jiDuZhuiFang:{
+                usable:1,
+                trigger: { player:['faShuAfter','gongJiAfter'] },
+                filter: function (event, player) {
+                    return event.yingZhan!=true&&player.canBiShaShuiJing();
+                },
+                content: async function(event, trigger, player) {
+                    await player.removeBiShaShuiJing();
+                    player.storage.extraXingDong.push({
+                        xingDong:'gongJi',
+                        filterCard:function(card,player,event){
+                            if(get.type(card)!='gongJi') return false;
+                            return lib.filter.cardEnabled(card,player,'forceEnable');
+                        },
+                        filterTarget:function(card, player, target){
+                            if(get.type(card)=='gongJi'){
+                                return target.side!=player.side&&target.countCards('h')>player.countCards('h');
+                            }
+                        },
+                        prompt:'嫉妒追访：攻击手牌数大于你的对手[攻击行动]',
+                    });
+                }
+            },
+            check:function(event,player){
+                var targets= game.filterPlayer(function(current){
+                    return current.side!=player.side&&current.countCards('h')>player.countCards('h');
+                });
+                return targets.length>0;
+            },
         },
         
         translate:{
@@ -2704,6 +2849,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             luoLiFanZhang: "萝莉番长",
             jianXiZhiPian: "见习制片",
             daiDuoShaoNv: "怠惰少女",
+            jiDuShaoNv: "嫉妒少女",
                           
             jianZhiMoNv_name:"席拉",
             lingXiZhiChao_name: "濯香姬",
@@ -2917,6 +3063,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             buXiangTiLian_info:"你无法执行【提炼】。<span class='tiaoJian'>(目标队友指定【提炼】时)</span>你+1[宝石]，移除我方【战绩区】1星石",
             zaiShuiYiXia:"[被动]再睡一下",
             zaiShuiYiXia_info:"[宝石]<span class='tiaoJian'>(你跳过行动阶段后强制触发[强制])</span>弃1张牌，所有队友各+1[治疗]。<span class='tiaoJian'>(若如此导致有队友[治疗]溢出)</span>我方+1【士气】。",
+
+            //嫉妒少女
+            cuYiXiuXin: "[响应]醋意羞心",
+            cuYiXiuXin_info: "<span class='tiaoJian'>(主动攻击未命中时②)</span>目标角色弃1张法术牌[展示]；<span class='tiaoJian'>(若他不如此做)</span>你对他造成2点法术伤害③，我方【战绩区】+1[水晶]。",
+            xuRongZhangWo:"[响应]虚荣掌握",
+            xuRongZhangWo_info: "<span class='tiaoJian'>(主动攻击命中时②)</span>额外+1[法术行动]，本次法术行动只能使用【魔弹】且可以选择逆向穿传递。",
+            xiangSiBing:"[响应]相思病",
+            xiangSiBing_info:"你的地系牌或风系牌可以当【魔弹】使用。",
+            jiDuZhuiFang:"[响应]嫉妒追放[回合限定]",
+            jiDuZhuiFang_info:"[水晶]<span class='tiaoJian'>([攻击行动]或[法术行动]后)</span>额外+1[攻击行动]，本次攻击行动只能攻击手牌数大于你的目标对手。",
         },
     };
 });
