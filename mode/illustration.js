@@ -497,7 +497,12 @@ export default () => {
                         }
                     });
                     // 角色包的点击事件
-                    if(get.config('viewAll')) var packlist = lib.config.all.characters;
+                    if(get.config('viewAll')){
+                        var packlist = [];
+                        for(var packname in lib.characterPack){
+                            packlist.push(packname);
+                        }
+                    }
                     else var packlist = lib.config.characters;
                     /*
                     for (var i = 0; i < lib.config.all.characters.length; i++) {
