@@ -212,7 +212,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
 
             san_bingShuangDaoYan:{
-                trigger:{player:'daChuPai'},
+                trigger:{player:'gongJiShi'},
                 forced:true,
                 filter:function(event,player){
                     return get.xiBie(event.card)=='shui';
@@ -1091,7 +1091,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             san_siDou_info:"[宝石](每当你承受法术伤害时发动⑥)你+3<span class='hong'>【怒气】</span>。",
 
             san_bingShuangDaoYan:"[被动]冰霜祷言",
-            san_bingShuangDaoYan_info:"<span class='tiaoJian'>(每当你使用水系牌发动)</span>目标角色+1[治疗]。",
+            san_bingShuangDaoYan_info:"<span class='tiaoJian'>(每当你使用水系攻击时发动)</span>目标角色+1[治疗]。",
             san_lianMin:"[启动]怜悯[持续]",
             san_lianMin_info:"[宝石][横置]你的手牌上限恒定为7[恒定]。",
 

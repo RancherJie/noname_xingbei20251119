@@ -35,9 +35,9 @@
 }
 #arena.oblongcard:not(.chess) > .card > .image,
 #arena.oblongcard:not(.chess) .handcards > .card > .image {
-	height: 110px;
-	top: 8px;
-	background-position-x: -3px;
+	/*height: 110px;
+	top: 8px;*/
+	background-position-x: -10px;
 }
 #arena.oblongcard:not(.chess) #handcards1 {
 	height: 100%;
