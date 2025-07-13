@@ -1615,7 +1615,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                     if (list.includes("_shengDun")) {
                         // 如果目标角色拥有【圣盾】，因为圣盾只能存在1个，只能选择【圣盾】
-                        var control = ["_shengDun"];
+                        var control = "_shengDun";
                     }else{
                         var control = await player
                         .chooseControl(list)
@@ -2983,7 +2983,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         return target.countCards('h');
                     }).forResultTargets();
                     var target=targets[0];
-                    await target.chooseToDiscard('h',1,'剑残影：弃1张牌');
+                    await target.chooseToDiscard('h',1,'剑残影：弃1张牌',true);
                     player.storage.extraXingDong.push({
                         xingDong:'gongJi',
                         target:target,

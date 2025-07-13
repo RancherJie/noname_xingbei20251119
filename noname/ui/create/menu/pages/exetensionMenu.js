@@ -944,7 +944,7 @@ export const extensionMenu = function (connectMenu) {
 
 				ui.create.div(
 					".indent",
-					'姓名：<input class="new_name" type="text">',
+					'职业：<input class="new_name" type="text" placeholder="id|中文名">',
 					newCharacter
 				).style.paddingTop = "8px";
 				ui.create.div(
@@ -954,10 +954,16 @@ export const extensionMenu = function (connectMenu) {
 				).style.paddingTop = "8px";
 				ui.create.div(
 					".indent",
-					'体力：<input class="new_hp" type="text" placeholder="体/限/甲">',
+					'星级：<input class="new_hp" type="text" placeholder="3或3/4">',
 					newCharacter
 				).style.paddingTop = "8px";
 				newCharacter.querySelector("input.new_name").onblur = updateButton;
+				var sexes = ui.create.div(
+					".indent",
+					'名字：<input class="new_hp" type="text">',
+					newCharacter
+				);
+				/*
 				var sexes = ui.create.selectlist(
 					[
 						["male", "男"],
@@ -967,13 +973,14 @@ export const extensionMenu = function (connectMenu) {
 					],
 					null,
 					ui.create.div(".indent", "性别：", newCharacter)
-				);
+				);*/
 				var grouplist = lib.group.map((group, i) => [lib.group[i], get.translation(lib.group[i])]);
 				var groups = ui.create.selectlist(
 					grouplist,
 					null,
 					ui.create.div(".indent", "势力：", newCharacter)
 				);
+				/*
 				var dieaudio = ui.create.div(".die_audio", newCharacter, { textAlign: "left" });
 				var dieaudiolabel = ui.create.node("label", "阵亡配音:", dieaudio);
 				var dieaudioUpload = dieaudio.appendChild(document.createElement("input"));
@@ -1022,11 +1029,18 @@ export const extensionMenu = function (connectMenu) {
 				});
 				dieaudiocancel.innerHTML = "取消";
 				dieaudiocancel.style.display = "none";
+				*/
+				var options = ui.create.div(
+					".add_skill.options",
+					'<span>BOSS<input type="checkbox" name="boss"></span><span>仅点角可用<input type="checkbox" name="forbidai"></span><br>',
+					newCharacter
+				);
+				/*
 				var options = ui.create.div(
 					".add_skill.options",
 					'<span>主公<input type="checkbox" name="zhu"></span><span>BOSS<input type="checkbox" name="boss"></span><span>仅点角可用<input type="checkbox" name="forbidai"></span><br><span>隐匿技<input type="checkbox" name="hiddenSkill"></span><br>',
 					newCharacter
-				);
+				);*/
 				var addSkill = ui.create.div(".add_skill", "添加技能<br>", newCharacter);
 				var list = [];
 				for (var i in lib.character) {
@@ -1209,6 +1223,7 @@ export const extensionMenu = function (connectMenu) {
 						if (des) {
 							tags.add("des:" + des);
 						}
+						/*
 						//阵亡配音
 						if (dieaudio.file && dieaudio.arrayBuffer) {
 							var audioname = name + dieaudio.file.name.slice(dieaudio.file.name.indexOf("."));
@@ -1218,7 +1233,7 @@ export const extensionMenu = function (connectMenu) {
 								}:audio/die/${audioname}`
 							);
 							page.content.audio[audioname] = dieaudio.arrayBuffer;
-						}
+						}*/	
 
 						page.content.pack.translate[name] = translate;
 						page.content.pack.character[name] = [sexes.value, groups.value, hp, skills, tags];

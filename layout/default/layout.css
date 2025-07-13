@@ -1370,11 +1370,16 @@ body > .background.land {
 	word-spacing: -0.1em;
 }
 .card > .range {
-	bottom: 5px;
-	right: 5px;
-	text-align: right;
-	text-shadow: rgba(213, 194, 179, 1) 0 0 3px, rgba(213, 194, 179, 1) 0 0 3px,
-		rgba(213, 194, 179, 1) 0 0 3px, rgba(213, 194, 179, 1) 0 0 3px, black 0 0 3px;
+	font-size: 17px;
+    bottom: 5px;
+    right: 5px;
+    text-align: right;
+    text-shadow: 
+        rgba(255, 255, 255, 0.95) 0 0 1px, 
+        rgba(255, 255, 255, 0.85) 0 0 2px, 
+        rgba(255, 255, 255, 0.75) 0 0 3px, 
+        rgba(213, 194, 179, 0.6) 0 0 5px, 
+        rgba(0, 0, 0, 0.3) 0 1px 1px;
 }
 .card > .gaintag {
 	bottom: 5px;
@@ -1725,7 +1730,6 @@ div:not(.handcards) > .card > .info > span,
 	border-radius: 100%;
 	z-index: 1;
 	display: block !important;
-	color: rgb(255, 124, 62);
 }
 
 #arena.oldlayout .player:not(.linked2) .marks > div:first-child,
@@ -4560,18 +4564,16 @@ div[data-decoration="bronze"]::after {
 	display: none !important;
 }
 .card.fullskin > .name {
-	top: 8px;
-	left: 7px;
-	/*border:1px solid #631515;*/
-	border-radius: 4px;
-	padding-top: 3px;
-	padding-bottom: 3px;
-	/*color:#631515;*/
-	border: 1px solid rgb(74, 29, 1);
-	color: rgb(74, 29, 1);
-	text-shadow: none;
-	text-align: center;
-	line-height: 18px;
+    top: 8px;
+    left: 7px;
+    border-radius: 4px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: rgb(74, 29, 1);
+    text-shadow: none;
+    text-align: center;
+    line-height: 18px;
+    background-color: rgba(255, 255, 255, 0.38);
 }
 .cardbg,
 .button.character.cardbg {
