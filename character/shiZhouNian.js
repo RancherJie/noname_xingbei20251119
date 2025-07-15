@@ -8520,11 +8520,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     
                     if(result.bool){
                         lib.skill.tongShengGongSi.removeTongShengGongSiSkill(player,player.storage.tongShengGongSi_target);
-                        await player.storage.tongShengGongSi_target.removeZhiShiWu('tongShengGongSi_xiaoGuo');                      
-
                         var target=result.targets[0];
-                        player.storage.tongShengGongSi_target=target;
                         lib.skill.tongShengGongSi.addTongShengGongSiSkill(player,target);
+                        await player.storage.tongShengGongSi_target.removeZhiShiWu('tongShengGongSi_xiaoGuo');
+                        player.storage.tongShengGongSi_target=target;
                         await target.addZhiShiWu('tongShengGongSi_xiaoGuo');                       
                     }else{
                         lib.skill.tongShengGongSi.removeTongShengGongSiSkill(player,player.storage.tongShengGongSi_target);
