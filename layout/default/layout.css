@@ -2083,6 +2083,7 @@ div:not(.handcards) > .card > .info > span,
 	left: 0 !important;
 	width: 400px !important;
 	white-space: nowrap;
+	font-style: italic;
 }
 .skilln {
 	left: 0 !important;
@@ -3617,13 +3618,15 @@ div:not(.handcards) > .card > .info > span,
 	color: rgb(224, 43, 23); 
 }
 .hong {
-	color: rgb(203, 105, 11); 
+	color: rgb(203, 105, 11);
+	font-weight: bold;
 }
 .lantext {
 	color: rgb(80, 186, 239);
 }
 .lan {
 	color: rgb(12, 156, 230);
+	font-weight: bold;
 }
 
 /*--------动画--------*/

@@ -5,8 +5,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
         connect:true,
         characterSort:{
             'teDian':{
-               moFaShaoNv_name:['jieRiMoDao','tanLanShaoNv','nong_baoShiShaoNv'],
+               moFaShaoNv_name:['jieRiMoDao','tanLanShaoNv','nong_baoShiShaoNv','daiDuoShaoNv','jiDuShaoNv'],
                trick:['trick_shengGong','trick_maoXianJia','daoDanLuoLi'],
+               shiTu:['jianZhiMoNv','jianZhiZi'],
             }
         },
         character:{
@@ -937,11 +938,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         trigger:{global: "loseBefore"},
                         direct: true,
                         filter: function (event, player) {
-                            return event.player.side==player.side&&event.player!=player &&((event.type=='discard'&&(event.showCards||event.showHiddenCards)) || (event.type=='use'));
+                            return event.player.side==player.side&&event.player!=player &&((event.type=='discard'&&(event.getParent().showCards||event.getParent().showHiddenCards)) || (event.type=='use'));
                         },
                         content:async function (event, trigger, player) {
                             for (var card of trigger.cards) {
-                                if (get.name(card) == "moDan") {
+                                if (get.name(card) == "moDan" && ['h','x'].includes(card.original)&&!player.storage.sanMiaoYuanZe.includes(card)) {
                                     player.storage.sanMiaoYuanZe.push(card);
                                     //game.log(player, "将", "#g【魔弹】", "加入了", "#y【三妙原则】");
                                 }
@@ -3003,6 +3004,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
         translate:{
             //角色名字
             trick: "trick",
+            shiTu: "师徒",
 			jianZhiMoNv:"剑之魔女",
             jieRiMoDao:"节日魔导",
             tanLanShaoNv:"贪婪少女",
