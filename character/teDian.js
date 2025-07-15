@@ -937,11 +937,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         trigger:{global: "loseBefore"},
                         direct: true,
                         filter: function (event, player) {
-                            return event.player.side==player.side&&event.player!=player &&((event.type=='discard'&&(event.showCards||event.showHiddenCards)) || (event.type=='use'));
+                            return event.player.side==player.side&&event.player!=player &&((event.type=='discard'&&(event.getParent().showCards||event.getParent().showHiddenCards)) || (event.type=='use'));
                         },
                         content:async function (event, trigger, player) {
                             for (var card of trigger.cards) {
-                                if (get.name(card) == "moDan") {
+                                if (get.name(card) == "moDan" && ['h','x'].includes(card.original)&&!player.storage.sanMiaoYuanZe.includes(card)) {
                                     player.storage.sanMiaoYuanZe.push(card);
                                     //game.log(player, "将", "#g【魔弹】", "加入了", "#y【三妙原则】");
                                 }
