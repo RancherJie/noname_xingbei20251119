@@ -5,8 +5,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
         connect:true,
         characterSort:{
             'teDian':{
-               moFaShaoNv_name:['jieRiMoDao','tanLanShaoNv','nong_baoShiShaoNv'],
+               moFaShaoNv_name:['jieRiMoDao','tanLanShaoNv','nong_baoShiShaoNv','daiDuoShaoNv','jiDuShaoNv'],
                trick:['trick_shengGong','trick_maoXianJia','daoDanLuoLi'],
+               shiTu:['jianZhiMoNv','jianZhiZi'],
             }
         },
         character:{
@@ -3003,6 +3004,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
         translate:{
             //角色名字
             trick: "trick",
+            shiTu: "师徒",
 			jianZhiMoNv:"剑之魔女",
             jieRiMoDao:"节日魔导",
             tanLanShaoNv:"贪婪少女",
