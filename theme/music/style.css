@@ -151,13 +151,7 @@ body[data-background_color_music="blue"] #arena.mobile:not(.chess) .player[data-
 
 .skill {
 	color: rgb(200, 234, 76);
-	font-style: italic;
 }
 .tiaoJian {
 	color: rgb(231, 204, 107);
-}
-
-.lan,
-.hong {
-	font-weight: bold;
 }

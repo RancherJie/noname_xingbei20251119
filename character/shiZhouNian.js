@@ -8520,11 +8520,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     
                     if(result.bool){
                         lib.skill.tongShengGongSi.removeTongShengGongSiSkill(player,player.storage.tongShengGongSi_target);
-                        await player.storage.tongShengGongSi_target.removeZhiShiWu('tongShengGongSi_xiaoGuo');                      
-
                         var target=result.targets[0];
-                        player.storage.tongShengGongSi_target=target;
                         lib.skill.tongShengGongSi.addTongShengGongSiSkill(player,target);
+                        await player.storage.tongShengGongSi_target.removeZhiShiWu('tongShengGongSi_xiaoGuo');
+                        player.storage.tongShengGongSi_target=target;
                         await target.addZhiShiWu('tongShengGongSi_xiaoGuo');                       
                     }else{
                         lib.skill.tongShengGongSi.removeTongShengGongSiSkill(player,player.storage.tongShengGongSi_target);
@@ -9509,7 +9508,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             cangYanFaDian:"[法术]苍炎法典",
             cangYanFaDian_info:"<span class='tiaoJian'>(弃1张火系牌[展示])</span>对目标角色和自己造成2点法术伤害③。",
             tianHuoDuanKong:"[法术]天火断空",
-            tianHuoDuanKong_info:"<span class='tiaoJian'>(弃2张火系牌[展示]，移除1点</span><span class='hong'>【重生】</span><span class='tiaoJian'>)</span>对目标角色和自己造成3点火焰伤害③，<span class='tiaoJian'>(若我方士气落后于该目标)</span>本次法术伤害额外+1[强制]。",
+            tianHuoDuanKong_info:"<span class='tiaoJian'>(弃2张火系牌[展示]，移除1点</span><span class='hong'>【重生】</span><span class='tiaoJian'>)</span>对目标角色和自己造成3点法术伤害③，<span class='tiaoJian'>(若我方士气落后于该目标)</span>本次法术伤害额外+1[强制]。",
             moNvZhiNu:"[启动]魔女之怒",
             moNvZhiNu_info:"<span class='tiaoJian'>(手牌<4张时)</span>[横置]摸0-2张牌，数值由你决定，持续到你的下个行动阶段开始前，你都处于【烈焰形态】，在此形态下你的所有除水系和暗系外的攻击牌均视为火系[强制]，你释放【天火断空】时无需消耗<span class='hong'>【重生】</span>，你的手牌上限+(X-2)(X为你的<span class='hong'>【重生】</span>数量)；脱离【烈焰形态】时[重置]。",
             tiShenWanOu:"[响应]替身玩偶",

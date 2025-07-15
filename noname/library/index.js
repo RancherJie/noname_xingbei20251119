@@ -3340,10 +3340,11 @@ export class Library {
 						oblong: "长方",
 					},
 					onclick(item) {
+						/*
 						var linked = false;
 						if (game.me && game.me.isLinked()) {
 							linked = true;
-						}
+						}*/
 						game.saveConfig("cardshape", item);
 						if (item == "oblong" && (game.layout == "long" || game.layout == "mobile" || game.layout == "long2" || game.layout == "nova")) {
 							ui.arena.classList.add("oblongcard");
@@ -3352,6 +3353,7 @@ export class Library {
 							ui.arena.classList.remove("oblongcard");
 							ui.window.classList.remove("oblongcard");
 						}
+						/*
 						if (linked) {
 							if (get.is.linked2(game.me)) {
 								game.me.classList.remove("linked");
@@ -3360,7 +3362,7 @@ export class Library {
 								game.me.classList.add("linked");
 								game.me.classList.remove("linked2");
 							}
-						}
+						}*/
 					},
 				},
 				cardtempname: {
