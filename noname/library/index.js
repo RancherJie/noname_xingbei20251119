@@ -10586,19 +10586,19 @@ export class Library {
 			filter:function(event,player){
 				return player.hasExpansions('_zhongDu');
 			},
+			getIndex:function(event,player){
+				return player.getExpansions('_zhongDu');
+			},
 			content:async function(event,trigger,player){
 				game.broadcastAll(function(){
 					if(lib.config.background_audio){
 						game.playAudio('card','male','zhongDu');
 					}
 				});
-				var target;
-				while(player.storage.zhongDu.length){
-					target=player.storage.zhongDu.pop();
-					var next=player.faShuDamage(target);
-					await next;
-				}
-				player.discard(player.getExpansions('_zhongDu'),'_zhongDu').set('visible',true);
+				var target=player.storage.zhongDu.pop();
+				var next=player.faShuDamage(target);
+				await next;
+				await player.discard(event.indexedData,'_zhongDu').set('visible',true);
 			},
 			tag:{
 				jiChuXiaoGuo:true,
