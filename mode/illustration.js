@@ -497,13 +497,41 @@ export default () => {
                         }
                     });
                     // 角色包的点击事件
+                    var packlist = [];
                     if(get.config('viewAll')){
-                        var packlist = [];
-                        for(var packname in lib.characterPack){
-                            packlist.push(packname);
+                        packlist=Object.keys(lib.characterPack);
+                    }
+                    else{
+                        for(var name of lib.config.characters){
+                            if(lib.characterPack[name]&&Object.keys(lib.characterPack[name]).length>0){
+                                packlist.push(name);
+                            }
                         }
                     }
-                    else var packlist = lib.config.characters;
+                    var sortList=['shiZhouNian','yiDuanYeHuo','shenZiChuangLin','zhongMoDaoZhu','teDian','sanBan','siBan'];
+                    
+
+                    // 对 packlist 进行排序：sortList 中的元素优先，并按照 sortList 的顺序排列
+                    packlist.sort(function(a, b) {
+                        var indexA = sortList.indexOf(a);
+                        var indexB = sortList.indexOf(b);
+                        
+                        // 如果两个元素都在 sortList 中，按 sortList 的顺序排
+                        if (indexA !== -1 && indexB !== -1) {
+                            return indexA - indexB;
+                        }
+                        // 如果只有 a 在 sortList 中，a 排在前面
+                        else if (indexA !== -1) {
+                            return -1;
+                        }
+                        // 如果只有 b 在 sortList 中，b 排在前面
+                        else if (indexB !== -1) {
+                            return 1;
+                        }
+                        // 如果两个元素都不在 sortList 中，按原有顺序排列
+                        return 0;
+                    });
+
                     /*
                     for (var i = 0; i < lib.config.all.characters.length; i++) {
                         packlist.add(lib.config.all.characters[i]);
