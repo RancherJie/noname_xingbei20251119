@@ -935,7 +935,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 group: 'sanMiaoYuanZe_discard',
                 subSkill:{
                     discard:{
-                        trigger:{global: "loseBefore"},
+                        trigger:{global: "loseEnd"},
                         direct: true,
                         filter: function (event, player) {
                             return event.player.side==player.side&&event.player!=player &&((event.type=='discard'&&(event.getParent().showCards||event.getParent().showHiddenCards)) || (event.type=='use'));
