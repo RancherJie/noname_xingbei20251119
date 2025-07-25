@@ -1712,7 +1712,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.storage.extraXingDong.push({
                         xingDong:'gongJi',
                         bool:true,
-                        prompt:'妖精秘法：攻击行动',
+                        prompt:'妖精秘术：攻击行动',
                     });
                 },
                 subSkill:{
