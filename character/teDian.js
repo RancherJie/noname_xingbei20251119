@@ -2599,7 +2599,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content: async function(event, trigger, player) {
                     await event.targets[0].changeZhiLiao(1);
-                    player.skip('xingDong');
+                    //player.skip('xingDong');
+                    trigger.xuRuo=true;
                 },
             },
             xiangYongMoDan: {
