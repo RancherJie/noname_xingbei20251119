@@ -3865,6 +3865,11 @@ div:not(.handcards) > .card > .info > span,
 	opacity: 1;
 }
 
+#arena.observe .handcards > .card {
+	background:url('../../theme/style/cardback/image/xingBei1.png');
+	background-size: contain;
+}
+
 .card {
 	color: rgba(0, 0, 0, 0.3);
 	text-shadow: none;

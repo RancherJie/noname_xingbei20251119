@@ -983,6 +983,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 type:'faShu',
                 enable:'faShu',
                 filter:function(event,player){
+                    if(player.storage.wuXiShuFu) return false;
                     var bool1=player.canBiShaShuiJing();
                     var bool2=game.hasPlayer(function(current){
                         return lib.skill.wuXiShuFu.filterTarget('',player,current);
@@ -997,6 +998,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.removeBiShaShuiJing();
                     'step 1'
                     target.addSkill('wuXiShuFu_xiaoGuo')
+                    player.storage.wuXiShuFu=true;
+                    target.storage.wuXiShuFuPlayer=player;
                     'step 2'
 					target.addMark('wuXiShuFu_xiaoGuo');
                 },
@@ -1052,6 +1055,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 player.draw(event.num); 
                             }
                             'step 2'
+                            delete player.storage.wuXiShuFuPlayer.storage.wuXiShuFu;
+                            delete player.storage.wuXiShuFuPlayer;
                             player.removeZhiShiWu('wuXiShuFu_xiaoGuo');
                             'step 3'
                             if(player.hasExpansions('_xuRuo')){
@@ -7129,7 +7134,20 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.removeZhiShiWu('douQi');
                     trigger.wuFaYingZhan();
                     'step 1'
-                    player.faShuDamage(player.countZhiShiWu('douQi'),player);
+                    //player.faShuDamage(player.countZhiShiWu('douQi'),player);
+                },
+                group:'qiJueBengJi_gongJiJieShu',
+                subSkill:{
+                    gongJiJieShu:{
+                        trigger:{player:'gongJiAfter'},
+                        direct:true,
+                        filter:function(event,player){
+                            return event.customArgs.qiJueBengJi;
+                        },
+                        content:function(){
+                            player.faShuDamage(player.countZhiShiWu('douQi'),player);
+                        }
+                    },
                 },
                 check:function(event,player){
                     if(event.canYingZhan==false) return false;

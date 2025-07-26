@@ -10561,7 +10561,7 @@ export class Library {
 					lastDo:true,
 					trigger:{player:'xingDongBefore'},
 					filter:function(event,player){
-						return event.xuRuo==true;
+						return event.xuRuo==true||event.getParent().xuRuo==true;
 					},
 					content:function(){
 						event.trigger('xingDongSkipped');
