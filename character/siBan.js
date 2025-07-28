@@ -126,7 +126,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         content:function(){
                             'step 0'
                             if(player.countCards('h')>4){
-                                player.chooseToDiscard(4,'h',true);
+                                player.chooseToDiscard(player.countCards('h')-4,'h',true);
                             }else if(player.countCards('h')<4){
                                 player.draw(4-player.countCards('h'));
                             }
