@@ -9408,7 +9408,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             wenYi:"[法术]瘟疫",
             wenYi_info:"<span class='tiaoJian'>(弃1张地系牌[展示])</span>对所有其他角色各造成1点法术伤害③；<span class='tiaoJian'>(若因此造成士气下降)</span>回合结束时，你+1[治疗]。",
             siWangZhiChu:"[法术]死亡之触",
-            siWangZhiChu_info:"<span class='tiaoJian'>(移除你的X[治疗]并弃Y张同系牌[展示]，a，b的数值由你决定，但每项最少为2)</span>对目标角色造成(X+Y-3)点伤害③，不能和【不朽】同时发动。",
+            siWangZhiChu_info:"<span class='tiaoJian'>(移除你的X[治疗]并弃Y张同系牌[展示]，X，Y的数值由你决定，但每项最少为2)</span>对目标角色造成(X+Y-3)点伤害③，不能和【不朽】同时发动。",
             siWangZhiChu_backup:"[法术]死亡之触",
             juDuXinXing:"[法术]剧毒新星",
             juDuXinXing_info:"[宝石]对其他角色各造成2点法术伤害③，你+1[治疗]。",
