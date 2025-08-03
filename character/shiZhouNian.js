@@ -21,7 +21,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shengNv:['shengNv_name','shengGroup',3,['bingShuangDaoYan','zhiLiaoShu','zhiYuZhiGuang','lianMin','shengLiao'],],
             tianShi:['tianShi_name','shengGroup',3,['fengZhiJieJing','tianShiZhuFu','tianShiJiBan','tianShiZhiQiang','tianShiZhiGe','shenZhiBiHu'],],
             moFaShaoNv:['moFaShaoNv_name','yongGroup',3,['moBaoChongJi','moDanZhangWo','moDanRongHe','huiMieFengBao'],],
-            moJianShi:['moJianShi_name','huanGroup','3/4',['xiuLuoLianZhan','anYingNingJu','anYingZhiLi','anYingKangJu','anYingLiuXing','huanQuanZhengChan'],],
+            moJianShi:['moJianShi_name','huanGroup','3/4',['xiuLuoLianZhan','anYingNingJu','anYingZhiLi','anYingKangJu','anYingLiuXing','huangQuanZhengChan'],],
             shengQiangQiShi:['shengQiangQiShi_name','shengGroup','3/4',['shenShengXinYang','huiYao','chengJie','shengJi','tianQiang','diQiang','shengGuangQiYu'],],
             yuanSuShi:['yuanSuShi_name','yongGroup','3/4',['yuanSuXiShou','yuanSuDianRan','yunShi','bingDong','huoQou','fengRen','leiJi','yueGuang','yuanSu'],],
             maoXianJia:['maoXianJia_name','huanGroup','3/4',['qiZha','qiangYun','diXiaFaZe','maoXianJiaTianTang','touTianHuanRi'],],
@@ -3517,7 +3517,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 					},
 				},
             },
-            huanQuanZhengChan:{
+            huangQuanZhengChan:{
                 usable:1,
                 trigger:{player:'gongJiBefore'},
                 filter:function(event,player){
@@ -3526,16 +3526,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content:function(){
                     player.removeBiShaBaoShi();
-                    trigger.customArgs.huanQuanZhengChan=true;
+                    trigger.customArgs.huangQuanZhengChan=true;
                     trigger.wuFaYingZhan();
                 },
-                group:'huanQuanZhengChan_mingZhong',
+                group:'huangQuanZhengChan_mingZhong',
                 subSkill:{
                     mingZhong:{
                         trigger:{source:'gongJiMingZhong'},
                         forced:true,
                         filter:function(event,player){
-                            return event.customArgs.huanQuanZhengChan==true;
+                            return event.customArgs.huangQuanZhengChan==true;
                         },
                         content:function(){
                             'step 0'
@@ -9424,8 +9424,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             anYingKangJu_info:"在你的行动阶段你始终不能使用法术牌。",
             anYingLiuXing:"[法术]暗影流星",
             anYingLiuXing_info:"<span class='tiaoJian'>(仅【暗影形态】下发动，弃2张法术牌[展示])</span>对目标角色造成2点法术伤害③；<span class='tiaoJian'>(若你额外移除我方【战绩区】2星石)</span>[重置]脱离【暗影形态】，你+1[宝石]。",
-            huanQuanZhengChan:"[响应]黄泉震颤[回合限定]",
-            huanQuanZhengChan_info:"[宝石]<span class='tiaoJian'>(主动攻击前发动①)</span>本次攻击对手不能应战，<span class='tiaoJian'>(若命中②)</span>你将手牌补至上限[强制]，然后弃2张牌。",
+            huangQuanZhengChan:"[响应]黄泉震颤[回合限定]",
+            huangQuanZhengChan_info:"[宝石]<span class='tiaoJian'>(主动攻击前发动①)</span>本次攻击对手不能应战，<span class='tiaoJian'>(若命中②)</span>你将手牌补至上限[强制]，然后弃2张牌。",
 
             //血色剑灵
             xueSeJingJi:"[被动]血色荆棘",
