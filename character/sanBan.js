@@ -21,7 +21,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             san_maoXianJia:['maoXianJia_name','huanGroup','3/4',['qiZha','qiangYun','diXiaFaZe','san_maoXianJiaTianTang','touTianHuanRi'],['character:maoXianJia']],
             san_xianZhe:['xianZhe_name','yongGroup',4,['san_zhiHuiFaDian','faShuFanTan','moDaoFaDian','shengJieFaDian'],['character:xianZhe']],
             san_lingHunShuShi:['lingHunShuShi_name','huanGroup','4/5',["lingHunTunShi","san_lingHunZhaoHuan",'lingHunZhuanHuan',"san_lingHunJingXiang","lingHunZhenBao","lingHunFuYu","lingHunLianJie","lingHunZengFu","huangSeLingHun","lanSeLingHun"],['character:lingHunShuShi']],
-            san_nvWuShen:['nvWuShen_name','shengGroup','3/4',['shenShengZhuiJi','zhiXuZhiYin','san_hePingXingZhe','san_junShenWeiGuan','san_yingLingZhaoHuan'],['character:nvWuShen']],
+            san_nvWuShen:['nvWuShen_name','shengGroup','3/4',['shenShengZhuiJi','zhiXuZhiYin','san_hePingXingZhe','san_junShenWeiGuang','san_yingLingZhaoHuan'],['character:nvWuShen']],
             san_yingLingRenXing:['yingLingRenXing_name','yongGroup',4,['zhanWenZhangWo','nuHuoYaZhi','zhanWenSuiJi','moWenRongHe','san_fuWenGaiZao','shuangChongHuiXiang','zhanWen','moWen'],['character:yingLingRenXing']],
             san_moQiang:['moQiang_name','huanGroup',4,['san_anZhiJieFang','huanYingXingChen','heiAnShuFu','anZhiZhangBi','chongYing','qiHeiZhiQiang'],['character:moQiang']],
             san_yinYouShiRen:['yinYouShiRen_name','huanGroup','4/5',['san_chenLunXieZouQu','san_buXieHeXian','geYongTianFu','baoFengQianZouQu','san_yongHengYueZhangX','san_xiWangFuGeQu','san_lingGan'],['character:yinYouShiRen']],
@@ -286,7 +286,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                 }
             },
-            san_junShenWeiGuan:{
+            san_junShenWeiGuang:{
                 forced:true,
                 trigger:{player:'phaseBegin'},
                 filter:function(event,player){
@@ -1105,8 +1105,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 
             san_hePingXingZhe:"[被动]和平行者",
             san_hePingXingZhe_info:"<span class='tiaoJian'>(发动【英灵召唤】后强制触发[强制])</span>[横置]，转入【英灵形态】；<span class='tiaoJian'>(每当你执行主动攻击时发动①)</span>[重置]脱离【英灵形态】。",
-            san_junShenWeiGuan:"[被动]军神威光",
-            san_junShenWeiGuan_info:"<span class='tiaoJian'>(回合开始时，若你处于【英灵形态】)</span>选择以下1项发动：<br>·你+1[治疗]，[重置]脱离【英灵形态】；<br>·<span class='tiaoJian'>(移除我方【战绩区】2星石)</span>你无视上限+2[治疗]。",
+            san_junShenWeiGuang:"[被动]军神威光",
+            san_junShenWeiGuang_info:"<span class='tiaoJian'>(回合开始时，若你处于【英灵形态】)</span>选择以下1项发动：<br>·你+1[治疗]，[重置]脱离【英灵形态】；<br>·<span class='tiaoJian'>(移除我方【战绩区】2星石)</span>你无视上限+2[治疗]。",
             san_yingLingZhaoHuan:"[响应]英灵召唤",
             san_yingLingZhaoHuan_info:"[水晶]<span class='tiaoJian'>(攻击命中时发动②)</span>本次攻击伤害额外+1，<span class='tiaoJian'>(若你额外弃置1张法术牌[展示])</span>本次攻击伤害额外+1。",
 		
