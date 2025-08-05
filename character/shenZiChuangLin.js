@@ -246,7 +246,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 subSkill: {
                     mod:{
-                        priority:-1,
+                        priority:-1,//mod技能生效也分优先级
                         mod:{
                             cardType:function(card,player,type){
                                 if(card.name=='moRen'||card.name=='yiRen') return 'gongJi';

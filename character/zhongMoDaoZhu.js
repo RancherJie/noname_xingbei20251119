@@ -275,6 +275,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 group:['shiShuX_yiShiWeiJing','shiShuX_yinJiBianJian','shiShuX_mod','shiShuX_cardsDiscardEnd'],
                 subSkill:{
                     mod:{
+                        priority:-1,//mod技能生效也分优先级
                         mod:{
                             cardType:function(card,player,type){
                                 if(card.name=='shiShuCard') return 'gongJi';
