@@ -292,7 +292,7 @@ export default () => {
 					}
 					//22选将框分配
 					var list=get.characters();
-
+					list=get.characterGets(list);
 					event.list=list;
 					
 
@@ -569,6 +569,7 @@ export default () => {
 					ui.me.appendChild(ui.fakeme);
 
 					var list=get.characters();
+					list=get.characterGets(list);
 					event.list=list;
 
 					var characterChoice=list.randomGets(choose_number);
@@ -2578,6 +2579,7 @@ export default () => {
 					}
 
 					event.allCharacterList=get.charactersOL();
+					event.allCharacterList=get.characterGets(event.allCharacterList);
 					event.characterList=event.allCharacterList.randomRemove(4);
 					game.log('开局酒馆角色：',event.characterList);
 					event.banList=[event.red_list[0],event.blue_list[0]];
