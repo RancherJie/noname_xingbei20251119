@@ -2874,11 +2874,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var result=await next.forResult();
                     event.result={
                         bool:result.bool,
-                        cost_data:result.links[0],
+                        cost_data:result.links,
                     };
                 },
                 content: async function(event, trigger, player) {
-                    await player.removeZhanJi(event.cost_data, 1);
+                    await player.removeZhanJi(event.cost_data[0], 1);
                     if(trigger.card.hasDuYou('lieFengJi')){
                         player.logSkill('lieFengJi');
                         trigger.wuFaShengDun();
@@ -3248,7 +3248,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             qingMu:"[被动]倾慕",
             qingMu_info:"<span class='tiaoJian'>(若【剑之魔女】在场)</span>你无法发动【剑守誓言】，你获得【剑之魔女】的【剑影*断念】、【梦想剑】。",
             fengZhiJian:"[响应]风之剑",
-            fengZhiJian_info:"<span class='tiaoJian'>(你使用技类命格牌作为主动攻击打出时，移除我方【战绩区】1星石)</span>视为你发动盖牌上的剑圣的独有技。",
+            fengZhiJian_info:"<span class='tiaoJian'>(你使用技类命格牌作为主动攻击打出时，移除我方【战绩区】1星石)</span>视为你发动该牌上的剑圣的独有技。",
             jianShouShiYan:"[响应]剑守誓言",
             jianShouShiYan_info:"<span class='tiaoJian'>(你有主动攻击命中②或任意一方【星杯区】星杯数增加的回合结束后)</span>弃置牌堆顶(X+1)张牌[展示]，X为双方【星杯区】星杯数之和，你可选择其中1张加入你手牌。<span class='tiaoJian'>(若弃牌中有法术牌)</span>你+2[水晶]，立即执行1个你的额外回合，该回合你的攻击伤害额外+1，永久将你的角色卡替换为【风之剑圣】。",
             jianCanYing:"[响应]剑残影[回合限定]",
