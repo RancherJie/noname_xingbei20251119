@@ -7592,13 +7592,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.removeZhiShiWu('xinYang',event.num);
                 },
                 content:function(){
-                    if(target.countCards('h')>4){
-                        target.chooseToDiscard(true,'h',target.countCards('h')-4);
-                    }else if(target.countCards('h')<4&&target.getHandcardLimit()>=4){
-                        target.drawTo(4);
-                    }else if(target.countCards('h')<4&&target.getHandcardLimit()<4&&target.countCards('h')<target.getHandcardLimit()){
-                        target.drawTo(target.getHandcardLimit());
-                    }
+                    target.tiaoZhengShouPai(4);
                 },
                 contentAfter:function(){
                     'step 0'

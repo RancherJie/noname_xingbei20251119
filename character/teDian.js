@@ -1414,13 +1414,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content:async function(event,trigger,player){
                     var target=event.target;
-                    if(target.countCards('h')>4){
-                        await target.chooseToDiscard(true,'h',target.countCards('h')-4);
-                    }else if(target.countCards('h')<4&&target.getHandcardLimit()>=4){
-                        await target.drawTo(4);
-                    }else if(target.countCards('h')<4&&target.getHandcardLimit()<4&&target.countCards('h')<target.getHandcardLimit()){
-                        await target.drawTo(target.getHandcardLimit());
-                    }
+                    await target.tiaoZhengShouPai(4);
                 },
                 contentAfter:async function(event,trigger,player){
                     await player.changeXingBei(1);
@@ -1500,13 +1494,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content:async function(event,trigger,player){ 
                     var target=event.target;
-                    if(target.countCards('h')>4){
-                        await target.chooseToDiscard(true,'h',target.countCards('h')-4);
-                    }else if(target.countCards('h')<4&&target.getHandcardLimit()>=4){
-                        await target.drawTo(4);
-                    }else if(target.countCards('h')<4&&target.getHandcardLimit()<4&&target.countCards('h')<target.getHandcardLimit()){
-                        await target.drawTo(target.getHandcardLimit());
-                    }
+                    await target.tiaoZhengShouPai(4);
                 },
                 contentAfter:async function(event,trigger,player){
                     await player.changeXingBei(1);
