@@ -11414,6 +11414,14 @@ export class Player extends HTMLDivElement {
 		return this.addToExpansion(cards,source,'gain2').set('gaintag',[fengYin]);
 	}
 
+	tiaoZhengShouPai(num){
+		if(typeof num!='number' || !num) num=4;
+		var next=game.createEvent('tiaoZhengShouPai',false);
+		next.player=this;
+		next.num=num;
+		next.setContent('tiaoZhengShouPai');
+		return next;
+	}
 	
 
 	$drawAuto(cards, target) {
