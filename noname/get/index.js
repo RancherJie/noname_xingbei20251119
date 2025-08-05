@@ -13,7 +13,6 @@ import security from "../util/security.js";
 import { CodeSnippet, ErrorManager } from "../util/error.js";
 
 import { GetCompatible } from "./compatible.js";
-import { listenerCount } from "process";
 
 export class Get extends GetCompatible {
 	is = new Is();
