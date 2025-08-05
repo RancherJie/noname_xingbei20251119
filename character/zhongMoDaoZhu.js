@@ -272,10 +272,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             shiShu:{},
             shiShuX:{
-                group:['shiShuX_yiShiWeiJing','shiShuX_yinJiBianJian','shiShuX_mod'],
+                group:['shiShuX_yiShiWeiJing','shiShuX_yinJiBianJian','shiShuX_mod','shiShuX_cardsDiscardEnd'],
                 subSkill:{
                     mod:{
-                        priority:-1,
                         mod:{
                             cardType:function(card,player,type){
                                 if(card.name=='shiShuCard') return 'gongJi';
@@ -377,7 +376,41 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             game.log(player,`获得了${gains.length}张牌`);
                             await player.gain(gains, "draw");
                         }
-                    }
+                    },
+                    cardsDiscardEnd:{
+                        trigger:{global:'cardsDiscardEnd'},
+                        direct:true,
+                        getIndex(event, player) {
+							const cards = [];
+							for(let i = 0; i < event.cards.length; i++) {
+                                if(get.name(event.cards[i]) == 'shiShuCard') {
+                                    if(event.cards[i].destroyed) continue;
+                                    cards.push(event.cards[i]);
+                                }
+                            }
+							return cards;
+						},
+                        filter: function(event,player){
+                            var bool=false;
+                            for(var card of event.cards){
+                                if(get.name(card)=='shiShuCard'){
+                                    bool=true;
+                                    break;
+                                }
+                            }
+                            
+                            return bool;
+                        },
+                        content: async function(event, trigger, player){
+                            trigger.cards.remove(event.indexedData);
+                            game.broadcastAll(function(card){
+                                card.fix();
+                                card.remove();
+                                card.destroyed = true;
+                            }, event.indexedData);
+                            game.log(event.indexedData, "被移除了");
+                        }
+                    },
                 }
             },
             guJinHuzheng:{
@@ -667,6 +700,64 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             wangQuanBaoZhu:{},
             wangQuanBaoZhuX:{
                 global:['wangQuanBaoZhuX_biaoJi','wangQuanBaoZhuX_shengLvWeiYa','wangQuanBaoZhuX_shenYanYongZan1','wangQuanBaoZhuX_shenYanYongZan2'],
+                wangQuanBaoZhu:async function (player,cards,source,type='fangZhi'){
+                    var next=game.createEvent('wangQuanBaoZhu');
+                    next.setContent('addToExpansion');
+                    next.set('player',player);
+                    next.set('cards',cards);
+                    next.set('gaintag',['wangQuanBaoZhuX_biaoJi']);
+                    next.set('animate','gain2');
+                    next.set('source',source);
+                    next.set('log',true);
+                    next.set('type',type);
+                    next.getd = function (player, key, position) {
+                        if (!position) position = ui.discardPile;
+                        if (!key) key = "cards";
+                        var cards = [],
+                            event = this;
+                        game.checkGlobalHistory("cardMove", function (evt) {
+                            if (evt.name != "lose" || evt.position != position || evt.getParent() != event) return;
+                            if (player && player != evt.player) return;
+                            cards.addArray(evt[key]);
+                        });
+                        return cards;
+                    };
+                    next.getl = function (player) {
+                        const that = this;
+                        const map = {
+                            player: player,
+                            hs: [],
+                            es: [],
+                            js: [],
+                            ss: [],
+                            xs: [],
+                            cards: [],
+                            cards2: [],
+                            gaintag_map: {},
+                            vcard_map: new Map(),
+                        };
+                        player.checkHistory("lose", function (evt) {
+                            if (evt.parent == that) {
+                                map.hs.addArray(evt.hs);
+                                map.es.addArray(evt.es);
+                                map.js.addArray(evt.js);
+                                map.ss.addArray(evt.ss);
+                                map.xs.addArray(evt.xs);
+                                map.cards.addArray(evt.cards);
+                                map.cards2.addArray(evt.cards2);
+                                for (let key in evt.gaintag_map) {
+                                    if (!map.gaintag_map[key]) map.gaintag_map[key] = [];
+                                    map.gaintag_map[key].addArray(evt.gaintag_map[key]);
+                                }
+                                evt.vcard_map.forEach((value, key) => {
+                                    map.vcard_map.set(key, value);
+                                });
+                            }
+                        });
+                        return map;
+                    };
+                    return next;
+                },
                 subSkill:{
                     biaoJi:{
                         intro:{
@@ -676,9 +767,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         markimage:'image/card/zhuanShu/wangQuanBaoZhu.png',
                     },
                     shengLvWeiYa:{
-                        trigger:{player:'addToExpansionAfter'},
+                        trigger:{player:'wangQuanBaoZhuAfter'},
                         filter:function (event,player){
-                            return event.gaintag.includes('wangQuanBaoZhuX_biaoJi')&&player.getExpansions('wangQuanBaoZhuX_biaoJi').length>0;
+                            return player.getExpansions('wangQuanBaoZhuX_biaoJi').length>0;
+                            //return event.gaintag.includes('wangQuanBaoZhuX_biaoJi')&&player.getExpansions('wangQuanBaoZhuX_biaoJi').length>0;
                         },
                         forced:true,
                         content:async function (event,trigger,player){
@@ -691,7 +783,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                     return 8-get.value(card);
                                 });
                                 next.set('type',type);
-                                next.set('prompt','请选择一张与【王权宝珠】上牌种类相同的牌,弃置之[展示],否则摸2张牌，铸律者阵营士气-1，若【圣遗物】数<1移除此卡');
+                                next.set('prompt',`请选择一张与【王权宝珠】上牌种类<span class='tiaoJian'>(${get.translation(type)||'无类别'})</span>相同的牌,弃置之[展示],否则摸2张牌，铸律者阵营士气-1，若【圣遗物】数<1移除此卡`);
                                 var result=await next.forResult();
                             }else var result={bool:false};
                             
@@ -714,14 +806,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             return player.getExpansions('wangQuanBaoZhuX_biaoJi').length>0;
                         },
                         content:async function (event,trigger,player){
-                            await player.getNext().addToExpansion(player.getExpansions('wangQuanBaoZhuX_biaoJi'),player,'gain2').set('type','zhuanYi').set('gaintag',['wangQuanBaoZhuX_biaoJi']).set('special',true); 
+                            //await player.getNext().addToExpansion(player.getExpansions('wangQuanBaoZhuX_biaoJi'),player,'gain2').set('type','zhuanYi').set('gaintag',['wangQuanBaoZhuX_biaoJi']).set('special',true); 
+                            await lib.skill.wangQuanBaoZhuX.wangQuanBaoZhu(player.getNext(),player.getExpansions('wangQuanBaoZhuX_biaoJi'),player,'zhuanYi');
                         },
                     },
                     shenYanYongZan2:{
-                        trigger:{player:'addToExpansionEnd'},
+                        trigger:{player:'wangQuanBaoZhuEnd'},
                         forced:true,
                         filter:function (event,player){
-                            return event.gaintag.includes('wangQuanBaoZhuX_biaoJi')&&player.getExpansions('wangQuanBaoZhuX_biaoJi').length>0&&event.type=='zhuanYi'&&player.name=='zhuLvZhe';
+                            return player.getExpansions('wangQuanBaoZhuX_biaoJi').length>0&&event.type=='zhuanYi'&&player.name=='zhuLvZhe';
+                            //return event.gaintag.includes('wangQuanBaoZhuX_biaoJi')&&player.getExpansions('wangQuanBaoZhuX_biaoJi').length>0&&event.type=='zhuanYi'&&player.name=='zhuLvZhe';
                         },
                         content:async function (event,trigger,player){
                             var choiceList=["将角色卡替换为【红衣主教】，然后移除此卡","<span class='tiaoJian'>(移除X点</span><span class='hong'>【银制子弹】</span><span class='tiaoJian'>，X<3)</span>目标角色摸X张牌[强制]，然后移除此卡"];
@@ -785,7 +879,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     await player.addZhiShiWu('shengYiWu',2);
                     if(!player.hasSkill('wangQuanBaoZhuX')) player.addSkill('wangQuanBaoZhuX');
                     for(var current of game.players) current.storage.wangQuanBaoZhuX_player=player;
-                    await player.addToExpansion(event.cards,player,'gain2').set('type','fangZhi').set('gaintag',['wangQuanBaoZhuX_biaoJi']).set('special',true);
+                    await lib.skill.wangQuanBaoZhuX.wangQuanBaoZhu(player,event.cards,player,'gain2');
+                    //await player.addToExpansion(event.cards,player,'gain2').set('type','fangZhi').set('gaintag',['wangQuanBaoZhuX_biaoJi']).set('special',true);
                 },
                 group:'xinYangChongZhu_teShu',
                 subSkill:{
@@ -1346,8 +1441,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         if(cards.length+player.countExpansions('yuYan')>6){
                             cards=cards.randomGets(6-player.getExpansions('yuYan').length);
                         }
-                        game.log(player,`将${cards.length}张牌 加入`,`#g【预言】`);
-                        await player.addToExpansion(cards,'draw').set('gaintag',["yuYan"]).set('special',true);
+                        await lib.skill.yuYan.add(player,cards);
                     }
                     
                 },
@@ -1406,8 +1500,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                     else{
                         let cards=get.cards();
-                        game.log(player,`将${cards.length}张牌加入`,`#g【预言】`);
-                        await player.addToExpansion(cards,'draw').set('gaintag',["yuYan"]).set('special',true);
+                        await lib.skill.yuYan.add(player,cards);
                         game.log(player,`将1张牌加入手牌`);
                         await player.gain(card);
                     }
@@ -1452,8 +1545,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         return 8-get.value(card);
                     }).forResultCards();
                     cards=cards.randomSort();
-                    game.log(player,`将${cards.length}张牌加入`,`#g【预言】`);
-                    await player.addToExpansion(cards,'draw').set('gaintag',["yuYan"]).set('special',true);
+                    await lib.skill.yuYan.add(player,cards);
 
                     player.addGongJiOrFaShu();
                     player.removeSkill('fangZhu_wuXian');
@@ -1497,6 +1589,62 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 }
             },
             yuYan:{
+                add:async function(player,cards){
+                    game.log(player,`将${cards.length}张牌加入`,`#g【预言】`);
+                    var next=game.createEvent('yuYanAdd',false);
+                    next.setContent('addToExpansion');
+                    next.set('player',player);
+                    next.set('cards',cards);
+                    next.set('gaintag',["yuYan"]);
+                    next.set('animate','draw');
+                    next.getd = function (player, key, position) {
+                        if (!position) position = ui.discardPile;
+                        if (!key) key = "cards";
+                        var cards = [],
+                            event = this;
+                        game.checkGlobalHistory("cardMove", function (evt) {
+                            if (evt.name != "lose" || evt.position != position || evt.getParent() != event) return;
+                            if (player && player != evt.player) return;
+                            cards.addArray(evt[key]);
+                        });
+                        return cards;
+                    };
+                    next.getl = function (player) {
+                        const that = this;
+                        const map = {
+                            player: player,
+                            hs: [],
+                            es: [],
+                            js: [],
+                            ss: [],
+                            xs: [],
+                            cards: [],
+                            cards2: [],
+                            gaintag_map: {},
+                            vcard_map: new Map(),
+                        };
+                        player.checkHistory("lose", function (evt) {
+                            if (evt.parent == that) {
+                                map.hs.addArray(evt.hs);
+                                map.es.addArray(evt.es);
+                                map.js.addArray(evt.js);
+                                map.ss.addArray(evt.ss);
+                                map.xs.addArray(evt.xs);
+                                map.cards.addArray(evt.cards);
+                                map.cards2.addArray(evt.cards2);
+                                for (let key in evt.gaintag_map) {
+                                    if (!map.gaintag_map[key]) map.gaintag_map[key] = [];
+                                    map.gaintag_map[key].addArray(evt.gaintag_map[key]);
+                                }
+                                evt.vcard_map.forEach((value, key) => {
+                                    map.vcard_map.set(key, value);
+                                });
+                            }
+                        });
+                        return map;
+                    };
+                    return next;
+                },
                 intro:{
                     name:'预言',
                     mark:function(dialog,storage,player){

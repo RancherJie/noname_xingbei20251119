@@ -452,7 +452,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             }
 							return cards;
 						},
-                        forced: true,
                         filter: function(event,player){
                             var bool=false;
                             for(var card of event.cards){
@@ -750,12 +749,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 0'
                     player.removeBiShaShuiJing();
                     'step 1'
-                    var num=player.countCards('h');
-                    if(num>4){
-                        player.chooseToDiscard(num-4,true);
-                    }else if(num<4){
-                        player.draw(4-num);
-                    }
+                    player.tiaoZhengShouPai(4);
                     'step 2'
                     var list=get.zhanJi(player.side);
                     if(list.length>0){
@@ -793,12 +787,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     });
                     'step 5'
                     var target=result.targets[0];
-                    var num=target.countCards('h');
-                    if(num>4){
-                        target.chooseToDiscard(num-4,true);
-                    }else if(num<4){
-                        target.draw(4-num);
-                    }
+                    target.tiaoZhengShouPai(4);
                 },
                 check:function(event,player){
                     if(player.countCards('h')==4) return false;
