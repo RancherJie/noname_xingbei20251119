@@ -11,7 +11,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
         },
 		character:{
             si_moFaShaoNv:['moFaShaoNv_name','yongGroup',3,['si_moBaoChongJi','moDanZhangWo','moDanRongHe','huiMieFengBao'],['character:moFaShaoNv']],
-            si_moJianShi:['moJianShi_name','huanGroup','3/4',['xiuLuoLianZhan','anYingNingJu','anYingZhiLi','anYingKangJu','san_anYingLiuXing','si_huanQuanZhengChan'],['character:moJianShi']],
+            si_moJianShi:['moJianShi_name','huanGroup','3/4',['xiuLuoLianZhan','anYingNingJu','anYingZhiLi','anYingKangJu','san_anYingLiuXing','si_huangQuanZhengChan'],['character:moJianShi']],
 		},
 
         characterIntro: {
@@ -103,7 +103,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 				},
             },
 
-            si_huanQuanZhengChan:{
+            si_huangQuanZhengChan:{
                 usable:1,
                 trigger:{player:'gongJiBefore'},
                 filter:function(event,player){
@@ -112,24 +112,20 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content:function(){
                     player.removeBiShaBaoShi();
-                    trigger.customArgs.huanQuanZhengChan=true;
+                    trigger.customArgs.huangQuanZhengChan=true;
                     trigger.wuFaYingZhan();
                 },
-                group:'si_huanQuanZhengChan_mingZhong',
+                group:'si_huangQuanZhengChan_mingZhong',
                 subSkill:{
                     mingZhong:{
                         trigger:{source:'gongJiMingZhong'},
                         forced:true,
                         filter:function(event,player){
-                            return event.customArgs.huanQuanZhengChan==true;
+                            return event.customArgs.huangQuanZhengChan==true;
                         },
                         content:function(){
                             'step 0'
-                            if(player.countCards('h')>4){
-                                player.chooseToDiscard(4,'h',true);
-                            }else if(player.countCards('h')<4){
-                                player.draw(4-player.countCards('h'));
-                            }
+                            player.tiaoZhengShouPai(4);
                         }
                     }
                 },
@@ -161,8 +157,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 
             san_anYingLiuXing:"[法术]暗影流星",
             san_anYingLiuXing_info:"<span class='tiaoJian'>(仅【暗影形态】下发动，弃2张法术牌[展示])</span>对目标角色造成2点法术伤害③。",
-            si_huanQuanZhengChan:"[响应]黄泉震颤[回合限定]",
-            si_huanQuanZhengChan_info:"[宝石]<span class='tiaoJian'>(主动攻击前发动①)</span>本次攻击对手不能应战，<span class='tiaoJian'>(若命中②)</span>你将手牌调整为4[强制]。",
+            si_huangQuanZhengChan:"[响应]黄泉震颤[回合限定]",
+            si_huangQuanZhengChan_info:"[宝石]<span class='tiaoJian'>(主动攻击前发动①)</span>本次攻击对手不能应战，<span class='tiaoJian'>(若命中②)</span>你将手牌调整为4[强制]。",
 		},
 	};
 });

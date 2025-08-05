@@ -12130,7 +12130,7 @@ export const Content = {
 				var list=_status.event.listX;
 				if(target.side==player.side){
 					if(list.includes('_xuRuo')) return '_xuRuo';
-					for(var xiaoGuo of game.jiChuXiaoGuo['fengYinShi']){
+					for(var xiaoGuo of game.jiChuXiaoGuo['fengYinShi_xiaoGuo']){
 						if(list.includes(xiaoGuo)){
 							return xiaoGuo;
 						}
@@ -12140,12 +12140,13 @@ export const Content = {
 					if(list.includes('_shengDun')){
 						return '_shengDun';
 					}
-					for(var xiaoGuo of game.jiChuXiaoGuo['qiDaoShi']){
+					for(var xiaoGuo of game.jiChuXiaoGuo['qiDaoShi_xiaoGuo']){
 						if(list.includes(xiaoGuo)){
 							return xiaoGuo;
 						}
 					}
 				}
+				return list[0];
 			}).set('targetX',target).set('listX',list);
 		}
 		'step 1'
@@ -12186,7 +12187,7 @@ export const Content = {
 				var list=_status.event.listX;
 				if(target.side==player.side){
 					if(list.includes('_xuRuo')) return '_xuRuo';
-					for(var xiaoGuo of game.jiChuXiaoGuo['fengYinShi']){
+					for(var xiaoGuo of game.jiChuXiaoGuo['fengYinShi_xiaoGuo']){
 						if(list.includes(xiaoGuo)){
 							return xiaoGuo;
 						}
@@ -12196,12 +12197,13 @@ export const Content = {
 					if(list.includes('_shengDun')){
 						return '_shengDun';
 					}
-					for(var xiaoGuo of game.jiChuXiaoGuo['qiDaoShi']){
+					for(var xiaoGuo of game.jiChuXiaoGuo['qiDaoShi_xiaoGuo']){
 						if(list.includes(xiaoGuo)){
 							return xiaoGuo;
 						}
 					}
 				}
+				return list[0];
 			}).set('targetX',target).set('listX',list);
 		}
 		'step 1'
@@ -12229,5 +12231,205 @@ export const Content = {
 		}
 		'step 5'
 		event.trigger('removeJiChuXiaoGuo');
+	},
+	tiaoZhengShouPai: async function (event, trigger, player) {
+		var handcardsNum=player.countCards('h');
+		if(event.num>player.getHandcardLimit()) event.num=player.getHandcardLimit();
+		if(event.num<=0) return;
+		
+		if(handcardsNum!=event.num){
+			game.log(player,'的手牌数从',handcardsNum,'调整为',event.num);
+			var next=game.createEvent('tiaoZheng',false);
+			next.set('player',player);
+			if(handcardsNum<event.num){
+				var drawNum=event.num-handcardsNum;
+				next.setContent('tiaoZheng_draw');
+				next.set('num',drawNum);
+			}else if(handcardsNum>event.num){
+				var discardNum=handcardsNum-event.num;
+				next.setContent('tiaoZheng_chooseToDiscard');
+				next.set('selectCard',[discardNum,discardNum]);
+				next.set('forced',true);
+				next.set('position', 'h');
+				next.autochoose = function () {
+					if (!this.forced) return false;
+					if (typeof this.selectCard == "function") return false;
+					if (this.complexCard || this.complexSelect || this.filterOk) return false;
+					var cards = this.player.getCards(this.position);
+					if (cards.some(card => !this.filterCard(card, this.player, this))) return false;
+					var num = cards.length;
+					for (var i = 0; i < cards.length; i++) {
+						if (!lib.filter.cardDiscardable(cards[i], this.player, this)) num--;
+					}
+					return get.select(this.selectCard)[0] >= num;
+				};
+				next.ai = get.unuseful;
+				next.filterCard = lib.filter.all;
+			}
+			await next;
+		}
+	},
+	tiaoZheng_chooseToDiscard:function(){
+		"step 0"
+		if(event.autochoose()){
+			event.result={
+				bool:true,
+				autochoose:true,
+				cards:player.getCards(event.position),
+				rawcards:player.getCards(event.position),
+			}
+			for(var i=0;i<event.result.cards.length;i++){
+				if(!lib.filter.cardDiscardable(event.result.cards[i],player,event)){
+					event.result.cards.splice(i--,1);
+				}
+			}
+		}
+		else{
+			// &&!lib.filter.wuxieSwap(trigger)
+			if(get.phaseswap()) game.swapPlayerAuto(player);
+
+			event.rangecards=player.getCards(event.position);
+			for(var i=0;i<event.rangecards.length;i++){
+				if(lib.filter.cardDiscardable(event.rangecards[i],player,event)){
+					event.rangecards.splice(i--,1);
+				}
+				else{
+					event.rangecards[i].uncheck('chooseToDiscard');
+				}
+			}
+			var range=get.select(event.selectCard);
+			if(event.isMine()){
+				game.check();
+				if(event.hsskill&&!event.forced&&_status.prehidden_skills.includes(event.hsskill)){
+					ui.click.cancel();
+					return;
+				}
+				game.pause();
+				if(range[1]>1&&typeof event.selectCard!='function'){
+					event.promptdiscard=ui.create.control('AI代选',function(){
+						ai.basic.chooseCard(event.ai);
+						if(_status.event.custom&&_status.event.custom.add.card){
+							_status.event.custom.add.card();
+						}
+						for(var i=0;i<ui.selected.cards.length;i++){
+							ui.selected.cards[i].updateTransform(true);
+						}
+					});
+				}
+				if(Array.isArray(event.dialog)){
+					event.dialog=ui.create.dialog.apply(this,event.dialog);
+					event.dialog.open();
+					event.dialog.classList.add('noselect');
+				}
+				else if(event.prompt!=false){
+					var str;
+					if(typeof(event.prompt)=='string') str=event.prompt;
+					else{
+						str='请弃置';
+						if(range[0]==range[1]) str+=get.cnNumber(range[0]);
+						else if(range[1]==Infinity) str+='至少'+get.cnNumber(range[0]);
+						else str+=get.cnNumber(range[0])+'至'+get.cnNumber(range[1]);
+						str+='张';
+						if(event.position=='h'||event.position==undefined) str+='手';
+						if(event.position=='e') str+='装备';
+						str+='牌';
+					}
+					event.dialog=ui.create.dialog(str);
+					if(event.prompt2){
+						event.dialog.addText(event.prompt2,event.prompt2.length<=20);
+					}
+					if(Array.isArray(event.selectCard)){
+						event.promptbar=event.dialog.add('0/'+get.numStr(event.selectCard[1],'card'));
+						event.custom.add.card=function(){
+							_status.event.promptbar.innerHTML=
+							ui.selected.cards.length+'/'+get.numStr(_status.event.selectCard[1],'card');
+						}
+					}
+				}
+				else if(get.itemtype(event.dialog)=='dialog'){
+					event.dialog.style.display='';
+					event.dialog.open();
+				}
+			}
+			else if(event.isOnline()){
+				event.send();
+			}
+			else{
+				event.result='ai';
+			}
+		}
+		"step 1"
+		if(event.result=='ai'){
+			game.check();
+			if((ai.basic.chooseCard(event.ai)||forced)&&(!event.filterOk||event.filterOk())){
+				ui.click.ok();
+			}
+			else if(event.skill){
+				var skill=event.skill;
+				ui.click.cancel();
+				event._aiexclude.add(skill);
+				event.redo();
+				game.resume();
+			}
+			else{
+				ui.click.cancel();
+			}
+		}
+		if(event.rangecards){
+			for(var i=0;i<event.rangecards.length;i++){
+				event.rangecards[i].recheck('chooseToDiscard');
+			}
+		}
+		"step 2"
+		event.resume();
+		if(event.promptdiscard){
+			event.promptdiscard.close();
+		}
+		"step 3"
+		if(event.result.bool&&event.result.cards&&event.result.cards.length&&
+			!game.online&&event.autodelay&&!event.isMine()){
+			if(typeof event.autodelay=='number'){
+				game.delayx(event.autodelay);
+			}
+			else{
+				game.delayx();
+			}
+		}
+		"step 4"
+		if(event.logSkill&&event.result.bool&&!game.online){
+			if(typeof event.logSkill=='string'){
+				player.logSkill(event.logSkill);
+			}
+			else if(Array.isArray(event.logSkill)){
+				player.logSkill.apply(player,event.logSkill);
+			}
+		}
+		if(!game.online){
+			var next=game.createEvent('discard',false);
+			next.set('player',player);
+			next.set('cards',event.result.cards);
+			next.set('position',event.position);
+			next.set('discarder',player);
+			next.setContent('tiaoZheng_discard');
+		}
+		if(event.dialog&&event.dialog.close) event.dialog.close();
+	},
+	tiaoZheng_discard:function(){
+		"step 0"
+		event.done=player.lose(cards,event.position);
+		event.done.type='discard';
+		if(event.discarder) event.done.discarder=event.discarder;
+	},
+	tiaoZheng_draw:function(){
+		'step 0'
+		var cards;
+		if(num>0){
+			cards=get.cards(num);
+		}
+		else{
+			cards=[];
+		}
+		var next=player.gain(cards,'draw');
+		event.result=cards;
 	},
 };

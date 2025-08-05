@@ -6,7 +6,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
         characterSort:{
             sanBan:{
                 "3xing":['san_fengZhiJianSheng','san_kuangZhanShi','san_anShaZhe','san_shengNv'],
-                "3.5xing":['san_shengQiangQiShi','san_maoXianJia','san_nvWuShen'],
+                "3.5xing":['san_shengQiangQiShi','san_maoXianJia','san_nvWuShen','san_wenYiFaShi'],
                 "4xing":['san_yingLingRenXing','san_moGong','san_xianZhe','san_moQiang'],
                 "4.5xing":['san_lingHunShuShi','san_yinYouShiRen','san_yongZhe'],
                 "5xing":[],
@@ -21,11 +21,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             san_maoXianJia:['maoXianJia_name','huanGroup','3/4',['qiZha','qiangYun','diXiaFaZe','san_maoXianJiaTianTang','touTianHuanRi'],['character:maoXianJia']],
             san_xianZhe:['xianZhe_name','yongGroup',4,['san_zhiHuiFaDian','faShuFanTan','moDaoFaDian','shengJieFaDian'],['character:xianZhe']],
             san_lingHunShuShi:['lingHunShuShi_name','huanGroup','4/5',["lingHunTunShi","san_lingHunZhaoHuan",'lingHunZhuanHuan',"san_lingHunJingXiang","lingHunZhenBao","lingHunFuYu","lingHunLianJie","lingHunZengFu","huangSeLingHun","lanSeLingHun"],['character:lingHunShuShi']],
-            san_nvWuShen:['nvWuShen_name','shengGroup','3/4',['shenShengZhuiJi','zhiXuZhiYin','san_hePingXingZhe','san_junShenWeiGuan','san_yingLingZhaoHuan'],['character:nvWuShen']],
+            san_nvWuShen:['nvWuShen_name','shengGroup','3/4',['shenShengZhuiJi','zhiXuZhiYin','san_hePingXingZhe','san_junShenWeiGuang','san_yingLingZhaoHuan'],['character:nvWuShen']],
             san_yingLingRenXing:['yingLingRenXing_name','yongGroup',4,['zhanWenZhangWo','nuHuoYaZhi','zhanWenSuiJi','moWenRongHe','san_fuWenGaiZao','shuangChongHuiXiang','zhanWen','moWen'],['character:yingLingRenXing']],
             san_moQiang:['moQiang_name','huanGroup',4,['san_anZhiJieFang','huanYingXingChen','heiAnShuFu','anZhiZhangBi','chongYing','qiHeiZhiQiang'],['character:moQiang']],
             san_yinYouShiRen:['yinYouShiRen_name','huanGroup','4/5',['san_chenLunXieZouQu','san_buXieHeXian','geYongTianFu','baoFengQianZouQu','san_yongHengYueZhangX','san_xiWangFuGeQu','san_lingGan'],['character:yinYouShiRen']],
             san_yongZhe:['yongZhe_name','xueGroup','4/5',['yongZheZhiXin','san_nuHou','jinPiLiJin','san_mingJingZhiShui','tiaoXin','jinDuanZhiLi','san_siDou','nuQi','zhiXing'],['character:yongZhe']],
+            san_wenYiFaShi:['wenYiFaShi_name','huanGroup','3/4',['buXiu','shengDu','san_wenYi','siWangZhiChu','juDuXinXing'],['character:wenYiFaShi']],
 		},
 
         characterIntro: {
@@ -285,7 +286,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                 }
             },
-            san_junShenWeiGuan:{
+            san_junShenWeiGuang:{
                 forced:true,
                 trigger:{player:'phaseBegin'},
                 filter:function(event,player){
@@ -296,7 +297,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var choiceList=['你+1[治疗]','(移除我方【战绩区】2星石)，你无视上限+2[治疗]'];
                     var choices=['选项一'];
                     var list=get.zhanJi(player.side);
-                    if(list.length>=1){
+                    if(list.length>=2){
                         choices.push('选项二');
                     }
                     player.chooseControl(choices).set('prompt','军神威光：选择一项').set('choiceList',choiceList);
@@ -1041,6 +1042,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.tempBanSkill('geYongTianFu','phaseAfter');
                 }
             },
+            
+            san_wenYi:{
+                inherit:'wenYi',
+                group:[],
+            },
         },
 		
 		translate:{
@@ -1071,6 +1077,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             san_yinYouShiRen_prefix: "三版",
             san_yongZhe:"三版勇者",
             san_yongZhe_prefix: "三版",
+            san_wenYiFaShi:"三版瘟疫法师",
+            san_wenYiFaShi_prefix: "三版",
 
             san_shengJian:'[被动]圣剑',
             san_shengJian_info:"若你的主动攻击为本次行动阶段的第3次[攻击行动]，则此攻击强制命中。",
@@ -1097,8 +1105,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 
             san_hePingXingZhe:"[被动]和平行者",
             san_hePingXingZhe_info:"<span class='tiaoJian'>(发动【英灵召唤】后强制触发[强制])</span>[横置]，转入【英灵形态】；<span class='tiaoJian'>(每当你执行主动攻击时发动①)</span>[重置]脱离【英灵形态】。",
-            san_junShenWeiGuan:"[被动]军神威光",
-            san_junShenWeiGuan_info:"<span class='tiaoJian'>(回合开始时，若你处于【英灵形态】)</span>选择以下1项发动：<br>·你+1[治疗]，[重置]脱离【英灵形态】；<br>·<span class='tiaoJian'>(移除我方【战绩区】2星石)</span>你无视上限+2[治疗]。",
+            san_junShenWeiGuang:"[被动]军神威光",
+            san_junShenWeiGuang_info:"<span class='tiaoJian'>(回合开始时，若你处于【英灵形态】)</span>选择以下1项发动：<br>·你+1[治疗]，[重置]脱离【英灵形态】；<br>·<span class='tiaoJian'>(移除我方【战绩区】2星石)</span>你无视上限+2[治疗]。",
             san_yingLingZhaoHuan:"[响应]英灵召唤",
             san_yingLingZhaoHuan_info:"[水晶]<span class='tiaoJian'>(攻击命中时发动②)</span>本次攻击伤害额外+1，<span class='tiaoJian'>(若你额外弃置1张法术牌[展示])</span>本次攻击伤害额外+1。",
 		
@@ -1144,6 +1152,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             geYongTianFu_info:"游戏开始时你拥有【永恒乐章】。<span class='tiaoJian'>(每当【永恒乐章】被触发时)</span>你+1<span class='hong'>【灵感】</span>。吟游诗人不会触发【永恒乐章】的效果。",
             baoFengQianZouQu:"[响应]暴风前奏曲",
             baoFengQianZouQu_info:"<span class='tiaoJian'>(回合开始前，你移除1点</span><span class='hong'>【灵感】</span><span class='tiaoJian'>)</span>本回合无视你的【歌咏天赋】",
+
+            san_wenYi_info:"<span class='tiaoJian'>(弃1张地系牌[展示])</span>对所有其他角色各造成1点法术伤害③。",
         },
 	};
 });

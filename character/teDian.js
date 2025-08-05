@@ -1414,13 +1414,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content:async function(event,trigger,player){
                     var target=event.target;
-                    if(target.countCards('h')>4){
-                        await target.chooseToDiscard(true,'h',target.countCards('h')-4);
-                    }else if(target.countCards('h')<4&&target.getHandcardLimit()>=4){
-                        await target.drawTo(4);
-                    }else if(target.countCards('h')<4&&target.getHandcardLimit()<4&&target.countCards('h')<target.getHandcardLimit()){
-                        await target.drawTo(target.getHandcardLimit());
-                    }
+                    await target.tiaoZhengShouPai(4);
                 },
                 contentAfter:async function(event,trigger,player){
                     await player.changeXingBei(1);
@@ -1500,13 +1494,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content:async function(event,trigger,player){ 
                     var target=event.target;
-                    if(target.countCards('h')>4){
-                        await target.chooseToDiscard(true,'h',target.countCards('h')-4);
-                    }else if(target.countCards('h')<4&&target.getHandcardLimit()>=4){
-                        await target.drawTo(4);
-                    }else if(target.countCards('h')<4&&target.getHandcardLimit()<4&&target.countCards('h')<target.getHandcardLimit()){
-                        await target.drawTo(target.getHandcardLimit());
-                    }
+                    await target.tiaoZhengShouPai(4);
                 },
                 contentAfter:async function(event,trigger,player){
                     await player.changeXingBei(1);
@@ -2076,7 +2064,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             trick_ziDongTianChong:{
                 inherit: 'ziDongTianChong',
                 content:async function(event,trigger,player){
-                    var choiceList=[`[水晶]你+1<span class='hong'>【信仰】</span>或+1[治疗]，然后+1【圣煌辉光炮】`,`[宝石]你+1[水晶]，+2<span class='hong'>【信仰】</span>或+2[治疗]`];
+                    var choiceList=[`[水晶]你+1<span class='hong'>【信仰】</span>或+1[治疗]，然后+1【圣煌辉光炮】`,`[宝石]你+1[水晶]，+2<span class='hong'>【信仰】</span>或目标角色+2[治疗]`];
                     var list=['选项一'];
                     if(player.canBiShaBaoShi()){
                         list.push('选项二');
@@ -2096,9 +2084,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                     var list=['信仰','治疗'];
                     var add=await player.chooseControl(list).set('prompt','+'+num+"点<span class='hong'>【信仰】</span>或[治疗]").forResultControl();
-                    'step 3'
+
                     if(add=='治疗'){
-                        await player.changeZhiLiao(num);
+                        if(control=='选项二'){
+                            var targets=await player.chooseTarget(`选择目标角色+2[治疗]`).set('ai',function(target){
+                                var player=_status.event.player;
+                                return get.zhiLiaoEffect2(target,player,2);
+                            }).forResultTargets();
+                            var target=targets[0];
+                            await target.changeZhiLiao(2);
+                        }else await player.changeZhiLiao(num);
                     }else if(add=='信仰'){
                         await player.addZhiShiWu('xinYang',num);
                     }
@@ -2879,11 +2874,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var result=await next.forResult();
                     event.result={
                         bool:result.bool,
-                        cost_data:result.links[0],
+                        cost_data:result.links,
                     };
                 },
                 content: async function(event, trigger, player) {
-                    await player.removeZhanJi(event.cost_data, 1);
+                    await player.removeZhanJi(event.cost_data[0], 1);
                     if(trigger.card.hasDuYou('lieFengJi')){
                         player.logSkill('lieFengJi');
                         trigger.wuFaShengDun();
@@ -3179,7 +3174,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             trick_shengHuangHuiGuangPao:"[法术]圣煌辉光炮",
             trick_shengHuangHuiGuangPao_info:"<span class='tiaoJian'>(仅【圣煌形态】下可发动，移除1点</span><span class='lan'>【圣煌辉光炮】</span><span class='tiaoJian'>，移除4点</span><span class='hong'>【信仰】</span><span class='tiaoJian'>，并额外移除等同我方落后士气的</span><span class='hong'>【信仰】</span><span class='tiaoJian'>数)</span>所有角色将手牌调整为4张，我方【星杯区】+1[星杯]，然后将一方[士气]调整与另一方相同，我方所有角色各+1[治疗]。",
             trick_ziDongTianChong:"[被动]自动填充",
-            trick_ziDongTianChong_info:"<span class='tiaoJian'>(你的回合结束时，若你未执行【特殊行动】)</span>你选择以下一项发动：<br>·[水晶]你+1<span class='hong'>【信仰】</span>或+1[治疗]，然后+1<span class='lan'>【圣煌辉光炮】</span>。 <br>·[宝石]你+2<span class='hong'>【信仰】</span>或+2[治疗]。",
+            trick_ziDongTianChong_info:"<span class='tiaoJian'>(你的回合结束时，若你未执行【特殊行动】)</span>你选择以下一项发动：<br>·[水晶]你+1<span class='hong'>【信仰】</span>或+1[治疗]，然后+1<span class='lan'>【圣煌辉光炮】</span>。 <br>·[宝石]你+2<span class='hong'>【信仰】</span>或目标角色+2[治疗]。",
 
             // trick冒险家
             trick_qiZha:"[响应]欺诈",
@@ -3253,7 +3248,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             qingMu:"[被动]倾慕",
             qingMu_info:"<span class='tiaoJian'>(若【剑之魔女】在场)</span>你无法发动【剑守誓言】，你获得【剑之魔女】的【剑影*断念】、【梦想剑】。",
             fengZhiJian:"[响应]风之剑",
-            fengZhiJian_info:"<span class='tiaoJian'>(你使用技类命格牌作为主动攻击打出时，移除我方【战绩区】1星石)</span>视为你发动盖牌上的剑圣的独有技。",
+            fengZhiJian_info:"<span class='tiaoJian'>(你使用技类命格牌作为主动攻击打出时，移除我方【战绩区】1星石)</span>视为你发动该牌上的剑圣的独有技。",
             jianShouShiYan:"[响应]剑守誓言",
             jianShouShiYan_info:"<span class='tiaoJian'>(你有主动攻击命中②或任意一方【星杯区】星杯数增加的回合结束后)</span>弃置牌堆顶(X+1)张牌[展示]，X为双方【星杯区】星杯数之和，你可选择其中1张加入你手牌。<span class='tiaoJian'>(若弃牌中有法术牌)</span>你+2[水晶]，立即执行1个你的额外回合，该回合你的攻击伤害额外+1，永久将你的角色卡替换为【风之剑圣】。",
             jianCanYing:"[响应]剑残影[回合限定]",
