@@ -6231,7 +6231,9 @@ export class Player extends HTMLDivElement {
 		}
 		for (var i = 0; i < cards.length; i++) {
 			cards[i].fix();
-			if (gaintag) cards[i].addGaintag(gaintag);
+			if(_status.video){
+				cards[i].addGaintag(cards[i].gaintag || []);
+			}else if (gaintag) cards[i].addGaintag(gaintag);
 			var sort = lib.config.sort_card(cards[i]);
 			if (this == game.me) {
 				cards[i].classList.add("drawinghidden");

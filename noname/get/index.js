@@ -1645,7 +1645,7 @@ export class Get extends GetCompatible {
 		return Array.from(infos || []).map(info => game.playerMap[info]);
 	}
 	cardInfo(card) {
-		return [card.xiBie, card.mingGe, card.name, card.duYou, card.cardid];
+		return [card.xiBie, card.mingGe, card.name, card.duYou, card.cardid, card.gaintag];
 	}
 	cardsInfo(cards = []) {
 		return Array.from(cards).map(get.cardInfo);
@@ -1669,6 +1669,7 @@ export class Get extends GetCompatible {
 				if (info && info[2]) card.init(info);
 				lib.cardOL[id] = card;
 			}
+			if(info[5]) card.gaintag = info[5];
 		} catch (e) {
 			console.log(e);
 		}
