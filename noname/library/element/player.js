@@ -6223,6 +6223,7 @@ export class Player extends HTMLDivElement {
 		return this;
 	}
 	directgain(cards, broadcast, gaintag) {
+		var cardsCopy = cards.slice(0);
 		var hs = this.getCards("hs");
 		for (var i = 0; i < cards.length; i++) {
 			if (hs.includes(cards[i])) {
@@ -6246,7 +6247,7 @@ export class Player extends HTMLDivElement {
 		}
 		if (this == game.me || _status.video) ui.updatehl();
 		if (!_status.video) {
-			game.addVideo("directgain", this, get.cardsInfo(cards));
+			game.addVideo("directgain", this, get.cardsInfo(cardsCopy));
 			this.update();
 		}
 		if (broadcast !== false)

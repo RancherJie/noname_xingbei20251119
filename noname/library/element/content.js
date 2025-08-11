@@ -10028,23 +10028,25 @@ export const Content = {
 			if(get.is.singleHandcard()||sort>1) frag1.appendChild(cards[num]);
 			else frag2.appendChild(cards[num]);
 		}
-		var addv=function(){
+		/*
+		var addv=function(){//针对对称布局的动画，用不上了
 			if(player==game.me){
 				game.addVideo('gain12',player,[get.cardsInfo(frag1.childNodes),get.cardsInfo(frag2.childNodes),event.gaintag]);
 			}
-		};
+		};*/
 		var broadcast=function(){
-			game.broadcast(function(player,cards,num,gaintag){
-				player.directgain(cards,null,gaintag);
+			game.broadcastAll(function(player,cards,num,gaintag){
+				player.directgain(cards,false,gaintag);
 				_status.cardPileNum=num;
 			},player,cards,ui.cardPile.childNodes.length,event.gaintag);
 		};
-		game.addVideo("directgain", player, get.cardsInfo(cards));//录像正常显示角色手牌
+		//更改了directgain来使录像正常显示故不在单独增加录像
+		//game.addVideo("directgain", player, get.cardsInfo(cards));//录像正常显示角色手牌
 		if(event.animate=='draw'){
 			player.$draw(cards.length);
 			game.pause();
 			setTimeout(function(){
-				addv();
+				//addv();
 				player.node.handcards1.insertBefore(frag1,player.node.handcards1.firstChild);
 				player.node.handcards2.insertBefore(frag2,player.node.handcards2.firstChild);
 				player.update();
@@ -10057,7 +10059,7 @@ export const Content = {
 			player.$gain(cards.length,event.log);
 			game.pause();
 			setTimeout(function(){
-				addv();
+				//addv();
 				player.node.handcards1.insertBefore(frag1,player.node.handcards1.firstChild);
 				player.node.handcards2.insertBefore(frag2,player.node.handcards2.firstChild);
 				player.update();
@@ -10073,7 +10075,7 @@ export const Content = {
 			}
 			game.pause();
 			setTimeout(function(){
-				addv();
+				//addv();
 				player.node.handcards1.insertBefore(frag1,player.node.handcards1.firstChild);
 				player.node.handcards2.insertBefore(frag2,player.node.handcards2.firstChild);
 				player.update();
@@ -10100,7 +10102,7 @@ export const Content = {
 			}
 			game.pause();
 			setTimeout(function(){
-				addv();
+				//addv();
 				player.node.handcards1.insertBefore(frag1,player.node.handcards1.firstChild);
 				player.node.handcards2.insertBefore(frag2,player.node.handcards2.firstChild);
 				player.update();
@@ -10113,7 +10115,7 @@ export const Content = {
 			var time=event.animate(event);
 			game.pause();
 			setTimeout(function(){
-				addv();
+				//addv();
 				player.node.handcards1.insertBefore(frag1,player.node.handcards1.firstChild);
 				player.node.handcards2.insertBefore(frag2,player.node.handcards2.firstChild);
 				player.update();
@@ -10123,7 +10125,7 @@ export const Content = {
 			},get.delayx(time,time));
 		}
 		else{
-			addv();
+			//addv();
 			player.node.handcards1.insertBefore(frag1,player.node.handcards1.firstChild);
 			player.node.handcards2.insertBefore(frag2,player.node.handcards2.firstChild);
 			player.update();
