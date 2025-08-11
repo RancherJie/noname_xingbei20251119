@@ -138,6 +138,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         player.storage[name]=true;
                         card.storage.renMaster=player;
                     }
+                    game.broadcastAll(function(card){
+                        if(card.name=='moRen') card.addGaintag('eternal_huo');
+                        if(card.name=='yiRen') card.addGaintag('eternal_shui');
+                    },card);
                     return card;
                 },
             },
@@ -236,11 +240,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 contentx: function(){
                     for(var card of event.cards){
                         if(card.name=='moRen'){
-                            if(card.gaintag[0]=='huo') player.addGaintag([card],['shui']);
-                            else player.addGaintag([card],['huo']);
+                            if(card.gaintag[0]=='eternal_huo') player.addGaintag([card],['eternal_shui']);
+                            else player.addGaintag([card],['eternal_huo']);
                         }else if(card.name=='yiRen'){
-                            if(card.gaintag[0]=='lei') player.addGaintag([card],['feng']);
-                            else player.addGaintag([card],['lei']);
+                            if(card.gaintag[0]=='eternal_lei') player.addGaintag([card],['eternal_feng']);
+                            else player.addGaintag([card],['eternal_lei']);
                         }
                     }
                 },
@@ -255,7 +259,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 if(card.name=='moRen'||card.name=='yiRen') return 'xue';
                             },
                             cardXiBie:function(card,player,xiBie){
-                                if(card.name=='moRen'||card.name=='yiRen') return card.gaintag[0];
+                                if(card.name=='moRen'||card.name=='yiRen'){
+                                    if(card.gaintag[0]){
+                                        return card.gaintag[0].slice(8);
+                                    }
+                                }
                             },
                         },
                     },        
@@ -282,6 +290,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 return card.name=='moRen'||card.name=='yiRen';
                             })){
                                 player.markSkill('ren_biaoJi');
+                                /*
                                 if(trigger.name=='gain'&&trigger.player==player){
                                     for(let card of trigger.cards){
                                         if(!card.gaintag.length){
@@ -289,7 +298,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                             else if(card.name=='yiRen') player.addGaintag([card],['lei']);
                                         }
                                     }
-                                }
+                                }*/
                             }else{
                                 player.unmarkSkill('ren_biaoJi');
                             }
