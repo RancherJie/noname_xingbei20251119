@@ -1633,7 +1633,7 @@ export class Library {
 				ui_zoom: {
 					name: "界面缩放",
 					unfrequent: true,
-					init: "normal",
+					init: "big",
 					item: {
 						esmall: "80%",
 						vsmall: "90%",

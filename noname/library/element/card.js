@@ -193,7 +193,10 @@ export class Card extends HTMLDivElement {
 		else this.gaintag.add(gaintag);
 		var str = "";
 		for (var gi = 0; gi < this.gaintag.length; gi++) {
-			var translate = get.translation(this.gaintag[gi]);
+			var tag = this.gaintag[gi];
+			var translate;
+			if (tag.startsWith("eternal_")) translate = get.translation(tag.slice(8));
+			else translate = get.translation(tag);
 			if (translate != "invisible") {
 				str += translate;
 				if (gi < this.gaintag.length - 1) str += " ";
@@ -781,7 +784,21 @@ export class Card extends HTMLDivElement {
 			image: node.querySelector(".image"),
 			gaintag: node.querySelector(".gaintag"),
 		};
-		node.node.gaintag.innerHTML = "";
+		// 只显示前缀为eternal_的标签
+		var str = "";
+		for (var gi = 0; gi < this.gaintag.length; gi++) {
+			var tag = this.gaintag[gi];
+			var translate;
+			if (tag.startsWith("eternal_")){
+				translate = get.translation(tag.slice(8));
+				if (translate != "invisible") {
+					str += translate;
+					if (gi < this.gaintag.length - 1) str += " ";
+				}
+			}
+		}
+		node.node.gaintag.innerHTML = str;
+
 		var clone = true;
 		var position;
 		for (var i = 0; i < arguments.length; i++) {
