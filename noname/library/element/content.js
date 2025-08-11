@@ -12191,7 +12191,7 @@ export const Content = {
 		game.log(player,'获得了',event.card);
 		player.gain(event.card);
 		'step 4'
-		if(!game.jiChuXiaoGuo.pai.includes(event.control)){
+		if(!game.jiChuXiaoGuo.pai_xiaoGuo.includes(event.control)){
 			target.removeSkill(event.control);
 		}
 		'step 5'
@@ -12247,7 +12247,7 @@ export const Content = {
 		'step 3'
 		target.loseToDiscardpile(event.card);
 		'step 4'
-		if(!game.jiChuXiaoGuo.pai.includes(event.control)){
+		if(!game.jiChuXiaoGuo.pai_xiaoGuo.includes(event.control)){
 			target.removeSkill(event.control);
 		}
 		'step 5'
