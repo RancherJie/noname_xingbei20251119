@@ -1636,8 +1636,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         card = target.getExpansions(control);
                         if (control == "_zhongDu") target.storage.zhongDu = [];
                     }
-                    await game.cardsGotoOrdering(card);
-
+                    var next=target.lose(card);
+                    next.relatedEvent=event;
+                    await next;
+                    //await game.cardsGotoOrdering(card);
                     await target.addToExpansion(event.cards, "gain2", player).set('gaintag',['_shengDun']);
                     game.log(player, "获得了", card);
                     await player.gain(card);
