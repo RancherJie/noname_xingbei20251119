@@ -3153,7 +3153,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             'tianShi?': "[响应]天使？",
             'tianShi?_info': "你可将有【天使之墙】的基础牌作为【圣盾】使用。",
             panNiZhiQiang: "[法术]叛逆之墙",
-            panNiZhiQiang_info: "<span class='tiaoJian'>(将手牌的1个【圣盾】与场上的1个基础效果交换)</span>你弃1张牌。",
+            panNiZhiQiang_info: "<span class='tiaoJian'>(将手牌的1个【圣盾】[展示]与场上的1个基础效果交换)</span>你弃1张牌。",
             shenMiFuBi: "[被动]神秘伏笔",
             shenMiFuBi_info: "<span class='tiaoJian'>([法术行动]结束后)</span>将牌库顶1-2张牌面朝下放置于X名目标角色面前，视为基础效果【Tricky】。",
             tricky_xiaoGuo: "Tricky",
