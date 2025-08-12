@@ -3058,7 +3058,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             tanYuHeiDong:"[法术]贪欲黑洞[回合限定]",
             tanYuHeiDong_info:"<span class='tiaoJian'>(弃1张法术牌[展示])</span>我方战绩区+1[水晶]。目标对手弃1张法术牌[展示]；若他不如此做，你对其造成2点法术伤害③，你+1[法术行动]。本回合你无法发动【亡女的金库】。",
             lianJinMoFa:"[响应]殓金魔法",
-            lianJinMoFa_info:"<span class='tiaoJian'>(你使用【魔弹】造成伤害时发动⑥)</span>我方战绩区+1[水晶]。",
+            lianJinMoFa_info:"<span class='tiaoJian'>(你使用【魔弹】造成伤害后发动⑥)</span>我方战绩区+1[水晶]。",
             lianJinShu:"[响应]炼金术",
             lianJinShu_info:"你的雷系或火系牌可以当【魔弹】使用。",
             wangNvJinKu:"[法术]亡女的金库",
