@@ -140,7 +140,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                     game.broadcastAll(function(card){
                         if(card.name=='moRen') card.addGaintag('eternal_huo');
-                        if(card.name=='yiRen') card.addGaintag('eternal_shui');
+                        if(card.name=='yiRen') card.addGaintag('eternal_lei');
                     },card);
                     return card;
                 },
