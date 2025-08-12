@@ -1114,7 +1114,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             san_shenShengXinYang_info:"你的[治疗]上限+1。",
 
             san_zhiHuiFaDian:"[被动]智慧法典",
-            san_zhiHuiFaDian_info:"你的【能量】上限+1；<span class='tiaoJian'>(你每次承受法术伤害时⑥，若该伤害>3)</span>你+2[宝石]。",
+            san_zhiHuiFaDian_info:"你的【能量】上限+1；<span class='tiaoJian'>(你每次承受法术伤害后⑥，若该伤害>3)</span>你+2[宝石]。",
 
             san_fuWenGaiZao:"[启动]符文改造",
             san_fuWenGaiZao_info:"[宝石][横置]转为【蓄势迸发形态】，在此形态下你的手牌上限+2；摸2张牌[强制]并任意调整你的【战纹】和【魔纹】，在你回合结束阶段，[重置]并脱离此形态。",
