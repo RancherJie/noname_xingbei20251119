@@ -9494,7 +9494,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             zhiHuiFaDian:"[被动]智慧法典",
             zhiHuiFaDian_info:"你的【能量】上限+1；<span class='tiaoJian'>(你每次承受法术伤害⑥后，若该伤害>3)</span>你+2[宝石]并弃1张牌。",
             faShuFanTan:"[响应]法术反弹",
-            faShuFanTan_info:"<span class='tiaoJian'>(你每次承受法术伤害⑥后，若该伤害仅为1点，则可以弃X张同系牌[展示](X>1))</span>对目标角色造成(X-1)点法术伤害③，并对自己造成X点法术伤害③。",
+            faShuFanTan_info:"<span class='tiaoJian'>(你每次承受法术伤害后⑥，若该伤害仅为1点，则可以弃X张同系牌[展示](X>1))</span>对目标角色造成(X-1)点法术伤害③，并对自己造成X点法术伤害③。",
             moDaoFaDian:"[法术]魔道法典",
             moDaoFaDian_info:"[宝石]<span class='tiaoJian'>(弃X张异系牌[展示](X>1))</span>对目标角色和自己各造成(X-1)点法术伤害③。",
             shengJieFaDian:"[法术]圣洁法典",
