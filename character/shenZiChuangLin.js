@@ -2171,7 +2171,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             liRuQuanYong:"[响应]戾如泉涌[回合限定]",
             liRuQuanYong_info:"<span class='tiaoJian'>(仅【普通形态】下且你</span><span class='hong'>【戾气】</span></span class='tiaoJian'>数<2，[攻击行动]或[法术行动]结束后发动)</span>你+1<span class='hong'>【戾气】</span>，额外+1[攻击行动]。",
             kuangLiZhiXin:"[被动]狂戾之心[持续]",
-            kuangLiZhiXin_info:"<span class='tiaoJian'>(你的回合开始时或承受伤害时⑥，且</span><span class='hong'>【戾气】</span></span class='tiaoJian'>达到上限时)</span>你弃1张牌，指定目标角色移除2[治疗]，[横置]转为【狂戾形态】，此形态下你无法使用[圣光]，你造成的伤害额外+1。 <span class='tiaoJian'>(你的回合结束时若</span><span class='hong'>【戾气】</span></span class='tiaoJian'>数为0)</span>[转正]脱离【狂戾形态】，将你的1[水晶]转换为1[宝石]。",
+            kuangLiZhiXin_info:"<span class='tiaoJian'>(你的回合开始时或承受伤害后⑥，且</span><span class='hong'>【戾气】</span></span class='tiaoJian'>达到上限时)</span>你弃1张牌，指定目标角色移除2[治疗]，[横置]转为【狂戾形态】，此形态下你无法使用[圣光]，你造成的伤害额外+1。 <span class='tiaoJian'>(你的回合结束时若</span><span class='hong'>【戾气】</span></span class='tiaoJian'>数为0)</span>[转正]脱离【狂戾形态】，将你的1[水晶]转换为1[宝石]。",
             kuangLiZhiTi:"[被动]狂戾之体",
             kuangLiZhiTi_info:"<span class='tiaoJian'>(仅【狂戾形态】下且你</span><span class='hong'>【戾气】</span></span class='tiaoJian'>数>0，目标角色对你造成伤害时③)</span>移除1点<span class='hong'>【戾气】</span>，本次伤害额外+1，但伤害最高为4。",
             shenZhiWuRan:"[响应]神智污染",
