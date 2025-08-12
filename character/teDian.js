@@ -1605,7 +1605,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     if (list.includes("_shengDun")) {
                         // 如果目标角色拥有【圣盾】，因为圣盾只能存在1个，只能选择【圣盾】
                         var control = "_shengDun";
-                    }else{
+                    }else if(list.length==1){
+                        var control = list[0];
+                    }
+                    else{
                         var control = await player
                         .chooseControl(list)
                         .set("prompt", "选择要获得的基础效果")
