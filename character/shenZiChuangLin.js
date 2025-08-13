@@ -1820,6 +1820,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     shangHai:{
                         trigger:{source:"zaoChengShangHai"},
                         forced:true,
+                        priority:1,
                         filter:function(event,player){
                             return event.player.zhiLiao>0;
                         },
@@ -1895,7 +1896,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     shangHai:{
                         trigger:{source:"zaoChengShangHai"},
                         forced:true,
-                        priority:-1,
+                        priority:0.5,
                         filter:function(event,player){
                             return player.isHengZhi();
                         },
@@ -1953,7 +1954,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             shenZhiWuRan:{
                 trigger:{source:'zaoChengShangHai'},
-                priority:-2,
+                priority:0.2,
                 filter:function(event,player){
                     return event.source&&player.isHengZhi()&&player.countZhiShiWu('liQi')>0;
                 },
