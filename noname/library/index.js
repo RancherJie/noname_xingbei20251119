@@ -11737,6 +11737,7 @@ export class Library {
 					game.lanXingBei = state.lanXingBei;
 					game.moDanFangXiang = state.moDanFangXiang;
                     
+					//多控观战模式使用正常布局
 					if(lib.configOL.phaseswap && observe) ui.arena.setNumber(state.number-1);
 					else ui.arena.setNumber(state.number);
 
