@@ -8501,15 +8501,7 @@ export const Content = {
 		if (event.audio === false || event.getParent().name=='useSkill') {
 			cardaudio = false;
 		}
-		/*
-		if (cardaudio)
-			game.broadcastAll(
-				(player, card) => {
-					game.playCardAudio(card, player);
-				},
-				player,
-				card
-			);*/
+
 		event.id = get.id();
 		if (typeof event.customArgs != "object") event.customArgs = { };
 		if (typeof event.damageNum != "number") event.damageNum = get.info(card, false).damageNum || 2;
@@ -8594,6 +8586,9 @@ export const Content = {
 					});
 				}
 			}
+			if (event.line != false && !event.hideTargets) {
+				player.line(targets);
+			}
 		}
 
 		if(event.targets.length>0){
@@ -8652,15 +8647,7 @@ export const Content = {
 			}
 		}
 		"step 1";
-		if(event.type=='gongJi' || event.type=='faShu'){
-			event.trigger(event.type+"Before");
-		}else if(event.type=='shengGuang'){
-			event.trigger("shengGuang");
-		}
-		'step 2';
-		if (event.animate != false && event.line != false && !event.hideTargets) {
-			player.line(targets);
-		}
+		//日志改到比应战未命中早
 		if (targets.length && !event.hideTargets) {
 			//xingbei
 			var yingZhan_str='';
@@ -8688,6 +8675,14 @@ export const Content = {
 		}
 
 		game.logv(player, [card, cards], targets);
+
+		if(event.type=='gongJi' || event.type=='faShu'){
+			event.trigger(event.type+"Before");
+		}else if(event.type=='shengGuang'){
+			event.trigger("shengGuang");
+		}
+		'step 2';
+		
 		"step 3";
 		game.delayx();
 		event.trigger("daChuPai");
