@@ -6629,6 +6629,8 @@ export class Game extends GameCompatible {
 			ui.handcards2Container.appendChild(ui.handcards2);
 
 			ui.updatehl();
+			//观战会调用这个函数，可能切换了阵营，需要更新战绩区高亮
+			ui.updateShiQiInfo();
 		}
 		if (game.me.isAlive()) {
 			if (ui.auto) ui.auto.show();
