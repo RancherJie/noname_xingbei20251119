@@ -11897,19 +11897,8 @@ export class Library {
 					next.setContent(lib.init.startOnline);
 					if (observe) {
 						next.custom.replace.target = function (player) {
-							if (!lib.configOL.observe_handcard && lib.configOL.mode == "guozhan") {
-								return;
-							}
-							if (player.isAlive()) {
-								if (!game.me.identityShown && lib.configOL.mode == "guozhan") {
-									game.me.node.identity.firstChild.innerHTML = "猜";
-									game.me.node.identity.dataset.color = "unknown";
-								}
-								game.swapPlayer(player);
-								if (!game.me.identityShown && lib.configOL.mode == "guozhan") {
-									game.me.node.identity.firstChild.innerHTML = "";
-								}
-							}
+							game.swapPlayer(player);
+							ui.updateShiQiInfo();//可能切换阵营，更新高亮显示
 						};
 					} else {
 						if (Array.isArray(onreconnect)) {

@@ -2734,6 +2734,15 @@ export class Game extends GameCompatible {
 			}
 		}
 		next.setContent("playVideoContent");
+
+		next.custom.replace.target = function (player) {
+			if(ui.fakeme){//多控模式下存在的东西，故拿来做判断
+				game.swapControl(player);
+				game.onSwapControl(player);
+			}
+			else game.swapPlayer(player);
+			ui.updateShiQiInfo();//可能切换阵营，更新高亮显示
+		};
 		game.loop();
 	}
 	videoContent = {
@@ -6629,8 +6638,6 @@ export class Game extends GameCompatible {
 			ui.handcards2Container.appendChild(ui.handcards2);
 
 			ui.updatehl();
-			//观战会调用这个函数，可能切换了阵营，需要更新战绩区高亮
-			ui.updateShiQiInfo();
 		}
 		if (game.me.isAlive()) {
 			if (ui.auto) ui.auto.show();
@@ -6724,7 +6731,7 @@ export class Game extends GameCompatible {
 			ui.handcards1Container.insertBefore(ui.handcards1, ui.handcards1Container.firstChild);
 			ui.handcards2Container.insertBefore(ui.handcards2, ui.handcards2Container.firstChild);
 			ui.updatehl();
-			game.addVideo("swapControl", player, get.cardsInfo(player.getCards("h")));
+			//game.addVideo("swapControl", player, get.cardsInfo(player.getCards("h")));
 	
 			if (game.me.isAlive()) {
 				if (ui.auto) ui.auto.show();
@@ -6769,7 +6776,7 @@ export class Game extends GameCompatible {
 				player.setNickname();
 				form.setNickname();
 			},player,from,formid,playerid,playerNickname,fromNickname);	
-			}
+		}
 	}
 	swapPlayerAuto(player) {
 		if (game.modeSwapPlayer) {

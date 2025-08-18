@@ -2798,7 +2798,7 @@ export default () => {
 						}
 					});
 				}else{
-					game.addVideo('onSwapControl');
+					//game.addVideo('onSwapControl');
 					var name=game.me.name;
 					if(ui.fakeme&&ui.fakeme.current!=name){
 						ui.fakeme.current=name;
