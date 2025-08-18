@@ -6819,7 +6819,7 @@ export const Content = {
 			} else if (event.dialogcontrol) {
 				event.dialog = ui.create.dialog(event.prompt || "选择一项", "hidden");
 				for (var i = 0; i < event.controls.length; i++) {
-					var item = event.dialog.add('<div class="popup text pointerdiv" style="width:calc(100% - 10px);display:inline-block">' + event.controls[i] + "</div>");
+					var item = event.dialog.add('<div class="popup text pointerdiv dialogcontrol" >' + event.controls[i] + "</div>");
 					item.firstChild.listen(ui.click.dialogcontrol);
 					item.firstChild.link = event.controls[i];
 				}
@@ -6876,7 +6876,7 @@ export const Content = {
 					event.dialog.forcebutton = true;
 					event.dialog.open();
 					for (var i = 0; i < event.choiceList.length; i++) {
-						event.dialog.add('<div class="popup text" style="width:calc(100% - 10px);display:inline-block">' + (event.displayIndex !== false ? "选项" + get.cnNumber(i + 1, true) + "：" : "") + event.choiceList[i] + "</div>");
+						event.dialog.add('<div class="popup text choiceList">' + (event.displayIndex !== false ? "选项" + get.cnNumber(i + 1, true) + "：" : "") + event.choiceList[i] + "</div>");
 					}
 				} else if (event.prompt) {
 					event.dialog = ui.create.dialog(event.prompt);
