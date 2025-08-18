@@ -4015,6 +4015,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         var num=1;
                         var prompt='选择1个目标队友';
                     }
+                    prompt+=`+${event.links[0]}点[治疗]`;
                     player.chooseTarget(function(card,player,target){
                         if(target==player) return false;
                         return target.side==player.side;
