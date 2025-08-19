@@ -117,6 +117,74 @@ export default () => {
             game.phaseLoop(firstChoose);
 		},
 		game:{
+			addRecord: function (bool) {
+				if(!_status.connectMode) return;//只记录联机对局
+				if (typeof bool == "boolean") {
+					var phaseswap=get.phaseswap();
+					var includeAi=false;
+					if(!phaseswap){
+						for(var player of game.players){
+							if(player.isOnline2()||player==game.me) continue;
+							includeAi=true;
+							if(includeAi) break;
+						}
+					}
+					var mode = _status.mode;
+					if(_status.connectMode){
+						mode = lib.configOL.versus_mode;
+					}else if(mode=='two') mode='2v2';
+					else if(mode=='three') mode='3v3';
+					else if(mode=='four') mode='4v4';
+					if(phaseswap) mode+='多控';
+
+					var data = lib.config.gameRecord.xingBei.data;
+					if (!data[mode]) {
+						data[mode] = [0, 0];
+					}
+					if (bool) {
+						data[mode][0]++;
+					} else {
+						data[mode][1]++;
+					}
+
+					var list = Object.keys(data);
+					var str = "";
+					for (var i = 0; i < list.length; i++) {
+						if (data[list[i]]) {
+							str += list[i] + "：" + data[list[i]][0] + "胜" + " " + data[list[i]][1] + "负<br>";
+						}
+					}
+					lib.config.gameRecord.xingBei.str = str;
+					game.saveConfig("gameRecord", lib.config.gameRecord);
+
+					for(var player of game.players){
+						if(player.isOnline2()){
+							player.send(function(mode,bool){
+								var data = lib.config.gameRecord.xingBei.data;
+								if (!data[mode]) {
+									data[mode] = [0, 0];
+								}
+								if (bool) {
+									data[mode][0]++;
+								} else {
+									data[mode][1]++;
+								}
+
+								var list = Object.keys(data);
+								var str = "";
+								for (var i = 0; i < list.length; i++) {
+									if (data[list[i]]) {
+										str += list[i] + "：" + data[list[i]][0] + "胜" + " " + data[list[i]][1] + "负<br>";
+									}
+								}
+								lib.config.gameRecord.xingBei.str = str;
+								game.saveConfig("gameRecord", lib.config.gameRecord);
+							},mode,game.checkOnlineResult(player,bool));
+						}
+					}
+				}
+			},
+
 			versusHoverHandcards: function () {
 				var uiintro = ui.create.dialog("hidden");
 				var added = false;
