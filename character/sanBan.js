@@ -60,9 +60,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
 
             san_shuiYing:{
-                trigger:{player:'drawBefore'},
+                trigger:{player:'zaoChengShangHai'},
                 filter:function(event,player){
-                    return event.cause!="teShuXingDong"&&player.countCards('h')>0;
+                    return player.countCards('h')>0;
                 },
                 async cost(event, trigger, player) {
 					event.result = await player
@@ -1084,7 +1084,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             san_shengJian_info:"若你的主动攻击为本次行动阶段的第3次[攻击行动]，则此攻击强制命中。",
 
             san_shuiYing:"[响应]水影",
-            san_shuiYing_info:"<span class='tiaoJian'>(除【特殊行动】外，当你摸牌前发动)</span>弃X张水系牌[展示]。",
+            san_shuiYing_info:"<span class='tiaoJian'>(目标角色对你造成伤害时③发动)</span>弃X张水系牌[展示]。",
             san_qianXing:"[启动]潜行",
             san_qianXing_info:"[宝石][横置]持续到你的下个行动阶段开始，你的手牌上限-1；你不能成为主动攻击的目标；你的主动攻击对手无法应战且伤害额外+X，X为你剩余的【能量】数。【潜行】的效果结束时[重置]。",
 
