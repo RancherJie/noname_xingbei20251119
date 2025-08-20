@@ -363,4 +363,5 @@ window.noname_skin_list=
 	wenYiFaShi:1,
 	nong_baoShiShaoNv:1,
 	yuanChuZhiGong:1,
+	zhanDouFaShi:1,
 };
