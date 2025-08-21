@@ -1290,8 +1290,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     event.result=await player.chooseCard('h',1,function(card){
                         return get.type(card)=='faShu';
                     })
-                    .set('prompt',get.prompt('guanChuanSheJi'))
-                    .set('prompt2',lib.translate.guanChuanSheJi_info)
+                    .set('prompt',get.prompt(event.skill))
+                    .set('prompt2',lib.translate[event.skill+'_info'])
                     .set('ai',function(card){
                         return 6-get.value(card);
                     })
