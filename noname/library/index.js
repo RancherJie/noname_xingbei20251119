@@ -5343,7 +5343,6 @@ export class Library {
         <br><li>说明书
         <br><a href="https://docs.qq.com/doc/DVEpvRXJzcWZPaVZP" target="_blank">点击查看说明书</a>`,
 		游戏操作: "<ul><li>长按/鼠标悬停/右键单击显示信息。<li>触屏模式中，双指点击切换暂停；下划显示菜单，上划切换托管。<li>键盘快捷键<br>" + "<table><tr><td>A<td>切换托管<tr><td>W<td>切换不询问无懈<tr><td>空格<td>暂停</table><li>编辑牌堆<br>在卡牌包中修改牌堆后，将自动创建一个临时牌堆，在所有模式中共用，当保存当前牌堆后，临时牌堆被清除。每个模式可设置不同的已保存牌堆，设置的牌堆优先级大于临时牌堆。</ul>",
-		赞助:`<div style="margin:10px">赞助</div><ul style="margin-top:0"><li><a href="https://github.com/RancherJie/noname_xingbei target="_blank">爱发电</a>`
 	};
 	/**
 	 * @type {import('path')}
@@ -11737,6 +11736,7 @@ export class Library {
 					game.lanXingBei = state.lanXingBei;
 					game.moDanFangXiang = state.moDanFangXiang;
                     
+					//多控观战模式使用正常布局
 					if(lib.configOL.phaseswap && observe) ui.arena.setNumber(state.number-1);
 					else ui.arena.setNumber(state.number);
 
@@ -11896,19 +11896,8 @@ export class Library {
 					next.setContent(lib.init.startOnline);
 					if (observe) {
 						next.custom.replace.target = function (player) {
-							if (!lib.configOL.observe_handcard && lib.configOL.mode == "guozhan") {
-								return;
-							}
-							if (player.isAlive()) {
-								if (!game.me.identityShown && lib.configOL.mode == "guozhan") {
-									game.me.node.identity.firstChild.innerHTML = "猜";
-									game.me.node.identity.dataset.color = "unknown";
-								}
-								game.swapPlayer(player);
-								if (!game.me.identityShown && lib.configOL.mode == "guozhan") {
-									game.me.node.identity.firstChild.innerHTML = "";
-								}
-							}
+							game.swapPlayer(player);
+							ui.updateShiQiInfo();//可能切换阵营，更新高亮显示
 						};
 					} else {
 						if (Array.isArray(onreconnect)) {

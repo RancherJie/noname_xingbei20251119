@@ -204,6 +204,7 @@ window.noname_asset_list=
 	'image/character/daiDuoShaoNv.jpg',
 	'image/character/jiDuShaoNv.jpg',
 	'image/character/jianZhiZi.jpg',
+	'image/character/moGongEX.jpg',
 
 	"image/emotion/xingBei_emotion/1.gif",
 	"image/emotion/xingBei_emotion/2.gif",
@@ -363,4 +364,5 @@ window.noname_skin_list=
 	wenYiFaShi:1,
 	nong_baoShiShaoNv:1,
 	yuanChuZhiGong:1,
+	zhanDouFaShi:1,
 };

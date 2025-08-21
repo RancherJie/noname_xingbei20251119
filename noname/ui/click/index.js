@@ -2970,7 +2970,7 @@ export class Click {
 		}
 		_status.clicked = true;
 		var custom = _status.event.custom;
-		if (custom && custom.replace.target) {
+		if (custom && custom.replace.target) {//观战模式下切换视角的代码
 			custom.replace.target(this, e);
 			return;
 		}

@@ -1704,6 +1704,91 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 		if (!get.config("menu_loadondemand")) node._initLink();
 	})();
 
+	(function () {
+		var page = ui.create.div("");
+		var node = ui.create.div(".menubutton.large", "赞助", start.firstChild, clickMode);
+		node.type = "sponsor";
+		node.link = page;
+		page.classList.add("menu-sponsor");
+		var sponsorList = ['Angry Alice','棉花糖耶耶','玄','魔女','潜水','黑潮Kuroshio','wang','泽度哥摧毁停车场'];
+		var sponsorListHtml = sponsorList.map(sponsor => `<li style="margin-bottom:0px;">${sponsor}</li>`).join('');
+
+		var sponsorContent = `
+			<div style="margin:10px;color:#e0e0e0;">
+				<div style="font-size:18px;font-weight:bold;margin-bottom:15px;text-align:center;color:#ffd700;">支持无名星杯开发及服务器</div>
+				<div style="margin-bottom:20px;text-align:center;color:#bbb;">您的支持是我们持续开发的动力</div>
+
+				<div style="margin-bottom:15px;">
+					<div style="font-weight:bold;margin-bottom:8px;color:#5dade2;">💖 赞助方式</div>
+					<ul style="margin-top:0;padding-left:20px;">
+						<li style="margin-bottom:8px;">
+							<a href="https://afdian.com/a/noname_xingbei" target="_blank" style="color:#ff7979;text-decoration:none;">
+								爱发电赞助
+							</a>
+							<span style="color:#aaa;font-size:12px;margin-left:10px;">推荐方式</span>
+						</li>
+						<li style="margin-bottom:8px;">
+							<a href="https://github.com/RancherJie/noname_xingbei" target="_blank" style="color:#5dade2;text-decoration:none;">
+								GitHub Star
+							</a>
+							<span style="color:#aaa;font-size:12px;margin-left:10px;">免费支持</span>
+						</li>
+						<li style="margin-bottom:8px;">
+							<a style="color:#74b9ff;text-decoration:none;">
+								Q群966951007
+							</a>
+							<span style="color:#aaa;font-size:12px;margin-left:10px;">获取最新动态</span>
+						</li>
+					</ul>
+				</div>
+				
+				<div style="margin-bottom:15px;">
+					<div style="font-weight:bold;margin-bottom:8px;color:#5dade2;">🎁 赞助福利</div>
+					<ul style="margin-top:0;padding-left:20px;color:#ccc;">
+						<li>制作你的diy角色</li>
+					</ul>
+				</div>
+
+				<div style="margin-bottom:15px;">
+					<div style="font-weight:bold;margin-bottom:8px;color:#5dade2;">最近赞助</div>
+					<ul style="margin-top:0;padding-left:0px;color:#ccc;">
+					${sponsorListHtml}
+				</ul>
+				</div>
+				<div style="margin-top:20px;padding:10px;background:#2a2a2a;border-radius:5px;text-align:center;border:1px solid #444;">
+					<div style="font-size:14px;color:#cccccc;">感谢每一位玩家的支持！</div>
+					<div style="font-size:12px;color:#aaaaaa;margin-top:5px;">让我们一起打造更好的无名星杯</div>
+				</div>
+			</div>
+		`;
+		
+		page.innerHTML = sponsorContent;
+		
+		// 添加样式
+		var style = document.createElement('style');
+		style.textContent = `
+			.menu-sponsor a:hover {
+				text-decoration: underline !important;
+				opacity: 0.9;
+				filter: brightness(1.2);
+			}
+			.menu-sponsor ul {
+				list-style-type: none;
+			}
+			.menu-sponsor li {
+				transition: all 0.2s ease;
+				padding: 5px;
+				border-radius: 3px;
+			}
+			.menu-sponsor li:hover {
+				background: rgba(93, 173, 226, 0.2);
+				transform: translateX(3px);
+			}
+			}
+		`;
+		document.head.appendChild(style);
+	})();
+
 	for (var i in lib.help) {
 		var page = ui.create.div("");
 		var node = ui.create.div(".menubutton.large", i, start.firstChild, clickMode);
