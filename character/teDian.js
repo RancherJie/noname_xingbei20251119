@@ -99,6 +99,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 ["qingMu", "fengZhiJian", "jianShouShiYan", "jianCanYing"],
                 ["des:暂无介绍"],
             ],
+            moGongEX:[
+                'moGong_name',
+                'jiGroup',
+                3,
+                ["shenFengShi", "jiFengZhuiShe", "gongShenHouBu", "juJi"],
+                ["des:其精准的射击总是能令对手防不胜防。作为本作命中数一数二的职业，往往是团队攻击链最后致命一击的缔造者。她的必杀技更是控场神技，总是能令对方的如意算盘全部落空"],
+            ],
         },
 
         characterIntro: {
@@ -3000,6 +3007,31 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     shuiJing:true,
                 }
             },
+
+            //魔弓EX
+            shenFengShi:{
+                inherit:'shanDianJian',
+                filter:function(event){
+                    return get.xiBie(event.card)=='feng';
+                },
+            },
+            jiFengZhuiShe:{
+                inherit:'guanChuanSheJi',
+            },
+            gongShenHouBu:{
+                subSkill:{
+                    shanGuangXianJing:{inherit:'shanGuangXianJing'},
+                    jingZhunSheJi:{inherit:'jingZhunSheJi'}
+                },
+                group:['gongShenHouBu_shanGuangXianJing','gongShenHouBu_jingZhunSheJi'],
+                trigger:{player:['logSkillBegin']},
+                forced:true,
+                filter:function(event,player){
+                    return event.skill&&event.skill.startsWith('gongShenHouBu_');
+                },
+                content: async function(event,trigger,player){
+                },
+            },
         },
         
         translate:{
@@ -3025,7 +3057,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             daiDuoShaoNv: "怠惰少女",
             jiDuShaoNv: "嫉妒少女",
             jianZhiZi:'剑之子',
-                          
+            moGongEX: "魔弓EX",
+
             jianZhiMoNv_name:"席拉",
             lingXiZhiChao_name: "濯香姬",
             youJiShi_name: "索拉",
@@ -3258,6 +3291,20 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             jianShouShiYan_info:"<span class='tiaoJian'>(你有主动攻击命中②或任意一方【星杯区】星杯数增加的回合结束后)</span>弃置牌堆顶(X+1)张牌[展示]，X为双方【星杯区】星杯数之和，你可选择其中1张加入你手牌。<span class='tiaoJian'>(若弃牌中有法术牌)</span>你+2[水晶]，立即执行1个你的额外回合，该回合你的攻击伤害额外+1，永久将你的角色卡替换为【风之剑圣】。",
             jianCanYing:"[响应]剑残影[回合限定]",
             jianCanYing_info:"[水晶]<span class='tiaoJian'>([攻击行动]结束后发动)</span>目标对手弃1张牌，额外+1[攻击行动]。本回合你的下次主动攻击只能攻击该目标对手。",
+
+            //魔弓EX
+            shenFengShi:"[被动]神风矢",
+            shenFengShi_info:"你的风系攻击牌对手无法应战",
+            jiFengZhuiShe:"[被动]疾风追射",
+            //jiFengZhuiShe_info:"",
+            gongShenHouBu:"[被动]弓神候补",
+            gongShenHouBu_info:`你可以使用神箭手的独有技。<br>
+                <span class="greentext">(独)[法术]闪光陷阱</span><br>
+                对目标角色造成2点法术伤害③。<br>
+                <span class="greentext">(独)[响应]精准射击</span><br>
+                此攻击强制命中，但本次攻击伤害-1。`,
+            gongShenHouBu_jingZhunSheJi:"[响应]精准射击",
+            gongShenHouBu_shanGuangXianJing:"[响应]闪光陷阱",
         },
     };
 });
