@@ -389,7 +389,7 @@ export class UI {
 			var width = widths.shift();
 			offset += width + 6;
 			if (get.is.phoneLayout()) {
-				offset += 6;
+				offset += 12;//之前是6，再次增加触屏模式下手机间距
 			}
 			if (control._offset != offset) {
 				control.addTempClass("controlpressdownx", 500);

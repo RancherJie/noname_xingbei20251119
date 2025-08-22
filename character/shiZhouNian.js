@@ -1290,8 +1290,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     event.result=await player.chooseCard('h',1,function(card){
                         return get.type(card)=='faShu';
                     })
-                    .set('prompt',get.prompt('guanChuanSheJi'))
-                    .set('prompt2',lib.translate.guanChuanSheJi_info)
+                    .set('prompt',get.prompt(event.skill))
+                    .set('prompt2',lib.translate[event.skill+'_info'])
                     .set('ai',function(card){
                         return 6-get.value(card);
                     })
@@ -4015,6 +4015,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         var num=1;
                         var prompt='选择1个目标队友';
                     }
+                    prompt+=`+${event.links[0]}点[治疗]`;
                     player.chooseTarget(function(card,player,target){
                         if(target==player) return false;
                         return target.side==player.side;
@@ -9492,9 +9493,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 
             //贤者
             zhiHuiFaDian:"[被动]智慧法典",
-            zhiHuiFaDian_info:"你的【能量】上限+1；<span class='tiaoJian'>(你每次承受法术伤害⑥后，若该伤害>3)</span>你+2[宝石]并弃1张牌。",
+            zhiHuiFaDian_info:"你的【能量】上限+1；<span class='tiaoJian'>(你每次承受法术伤害后⑥，若该伤害>3)</span>你+2[宝石]并弃1张牌。",
             faShuFanTan:"[响应]法术反弹",
-            faShuFanTan_info:"<span class='tiaoJian'>(你每次承受法术伤害⑥后，若该伤害仅为1点，则可以弃X张同系牌[展示](X>1))</span>对目标角色造成(X-1)点法术伤害③，并对自己造成X点法术伤害③。",
+            faShuFanTan_info:"<span class='tiaoJian'>(你每次承受法术伤害后⑥，若该伤害仅为1点，则可以弃X张同系牌[展示](X>1))</span>对目标角色造成(X-1)点法术伤害③，并对自己造成X点法术伤害③。",
             moDaoFaDian:"[法术]魔道法典",
             moDaoFaDian_info:"[宝石]<span class='tiaoJian'>(弃X张异系牌[展示](X>1))</span>对目标角色和自己各造成(X-1)点法术伤害③。",
             shengJieFaDian:"[法术]圣洁法典",

@@ -6819,7 +6819,7 @@ export const Content = {
 			} else if (event.dialogcontrol) {
 				event.dialog = ui.create.dialog(event.prompt || "选择一项", "hidden");
 				for (var i = 0; i < event.controls.length; i++) {
-					var item = event.dialog.add('<div class="popup text pointerdiv" style="width:calc(100% - 10px);display:inline-block">' + event.controls[i] + "</div>");
+					var item = event.dialog.add('<div class="popup text pointerdiv dialogcontrol" >' + event.controls[i] + "</div>");
 					item.firstChild.listen(ui.click.dialogcontrol);
 					item.firstChild.link = event.controls[i];
 				}
@@ -6876,7 +6876,7 @@ export const Content = {
 					event.dialog.forcebutton = true;
 					event.dialog.open();
 					for (var i = 0; i < event.choiceList.length; i++) {
-						event.dialog.add('<div class="popup text" style="width:calc(100% - 10px);display:inline-block">' + (event.displayIndex !== false ? "选项" + get.cnNumber(i + 1, true) + "：" : "") + event.choiceList[i] + "</div>");
+						event.dialog.add('<div class="popup text choiceList">' + (event.displayIndex !== false ? "选项" + get.cnNumber(i + 1, true) + "：" : "") + event.choiceList[i] + "</div>");
 					}
 				} else if (event.prompt) {
 					event.dialog = ui.create.dialog(event.prompt);
@@ -8501,15 +8501,7 @@ export const Content = {
 		if (event.audio === false || event.getParent().name=='useSkill') {
 			cardaudio = false;
 		}
-		/*
-		if (cardaudio)
-			game.broadcastAll(
-				(player, card) => {
-					game.playCardAudio(card, player);
-				},
-				player,
-				card
-			);*/
+
 		event.id = get.id();
 		if (typeof event.customArgs != "object") event.customArgs = { };
 		if (typeof event.damageNum != "number") event.damageNum = get.info(card, false).damageNum || 2;
@@ -8594,6 +8586,9 @@ export const Content = {
 					});
 				}
 			}
+			if (event.line != false && !event.hideTargets) {
+				player.line(targets);
+			}
 		}
 
 		if(event.targets.length>0){
@@ -8652,15 +8647,7 @@ export const Content = {
 			}
 		}
 		"step 1";
-		if(event.type=='gongJi' || event.type=='faShu'){
-			event.trigger(event.type+"Before");
-		}else if(event.type=='shengGuang'){
-			event.trigger("shengGuang");
-		}
-		'step 2';
-		if (event.animate != false && event.line != false && !event.hideTargets) {
-			player.line(targets);
-		}
+		//日志改到比应战未命中早
 		if (targets.length && !event.hideTargets) {
 			//xingbei
 			var yingZhan_str='';
@@ -8688,6 +8675,14 @@ export const Content = {
 		}
 
 		game.logv(player, [card, cards], targets);
+
+		if(event.type=='gongJi' || event.type=='faShu'){
+			event.trigger(event.type+"Before");
+		}else if(event.type=='shengGuang'){
+			event.trigger("shengGuang");
+		}
+		'step 2';
+		
 		"step 3";
 		game.delayx();
 		event.trigger("daChuPai");
@@ -9033,7 +9028,7 @@ export const Content = {
 		var checkShow=player.checkShow(event.skill);
 		if(info.useCard&&!info.viewAs){//针对独有法术技能
 			player.useCard(cards);
-		}else if(info.discard&&info.showCards&&!info.viewAs){//针对弃牌展示牌法术技能
+		}else if(info.discard!=false&&info.lose!=false&&info.showCards&&!info.viewAs){//针对弃牌展示牌法术技能
 			player.discard(cards).set('showCards',true);
 		}else if(info.discard!=false&&info.lose!=false&&!info.viewAs){
 			player.discard(cards).delay=false;
@@ -12191,7 +12186,7 @@ export const Content = {
 		game.log(player,'获得了',event.card);
 		player.gain(event.card);
 		'step 4'
-		if(!game.jiChuXiaoGuo.pai.includes(event.control)){
+		if(!game.jiChuXiaoGuo.pai_xiaoGuo.includes(event.control)){
 			target.removeSkill(event.control);
 		}
 		'step 5'
@@ -12247,7 +12242,7 @@ export const Content = {
 		'step 3'
 		target.loseToDiscardpile(event.card);
 		'step 4'
-		if(!game.jiChuXiaoGuo.pai.includes(event.control)){
+		if(!game.jiChuXiaoGuo.pai_xiaoGuo.includes(event.control)){
 			target.removeSkill(event.control);
 		}
 		'step 5'
