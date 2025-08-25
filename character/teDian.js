@@ -954,6 +954,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                     //game.log(player, "将", "#g【魔弹】", "加入了", "#y【三妙原则】");
                                 }
                             }
+                            if(player.storage.sanMiaoYuanZe.length) game.cardsGotoOrdering(player.storage.sanMiaoYuanZe);
                         }
                     } 
                 },
