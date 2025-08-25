@@ -121,14 +121,7 @@ export default () => {
 				if(!_status.connectMode) return;//只记录联机对局
 				if (typeof bool == "boolean") {
 					var phaseswap=get.phaseswap();
-					var includeAi=false;
-					if(!phaseswap){
-						for(var player of game.players){
-							if(player.isOnline2()||player==game.me) continue;
-							includeAi=true;
-							if(includeAi) break;
-						}
-					}
+
 					var mode = _status.mode;
 					if(_status.connectMode){
 						mode = lib.configOL.versus_mode;
