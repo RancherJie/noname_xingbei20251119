@@ -177,7 +177,78 @@ export default () => {
 					}
 				}
 			},
+			
+			submitMatchResult:function (bool) {
+				if(!_status.connectMode) return;//只记录联机对局
+				var mode=lib.configOL.versus_mode;
+				var phaseswap=get.phaseswap() ? 1 : 0;
 
+				var matchData = {
+					mode: mode,
+					is_phase_swap: phaseswap,
+					players: [],
+					record: lib.video,
+				};
+				
+				for(let player of game.players){
+					let playerData={
+						id:player.name,
+						damage:0,
+						damaged:0,
+						add_zhanji:0,
+						add_shiqi:0,
+						remove_shiqi:0,
+						add_zhiliao:0,
+						is_winner:false,
+						is_ai:false,
+					};
+					//胜负判定
+					if(bool===true){
+						if(player.side==game.me.side) dict.is_winner=true;
+					}else if(bool===false){
+						if(player.side!=game.me.side) dict.is_winner=true;
+					}
+
+					if(phaseswap==1){
+						let list=game.getActivePlayersBySide();
+						if(player.side==true&&!list[0]) dict.is_ai=true;
+						else if(player.side==false&&!list[1]) dict.is_ai=true;
+					}else{
+						if((player==game.me&&_status.auto)||(player!=game.me&&!player.isOnline())){
+							dict.is_ai=true;
+						}
+					}
+
+					let dict={'damage':"damage",'damaged':"damaged",'addZhanJi':'add_zhanji','changeShiQi':'add_shiqi','changeShiQied':"remove_shiqi",'addZhiLiao':"add_zhiliao"};
+
+					for(let key in dict){
+						let num=0;
+						for (let j = 0; j < player.stat.length; j++) {
+							if (player.stat[j][key] != undefined) num += player.stat[j][key];
+						}
+						playerData[dict[key]]=num;
+					}
+
+					matchData.players.push(playerData);
+				}
+
+				game.submitMatchData(matchData);
+			},
+			submitMatchData:async function(matchData){
+				await fetch(`${lib.dbURL}/v1/matches`,{
+					method:'POST',
+					headers:{
+						'Content-Type':'application/json',
+						'Authorization':'Bearer FrRz9uz64OZUSglLKv7CcLs4yTjCedOk',//传递授权信息
+					},
+					body:JSON.stringify(matchData),
+				})
+				.then(response =>response.json())
+				.then(data =>console.log(data))
+				.catch(error =>console.error('Error:',error));
+			},
+
+			
 			versusHoverHandcards: function () {
 				var uiintro = ui.create.dialog("hidden");
 				var added = false;

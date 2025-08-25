@@ -6174,6 +6174,9 @@ export class Game extends GameCompatible {
 		if (game.addRecord) {
 			game.addRecord(resultbool);
 		}
+		if(game.submitMatchResult) {
+			game.submitMatchResult(resultbool);
+		}
 		if (window.isNonameServer) {
 			lib.configOL.gameStarted = false;
 			game.saveConfig("pagecfg" + window.isNonameServer, [lib.configOL, game.roomId, _status.onlinenickname, _status.onlineavatar]);

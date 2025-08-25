@@ -30,6 +30,9 @@ import { ErrorManager } from "../util/error.js";
 import { defaultSplashs } from "../init/onload/index.js";
 
 export class Library {
+	// 数据库相关
+	dbURL = 'https://agdatabase.ssyy.tech:50000';
+
 	configprefix = "noname_0.9_";
 	versionOL = 27;
 	updateURLS = updateURLs;
