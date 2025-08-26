@@ -9,6 +9,12 @@ export default () => {
         start:function(){
             var createCharacterDialog = function() {
                 var filter, str, noclick, thisiscard, seperate, expandall, onlypack, heightset, characterx;
+                var characterDialogGroup=Object.assign({},lib.characterDialogGroup);
+                characterDialogGroup['最近']=function (name, capt) {
+                    var list = get.config("recentCharacter",'xingBei') || [];
+                    return list.includes(name) ? capt : null;
+                };
+
                 // 在函数开始处添加多选状态管理
                 var selectedPacks = []; // 存储当前选中的角色包
                 
@@ -100,7 +106,7 @@ export default () => {
                 if (!thisiscard) {
                     namecapt.remove("自定义");
                     namecapt.push("newline");
-                    for (var i in lib.characterDialogGroup) {
+                    for (var i in characterDialogGroup) {
                         namecapt.push(i);
                     }
                 }
@@ -680,8 +686,8 @@ export default () => {
                         if (this.seperatelist[currentcapt] && this.seperatelist[currentcapt].includes(link)) return capt;
                         return null;
                     }
-                    if (lib.characterDialogGroup[currentcapt]) {
-                        return lib.characterDialogGroup[currentcapt](link, capt);
+                    if (characterDialogGroup[currentcapt]) {
+                        return characterDialogGroup[currentcapt](link, capt);
                     }
                     if (lib.characterPack[currentcapt]) {
                         if (lib.characterPack[currentcapt][link]) {
@@ -838,7 +844,7 @@ export default () => {
                     }
                 }
                 if (!expandall) {
-                    if (!thisiscard && (lib.characterDialogGroup[lib.config.character_dialog_tool] || lib.config.character_dialog_tool == "自创")) {
+                    if (!thisiscard && (characterDialogGroup[lib.config.character_dialog_tool] || lib.config.character_dialog_tool == "自创")) {
                         clickCapt.call(node[lib.config.character_dialog_tool]);
                     }
                 }
