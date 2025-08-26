@@ -196,8 +196,8 @@ export default () => {
 						damage:0,
 						damaged:0,
 						add_zhanji:0,
-						add_shiqi:0,
-						remove_shiqi:0,
+						change_shiqi:0,
+						changed_shiqi:0,
 						add_zhiliao:0,
 						is_winner:false,
 						is_ai:false,
@@ -219,7 +219,7 @@ export default () => {
 						}
 					}
 
-					let dict={'damage':"damage",'damaged':"damaged",'addZhanJi':'add_zhanji','changeShiQi':'add_shiqi','changedShiQi':"remove_shiqi",'addZhiLiao':"add_zhiliao"};
+					let dict={'damage':"damage",'damaged':"damaged",'addZhanJi':'add_zhanji','changeShiQi':'change_shiqi','changedShiQi':"changed_shiqi",'addZhiLiao':"add_zhiliao"};
 
 					for(let key in dict){
 						let num=0;
