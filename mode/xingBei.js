@@ -219,7 +219,7 @@ export default () => {
 						}
 					}
 
-					let dict={'damage':"damage",'damaged':"damaged",'addZhanJi':'add_zhanji','changeShiQi':'add_shiqi','changeShiQied':"remove_shiqi",'addZhiLiao':"add_zhiliao"};
+					let dict={'damage':"damage",'damaged':"damaged",'addZhanJi':'add_zhanji','changeShiQi':'add_shiqi','changedShiQi':"remove_shiqi",'addZhiLiao':"add_zhiliao"};
 
 					for(let key in dict){
 						let num=0;

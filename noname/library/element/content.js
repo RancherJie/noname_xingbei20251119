@@ -11913,11 +11913,11 @@ export const Content = {
 				player.stat[player.stat.length-1].changeShiQi+=-num;
 			}
 		}else{//自己变动了士气
-			if(player.stat[player.stat.length-1].changeShiQied==undefined){
-				player.stat[player.stat.length-1].changeShiQied=-num;
+			if(player.stat[player.stat.length-1].changedShiQi==undefined){
+				player.stat[player.stat.length-1].changedShiQi=-num;
 			}
 			else{
-				player.stat[player.stat.length-1].changeShiQied+=-num;
+				player.stat[player.stat.length-1].changedShiQi+=-num;
 			}
 			if(source){
 				if(source.stat[source.stat.length-1].changeShiQi==undefined){
