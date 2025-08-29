@@ -3647,7 +3647,7 @@ export class Library {
 					}
 					if (get.is.phoneLayout()) {
 						map.remember_round_button.show();
-						map.popequip.show();
+						//map.popequip.show();
 						map.filternode_button.show();
 						map.show_pause.hide();
 						map.show_auto.hide();
@@ -3659,7 +3659,7 @@ export class Library {
 						map.show_replay.show();
 						map.show_round_menu.hide();
 						map.remember_round_button.hide();
-						map.popequip.hide();
+						//map.popequip.hide();
 						map.filternode_button.hide();
 					}
 					/*
@@ -4033,12 +4033,13 @@ export class Library {
 					},
 					unfrequent: true,
 				},
+				/*
 				popequip: {
 					name: "触屏装备选择",
 					intro: "设置触屏布局中选择装备的方式",
 					init: true,
 					unfrequent: true,
-				},
+				},*/
 				filternode_button: {
 					name: "触屏筛选按钮",
 					intro: "设置自由选角对话框中筛选按钮的样式",
@@ -5235,6 +5236,9 @@ export class Library {
 					intro: "只控制一名角色，其他角色由AI控制",
 				},
 			},
+		},
+		leaderboard:{
+			name:'排行榜',
 		},
 		offlineChoose: {
 			name: "线下选角",
