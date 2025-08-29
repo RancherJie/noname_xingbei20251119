@@ -4513,6 +4513,7 @@ export class Get extends GetCompatible {
 					} else if (modeorder[i] == "connect" || modeorder[i] == "brawl") {
 						continue;
 					}
+					if(lib.config.all.nogamemode.includes(modeorder[i])) continue;
 					if (lib.config.all.mode.includes(modeorder[i])) {
 						list.push(modeorder[i]);
 					}
