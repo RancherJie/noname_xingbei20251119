@@ -5683,9 +5683,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.chooseControl().set('prompt','魔眼').set('choiceList',choiceList).set('ai',function(){
                         var player=_status.event.player;
                         if(!(player.canGongJi()||player.canFaShu())){
-                            return '选项二'
+                            return '选项二';
                         }else{
-                            return '选项一'
+                            return '选项一';
                         }
                     });
                     'step 2'
@@ -5697,6 +5697,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 3'
                     player.chooseTarget(true,'目标角色弃1张牌').set('ai',function(target){
                         var player=_status.event.player;
+                        if(target==player&&player.countCards('h')==1) return 0;
                         if(target.side==player.side){
                             return 15-(target.getHandcardLimit()-target.countCards('h'));
                         }
