@@ -11427,6 +11427,59 @@ export class Player extends HTMLDivElement {
 		next.setContent('tiaoZhengShouPai');
 		return next;
 	}
+
+	tiaoZheng_chooseToDiscard() {
+		var next = game.createEvent("tiaoZheng_chooseToDiscard",false);
+		next.player = this;
+		for (var i = 0; i < arguments.length; i++) {
+			if (typeof arguments[i] == "number") {
+				next.selectCard = [arguments[i], arguments[i]];
+			} else if (get.itemtype(arguments[i]) == "select") {
+				next.selectCard = arguments[i];
+			} else if (get.itemtype(arguments[i]) == "dialog") {
+				next.dialog = arguments[i];
+				next.prompt = false;
+			} else if (typeof arguments[i] == "boolean") {
+				next.forced = arguments[i];
+			} else if (get.itemtype(arguments[i]) == "position") {
+				next.position = arguments[i];
+			} else if (typeof arguments[i] == "function") {
+				if (next.filterCard) next.ai = arguments[i];
+				else next.filterCard = arguments[i];
+			} else if (typeof arguments[i] == "object" && arguments[i]) {
+				next.filterCard = get.filter(arguments[i]);
+			} else if (typeof arguments[i] == "string") {
+				if (arguments[i] == "chooseonly") next.chooseonly = true;
+				else if(arguments[i] == "showCards") next.showCards = true;
+				else if(arguments[i] == "showHiddenCards") next.showHiddenCards = true;
+				else get.evtprompt(next, arguments[i]);
+			}
+			if (arguments[i] === null) {
+				for (var i = 0; i < arguments.length; i++) {
+					console.log(arguments[i]);
+				}
+			}
+		}
+		if (next.isMine() == false && next.dialog) next.dialog.style.display = "none";
+		if (next.filterCard == undefined) next.filterCard = lib.filter.all;
+		if (next.selectCard == undefined) next.selectCard = [1, 1];
+		if (next.ai == undefined) next.ai = get.unuseful;
+		next.autochoose = function () {
+			if (!this.forced) return false;
+			if (typeof this.selectCard == "function") return false;
+			if (this.complexCard || this.complexSelect || this.filterOk) return false;
+			var cards = this.player.getCards(this.position);
+			if (cards.some(card => !this.filterCard(card, this.player, this))) return false;
+			var num = cards.length;
+			for (var i = 0; i < cards.length; i++) {
+				if (!lib.filter.cardDiscardable(cards[i], this.player, this)) num--;
+			}
+			return get.select(this.selectCard)[0] >= num;
+		};
+		next.setContent("tiaoZheng_chooseToDiscard");
+		next._args = Array.from(arguments);
+		return next;
+	}
 	
 
 	$drawAuto(cards, target) {
