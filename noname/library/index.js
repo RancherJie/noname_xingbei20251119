@@ -10524,7 +10524,7 @@ export class Library {
 			firstDo:true,
 			content:function(){
 				player.storage.zhongDu=[];
-				player.removeMark('_moDan',player.countMark('_moDan'),false);
+				player.storage.oriname=player.name;
 			}
 		},
 		_xuRuo:{
