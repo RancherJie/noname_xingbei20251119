@@ -10472,7 +10472,7 @@ export class Library {
 				},
 				check:function(button){
 					var player=_status.event.player;
-					if((!_status.connectMode&&get.config('AItiLian'))||(_status.connectMode&&lib.configOL.phaseswap)){
+					if((!_status.connectMode&&get.config('AItiLian'))||(_status.connectMode&&lib.configOL.AItiLian)){
 						if(ui.selected.buttons.length>=1) return -1;
 					}
 					if(player.hasSkillTag('baoShi')&&!player.hasSkillTag('shuiJing')){
