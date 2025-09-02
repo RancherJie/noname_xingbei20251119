@@ -1255,6 +1255,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         lastDo:true,
                         direct:true,
                         filter:function(event,player){
+                            if(event.side==player.side) return false;
                             return event.getParent('gain').shiFeng==true&&event.num<0;
                         },
                         content:function(){
