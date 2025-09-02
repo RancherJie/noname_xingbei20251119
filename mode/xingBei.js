@@ -180,7 +180,7 @@ export default () => {
 			
 			submitMatchResult:function (bool) {
 				if(!_status.connectMode) return;//只记录联机对局
-				var mode=lib.configOL.versus_mode;
+				var mode=lib.configOL.versus_mode||'2v2';
 				var phaseswap=get.phaseswap() ? 1 : 0;
 
 				var matchData = {
@@ -192,7 +192,7 @@ export default () => {
 				
 				for(let player of game.players){
 					let playerData={
-						id:player.storage.oriname||player.name,
+						character_id :player.storage.oriname||player.name,
 						damage:0,
 						damaged:0,
 						add_zhanji:0,
@@ -200,22 +200,22 @@ export default () => {
 						changed_shiqi:0,
 						add_zhiliao:0,
 						is_winner:false,
-						is_ai:false,
+						is_ai:true,
 					};
 					//胜负判定
 					if(bool===true){
-						if(player.side==game.me.side) dict.is_winner=true;
+						if(player.side==game.me.side) playerData.is_winner=true;
 					}else if(bool===false){
-						if(player.side!=game.me.side) dict.is_winner=true;
+						if(player.side!=game.me.side) playerData.is_winner=true;
 					}
 
 					if(phaseswap==1){
 						let list=game.getActivePlayersBySide();
-						if(player.side==true&&!list[0]) dict.is_ai=true;
-						else if(player.side==false&&!list[1]) dict.is_ai=true;
+						if(player.side==true&&list[0].side==true) playerData.is_ai=false;
+						else if(player.side==false&&list[1].side==false) playerData.is_ai=false;
 					}else{
-						if((player==game.me&&_status.auto)||(player!=game.me&&!player.isOnline())){
-							dict.is_ai=true;
+						if((player==game.me&&!_status.auto)||(player!=game.me&&player.isOnline())){
+							playerData.is_ai=false;
 						}
 					}
 
@@ -231,7 +231,6 @@ export default () => {
 
 					matchData.players.push(playerData);
 				}
-
 				game.submitMatchData(matchData);
 			},
 			submitMatchData:async function(matchData){
