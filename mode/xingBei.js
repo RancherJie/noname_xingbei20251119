@@ -192,7 +192,7 @@ export default () => {
 				
 				for(let player of game.players){
 					let playerData={
-						id:player.name,
+						id:player.storage.oriname||player.name,
 						damage:0,
 						damaged:0,
 						add_zhanji:0,
