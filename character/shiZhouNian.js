@@ -2655,10 +2655,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         var player=_status.event.player;
                         if(button.link=='tou'){
                             var zhanJi=get.zhanJi(!player.side);
-                            return zhanJi.includes('baoShi');
+                            return zhanJi.includes('baoShi')?1:0;
                         }
                         if(button.link=='huan'){
-                            return Math.random()*3;
+                            return Math.random()*2;
                         }
                     }
                 },
@@ -2671,8 +2671,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             'step 1'
                             var side=player.side;
                             player.changeZhanJi('baoShi',-1,!side)
-                            player.addZhanJi('baoShi',1);
                             'step 2'
+                            player.addZhanJi('baoShi',1);
+                            'step 3'
                             player.addGongJiOrFaShu();
                         }
                     },
