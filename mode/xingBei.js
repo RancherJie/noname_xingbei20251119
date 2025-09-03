@@ -1948,10 +1948,10 @@ export default () => {
 					}
 					var name=event.choosed.node.name.innerHTML;
 					game.broadcastAll(function(id,link){
-							if(!lib.playerOL[id].name1){
-								lib.playerOL[id].init(link);
-								lib.playerOL[id].update();
-							}
+						if(!lib.playerOL[id].name1){
+							lib.playerOL[id].init(link);
+							lib.playerOL[id].update();
+						}
 					},id,result.links[0]);
 
 					if(event.choose_list.length>0){
