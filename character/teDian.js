@@ -954,6 +954,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                     //game.log(player, "将", "#g【魔弹】", "加入了", "#y【三妙原则】");
                                 }
                             }
+                            if(player.storage.sanMiaoYuanZe.length) game.cardsGotoOrdering(player.storage.sanMiaoYuanZe);
                         }
                     } 
                 },
@@ -3276,7 +3277,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             cuYiXiuXin: "[响应]醋意羞心",
             cuYiXiuXin_info: "<span class='tiaoJian'>(主动攻击未命中时②)</span>目标角色弃1张法术牌[展示]；<span class='tiaoJian'>(若他不如此做)</span>你对他造成2点法术伤害③，我方【战绩区】+1[水晶]。",
             xuRongZhangWo:"[响应]虚荣掌握",
-            xuRongZhangWo_info: "<span class='tiaoJian'>(主动攻击命中时②)</span>额外+1[法术行动]，本次法术行动只能使用【魔弹】且可以选择逆向穿传递。",
+            xuRongZhangWo_info: "<span class='tiaoJian'>(主动攻击命中时②)</span>额外+1[法术行动]，本次法术行动只能使用【魔弹】且可以选择逆向传递。",
             xiangSiBing:"[响应]相思病",
             xiangSiBing_info:"你的地系牌或风系牌可以当【魔弹】使用。",
             jiDuZhuiFang:"[响应]嫉妒追放[回合限定]",

@@ -5828,7 +5828,7 @@ export class Game extends GameCompatible {
 				td = document.createElement("td");
 				num = 0;
 				for (j = 0; j < game.players[i].stat.length; j++) {
-					if (game.players[i].stat[j].changeShiQied != undefined) num += game.players[i].stat[j].changeShiQied;
+					if (game.players[i].stat[j].changedShiQi != undefined) num += game.players[i].stat[j].changedShiQi;
 				}
 				td.innerHTML = num;
 				tr.appendChild(td);
@@ -6173,6 +6173,9 @@ export class Game extends GameCompatible {
 		}
 		if (game.addRecord) {
 			game.addRecord(resultbool);
+		}
+		if(game.submitMatchResult) {
+			game.submitMatchResult(resultbool);
 		}
 		if (window.isNonameServer) {
 			lib.configOL.gameStarted = false;

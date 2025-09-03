@@ -1137,6 +1137,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     event.targets=game.filterPlayer(function(current){
                         return current.side!=player.side;
                     });
+                    event.targets.sortBySeat(player);
                     'step 1'
                     var target=event.targets.shift();
                     target.faShuDamage(1,player);
