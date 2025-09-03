@@ -101,6 +101,20 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 						}
 					},
 				},
+                subSkill:{
+                    wuFaXingDong:{
+                        trigger:{player:'triggerSkill'},
+                        direct:true,
+                        filter:function(event,player){
+                            if(event.skill=='san_anYingLiuXing_wuFaXingDong') return false;//需要排除自身，防止嵌套
+                            if(player.countCards('h',card=>get.type(card)=='faShu')!=player.countCards('h')) return false;
+                            return get.info('_wuFaXingDong').group.includes(event.skill);
+                        },
+                        content:function(){
+                            trigger.cancelled=true;
+                        }
+                    }
+                },
             },
 
             si_huangQuanZhengChan:{

@@ -1934,7 +1934,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             qiShi:"[响应]启示",
             qiShi_info:"<span class='tiaoJian'>(【路标】转移前，移除2点</span><span class='hong'>【虔诚】</span><span class='tiaoJian'>)</span>选择以下一项发动：<br>·目标角色+1[治疗]。<br>·你摸1张牌[强制][展示]。<span class='tiaoJian'>(若该牌为法术牌或者圣类命格)</span>取消本次转移并移除【路标】，然后将【路标】放置在目标角色面前。",
             shiFeng:"[响应]事奉",
-            shiFeng_info:"<span class='tiaoJian'>(你因自身技能弃的牌置入弃牌堆时，移除你1[治疗])</span>将该弃牌加入拥有【路标】的角色手牌[强制]。<span class='tiaoJian'>(若没有因此造成对方士气下降)</span>指定除你外的目标角色+1[治疗]。",
+            shiFeng_info:"<span class='tiaoJian'>(你因自身技能弃的牌置入弃牌堆时，移除你1[治疗])</span>将该弃牌加入拥有【路标】的角色手牌[强制]。<span class='tiaoJian'>(若没有因此造成该角色阵营士气下降)</span>指定除你外的目标角色+1[治疗]。",
             luBiao:"(专)路标",
             luBiao_info:`
             <span class="greentext">[响应]告解式[回合限定]</span><br>

@@ -790,7 +790,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 ai:{
                     order:function(item,player){
-                        var num=30+player.countZhiShiWu('lingGan')*0.5;
+                        var num=3+player.countZhiShiWu('lingGan')*0.5;
                         return num;
                     },
                     result:{

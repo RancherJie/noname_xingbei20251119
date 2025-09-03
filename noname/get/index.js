@@ -4505,7 +4505,7 @@ export class Get extends GetCompatible {
 					e.stopPropagation();
 				});
 				for (var i = 0; i < modeorder.length; i++) {
-					if (node._banning == "online") {
+					if (node._banning == "online" || get.mode()=='illustration') {
 						if (!lib.mode[modeorder[i]].connect) continue;
 						if (!lib.config["connect_" + modeorder[i] + "_banned"]) {
 							lib.config["connect_" + modeorder[i] + "_banned"] = [];
@@ -4513,14 +4513,20 @@ export class Get extends GetCompatible {
 					} else if (modeorder[i] == "connect" || modeorder[i] == "brawl") {
 						continue;
 					}
+					if(lib.config.all.nogamemode.includes(modeorder[i])) continue;
 					if (lib.config.all.mode.includes(modeorder[i])) {
 						list.push(modeorder[i]);
+						//在图鉴模式下可以操纵联机ban
+						if(get.mode()=='illustration'&&lib.mode[modeorder[i]].connect) list.push("connect_"+modeorder[i]);
 					}
 				}
 				var page = ui.create.div(".menu-buttons.configpopped", uiintro.content);
 				var banall = false;
 				for (var i = 0; i < list.length; i++) {
-					var cfg = ui.create.div(".config", lib.translate[list[i]] + "模式", page);
+					if(list[i].startsWith("connect_")) var str = "联机-" + lib.translate[list[i].slice(8)];
+					else var str=lib.translate[list[i]];
+					str += "模式";
+					var cfg = ui.create.div(".config", str, page);
 					cfg.classList.add("toggle");
 					if (node._banning == "offline") {
 						cfg.bannedname = list[i] + "_banned";

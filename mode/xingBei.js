@@ -121,14 +121,7 @@ export default () => {
 				if(!_status.connectMode) return;//只记录联机对局
 				if (typeof bool == "boolean") {
 					var phaseswap=get.phaseswap();
-					var includeAi=false;
-					if(!phaseswap){
-						for(var player of game.players){
-							if(player.isOnline2()||player==game.me) continue;
-							includeAi=true;
-							if(includeAi) break;
-						}
-					}
+
 					var mode = _status.mode;
 					if(_status.connectMode){
 						mode = lib.configOL.versus_mode;
@@ -184,7 +177,77 @@ export default () => {
 					}
 				}
 			},
+			
+			submitMatchResult:function (bool) {
+				if(!_status.connectMode) return;//只记录联机对局
+				var mode=lib.configOL.versus_mode||'2v2';
+				var phaseswap=get.phaseswap() ? 1 : 0;
 
+				var matchData = {
+					mode: mode,
+					is_phase_swap: phaseswap,
+					players: [],
+					record: lib.video,
+				};
+				
+				for(let player of game.players){
+					let playerData={
+						character_id :player.storage.oriname||player.name,
+						damage:0,
+						damaged:0,
+						add_zhanji:0,
+						change_shiqi:0,
+						changed_shiqi:0,
+						add_zhiliao:0,
+						is_winner:false,
+						is_ai:true,
+					};
+					//胜负判定
+					if(bool===true){
+						if(player.side==game.me.side) playerData.is_winner=true;
+					}else if(bool===false){
+						if(player.side!=game.me.side) playerData.is_winner=true;
+					}
+
+					if(phaseswap==1){
+						let list=game.getActivePlayersBySide();
+						if(player.side==true&&list[0].side==true) playerData.is_ai=false;
+						else if(player.side==false&&list[1].side==false) playerData.is_ai=false;
+					}else{
+						if((player==game.me&&!_status.auto)||(player!=game.me&&player.isOnline())){
+							playerData.is_ai=false;
+						}
+					}
+
+					let dict={'damage':"damage",'damaged':"damaged",'addZhanJi':'add_zhanji','changeShiQi':'change_shiqi','changedShiQi':"changed_shiqi",'addZhiLiao':"add_zhiliao"};
+
+					for(let key in dict){
+						let num=0;
+						for (let j = 0; j < player.stat.length; j++) {
+							if (player.stat[j][key] != undefined) num += player.stat[j][key];
+						}
+						playerData[dict[key]]=num;
+					}
+
+					matchData.players.push(playerData);
+				}
+				game.submitMatchData(matchData);
+			},
+			submitMatchData:async function(matchData){
+				await fetch(`${lib.dbURL}/v1/matches`,{
+					method:'POST',
+					headers:{
+						'Content-Type':'application/json',
+						'Authorization':'Bearer FrRz9uz64OZUSglLKv7CcLs4yTjCedOk',//传递授权信息
+					},
+					body:JSON.stringify(matchData),
+				})
+				.then(response =>response.json())
+				.then(data =>console.log(data))
+				.catch(error =>console.error('Error:',error));
+			},
+
+			
 			versusHoverHandcards: function () {
 				var uiintro = ui.create.dialog("hidden");
 				var added = false;
@@ -1885,10 +1948,10 @@ export default () => {
 					}
 					var name=event.choosed.node.name.innerHTML;
 					game.broadcastAll(function(id,link){
-							if(!lib.playerOL[id].name1){
-								lib.playerOL[id].init(link);
-								lib.playerOL[id].update();
-							}
+						if(!lib.playerOL[id].name1){
+							lib.playerOL[id].init(link);
+							lib.playerOL[id].update();
+						}
 					},id,result.links[0]);
 
 					if(event.choose_list.length>0){
