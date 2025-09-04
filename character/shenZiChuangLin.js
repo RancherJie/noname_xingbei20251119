@@ -940,10 +940,25 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     trigger.player.chooseToDiscard(true,event.num);
                     'step 2'
                     event.cards=result.cards;
+                    var xiBies={};
+                    var ying=player.getExpansions('ying');
+                    for(let card of ying){
+                        if(xiBies[get.xiBie(card)]) xiBies[get.xiBie(card)]++;
+                        else xiBies[get.xiBie(card)]=1;
+                    }
+                    var xiBie;
+                    for(let key in xiBies){
+                        if(!xiBie) xiBie=key;
+                        else{
+                            if(xiBies[key]>xiBies[xiBie]) xiBie=key;
+                        }
+                    }
+
                     if(event.cards.length>0){
                         player.chooseCardButton(event.cards,true,1,'你观看并将其中1张弃牌面朝下放置在你角色旁作为【影】').set('ai',function(button){
+                            if(_status.event.xiBie) return get.xiBie(button.link)==_status.event.xiBie?1:0.1;
                             return Math.random();
-                        });
+                        }).set('xiBie',xiBie);
                     }else{
                         event.goto(4);
                     }
@@ -962,9 +977,25 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 async cost(event,trigger,player){
                     var cards=player.getExpansions('ying');
+                    var xiBies={};
+                    var ying=player.getExpansions('ying');
+                    for(let card of ying){
+                        if(xiBies[get.xiBie(card)]) xiBies[get.xiBie(card)]++;
+                        else xiBies[get.xiBie(card)]=1;
+                    }
+                    var xiBie;
+                    for(let key in xiBies){
+                        if(xiBies[key]<2) continue;
+                        if(!xiBie) xiBie=key;
+                        else{
+                            if(xiBies[key]>xiBies[xiBie]) xiBie=key;
+                        }
+                    }
+                    
                     var result=await player.chooseCardButton(cards,2,`是否发动【侍奉之道】，移除2张【影】[展示]<br>你+1<span class='hong'>【糸】</span>；<span class='tiaoJian'>(若移除的【影】系别相同)</span>将其中1个【影】交给目标角色[强制]，然后你[横置][持续]`).set('ai',function(button){
+                        if(_status.event.xiBie) return get.xiBie(button.link)==_status.event.xiBie?1: 0.4- Math.random();
                         return 0.5-Math.random();
-                    }).forResult();
+                    }).set('xiBie',xiBie).forResult();
                     event.result={
                         bool:result.bool,
                         cost_data:result.links,
@@ -981,7 +1012,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var xiBie2=get.xiBie(event.cards[1]);
                     if(xiBie1==xiBie2){
                         player.chooseCardButton(event.cards,true,1,'将其中1个【影】交给目标角色[强制]').set('ai',function(button){
-                            return Math.random();
+                            return 7-get.value(button.link);
                         });
                     }else{
                         event.finish();
@@ -1143,9 +1174,25 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 0'
                     player.removeBiShaBaoShi();
                     'step 1'
+                    var xiBies={};
+                    var ying=player.getExpansions('ying');
+                    for(let card of ying){
+                        if(xiBies[get.xiBie(card)]) xiBies[get.xiBie(card)]++;
+                        else xiBies[get.xiBie(card)]=1;
+                    }
+                    var xiBie;
+                    for(let key in xiBies){
+                        if(!xiBie) xiBie=key;
+                        else{
+                            if(xiBies[key]>xiBies[xiBie]) xiBie=key;
+                        }
+                    }
                     player.chooseCard('h',2,true,'将2张手牌面朝下放置在你角色旁作为【影】').set('ai',function(card){
-                        return 6-get.value(card);
-                    });
+                        if(_status.event.xiBie){
+                            if(get.xiBie(card)==_status.event.xiBie) return 7 - get.value(card);
+                        }
+                        return 5-get.value(card);
+                    }).set('xiBie',xiBie);
                     'step 2'
                     player.addToExpansion('draw',result.cards,'log').gaintag.add('ying');
                 },
@@ -1174,7 +1221,24 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 content:function(){
                     'step 0'
                     var cards=player.getExpansions('ying');
-                    var next=player.chooseCardButton(cards,true,cards.length-3,`舍弃${cards.length-3}张【影】`);
+                    var xiBies={};
+                    for(let card of cards){
+                        if(xiBies[get.xiBie(card)]) xiBies[get.xiBie(card)]++;
+                        else xiBies[get.xiBie(card)]=1;
+                    }
+                    var xiBie;
+                    for(let key in xiBies){
+                        if(!xiBie) xiBie=key;
+                        else{
+                            if(xiBies[key]>xiBies[xiBie]) xiBie=key;
+                        }
+                    }
+                    var next=player.chooseCardButton(cards,true,cards.length-3,`舍弃${cards.length-3}张【影】`).set('xiBie',xiBie).set('ai',function(button){
+                        if(_status.event.xiBie) {
+                            if(get.xiBie(button.link)==_status.event.xiBie) return 0.1;
+                        }
+                        return 1;
+                    });
                     'step 1'
                     player.discard(result.links,'ying').set('sheQi',true);
                 }
