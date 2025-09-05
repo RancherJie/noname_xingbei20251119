@@ -28,6 +28,7 @@ import security from "../util/security.js";
 import { ErrorManager } from "../util/error.js";
 
 import { defaultSplashs } from "../init/onload/index.js";
+import dedent from "../../game/dedent.js"
 
 export class Library {
 	// 数据库相关
@@ -1124,6 +1125,21 @@ export class Library {
 							delete window.lib;
 							delete window._status;
 						}
+					},
+					unfrequent: true,
+				},
+				extension_auto_import: {
+					name: "自动导入扩展",
+					intro: dedent`
+						开启后无名杀会自动导入扩展目录下的扩展（以此法导入的扩展默认关闭）
+						<br />
+						※ 如果你的运行环境不支持文件操作，则该选项无效
+						<br />
+						※ 鉴于不同平台下文件操作的性能区别，开启后可能会降低加载速度
+					`,
+					init: false,
+					async onclick(bool) {
+						await game.promises.saveConfig("extension_auto_import", bool);
 					},
 					unfrequent: true,
 				},
