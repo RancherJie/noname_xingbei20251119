@@ -11233,6 +11233,32 @@ export class Player extends HTMLDivElement {
 		if(num>0) num=-num;
 		return this.changeLan(num);
 	}
+	countHong(){//统计红点
+		var num=0;
+		var skills=this.getSkills();
+		for(var i=0;i<skills.length;i++){
+			let skill=skills[i];
+			let info=get.info(skill);
+			if(info.markimage=='image/card/zhiShiWu/hong.png'){
+				num+=this.countMark(skill);
+				break;
+			}
+		}
+		return num;
+	}
+	countLan(){//统计蓝点
+		var num=0;
+		var skills=this.getSkills();
+		for(var i=0;i<skills.length;i++){
+			let skill=skills[i];
+			let info=get.info(skill);
+			if(info.markimage=='image/card/zhiShiWu/lan.png'){
+				num+=this.countMark(skill);
+				break;
+			}
+		}
+		return num;
+	}
 	/**
 	 * 
 	 * @param {*} num 治疗改变量
