@@ -359,7 +359,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     });
 				},
                 content:function(){
-                    return target.changeZhiLiao(2,player);
+                    target.changeZhiLiao(2,player);
                 },
                 ai: {
 					result: {
