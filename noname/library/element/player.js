@@ -10832,6 +10832,15 @@ export class Player extends HTMLDivElement {
 		};
 		return next;
 	}
+	addShiQi(num,side){//xingbei
+		if(typeof num!='number'||!num) num=1;
+		return this.changeShiQi(num,side);
+	}
+	removeShiQi(num,side){//xingbei
+		if(typeof num!='number'||!num) num=1;
+		return this.changeShiQi(-num,side);
+	}
+
 	changeZhanJi(xingShi,num,side){//xingbei
 		var sidex;
 		if(side==undefined){
