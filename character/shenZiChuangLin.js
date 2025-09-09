@@ -1755,7 +1755,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     game.log(player,'选择了',targets);
                     for(var target of targets){
                         if(target.countCards('h')>0){
-                            let cards=await target.chooseToDiscard('h',true).forResultCards();
+                            let cards=await target.chooseToDiscard('h',true,'禁忌秘法：弃1张牌').forResultCards();
                             await player.showCards(cards);
                             await player.addToExpansion('draw',cards,'log').set('gaintag',['yanLing']); 
                         }
