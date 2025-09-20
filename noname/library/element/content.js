@@ -12182,6 +12182,10 @@ export const Content = {
 			target.storage.zhongDu.splice(index, 1);
 			event.card=card;
 		}
+		event.result={
+			xiaoGuo:event.control,
+			card:event.card,
+		};
 		'step 3'
 		game.log(player,'获得了',event.card);
 		player.gain(event.card);
@@ -12190,6 +12194,7 @@ export const Content = {
 			target.removeSkill(event.control);
 		}
 		'step 5'
+		//在此时机获取result可用tigger.result获取result
 		event.trigger('gainJiChuXiaoGuo');
 	},
 	removeJiChuXiaoGuo:function(){
@@ -12239,6 +12244,10 @@ export const Content = {
 			target.storage.zhongDu.splice(index, 1);
 			event.card=card;
 		}
+		event.result={
+			xiaoGuo:event.control,
+			card:event.card,
+		};
 		'step 3'
 		target.loseToDiscardpile(event.card);
 		'step 4'
@@ -12246,6 +12255,7 @@ export const Content = {
 			target.removeSkill(event.control);
 		}
 		'step 5'
+		//在此时机获取result可用tigger.result获取result
 		event.trigger('removeJiChuXiaoGuo');
 	},
 	tiaoZhengShouPai: async function (event, trigger, player) {
