@@ -1742,7 +1742,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 }).set('xiBie',xiBie).forResultCards();
                                 var num=cards.length;
                                 if(num>0) await player.draw(num);
-                                var targets=await player.chooseTarget(true,`选择1个目标角色弃Y张${xiBieName}系牌[展示]，然后你对他造成(${num}+1)点法术伤害③`).set('ai',function(target){
+                                var targets=await player.chooseTarget(true,`选择1个目标角色弃Y张${xiBieName}系牌[展示]，然后你对他造成(${num}+1)点法术伤害③`,function(card,player,target){
+                                    return player.side!=target.side;
+                                }).set('ai',function(target){
                                     var player=_status.event.player;
                                     var num=_status.event.num;
                                     return get.damageEffect2(target,player,num+1);
@@ -1809,7 +1811,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 }).set('xiBie',xiBie).forResultCards();
                                 var num=cards.length;
                                 if(num>0) await player.draw(num);
-                                var targets=await player.chooseTarget(true,`选择1个目标角色弃Y张${xiBieName}系牌[展示]，然后你对他造成(${num}+1)点法术伤害③`).set('ai',function(target){
+                                var targets=await player.chooseTarget(true,`选择1个目标角色弃Y张${xiBieName}系牌[展示]，然后你对他造成(${num}+1)点法术伤害③`,function(card,player,target){
+                                    return player.side!=target.side;
+                                }).set('ai',function(target){
                                     var player=_status.event.player;
                                     var num=_status.event.num;
                                     return get.damageEffect2(target,player,num+1);
