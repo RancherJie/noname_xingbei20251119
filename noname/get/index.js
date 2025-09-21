@@ -2476,7 +2476,7 @@ export class Get extends GetCompatible {
 			if (player !== false) {
 				const owner = player || get.owner(card);
 				if (owner) {
-					return game.checkMod(card, owner, game.checkMod(card, card.xiBie, "xiBie", owner), "cardXiBie", owner);
+					return game.checkMod(card, owner, card.xiBie, "cardXiBie", owner);
 				}
 			}
 			if (card.xiBie === "unsure" || lib.xiBies.includes(card.xiBie)) return card.xiBie;
