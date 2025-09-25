@@ -2726,7 +2726,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 content: async function(event, trigger, player) {
                     var target=event.targets[0];
                     var colorName=get.colorName(player);
-                    var result=await target.chooseToDiscard('h','showCards', 1, `弃1张法术牌[展示]，否则${colorName}对你造成2点法术伤害③、对方【战绩区】+1[水晶]`,function(card) {
+                    var result=await target.chooseToDiscard('h','showCards', 1, `弃1张法术牌[展示]，否则${colorName}对你造成2点法术伤害③、我方【战绩区】+1[水晶]`,function(card) {
                         return get.type(card) == 'faShu';
                     })
                     .set('ai',function(card) {
