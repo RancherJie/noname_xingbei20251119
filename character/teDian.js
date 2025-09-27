@@ -1679,7 +1679,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             mark: function (dialog, storage, player) {
                                 var cards = player.getExpansions("tricky_xiaoGuo");
                                 if (cards) {
-                                    return "共有" + cards.length + "张牌";
+                                    return "视为基础效果";
                                 }
                             },
                             nocount: true,
