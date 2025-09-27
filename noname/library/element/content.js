@@ -10238,7 +10238,7 @@ export const Content = {
 		if(event.animate=='draw'){
 			player.$draw(cards.length);
 			//if(event.log) game.log(player,'将',get.cnNumber(cards.length),'张牌置于了角色牌上');
-			if(event.log) game.log(player,'将',cards.length,'张牌置于了角色牌上');
+			if(event.log) game.log(player,'将',cards.length,'张',`【${get.translation(event.gaintag[0])}】`,'置于了角色牌上');
 			game.pause();
 			setTimeout(function(){
 				player.$addToExpansion(cards,null,event.gaintag);
@@ -10256,6 +10256,11 @@ export const Content = {
 			},get.delayx(700,700));
 		}
 		else if(event.animate=='gain2'||event.animate=='draw2'){
+			if(event.log){
+				if(event.source) game.log(event.source,'将',cards,`【${get.translation(event.gaintag[0])}】`,'置于',player,'角色牌上');
+				else game.log(player,'将',cards,`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
+			}
+
 			var gain2t=300;
 			if(player.$gain2(cards)&&player==game.me){
 				gain2t=500;
@@ -10273,7 +10278,10 @@ export const Content = {
 				for(var i in evtmap){
 					var source=(_status.connectMode?lib.playerOL:game.playerMap)[i];
 					source.$give(evtmap[i][0],player,false);
-					if(event.log) game.log(player,'将',evtmap[i][0],'置于了角色牌上');
+					if(event.log){
+						if(source) game.log(source,'将',evtmap[i][0],`【${get.translation(event.gaintag[0])}】`,'置于',player,'角色牌上');
+						else game.log(player,'将',evtmap[i][0],`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
+					}
 				}
 			}
 			else{
@@ -10282,11 +10290,11 @@ export const Content = {
 					if(evtmap[i][1].length){
 						source.$giveAuto(evtmap[i][1],player,false);
 						//if(event.log) game.log(player,'将',get.cnNumber(evtmap[i][1].length),'张牌置于了角色牌上');
-						if(event.log) game.log(player,'将',evtmap[i][1].length,'张牌置于了角色牌上');
+						if(event.log) game.log(player,'将',evtmap[i][1].length,'张',`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
 					}
 					if(evtmap[i][2].length){
 						source.$give(evtmap[i][2],player,false);
-						if(event.log) game.log(player,'将',evtmap[i][2],'置于了角色牌上');
+						if(event.log) game.log(source,'将',evtmap[i][2],`【${get.translation(event.gaintag[0])}】`,'置于',player,'角色牌上');
 					}
 				}
 			}
