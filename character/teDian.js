@@ -1591,6 +1591,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 filterCard: function (card) {
                     return get.name(card) == "shengDun";
                 },
+                lose:false,
+                discard: false,
                 showCards: true,
                 filter: function (event, player) {
                     var bool1 = player.hasCard(function (card) {
@@ -1647,13 +1649,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         card = target.getExpansions(control);
                         if (control == "_zhongDu") target.storage.zhongDu = [];
                     }
-                    var next=target.lose(card);
-                    next.relatedEvent=event;
-                    await next;
+                    await target.lose(card,ui.ordering);
                     //await game.cardsGotoOrdering(card);
-                    await target.addToExpansion(event.cards, "gain2", player).set('gaintag',['_shengDun']);
-                    game.log(player, "获得了", card);
-                    await player.gain(card);
+                    await target.addToExpansion(event.cards, "give", player).set('gaintag',['_shengDun']);
+                    //game.log(player, "获得了", card);
+                    await player.gain(card,'gain2');
                     if (!game.jiChuXiaoGuo.pai_xiaoGuo.includes(control)) {
                         target.removeSkill(control);
                     }
