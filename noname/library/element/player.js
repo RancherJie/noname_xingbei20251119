@@ -5423,6 +5423,42 @@ export class Player extends HTMLDivElement {
 		next._args = Array.from(arguments);
 		return next;
 	}
+	chooseButtonTarget(choose) {
+		var next = game.createEvent("chooseButtonTarget");
+		next.player = this;
+		if (arguments.length == 1) {
+			for (var i in choose) {
+				next[i] = choose[i];
+			}
+		}
+		if (typeof next.filterButton == "object") {
+			next.filterButton = get.filter(next.filterButton);
+		}
+		if (typeof next.filterTarget == "object") {
+			next.filterTarget = get.filter(next.filterTarget, 2);
+		}
+		if (next.filterButton == undefined || next.filterButton === true) {
+			next.filterButton = lib.filter.filterButton;
+		}
+		if (next.selectButton == undefined) {
+			next.selectButton = 1;
+		}
+		if (next.filterTarget == undefined || next.filterTarget === true) {
+			next.filterTarget = lib.filter.all;
+		}
+		if (next.selectTarget == undefined) {
+			next.selectTarget = 1;
+		}
+		if (next.ai1 == undefined)
+			next.ai1 = function () {
+				return 1;
+			};
+		if (next.ai2 == undefined) next.ai2 = get.attitude2;
+		if (next.canHidden == undefined) next.canHidden = true;
+		next.setContent("chooseButtonTarget");
+		next._args = Array.from(arguments);
+		return next;
+	}
 	discardPlayerCard() {
 		var next = game.createEvent("discardPlayerCard");
 		next.player = this;

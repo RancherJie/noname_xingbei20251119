@@ -11858,6 +11858,116 @@ export const Content = {
 		}
 		event.result = result;
 	},
+	//先选择按钮再选择目标的函数，可以简化一些交互流程，目前可以隐藏弹窗
+	//该事件目前采用async contents的写法
+	chooseButtonTarget: [
+		async (event, _trigger, player) => {
+			//根据player.chooseButtonTarget获取到的dialog信息创建对话框，也支持createDialog
+			if (typeof event.dialog == "number") {
+				event.dialog = get.idDialog(event.dialog);
+			}
+			if (event.createDialog && !event.dialog) {
+				if (Array.isArray(event.createDialog)) {
+					event.createDialog.add("hidden");
+					event.dialog = ui.create.dialog.apply(this, event.createDialog);
+				}
+				event.closeDialog = true;
+			}
+			if (event.dialog == undefined) event.dialog = ui.dialog;
+			if (event.isMine()) {
+				if (event.hsskill && !event.forced && _status.prehidden_skills.includes(event.hsskill)) {
+					ui.click.cancel();
+					return;
+				}
+				if (event.isMine() || event.dialogdisplay) {
+					event.dialog.style.display = "";
+					event.dialog.open();
+					if (event.canHidden) {
+						//增加隐藏窗口的按钮
+						const func = () => {
+							const event = get.event();
+							const controls = [
+								link => {
+									ui.selected.buttons.length = 0;
+									game.check();
+									return;
+								},
+							];
+							event.controls = [
+								ui.create.control(
+									controls.concat([
+										"隐藏窗口",
+										"stayleft",
+										link => {
+											const control = event.controls[0];
+											if (event.dialog.style.display == "none") {
+												control.childNodes[0].innerHTML = "隐藏窗口";
+												event.dialog.style.display = "";
+											} else {
+												control.childNodes[0].innerHTML = "显示窗口";
+												event.dialog.style.display = "none";
+											}
+										},
+									])
+								),
+							];
+						};
+						if (event.isMine()) func(event);
+						else if (event.isOnline()) event.player.send(func, event);
+						if (event.custom == undefined)
+							event.custom = {
+								add: {},
+								replace: {},
+							};
+						if (event.custom.add.confirm == undefined) {
+							//如果有人canHidden是true然后还动了这部分请把一部分代码复制过去适配一下，不然隐藏的按钮不会关闭
+							event.custom.add.confirm = function (bool) {
+								if (bool != true) return;
+								const event = get.event();
+								if (event.controls) event.controls.forEach(i => i.close());
+								if (ui.confirm) ui.confirm.close();
+								game.uncheck();
+							};
+						}
+					}
+				}
+				game.check();
+				game.pause();
+			} else if (event.isOnline()) {
+				event.result = await event.sendAsync();
+			} else {
+				//考虑中途托管的情况
+				event.result = "ai";
+			}
+		},
+		async (event, _trigger, player, result) => {
+			//处理ai的选择结果
+			if (event.result == "ai") {
+				game.check();
+				if (ai.basic.chooseButton(event.ai1) || event.forced) {
+					if ((ai.basic.chooseTarget(event.ai2) || event.forced) && (!event.filterOk || event.filterOk())) {
+						ui.click.ok();
+						_status.event._aiexclude.length = 0;
+					} else {
+						ui.click.cancel();
+					}
+				} else {
+					ui.click.cancel();
+				}
+			}
+		},
+		async (event, _trigger, player, result) => {
+			//处理选择的结果
+			event.resume();
+			if (event.result.bool && event.animate !== false) {
+				for (var i = 0; i < event.result.targets.length; i++) {
+					event.result.targets[i].addTempClass("target");
+				}
+			}
+			if (event.dialog) event.dialog.close();
+		},
+	],
+
 	//xingbei
 	changeXingBei:function(){
 		'step 0'
