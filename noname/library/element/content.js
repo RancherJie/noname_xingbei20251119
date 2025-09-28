@@ -10279,8 +10279,7 @@ export const Content = {
 					var source=(_status.connectMode?lib.playerOL:game.playerMap)[i];
 					source.$give(evtmap[i][0],player,false);
 					if(event.log){
-						if(source) game.log(source,'将',evtmap[i][0],`【${get.translation(event.gaintag[0])}】`,'置于',player,'角色牌上');
-						else game.log(player,'将',evtmap[i][0],`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
+						game.log(player,'将',evtmap[i][0],`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
 					}
 				}
 			}
@@ -10288,13 +10287,13 @@ export const Content = {
 				for(var i in evtmap){
 					var source=(_status.connectMode?lib.playerOL:game.playerMap)[i];
 					if(evtmap[i][1].length){
-						source.$giveAuto(evtmap[i][1],player,false);
+						source.$giveAuto(evtmap[i][1].length,player,false);
 						//if(event.log) game.log(player,'将',get.cnNumber(evtmap[i][1].length),'张牌置于了角色牌上');
 						if(event.log) game.log(player,'将',evtmap[i][1].length,'张',`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
 					}
 					if(evtmap[i][2].length){
 						source.$give(evtmap[i][2],player,false);
-						if(event.log) game.log(source,'将',evtmap[i][2],`【${get.translation(event.gaintag[0])}】`,'置于',player,'角色牌上');
+						if(event.log) game.log(player,'将',evtmap[i][2],`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
 					}
 				}
 			}
