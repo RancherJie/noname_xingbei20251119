@@ -11637,6 +11637,12 @@ export class Player extends HTMLDivElement {
 		};
 		return next;
 	}
+	countGaiPai(gaintag){//统计盖牌
+		return this.countExpansions(gaintag);
+	}
+	getGaiPai(gaintag){//获取盖牌
+		return this.getExpansions(gaintag);
+	}
 	
 
 	$drawAuto(cards, target) {
