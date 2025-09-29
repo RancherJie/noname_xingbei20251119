@@ -11551,6 +11551,92 @@ export class Player extends HTMLDivElement {
 		next._args = Array.from(arguments);
 		return next;
 	}
+	addGaiPai(){
+		var next=game.createEvent('addGaiPai');
+		next.player = this;
+		next.log = true;
+		for (var i = 0; i < arguments.length; i++) {
+			if (get.itemtype(arguments[i]) == "player") {
+				next.source = arguments[i];
+			} else if (get.itemtype(arguments[i]) == "cards") {
+				next.cards = arguments[i].slice(0);
+			} else if (get.itemtype(arguments[i]) == "card") {
+				next.cards = [arguments[i]];
+			} else if (typeof arguments[i] == "string") {
+				next.gaintag = [arguments[i]];
+			} else if (typeof arguments[i] == "boolean") {
+				//是否是展示盖牌
+				next.show = arguments[i];
+			}
+		}
+		var info=get.info(next.gaintag[0]);
+		if(info&&info.intro&&info.intro.show) next.show=true;
+
+		next.animate=function(event){
+			var cards=event.cards;
+			if(event.show){
+				game.log(event.player,'将',cards,`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
+			}else{
+				cards=cards.length;
+				game.log(event.player,'将',cards,'张',`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
+			}
+			if(event.source){
+				event.source.$give(cards,event.player,false);
+			}else{
+				event.player.$draw(cards);
+			}
+			return 500; 
+		};
+
+		next.setContent("addToExpansion");
+		next.getd = function (player, key, position) {
+			if (!position) position = ui.discardPile;
+			if (!key) key = "cards";
+			var cards = [],
+				event = this;
+			game.checkGlobalHistory("cardMove", function (evt) {
+				if (evt.name != "lose" || evt.position != position || evt.getParent() != event) return;
+				if (player && player != evt.player) return;
+				cards.addArray(evt[key]);
+			});
+			return cards;
+		};
+		next.getl = function (player) {
+			const that = this;
+			const map = {
+				player: player,
+				hs: [],
+				es: [],
+				js: [],
+				ss: [],
+				xs: [],
+				cards: [],
+				cards2: [],
+				gaintag_map: {},
+				vcard_map: new Map(),
+			};
+			player.checkHistory("lose", function (evt) {
+				if (evt.parent == that) {
+					map.hs.addArray(evt.hs);
+					map.es.addArray(evt.es);
+					map.js.addArray(evt.js);
+					map.ss.addArray(evt.ss);
+					map.xs.addArray(evt.xs);
+					map.cards.addArray(evt.cards);
+					map.cards2.addArray(evt.cards2);
+					for (let key in evt.gaintag_map) {
+						if (!map.gaintag_map[key]) map.gaintag_map[key] = [];
+						map.gaintag_map[key].addArray(evt.gaintag_map[key]);
+					}
+					evt.vcard_map.forEach((value, key) => {
+						map.vcard_map.set(key, value);
+					});
+				}
+			});
+			return map;
+		};
+		return next;
+	}
 	
 
 	$drawAuto(cards, target) {
