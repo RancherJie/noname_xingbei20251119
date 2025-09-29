@@ -11420,15 +11420,19 @@ export class Player extends HTMLDivElement {
 		next.setContent('removeJiChuXiaoGuo');
 		return next;
 	}
-	hasJiChuXiaoGuo(){
-		var skill=this.getSkills().concat(lib.skill.global);
-		for(var i=0;i<skill.length;i++){
-			let info=get.info(skill[i]);
-			if(info&&info.tag&&info.tag.jiChuXiaoGuo&&this.hasExpansions(skill[i])){
-				return true;
+	hasJiChuXiaoGuo(jiChuXiaoGuo){
+		if(jiChuXiaoGuo) return this.hasExpansions(jiChuXiaoGuo);
+		else{
+			var skill=this.getSkills().concat(lib.skill.global);
+			for(var i=0;i<skill.length;i++){
+				let info=get.info(skill[i]);
+				if(info&&info.tag&&info.tag.jiChuXiaoGuo&&this.hasExpansions(skill[i])){
+					return true;
+				}
 			}
+			return false;
 		}
-		return false;
+		
 	}
 	jiChuXiaoGuoList(){
 		var list=[];
@@ -11643,6 +11647,99 @@ export class Player extends HTMLDivElement {
 	getGaiPai(gaintag){//获取盖牌
 		return this.getExpansions(gaintag);
 	}
+	addJiChuXiaoGuo(){
+		var next=game.createEvent('addJiChuXiaoGuo');
+		next.player=this;
+		next.log = true;
+		for (var i = 0; i < arguments.length; i++) {
+			if (get.itemtype(arguments[i]) == "player") {
+				next.source = arguments[i];
+			} else if (typeof arguments[i] == "string") {
+				if(!next.gaintag) next.gaintag=[];
+				next.gaintag.push(arguments[i]);
+			}else if (typeof arguments[i] == "boolean") {
+				next.log = arguments[i];
+			}else if (get.itemtype(arguments[i]) == "cards") {
+				next.cards = arguments[i].slice(0);
+			} else if (get.itemtype(arguments[i]) == "card") {
+				next.cards = [arguments[i]];
+			}
+		}
+		if(!next.source) next.source=_status.event.player;
+		next.animate='gain2';
+
+		next.setContent("addToExpansion");
+		next.getd = function (player, key, position) {
+			if (!position) position = ui.discardPile;
+			if (!key) key = "cards";
+			var cards = [],
+				event = this;
+			game.checkGlobalHistory("cardMove", function (evt) {
+				if (evt.name != "lose" || evt.position != position || evt.getParent() != event) return;
+				if (player && player != evt.player) return;
+				cards.addArray(evt[key]);
+			});
+			return cards;
+		};
+		next.getl = function (player) {
+			const that = this;
+			const map = {
+				player: player,
+				hs: [],
+				es: [],
+				js: [],
+				ss: [],
+				xs: [],
+				cards: [],
+				cards2: [],
+				gaintag_map: {},
+				vcard_map: new Map(),
+			};
+			player.checkHistory("lose", function (evt) {
+				if (evt.parent == that) {
+					map.hs.addArray(evt.hs);
+					map.es.addArray(evt.es);
+					map.js.addArray(evt.js);
+					map.ss.addArray(evt.ss);
+					map.xs.addArray(evt.xs);
+					map.cards.addArray(evt.cards);
+					map.cards2.addArray(evt.cards2);
+					for (let key in evt.gaintag_map) {
+						if (!map.gaintag_map[key]) map.gaintag_map[key] = [];
+						map.gaintag_map[key].addArray(evt.gaintag_map[key]);
+					}
+					evt.vcard_map.forEach((value, key) => {
+						map.vcard_map.set(key, value);
+					});
+				}
+			});
+			return map;
+		};
+		return next;
+	}
+	getJiChuXiaoGuo(jiChuXiaoGuo){//获取基础效果
+		if(jiChuXiaoGuo) return this.getExpansions(jiChuXiaoGuo);
+		else{
+			var list=[];
+			var xiaoGuoList= this.jiChuXiaoGuoList();
+			for(var xiaoGuo of xiaoGuoList){
+				list=list.concat(this.getExpansions(xiaoGuo));
+			}
+			return list;
+		}
+	}
+	countJiChuXiaoGuo(jiChuXiaoGuo){//统计基础效果
+		if(jiChuXiaoGuo) return this.countExpansions(jiChuXiaoGuo);
+		else{
+			var list=[];
+			var xiaoGuoList= this.jiChuXiaoGuoList();
+			for(var xiaoGuo of xiaoGuoList){
+				list=list.concat(this.getExpansions(xiaoGuo));
+			}
+			return list.length;
+		}
+	}
+	
 	
 
 	$drawAuto(cards, target) {
