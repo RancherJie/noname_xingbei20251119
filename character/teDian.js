@@ -944,7 +944,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:async function (event, trigger, player) {
                             for (var card of trigger.cards) {
-                                if (get.name(card) == "moDan" && ['h','x'].includes(card.original)&&!player.storage.sanMiaoYuanZe.includes(card)) {
+                                if (get.name(card) == "moDan" && ['h','x'].includes(card.original)&&!player.storage.sanMiaoYuanZe.includes(card)&&get.position(card)=='d') {
                                     player.storage.sanMiaoYuanZe.push(card);
                                     //game.log(player, "将", "#g【魔弹】", "加入了", "#y【三妙原则】");
                                 }
