@@ -10825,7 +10825,7 @@ export class Library {
 			}
 		},
 		_baoPai:{
-			trigger:{global:['hengZhiAfter','chongZhiAfter','changeZhiShiWuAfter','changeNengLiangAfter','changeZhiLiaoAfter','addToExpansionAfter','loseToDiscardpileAfter','changeZhanJiAfter','changeXingBeiAfter','changeShiQiAfter','useSkillAfter','useCardAfter']},
+			trigger:{global:['hengZhiAfter','chongZhiAfter','changeZhiShiWuAfter','changeNengLiangAfter','changeZhiLiaoAfter','addToExpansion','loseToDiscardpileAfter','changeZhanJiAfter','changeXingBeiAfter','changeShiQiAfter','useSkillAfter','useCardAfter']},
 			direct:true,
 			lastDo:true,
 			/*

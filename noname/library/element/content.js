@@ -10319,6 +10319,7 @@ export const Content = {
 			event.finish();
 		}
 		"step 4"
+		event.trigger('addToExpansion');
 		game.delayx();
 		if(event.updatePile) game.updateRoundNumber();
 	},
