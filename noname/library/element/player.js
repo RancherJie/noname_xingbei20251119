@@ -11653,6 +11653,9 @@ export class Player extends HTMLDivElement {
 	getGaiPai(gaintag){//获取盖牌
 		return this.getExpansions(gaintag);
 	}
+	hasGaiPai(gaintag){//是否拥有盖牌
+		return this.hasExpansions(gaintag);
+	}
 	addJiChuXiaoGuo(){
 		var next=game.createEvent('addJiChuXiaoGuo');
 		next.player=this;
