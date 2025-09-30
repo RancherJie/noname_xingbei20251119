@@ -1383,12 +1383,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             luEn:{
                 intro:{
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getGaiPai('luEn');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    markcount:'gaiPai',
+                    content:'gaiPai',
                 },
                 onremove:function(player, skill) {
                     const cards = player.getGaiPai(skill);
@@ -1617,12 +1613,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             moLiPing:{
                 intro:{
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getGaiPai('moLiPing');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    markcount:'gaiPai',
+                    content:'gaiPai',
                 },
                 onremove:function(player, skill) {
                     const cards = player.getGaiPai(skill);

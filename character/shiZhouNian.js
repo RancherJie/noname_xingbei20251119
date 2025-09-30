@@ -642,7 +642,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         marktext:"地",
                         intro:{
-                            content:'expansion',
+                            content:'jiChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
                             const cards = player.getJiChuXiaoGuo(skill);
@@ -706,7 +706,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         marktext:"水",
                         intro:{
-                            content:'expansion',
+                            content:'jiChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
                             const cards = player.getJiChuXiaoGuo(skill);
@@ -770,7 +770,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         marktext:"火",
                         intro:{
-                            content:'expansion',
+                            content:'jiChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
                             const cards = player.getJiChuXiaoGuo(skill);
@@ -834,7 +834,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         marktext:"风",
                         intro:{
-                            content:'expansion',
+                            content:'jiChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
                             const cards = player.getJiChuXiaoGuo(skill);
@@ -900,7 +900,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         marktext:"雷",
                         intro:{
-                            content:'expansion',
+                            content:'jiChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
                             const cards = player.getJiChuXiaoGuo(skill);
@@ -2282,12 +2282,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             anYue:{
                 intro:{
                     name:'暗月',
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getGaiPai('anYue');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    content:'gaiPai',
+                    markcount:'gaiPai',
                 },
                 onremove:function(player, skill) {
                     const cards = player.getGaiPai(skill);
@@ -3807,7 +3803,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         marktext:"威",
                         intro:{
-                            content:'expansion',
+                            content:'jiChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
                             const cards = player.getGaiPai(skill);
@@ -3867,7 +3863,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         marktext:"迅",
                         intro:{
-                            content:'expansion',
+                            content:'jiaChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
                             const cards = player.getGaiPai(skill);
@@ -5742,12 +5738,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             chongNengPai:{
                 intro:{
                     name:'充能',
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getGaiPai('chongNengPai');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    content:'gaiPai',
+                    markcount:'gaiPai',
                 },
                 onremove:function(player, skill) {
                     const cards = player.getGaiPai(skill);
@@ -6168,12 +6160,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             yaoLi:{
                 intro:{
                     name:'妖力',
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getGaiPai('yaoLi');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    content:'gaiPai',
+                    markcount:'gaiPai',
                 },
                 onremove:function(player, skill) {
                     const cards = player.getGaiPai(skill);
@@ -7823,12 +7811,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             jianHun:{
                 intro:{
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getGaiPai('jianHun');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    content:'gaiPai',
+                    markcount:'gaiPai',
                     max:3,
                 },
                 onremove:function(player, skill) {
@@ -9020,12 +9004,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             jian:{
                 intro:{
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getGaiPai('jian');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    markcount:'gaiPai',
+                    content:'gaiPai',
                 },
                 onremove:function(player, skill) {
                     const cards = player.getGaiPai(skill);

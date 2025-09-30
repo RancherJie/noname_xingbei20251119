@@ -835,12 +835,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             ziDan: {
                 intro: {
                     name: "子弹",
-                    markcount: "expansion",
-                    mark: function (dialog, storage, player) {
-                        var cards = player.getGaiPai("ziDan");
-                        if (player.isUnderControl(true)) dialog.addAuto(cards);
-                        else return "共有" + cards.length + "张牌";
-                    },
+                    markcount: "gaiPai",
+                    content: "gaiPai",
                 },
                 onremove: function (player, skill) {
                     const cards = player.getGaiPai(skill);
@@ -1149,12 +1145,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             zhouFu_yaoLi: {
                 intro: {
                     name: "妖力",
-                    markcount: "expansion",
-                    mark: function (dialog, storage, player) {
-                        var cards = player.getGaiPai("zhouFu_yaoLi");
-                        if (player.isUnderControl(true)) dialog.addAuto(cards);
-                        else return "共有" + cards.length + "张牌";
-                    },
+                    markcount: "gaiPai",
+                    content:'gaiPai',
                 },
                 onremove: function (player, skill) {
                     const cards = player.getGaiPai(skill);
@@ -1673,16 +1665,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo: {
                         marktext: "T",
                         intro: {
-                            content: "expansion",
-                            markcount: "expansion",
-                            mark: function (dialog, storage, player) {
-                                var cards = player.getJiChuXiaoGuo("tricky_xiaoGuo");
-                                if (cards) {
-                                    dialog.addAuto(cards);
-                                    return "视为基础效果";
-                                }
-                            },
-                            nocount: true,
+                            content: "jiChuXiaoGuo",
                         },
                         onremove: function (player, skill) {
                             const cards = player.hasJiChuXiaoGuo(skill);

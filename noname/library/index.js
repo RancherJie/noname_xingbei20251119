@@ -10550,7 +10550,7 @@ export class Library {
 			//marktext:"虚",
 			markimage:'image/card/xuRuo.png',
 			intro:{
-				content:'expansion',
+				content:'jiChuXiaoGuo',
 			},
 			filter:function(event,player){
 				return player.hasExpansions('_xuRuo');
@@ -10600,7 +10600,7 @@ export class Library {
 			//marktext:"毒",
 			markimage:'image/card/zhongDu.png',
 			intro:{
-				content:'expansion',
+				content:'jiChuXiaoGuo',
 				markcount:'expansion',
 			},
 			trigger:{player:'xingDongBefore'},
@@ -10630,7 +10630,7 @@ export class Library {
 			//marktext:"盾",
 			markimage:'image/card/shengDun.png',
 			intro:{
-				content:'expansion',
+				content:'jiChuXiaoGuo',
 			},
 			trigger:{target:['shouDaoGongJi','shouDaoMoDan']},
 			direct:true,

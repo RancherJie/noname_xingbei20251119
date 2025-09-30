@@ -1201,12 +1201,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             ying:{
                 intro:{
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getGaiPai('ying');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    markcount:'gaiPai',
+                    content:'gaiPai',
                 },
                 onremove:function(player, skill) {
                     const cards = player.getGaiPai(skill);
@@ -1570,8 +1566,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             jieJie:{
                 intro:{
-					content:'expansion',
-					markcount:'expansion',
+					content:'gaiPai',
+					markcount:'gaiPai',
+                    show:true,
 				},
                 onremove:function(player, skill) {
                     const cards = player.getGaiPai(skill);
@@ -1830,8 +1827,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             yanLing:{
                 intro:{
-					content:'expansion',
-					markcount:'expansion',
+					content:'gaiPai',
+					markcount:'gaiPai',
+                    show:true,
 				},
                 onremove:function(player, skill) {
                     const cards = player.getGaiPai(skill);
