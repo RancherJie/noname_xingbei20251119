@@ -1676,8 +1676,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             content: "expansion",
                             markcount: "expansion",
                             mark: function (dialog, storage, player) {
-                                var cards = player.hasJiChuXiaoGuo("tricky_xiaoGuo");
+                                var cards = player.getJiChuXiaoGuo("tricky_xiaoGuo");
                                 if (cards) {
+                                    dialog.addAuto(cards);
                                     return "视为基础效果";
                                 }
                             },
