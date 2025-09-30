@@ -5468,7 +5468,7 @@ export const Content = {
 			}
 		}
 		if(!game.online){
-			event.done=player.discard(event.result.cards);
+			event.done=player.discard(event.result.cards,event.loseTo);
 			if(typeof event.delay=='boolean'){
 				event.done.set('delay',event.delay);
 			}
