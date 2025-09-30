@@ -936,7 +936,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content:function(){
                     var cards=get.cards();
-                    player.addToExpansion('draw',cards,'log').gaintag.add('luEn');
+                    player.addGaiPai(cards,'luEn');
                 }
             },
             qunXingQiShi:{
@@ -948,7 +948,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     if(x<3&&player.countCards('h')>0) bool1=true;
                     else bool1=false;
 
-                    if(player.getExpansions('luEn').length>0) bool2=true;
+                    if(player.getGaiPai('luEn').length>0) bool2=true;
                     else bool2=false;
 
                     return bool1||bool2;
@@ -960,7 +960,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     if(x<3&&player.countCards('h')>0) bool1=true;
                     else bool1=false;
 
-                    if(player.getExpansions('luEn').length>0) bool2=true;
+                    if(player.getGaiPai('luEn').length>0) bool2=true;
                     else bool2=false;
 
                     var list=[];
@@ -972,7 +972,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         var bool1=_status.event.bool1;
                         var bool2=_status.event.bool2;
                         var player=_status.event.player;
-                        if(player.getExpansions('luEn').length>=5&&bool2) return '选项二';
+                        if(player.getGaiPai('luEn').length>=5&&bool2) return '选项二';
                         if(bool1) return '选项一';
                     }).set('bool1',bool1).set('bool2',bool2);
                     'step 1'
@@ -985,7 +985,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 2'
                     player.chooseCard('h',true,'将1张手牌面朝下放置在你角色旁，作为【卢恩】');
                     'step 3'
-                    player.addToExpansion('draw',result.cards,'log').gaintag.add('luEn');
+                    player.addGaiPai(result.cards,'luEn');
                     var list=[];
                     if(!player.hasZhiShiWu('fanXing')) list.push('繁星');
                     if(!player.hasZhiShiWu('yingYue')) list.push('影月');
@@ -1008,7 +1008,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     event.finish();
 
                     'step 6'
-                    var cards=player.getExpansions('luEn');
+                    var cards=player.getGaiPai('luEn');
                     player.chooseCardButton(cards,true,[1,Infinity],'移除X张【卢恩】');
                     'step 7'
                     player.discard(result.links,'luEn','showHiddenCards');
@@ -1040,7 +1040,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     event.finish();
                 },
                 check:function(event,player){
-                    return player.countCards('h')>0||player.getExpansions('luEn').length>3;
+                    return player.countCards('h')>0||player.getGaiPai('luEn').length>3;
                 }
             },
             huangJinLv:{
@@ -1050,7 +1050,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content: async function(event,trigger,player){
                     await player.draw(1);
-                    var cards = player.getExpansions("luEn");
+                    var cards = player.getGaiPai("luEn");
                     if(cards.length>0){
                         var next = player.chooseToMove("黄金律：是否交换【卢恩】和手牌");
                         next.set("list", [
@@ -1064,7 +1064,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             if (moved[0].length < 1) return true;
                             //交换回去
                             if((moved[0].includes(from.link)&&moved[1].includes(to.link))||moved[0].includes(to.link)&&moved[1].includes(from.link)) return true;
-                            var luEn = player.getExpansions("luEn");
+                            var luEn = player.getGaiPai("luEn");
                             //卢恩间交换
                             if(luEn.includes(from.link)&&luEn.includes(to.link)) return true;
                             var h=player.getCards("h");
@@ -1083,7 +1083,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             var player=_status.event.player;
                             var pushs = moved[0],
                                 gains = moved[1];
-                            pushs.removeArray(player.getExpansions("luEn"));
+                            pushs.removeArray(player.getGaiPai("luEn"));
                             gains.removeArray(player.getCards("h"));
                             return pushs.length==1;
                         });
@@ -1094,9 +1094,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         if (!pushs.length || pushs.length != gains.length) return;
                         await player.lose(pushs);
                         await player.lose(gains);
-                        await player.addToExpansion(pushs, "draw",'log').set('gaintag',['luEn']);
-                        game.log(player,'获得了1张牌');
-                        await player.gain(gains, "draw");
+                        await player.addGaiPai(pushs,'luEn');
+                        //game.log(player,'获得了1张牌');
+                        await player.gain(gains, "draw",'log');
                     }
                 }
             },
@@ -1357,7 +1357,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.chooseCard('h',`将最多${x+1}张手牌面朝下放置在你角色旁，作为【卢恩】`,[1,x+1]);
                     'step 3'
                     if(result.bool){
-                        player.addToExpansion('draw',result.cards,'log').gaintag.add('luEn');
+                        player.addGaiPai(result.cards,'luEn');
                     }
                     player.removeSkill('chuangKeLvDong_wuXian');
                     'step 4'
@@ -1385,23 +1385,23 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 intro:{
                     markcount:'expansion',
                     mark:function(dialog,storage,player){
-						var cards=player.getExpansions('luEn');
+						var cards=player.getGaiPai('luEn');
 						if(player.isUnderControl(true)) dialog.addAuto(cards);
 						else return '共有'+cards.length+'张牌';
 					},
                 },
                 onremove:function(player, skill) {
-                    const cards = player.getExpansions(skill);
+                    const cards = player.getGaiPai(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
                 direct:true,
-                trigger:{player:'addToExpansionAfter'},
+                trigger:{player:'addGaiPaiAfter'},
                 filter:function(event,player){
-                    return player.getExpansions('luEn').length>6;
+                    return player.countGaiPai('luEn').length>6;
                 },
                 content:function(){
                     'step 0'
-                    var cards=player.getExpansions('luEn');
+                    var cards=player.getGaiPai('luEn');
                     var next=player.chooseCardButton(cards,true,cards.length-6,`舍弃${cards.length-6}张【卢恩】`);
                     'step 1'
                     player.discard(result.links,'luEn').set('sheQi',true);
@@ -1471,7 +1471,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shouMoCi:{
                 trigger:{player:'gongJiShi'},
                 filter:function(event,player){
-                    var num=player.getExpansions('moLiPing').length;
+                    var num=player.getGaiPai('moLiPing').length;
                     if(num>=4) return false;
 
                     return get.is.zhuDongGongJi(event)&&event.target.countCards('h')<4&&event.target.countCards('h')>0;
@@ -1481,13 +1481,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 0'
                     trigger.target.chooseToDiscard(true);
                     'step 1'
-                    player.addToExpansion('draw',result.cards,'log').gaintag.add('moLiPing');
+                    player.addGaiPai(result.cards,'moLiPing');
                 }
             },
             faShuBoLi:{
                 trigger:{source:'gongJiMingZhong'},
                 filter:function(event,player){
-                    var num=player.getExpansions('moLiPing').length;
+                    var num=player.getGaiPai('moLiPing').length;
                     if(num>=4) return false;
 
                     return get.is.zhuDongGongJi(event);
@@ -1510,16 +1510,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         target.chooseToDiscard('h',true);
                     }else event.finish();
                     'step 1'
-                    player.addToExpansion('draw',result.cards,'log').gaintag.add('moLiPing');
+                    player.addGaiPai(result.cards,'moLiPing');
                 }
             },
             guanYinDuRen:{
                 trigger:{source:'chengShouShangHai'},
                 filter:function(event,player){
-                    return player.getExpansions('moLiPing').length>=1;
+                    return player.getGaiPai('moLiPing').length>=1;
                 },
                 async cost(event,trigger,player){
-                    var cards=player.getExpansions('moLiPing');
+                    var cards=player.getGaiPai('moLiPing');
                     var result=await player.chooseCardButton(cards,`是否发动【灌银毒刃】，移除1个【魔力瓶】,本次伤害-1，其摸牌后将移除的【魔力瓶】加入他手牌[强制]，你+1[治疗]`).forResult();
                     event.result={
                         bool:result.bool,
@@ -1560,10 +1560,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 usable:1,
                 trigger:{player:'gongJiEnd'},
                 filter:function(event,player){
-                    return player.canBiShaShuiJing()&&get.is.gongJiXingDong(event)&&player.getExpansions('moLiPing').length>=2;
+                    return player.canBiShaShuiJing()&&get.is.gongJiXingDong(event)&&player.getGaiPai('moLiPing').length>=2;
                 },
                 async cost(event,trigger,player){
-                    var cards=player.getExpansions('moLiPing');
+                    var cards=player.getGaiPai('moLiPing');
                     var result=await player.chooseCardButton(cards,2,`是否发动【偷袭】，移除2个【魔力瓶】[展示]<br>每有X张法术牌，对X名目标对手造成1点法术伤害③；<span class='tiaoJian'>(若有2张攻击牌)</span>额外+1[攻击行动]。 <span class='tiaoJian'>(若为同系牌)</span>对目标角色造成1点法术伤害③。`).forResult();
                     event.result={
                         bool:result.bool,
@@ -1619,13 +1619,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 intro:{
                     markcount:'expansion',
                     mark:function(dialog,storage,player){
-						var cards=player.getExpansions('moLiPing');
+						var cards=player.getGaiPai('moLiPing');
 						if(player.isUnderControl(true)) dialog.addAuto(cards);
 						else return '共有'+cards.length+'张牌';
 					},
                 },
                 onremove:function(player, skill) {
-                    const cards = player.getExpansions(skill);
+                    const cards = player.getGaiPai(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
             },

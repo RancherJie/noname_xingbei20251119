@@ -114,7 +114,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
         card: {
             tricky: {
                 filterTarget: function (card, player, target) {
-                    return !target.hasExpansions("tricky_xiaoGuo");
+                    return !target.hasJiChuXiaoGuo("tricky_xiaoGuo");
                 },
             },
         },
@@ -444,9 +444,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
             },
             xieLingTuiSan: {
-                trigger: {source: "addToExpansionAfter",},
+                trigger: {source: "addJiChuXiaoGuoAfter",},
                 filter: function (event, player) {
-                    return game.jiChuXiaoGuo.all_xiaoGuo.includes(event.gaintag[0]);
+                    return game.jiChuXiaoGuo.all_xiaoGuo.includes(event.jiChuXiaoGuo);
                 },
                 async cost(event, trigger, player) {
                     event.result= await player.chooseTarget("对目标对手造成1点法术伤害③", true, function (card, player, target) {
@@ -599,7 +599,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 if (!target.hasSkill(`${name}_xiaoGuo`)) {
                                     target.addSkill(`${name}_xiaoGuo`);
                                 }
-                                await target.addToExpansion([card], "gain2", player,'log').set('gaintag',[`${name}_xiaoGuo`]);
+                                await target.addJiChuXiaoGuo(`${name}_xiaoGuo`, player,[card]);
                             }
                             
                         }
@@ -634,19 +634,18 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 forced: true,
                 content: function (event, trigger, player) {
                     var cards = get.cards(6);
-                    player.addToExpansion(cards, "draw").gaintag.add("ziDan");
-                    game.log(player, "将牌库顶的6张牌作为", "#g【子弹】", "置于武将牌上");
+                    player.addGaiPai(cards,'ziDan');
                 },
             },
             "yuanSuSheJi*sora": {
                 trigger: { player: "gongJiShi" },
                 filter: function (event, player) {
                     if (event.yingZhan == true) return false;
-                    return player.getExpansions("ziDan").length > 0;
+                    return player.getGaiPai("ziDan").length > 0;
                 },
                 async cost(event, trigger, player) {
                     var result = await player
-                        .chooseCardButton(player.getExpansions("ziDan"), "是否发动【元素射击*SORA】移除一个【子弹】？")
+                        .chooseCardButton(player.getGaiPai("ziDan"), "是否发动【元素射击*SORA】移除一个【子弹】？")
                         .set("ai", function () {
                             return 0.7 - Math.random();
                         })
@@ -794,7 +793,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             fuMoZhiShu: {
                 trigger: { player: "_tiLian_backupEnd" },
                 filter: function (event, player) {
-                    return player.countCards("h") > 0 && player.getExpansions("ziDan").length == 0 && event;
+                    return player.countCards("h") > 0 && player.getGaiPai("ziDan").length == 0 && event;
                 },
                 async cost(event, trigger, player) {
                     event.result = await player.chooseCard("h", 1)
@@ -814,7 +813,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         await player.removeNengLiang(list[0]);
                     }
                     if (event.cards && event.cards.length) {
-                        await player.addToExpansion("draw", event.cards, "log").set('gaintag', ['ziDan']);
+                        await player.addGaiPai(event.cards, "ziDan");
                     }
                 },
             },
@@ -838,23 +837,23 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     name: "子弹",
                     markcount: "expansion",
                     mark: function (dialog, storage, player) {
-                        var cards = player.getExpansions("ziDan");
+                        var cards = player.getGaiPai("ziDan");
                         if (player.isUnderControl(true)) dialog.addAuto(cards);
                         else return "共有" + cards.length + "张牌";
                     },
                 },
                 onremove: function (player, skill) {
-                    const cards = player.getExpansions(skill);
+                    const cards = player.getGaiPai(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
-                trigger: { player: "addToExpansionAfter" },
+                trigger: { player: "addGaiPaiAfter" },
                 filter: function (event, player) {
-                    return event.gaintag.includes("ziDan") && player.getExpansions("ziDan").length > 6;
+                    return event.gaiPai=="ziDan" && player.countGaiPai("ziDan") > 6;
                 },
                 direct: true,
                 content: function (event, trigger, player) {
                     "step 0";
-                    var cards = player.getExpansions("ziDan");
+                    var cards = player.getGaiPai("ziDan");
                     player.chooseCardButton(cards, "舍弃" + (cards.length - 6) + "张【子弹】", true, cards.length - 6);
                     "step 1";
                     if (result.links) {
@@ -1055,7 +1054,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             zhouFu_nianZhou: {
                 trigger: { player: "zhouFu" },
                 filter: function (event, player) {
-                    return player.countCards("h") > 0 && player.getExpansions("zhouFu_yaoLi").length < 2;
+                    return player.countCards("h") > 0 && player.getGaiPai("zhouFu_yaoLi").length < 2;
                 },
                 async cost(event, trigger, player) {
                     event.result = await player
@@ -1070,19 +1069,19 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         .forResult();
                 },
                 content: function (event, trigger, player) {
-                    player.addToExpansion("draw", event.cards, "log").gaintag.add("zhouFu_yaoLi");
+                    player.addGaiPai(event.cards, "zhouFu_yaoLi");
                 },
             },
             chiMeiWangLiang: {
                 trigger: { source: "gongJiMingZhong" },
                 filter: function (event, player) {
                     if (event.yingZhan == true) return false;
-                    return player.getExpansions("zhouFu_yaoLi").length > 0;
+                    return player.getGaiPai("zhouFu_yaoLi").length > 0;
                 },
                 async cost(event, trigger, player) {
                     var result = await player
                         .chooseCardButton(
-                            player.getExpansions("zhouFu_yaoLi"),
+                            player.getGaiPai("zhouFu_yaoLi"),
                             "是否发动【魑魅魍魎】移除1个【妖力】<br>视为发动【咒符-火璃】或【咒符-冻天】"
                         )
                         .set('ai', function (button) {
@@ -1152,13 +1151,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     name: "妖力",
                     markcount: "expansion",
                     mark: function (dialog, storage, player) {
-                        var cards = player.getExpansions("zhouFu_yaoLi");
+                        var cards = player.getGaiPai("zhouFu_yaoLi");
                         if (player.isUnderControl(true)) dialog.addAuto(cards);
                         else return "共有" + cards.length + "张牌";
                     },
                 },
                 onremove: function (player, skill) {
-                    const cards = player.getExpansions(skill);
+                    const cards = player.getGaiPai(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
             },
@@ -1629,7 +1628,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             if(list.length==1) return list[0];
                             if(list.includes("_xuRuo")) return "_xuRuo";
                             for(var xiaoGuo of game.jiChuXiaoGuo['fengYinShi_xiaoGuo']){
-                                if(target.hasExpansions(xiaoGuo)){
+                                if(target.hasJiChuXiaoGuo(xiaoGuo)){
                                     return xiaoGuo;
                                 }
                             }
@@ -1639,19 +1638,19 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                     
                     var card;
-                    if (control == "_zhongDu" && target.getExpansions("_zhongDu").length != 1) {
-                        var zhongDu = await player.chooseCardButton(target.getExpansions("_zhongDu"), true, "选择要获得的中毒").forResultLinks();
+                    if (control == "_zhongDu" && target.getJiChuXiaoGuo("_zhongDu").length != 1) {
+                        var zhongDu = await player.chooseCardButton(target.getJiChuXiaoGuo("_zhongDu"), true, "选择要获得的中毒").forResultLinks();
                         card = zhongDu[0];
-                        var list = target.getExpansions("_zhongDu");
+                        var list = target.getJiChuXiaoGuo("_zhongDu");
                         var index = list.indexOf(card);
                         target.storage.zhongDu.splice(index, 1);
                     } else {
-                        card = target.getExpansions(control);
+                        card = target.getJiChuXiaoGuo(control);
                         if (control == "_zhongDu") target.storage.zhongDu = [];
                     }
                     await target.lose(card,ui.ordering);
                     //await game.cardsGotoOrdering(card);
-                    await target.addToExpansion(event.cards, "give", player).set('gaintag',['_shengDun']);
+                    await target.addJiChuXiaoGuo('_shengDun', player,event.cards);
                     //game.log(player, "获得了", card);
                     await player.gain(card,'gain2');
                     if (!game.jiChuXiaoGuo.pai_xiaoGuo.includes(control)) {
@@ -1677,7 +1676,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             content: "expansion",
                             markcount: "expansion",
                             mark: function (dialog, storage, player) {
-                                var cards = player.getExpansions("tricky_xiaoGuo");
+                                var cards = player.hasJiChuXiaoGuo("tricky_xiaoGuo");
                                 if (cards) {
                                     return "视为基础效果";
                                 }
@@ -1685,7 +1684,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             nocount: true,
                         },
                         onremove: function (player, skill) {
-                            const cards = player.getExpansions(skill);
+                            const cards = player.hasJiChuXiaoGuo(skill);
                             if (cards.length) player.loseToDiscardpile(cards);
                         },
                         tag: {
@@ -1699,7 +1698,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 forced: true,
                 filter: function (event, player) {
                     return game.hasPlayer(function (current) {
-                        return !current.hasExpansions("tricky_xiaoGuo");
+                        return !current.hasJiChuXiaoGuo("tricky_xiaoGuo");
                     });
                 },
                 content: async function (event, trigger, player) {
@@ -1718,7 +1717,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             target.addSkill("tricky_xiaoGuo");
                         }
                         var cards = await get.cards();
-                        await target.addToExpansion(cards, "draw", "log").set('gaintag', ['tricky_xiaoGuo']);
+                        await target.addJiChuXiaoGuo('tricky_xiaoGuo', player, cards);
                     }
                 },
             },
@@ -1728,7 +1727,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     if (event.yingZhan == true) return false;
                     if (
                         !game.hasPlayer(function (current) {
-                            return current.hasExpansions("tricky_xiaoGuo");
+                            return current.hasJiChuXiaoGuo("tricky_xiaoGuo");
                         })
                     )
                         return false;
@@ -1737,7 +1736,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 async cost(event, trigger, player) {
                     event.result = await player
                         .chooseTarget(function (card, player, target) {
-                            return target.hasExpansions("tricky_xiaoGuo");
+                            return target.hasJiChuXiaoGuo("tricky_xiaoGuo");
                         })
                         .set("ai", function (target) {
                             var player = _status.event.player;
@@ -1749,7 +1748,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content: async function (event, trigger, player) {
                     for (var target of event.targets) {
-                        var cards = target.getExpansions("tricky_xiaoGuo");
+                        var cards = target.getJiChuXiaoGuo("tricky_xiaoGuo");
                         var card = cards[0];
                         var xiBie = get.xiBie(card);
                         var dialog = ["T-r-i-c-k-y!：移除该【Tricky】[展示]并额外弃1张同系牌[展示]",[[card], "card"]];
@@ -1763,7 +1762,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             })
                             .forResult();
                         if (result.bool) {
-                            await target.discard(target.getExpansions("tricky_xiaoGuo"), "tricky_xiaoGuo").set("visible", true);
+                            await target.discard(target.getJiChuXiaoGuo("tricky_xiaoGuo"), "tricky_xiaoGuo").set("visible", true);
                             target.removeSkill("tricky_xiaoGuo");
                             await player.discard(result.cards,'showHiddenCards');
                             await target.faShuDamage(2, player);
@@ -1777,7 +1776,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 filter: function (event, player) {
                     let x = 0;
                     for (var p of game.players) {
-                        if (p.hasExpansions("tricky_xiaoGuo")) {
+                        if (p.hasJiChuXiaoGuo("tricky_xiaoGuo")) {
                             x++;
                         }
                     }
@@ -1788,15 +1787,15 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var duiFang = 0;
                     var cards= [];
                     var players = game.filterPlayer(function (current) {
-                        return current.hasExpansions("tricky_xiaoGuo");
+                        return current.hasJiChuXiaoGuo("tricky_xiaoGuo");
                     }).sortBySeat(player);
                     for (var p of players) {
-                        cards.push(p.getExpansions("tricky_xiaoGuo")[0]);
+                        cards.push(p.getJiChuXiaoGuo("tricky_xiaoGuo")[0]);
                     }
                     await player.showHiddenCards(cards);
                     
                     for(var p of players){
-                        var card= p.getExpansions("tricky_xiaoGuo")[0];
+                        var card= p.getJiChuXiaoGuo("tricky_xiaoGuo")[0];
                         var name=get.colorName(player);
                         var dialog = [`弃1张与面前【Tricky】对应属性的牌[展示]<br>否则${name}对你造成2点法术伤害③`,[[card], "card"]];
                         var result = await p.chooseToDiscard(1, "h",'showCards',card=> get.xiBie(card) == _status.event.xiBie)
@@ -1815,7 +1814,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
 
                     for(var p of players){
-                        await p.discard(p.getExpansions("tricky_xiaoGuo"), "tricky_xiaoGuo").set("visible", true);
+                        await p.discard(p.getJiChuXiaoGuo("tricky_xiaoGuo"), "tricky_xiaoGuo").set("visible", true);
                         p.removeSkill("tricky_xiaoGuo");
                     }
 
@@ -1850,11 +1849,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.addTempSkill("suprise_sheZhi", { player: "phaseEndBefore" });
                     var cards=[];
                     var players = game.filterPlayer(function (current) {
-                        return current.hasExpansions("tricky_xiaoGuo");
+                        return current.hasJiChuXiaoGuo("tricky_xiaoGuo");
                     }).sortBySeat(player);
                     for (var p of players) {
-                        if (p.hasExpansions("tricky_xiaoGuo")) {
-                            var tricky = await p.getExpansions("tricky_xiaoGuo");
+                        if (p.hasJiChuXiaoGuo("tricky_xiaoGuo")) {
+                            var tricky = p.getJiChuXiaoGuo("tricky_xiaoGuo");
                             cards.addArray(tricky);
                         }
                     }
@@ -1894,7 +1893,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         if (!target.hasSkill("tricky_xiaoGuo")) {
                             target.addSkill("tricky_xiaoGuo");
                         }
-                        await target.addToExpansion(cards, "draw", "log").set('gaintag', ['tricky_xiaoGuo']);
+                        await target.addJiChuXiaoGuo('tricky_xiaoGuo', player, cards);
                         bool=game.hasPlayer(function(current){
                             return lib.filter.targetEnabled({ name: "tricky" }, player, current);
                         });
@@ -2870,7 +2869,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     if(event.yingZhan) return false;
                     var zhanJi=get.zhanJi(player.side);
                     if(zhanJi.length<=0) return false;
-                    if(event.card.hasDuYou('lieFengJi')&&event.target.hasExpansions('_shengDun')) return true;
+                    if(event.card.hasDuYou('lieFengJi')&&event.target.hasJiChuXiaoGuo('_shengDun')) return true;
                     else if(event.card.hasDuYou('jiFengJi')) return true;
                     return false;
                 },
