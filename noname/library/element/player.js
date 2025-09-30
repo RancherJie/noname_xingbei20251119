@@ -11491,7 +11491,7 @@ export class Player extends HTMLDivElement {
 			this.addSkill(fengYin);
 		}
 		this.storage.fengYin=source;
-		return this.addToExpansion(cards,source,'gain2').set('gaintag',[fengYin]);
+		return this.addJiChuXiaoGuo(cards,source,fengYin);
 	}
 
 	tiaoZhengShouPai(num){
@@ -11568,6 +11568,7 @@ export class Player extends HTMLDivElement {
 				next.cards = [arguments[i]];
 			} else if (typeof arguments[i] == "string") {
 				next.gaintag = [arguments[i]];
+				next.gaiPai = arguments[i];
 			} else if (typeof arguments[i] == "boolean") {
 				//是否是展示盖牌
 				next.show = arguments[i];
@@ -11639,6 +11640,11 @@ export class Player extends HTMLDivElement {
 			});
 			return map;
 		};
+		if(!next.gaiPai){
+			_status.event.next.remove(next);
+			next.resolve();
+		}
+
 		return next;
 	}
 	countGaiPai(gaintag){//统计盖牌
@@ -11655,8 +11661,8 @@ export class Player extends HTMLDivElement {
 			if (get.itemtype(arguments[i]) == "player") {
 				next.source = arguments[i];
 			} else if (typeof arguments[i] == "string") {
-				if(!next.gaintag) next.gaintag=[];
-				next.gaintag.push(arguments[i]);
+				next.gaintag = [arguments[i]];
+				next.jiChuXiaoGuo = arguments[i];
 			}else if (typeof arguments[i] == "boolean") {
 				next.log = arguments[i];
 			}else if (get.itemtype(arguments[i]) == "cards") {
@@ -11715,6 +11721,10 @@ export class Player extends HTMLDivElement {
 			});
 			return map;
 		};
+		if(!next.jiChuXiaoGuo){
+			_status.event.next.remove(next);
+			next.resolve();
+		}
 		return next;
 	}
 	getJiChuXiaoGuo(jiChuXiaoGuo){//获取基础效果
