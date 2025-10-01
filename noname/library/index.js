@@ -8202,6 +8202,15 @@ export class Library {
 		isMe: function (card, player, target) {
 			return player == target;
 		},
+		teammate: function (card, player, target) {
+			return player.side == target.side && player != target;
+		},
+		opponent: function (card, player, target) {
+			return player.side != target.side;
+		},
+		ourSide: function (card, player, target) {
+			return player.side == target.side;
+		},
 		attackFrom: function (card, player, target) {
 			return get.distance(player, target, "attack") <= 1;
 		},
