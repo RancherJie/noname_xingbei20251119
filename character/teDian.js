@@ -1285,10 +1285,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     filter:function(button,player){
                         var link=button.link;
                         if(link=='1'){
-                            var bool=game.hasPlayer(function(current){
-                                return current.side!=player.side&&current.countCards('h')<player.countCards('h')+1;
-                            })
-                            return bool;
+                            return player.zhiLiao>=1;
                         }
                         if(link=='2'){
                             var bool=game.hasPlayer(function(current){
@@ -1312,15 +1309,22 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         content:async function(event,trigger,player){
                             await player.changeZhiLiao(-1);
                             await player.draw(1);
-                            var targets=await player.chooseTarget(true,function(card,player,target){
-                                return player.side!=target.side&&target.countCards('h')<player.countCards('h');
-                            })
-                            .set('ai',function(target){
-                                var player=_status.event.player;
-                                return get.damageEffect2(target,player,2);
-                            })
-                            .forResultTargets();
-                            if(targets.length>0) await targets[0].damage(2,player);
+                            var bool=game.hasPlayer(function(current){
+                                return current.side!=player.side&&current.countCards('h')<player.countCards('h');
+                            });
+
+                            if(bool){
+                                var targets=await player.chooseTarget(true,function(card,player,target){
+                                    return player.side!=target.side&&target.countCards('h')<player.countCards('h');
+                                })
+                                .set('ai',function(target){
+                                    var player=_status.event.player;
+                                    return get.damageEffect2(target,player,2);
+                                })
+                                .forResultTargets();
+                                if(targets.length>0) await targets[0].damage(2,player);
+                            }
+
                             await player.addZhiShiWu('yuanChu_xinYang');
                         },
                     },
