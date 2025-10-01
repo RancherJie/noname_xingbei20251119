@@ -1721,7 +1721,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 }
                             });
                             if(event.bool){
-                                next.set('prompt',`选择前发动的选项`);
+                                next.set('prompt',`选择先发动的选项`);
                             }else{
                                 next.set('prompt',`选择以下一项发动`);
                             }
@@ -1736,19 +1736,29 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             
                             for(var xiBie of xiBieList){
                                 var xiBieName=get.translation(xiBie);
-                                var cards=await player.chooseToDiscard('h',true,[0,4],'showCards',card=>get.xiBie(card)==_status.event.xiBie,`弃X张${xiBieName}系牌[展示]，摸X张牌，X最大为4`).set('ai',function(card){
-                                    return 1;
-                                }).set('xiBie',xiBie).forResultCards();
-                                var num=cards.length;
-                                if(num>0) await player.draw(num);
-                                var targets=await player.chooseTarget(true,`选择1个目标角色弃Y张${xiBieName}系牌[展示]，然后你对他造成(${num}+1)点法术伤害③`,function(card,player,target){
-                                    return player.side!=target.side;
-                                }).set('ai',function(target){
-                                    var player=_status.event.player;
-                                    var num=_status.event.num;
-                                    return get.damageEffect2(target,player,num+1);
-                                }).set('num',num).forResultTargets();
-                                var target=targets[0];
+                                var result=await player.chooseCardTarget({
+                                    forced:true,
+                                    xiBie:xiBie,
+                                    filterCard:card=>get.xiBie(card)==_status.event.xiBie,
+                                    selectCard:[0,4],
+                                    filterTarget:lib.filter.opponent,
+                                    selectTarget:1,
+                                    prompt:`弃X张${xiBieName}系牌[展示]，摸X张牌，X最大为4，目标对手弃Y张${xiBieName}系牌[展示]，然后你对他造成(X+1)点法术伤害③`,
+                                    ai1:function(card){
+                                        return 1;
+                                    },
+                                    ai2:function(target){
+                                        var player=_status.event.player;
+                                        return get.damageEffect2(target,player,ui.selected.cards.length+1);
+                                    }
+                                }).forResult();
+
+                                var num=result.cards.length;
+                                if(num>0){
+                                    await player.discard(result.cards,'showCards');
+                                    await player.draw(num);
+                                }
+                                var target=result.targets[0];
                                 await target.chooseToDiscard('h',true,[0,Infinity],'showCards',card=>get.xiBie(card)==_status.event.xiBie,`弃Y张${xiBieName}系牌[展示]`).set('ai',function(card){
                                     return 1;
                                 }).set('xiBie',xiBie);
@@ -1790,7 +1800,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 }
                             });
                             if(event.bool){
-                                next.set('prompt',`选择前发动的选项`);
+                                next.set('prompt',`选择先发动的选项`);
                             }else{
                                 next.set('prompt',`选择以下一项发动`);
                             }
@@ -1805,19 +1815,29 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             
                             for(var xiBie of xiBieList){
                                 var xiBieName=get.translation(xiBie);
-                                var cards=await player.chooseToDiscard('h',true,[0,4],'showCards',card=>get.xiBie(card)==_status.event.xiBie,`弃X张${xiBieName}系牌[展示]，摸X张牌，X最大为4`).set('ai',function(card){
-                                    return 1;
-                                }).set('xiBie',xiBie).forResultCards();
-                                var num=cards.length;
-                                if(num>0) await player.draw(num);
-                                var targets=await player.chooseTarget(true,`选择1个目标角色弃Y张${xiBieName}系牌[展示]，然后你对他造成(${num}+1)点法术伤害③`,function(card,player,target){
-                                    return player.side!=target.side;
-                                }).set('ai',function(target){
-                                    var player=_status.event.player;
-                                    var num=_status.event.num;
-                                    return get.damageEffect2(target,player,num+1);
-                                }).set('num',num).forResultTargets();
-                                var target=targets[0];
+                                var result=await player.chooseCardTarget({
+                                    forced:true,
+                                    xiBie:xiBie,
+                                    filterCard:card=>get.xiBie(card)==_status.event.xiBie,
+                                    selectCard:[0,4],
+                                    filterTarget:lib.filter.opponent,
+                                    selectTarget:1,
+                                    prompt:`弃X张${xiBieName}系牌[展示]，摸X张牌，X最大为4，目标对手弃Y张${xiBieName}系牌[展示]，然后你对他造成(X+1)点法术伤害③`,
+                                    ai1:function(card){
+                                        return 1;
+                                    },
+                                    ai2:function(target){
+                                        var player=_status.event.player;
+                                        return get.damageEffect2(target,player,ui.selected.cards.length+1);
+                                    }
+                                }).forResult();
+
+                                var num=result.cards.length;
+                                if(num>0){
+                                    await player.discard(result.cards,'showCards');
+                                    await player.draw(num);
+                                }
+                                var target=result.targets[0];
                                 await target.chooseToDiscard('h',true,[0,Infinity],'showCards',card=>get.xiBie(card)==_status.event.xiBie,`弃Y张${xiBieName}系牌[展示]`).set('ai',function(card){
                                     return 1;
                                 }).set('xiBie',xiBie);

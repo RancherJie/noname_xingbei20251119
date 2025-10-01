@@ -754,49 +754,41 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 filter:function(event,player){
                     return player.canBiShaShuiJing();
                 },
-                content:function(){
-                    'step 0'
-                    player.removeBiShaShuiJing();
-                    'step 1'
-                    player.tiaoZhengShouPai(4);
-                    'step 2'
+                content:async function(event, trigger, player){
+                    await player.removeBiShaShuiJing();
+                    await player.tiaoZhengShouPai(4);
+                    
                     var list=get.zhanJi(player.side);
                     if(list.length>0){
                         var listx=[];
                         for(var i=0;i<list.length;i++){
                             listx.push([list[i],get.translation(list[i])]);
                         }
-                        var next=player.chooseButton([
-                            '是否移除1个星石<br>将一名其他角色手牌调整为4张[强制]',
-                            [listx,'tdnodes'],
-                        ]);
-                        next.set('selectButton',1);
-                        next.set('ai',function(button){
-                            return -1;
-                        });
-                    }else{
-                        event.finish();
-                    }
-                    'step 3'
-                    if(result.bool){
-                        if(result.links[0]=='baoShi'){
-                            player.removeZhanJi("baoShi");
-                        }else{
-                            player.removeZhanJi("shuiJing");
+
+                        let result=await player.chooseButtonTarget({
+                            createDialog:[
+                                '是否移除1个星石<br>将一名其他角色手牌调整为4张[强制]',
+                                [listx,'tdnodes'],
+                            ],
+                            filterTarget:lib.filter.notMe,
+                            ai1:function(button){
+                                return -1;
+                            },
+                            ai2:function(target){
+                                if(target.countCards('h')==4) return -1;
+                                return Math.random();
+                            },
+                        }).forResult();
+                        if(result.bool){
+                            if(result.links[0]=='baoShi'){
+                                await player.removeZhanJi("baoShi");
+                            }else{
+                                await player.removeZhanJi("shuiJing");
+                            }
+                            let target=result.targets[0];
+                            await target.tiaoZhengShouPai(4);
                         }
-                    }else{
-                        event.finish();
                     }
-                    'step 4'
-                    player.chooseTarget('将一名其他角色手牌调整为4张[强制]',true,function(card,player,target){
-                        return target!=player;
-                    }).set('ai',function(target){
-                        if(target.countCards('h')==4) return -1;
-                        return Math.random();
-                    });
-                    'step 5'
-                    var target=result.targets[0];
-                    target.tiaoZhengShouPai(4);
                 },
                 check:function(event,player){
                     if(player.countCards('h')==4) return false;

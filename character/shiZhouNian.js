@@ -7427,8 +7427,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     },
                     2:{
                         type:'faShu',
-                        content:function(){
-                            'step 0'
+                        content:async function(event,trigger,player){
                             var targets=game.filterPlayer(function(current){
                                 return current.side!=player.side;
                             });
@@ -7443,28 +7442,34 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 if(i>cha) break;
                                 list.push(i);
                             }
-                            player.chooseControl(list).set('prompt','移除你的X[治疗]');
-                            'step 1'
-                            event.x=result.control;
-                            player.changeZhiLiao(-result.control);
-                            'step 2'
-                            player.chooseTarget(true,[1,event.x],function(card,player,target){
-                                return target.countCards('h')<=player.countCards('h')-_status.event.x&&target.side!=player.side;
-                            }).set('x',event.x);
-                            'step 3'
-                            event.targets=result.targets.sortBySeat(player);
-                            game.log(player,'选择了',event.targets);;
-                            player.chooseToDiscard(true,'h',event.x);
-                            'step 4'
-                            event.num=2;
-                            for(var i=0;i<event.targets.length;i++){
-                                if(event.targets[i].zhiLiao>0) event.num++;
+
+                            var result=await player.chooseButtonTarget({
+                                createDialog:[
+                                    `<span class='tiaoJian'>(移除你的X[治疗]，选择最多X名手牌数不大于你手牌数-X的对手)</span>你弃X张牌，然后对他们各造成(Y+2)点攻击伤害， Y为目标数中拥有[治疗]的人数，你+X<span class='hong'>【信仰】</span>。`,
+                                    [list,'tdnodes'],
+                                ],
+                                forced:true,
+                                selectTarget(){
+                                    if(!ui.selected.buttons.length) return 0;
+                                    else return [1,ui.selected.buttons[0].link];
+                                },
+                                filterTarget:function(card,player,target){
+                                    return target.countCards('h')<=player.countCards('h')-ui.selected.buttons[0].link&&target.side!=player.side;
+                                },
+                            }).forResult();
+
+                            var num=result.links[0];
+                            var targets=result.targets.sortBySeat(player);
+                            await player.changeZhiLiao(-num);
+                            game.log(player,'选择了',targets);
+                            await player.chooseToDiscard(true,'h',num);
+
+                            var damageNum=2;
+                            for(var i=0;i<targets.length;i++){
+                                if(targets[i].zhiLiao>0) damageNum++;
                             }
-                            'step 5'
-                            var target=event.targets.shift();
-                            target.damage(event.num,player);
-                            if(event.targets.length>0){
-                                event.redo();
+                            for(var i=0;i<targets.length;i++){
+                                await targets[i].damage(damageNum,player);
                             }
                         }
                     }
