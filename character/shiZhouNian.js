@@ -7502,7 +7502,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         return current.side==player.side&&current.zhiLiao<current.getZhiLiaoLimit();
                     });
 
-                    var control=await player.chooseControl(list).set('prompt','是否发动【流星圣弹】，移除1点[治疗]或1点<span class="hong">【信仰】</span>，我方目标角色+1[治疗]').set('ai',function(){
+                    var control=await player.chooseControl(list).set('prompt',get.prompt('liuXingShengDan')).set('prompt2','移除1点[治疗]或1点<span class="hong">【信仰】</span>，我方目标角色+1[治疗]').set('ai',function(){
                         var player=_status.event.player;
                         var bool=_status.event.bool;
                         if(player.hasZhiShiWu('shengHuangHuiGuangPaoX')){
