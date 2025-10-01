@@ -11369,6 +11369,14 @@ export class Player extends HTMLDivElement {
 		if(num>0) num=-num;
 		return this.changeZhiLiao(num);
 	}
+	countZhiLiao(){
+		return this.zhiLiao;
+	}
+	countEmptyZhiLiao(){
+		let num=this.getZhiLiaoLimit()-this.countZhiLiao();
+		num=Math.max(0,num);
+		return num;
+	}
 
 	countEmptyCards(){
 		return this.getHandcardLimit()-this.countCards('h');
