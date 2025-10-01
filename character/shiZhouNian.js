@@ -4544,20 +4544,45 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     for(var i=1;i<=player.zhiLiao;i++){
                         list.push(i);
                     }
-                    var control=await player.chooseControl(list).set('prompt','转移[治疗]数量').set('num',list.length-1).set('ai',function(){
-                        var num=_status.event.num;
-                        if(num>3) return 3;
-                        return _status.event.num;
-                    }).forResultControl();
+                    //ai相关
+                    var num=0;
+                    var target;
+                    for(var cur of game.players){
+                        if(cur.side==player.side&&cur!=player){
+                            let empty=4-cur.zhiLiao;
+                            if(cur.hasSkillTag('zhiLiaoYiChu')) empty+=1;
+                            if(cur.hasSkillTag('noZhiLiao')) empty=0;
+                            if(empty>0&&empty>num) {
+                                num=empty;
+                                target=cur;
+                            }
+                        }
+                    }
+                    var result=await player.chooseButtonTarget({
+                        num: num,
+                        target:target,
+                        forced:true,
+                        createDialog:[
+                            `转移[治疗]数量及转移队友`,
+							[
+								list,
+								"tdnodes",
+							],
+                        ],
+                        filterTarget:lib.filter.teammate,
+                        ai1:function(button){
+                            if(button.link==_status.event.num) return 5;
+                            else return 1;
+                        },
+                        ai2:function(target){
+                            if(target==_status.event.target) return 10;
+                            else if(target.side==_status.event.player.side) return 1;
+                            return 0;
+                        },
+                    }).forResult();
 
-                    var targets=await player.chooseTarget('目标队友+'+control+'点[治疗]',true,function(card,player,target){
-                        return target.side==player.side&&target!=player;
-                    }).set('ai',function(target){
-                        var num=_status.event.control;
-                        var player=_status.event.player;
-                        return get.zhiLiaoEffect2(target,player,num);
-                    }).set('num',control).forResultTargets();
-                    var target=targets[0];
+                    var target=result.targets[0];
+                    var control=result.links[0];
 					if(control>0){
 						await player.changeZhiLiao(-control);
                         await target.changeZhiLiao(control,4,player).set('zhuanYi',true);
@@ -4571,7 +4596,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     if(player.getCards('h')==0&&player.countNengLiangAll()<=1) return false;
                     if(!(player.canGongJi()||player.canFaShu())) return false;
                     return game.hasPlayer(function(current){
+                        if(current==player) return false;
                         if(current.side!=player.side) return false;
+                        if(current.hasSkillTag('noZhiLiao')) return false;
                         if(current.zhiLiao+2<=4) return true;
                         return false;
                     });
