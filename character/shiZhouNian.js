@@ -7375,7 +7375,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         if(link=='2'){
                             var bool=game.hasPlayer(function(current){
                                 return current.side!=player.side&&current.countCards('h')<=player.countCards('h')-1;
-                            })
+                            });
                             return player.zhiLiao>0&&bool;
                         }
                     },
@@ -7393,7 +7393,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         }else if(links[0]=='2'){
                             return;
                         }
-                        
+                    },
+                    check:function(button){
+                        var player=_status.event.player;
+                        var link=button.link;
+                        if(link=='1'){
+                            return player.countEmptyCards();
+                        }else if(link=='2'){
+                            return 1.1;
+                        }
+                        return 0.1;
                     },
                 },
                 subSkill:{
@@ -7456,6 +7465,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 filterTarget:function(card,player,target){
                                     return target.countCards('h')<=player.countCards('h')-ui.selected.buttons[0].link&&target.side!=player.side;
                                 },
+                                ai1:function(button){
+                                    return button.link;
+                                },
+                                ai2:function(target){
+                                    var damageEffect= get.damageEffect2(target,player,2);
+                                    if(target.zhiLiao>0) damageEffect+=0.5;
+                                    return damageEffect;
+                                },
                             }).forResult();
 
                             var num=result.links[0];
@@ -7476,7 +7493,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 ai:{
                     order:function(item,player){
-                        return 8-player.countCards('h');
+                        var bool=game.hasPlayer(function(current){
+                            return current.side!=player.side&&current.countCards('h')<=player.countCards('h')-1;
+                        });
+                        if(bool&&player.zhiLiao>0){
+                            return player.countCards('h')-2;
+                        }else return 8-player.countCards('h');
                     },
                     result:{
                         player:1,
