@@ -135,6 +135,8 @@ window.noname_asset_list=
 	'image/card/zhuanShu/diLieBoTao.png',
 	'image/card/zhuanShu/yuanChu_shengHuangYuHui.png',
 	'image/card/zhuanShu/yuanChu_shengHuangHuiGuangPao.png',
+	'image/card/zhuanShu/tianPing_you.png',
+	'image/card/zhuanShu/tianPing_zuo.png',
 
 	'image/character/anShaZhe.jpg',
 	'image/character/cangYanMoNv.jpg',
@@ -205,6 +207,7 @@ window.noname_asset_list=
 	'image/character/jiDuShaoNv.jpg',
 	'image/character/jianZhiZi.jpg',
 	'image/character/moGongEX.jpg',
+	'image/character/sheng_zhongCaiZhe.jpg',
 
 	"image/emotion/xingBei_emotion/1.gif",
 	"image/emotion/xingBei_emotion/2.gif",

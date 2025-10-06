@@ -106,6 +106,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 ["shenFengShi", "jiFengZhuiShe", "gongShenHouBu", "juJi"],
                 ["des:其精准的射击总是能令对手防不胜防。作为本作命中数一数二的职业，往往是团队攻击链最后致命一击的缔造者。她的必杀技更是控场神技，总是能令对方的如意算盘全部落空"],
             ],
+            sheng_zhongCaiZhe:[
+                'sheng_zhongCaiZhe_name',
+                'shengGroup',
+                '4/5',
+                ['shenZhiTianPing','shenEBiJi','tianPingQingDao','shenZhiShenPan','tianPing','tianZui','zuiChiBiDao','zui'],
+                ["des:新的裁判钟声已经敲响，不知道是新生的喜悦钟声，还是赴死的丧钟。咚，咚，咚。。。"],
+            ],
         },
 
         characterIntro: {
@@ -3046,6 +3053,389 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content: async function(event,trigger,player){
                 },
+            }, 
+
+            //圣仲裁者
+            shenZhiTianPing:{
+                trigger: {global:'gameStart'},
+                forced: true,
+                content: async function(event, trigger, player) {
+                    player.addSkill('tianPing_you');
+                    player.addSkill('tianPing_zuo');
+                },
+            },
+            shenEBiJi:{
+                usable:1,
+                trigger: {global:'damageAfter'},
+                filter: function (event, player) {
+                    var zuo_cards=player.getExpansions('tianPing_zuo');
+                    var you_cards=player.getExpansions('tianPing_you');
+                    if(zuo_cards.length>=3&&you_cards.length>=3) return false;
+                    return event.player.side==player.side&&player.countCards('h',card=>lib.inpile.includes(card.name))>0;
+                },
+                async cost(event, trigger, player) {
+                    var next= player.chooseCard('h',1,card=>lib.inpile.includes(card.name));
+                    next.set('prompt',get.prompt('shenEBiJi'));
+                    next.set('prompt2',lib.translate['shenEBiJi_info']);
+                    next.set('ai', function (card) {
+                        return 6-get.value(card);
+                    });
+                    event.result = await next.forResult();
+                },
+                content: async function(event, trigger, player) {
+                    await player.lose(event.cards,ui.ordering);
+                    await player.showCards(event.cards);
+
+                    var zuo_cards=player.getExpansions('tianPing_zuo');
+                    var you_cards=player.getExpansions('tianPing_you');
+                    if(zuo_cards.length>=3&&you_cards.length>=3) return;
+                    else if(zuo_cards.length>=3&&you_cards.length<3) var position='you';
+                    else if(zuo_cards.length<3&&you_cards.length>=3) var position='zuo';
+                    else {
+                        let dialog=['善恶必计：选择1个位置将牌置于其上',[event.cards,'card']];
+                        let list=['tianPingZuo','tianPingYou'];
+                        let control=await player.chooseControl(list).set('dialog',dialog).set('ai',function(){
+                            var player=_status.event.player;
+                            var zuo_cards=player.getExpansions('tianPingZuo');
+                            var you_cards=player.getExpansions('tianPingYou');
+                            if(zuo_cards.length>=you_cards.length) return 'tianPingYou';
+                            else return 'tianPingZuo';
+                        }).forResultControl();
+                        var position=control=='tianPingZuo'?'zuo':'you';
+                    }
+                    await lib.skill.tianPing.addPai(player,event.cards,position);
+                    await player.draw();
+                },
+            },
+            tianPingQingDao:{
+                forced:true,
+                trigger:{player:['phaseBegin','phaseEnd']},
+                filter:function(event,player){
+                    var zuo_cards=player.getExpansions('tianPing_zuo');
+                    var you_cards=player.getExpansions('tianPing_you');
+                    return Math.abs(zuo_cards.length-you_cards.length)>1;
+                },
+                content: async function(event, trigger, player) {
+                    var zuo_cards=player.getExpansions('tianPing_zuo');
+                    var you_cards=player.getExpansions('tianPing_you');
+                    if(zuo_cards.length>you_cards.length){
+                        await player.discard(zuo_cards,'tianPing_zuo');
+                    }else{
+                        await player.discard(you_cards,'tianPing_you');
+                    }
+                    var cards=get.cards(4);
+                    await player.showHiddenCards(cards);
+                    var next=player.chooseCardButton(cards,2,true,'天平倾倒：选择2张牌加入手牌');
+                    next.set('ai', function (button) {
+                        return get.value(button.link);
+                    });
+                    var cards=await next.forResultLinks();
+                    await player.gain(cards,'gain2','log');
+
+                    await player.addHong(1);
+
+                    var targets=await player.chooseTarget('天平倾倒：选择目标队友+2[治疗]',lib.filter.teammate,true).set('ai',function(target){
+                        return get.zhiLiaoEffect(target,2);
+                    }).forResultTargets();
+                    var target=targets[0];
+                    if(target) await target.changeZhiLiao(2);
+                },
+            },
+            shenZhiShenPan:{
+                trigger:{player:'phaseEnd'},
+                filter:function(event,player){
+                    var zuo_cards=player.getExpansions('tianPing_zuo');
+                    var you_cards=player.getExpansions('tianPing_you');
+                    return zuo_cards.length>2&&you_cards.length>2;
+                },
+                content: async function(event, trigger, player) {
+                    var zuo_cards=player.getExpansions('tianPing_zuo');
+                    var you_cards=player.getExpansions('tianPing_you');
+                    await player.discard(zuo_cards,'tianPing_zuo');
+                    await player.discard(you_cards,'tianPing_you');
+                    var targets=await player.chooseTarget('神之审判：对2名目标对手各造成2点攻击伤害③',2,lib.filter.opponent,true).set('ai',function(target){
+                        return get.damageEffect2(target, _status.event.player, 2);
+                    }).forResultTargets();
+                    targets=targets.sortBySeat(player);
+                    for(var target of targets){
+                        await target.damage(2,player);
+                    }
+                },
+            },
+            tianPing:{
+                addPai:async function(player,cards,position){
+                    if(!cards||cards.length==0) return;
+                    if(position!='zuo'&&position!='you') return;
+                    //await player.lose(cards,ui.ordering);
+                    //await player.showCards(cards);
+                    var gaintag=['tianPing_'+position];
+                    game.log(player,'将',cards,'置于',`【${position=='zuo'?'天平·左':'天平·右'}】`,`上`);
+                    var next=player.addToExpansion(cards).set('gaintag',gaintag).set('log',false).set('position',position);
+                    await next;
+                },
+                group: ['tianPing_fangZhi'],
+                subSkill:{
+                    zuo:{
+                        mark:true,
+                        intro:{
+                            name:'天平·左',
+                            content:'expansion',
+                            markcount:'expansion',
+                            mark:function(dialog,storage,player){
+                                var cards=player.getExpansions('tianPing_zuo');
+                                if(cards.length>0) dialog.addAuto(cards);
+                                return `<span class='greentext'>[被动]罪灭之左</span><br>
+                                    <span class='tiaoJian'>(每当本卡上的牌数增加，且增加后本卡上的牌数>1)</span>对(X-1)名目标对手造成1点攻击伤害③，X为本卡上的牌数。`;
+                            },
+                        },
+                        markimage: 'image/card/zhuanShu/tianPing_zuo.png',
+                        trigger:{player:'addToExpansionAfter'},
+                        forced:true,
+                        filter:function(event,player){
+                            if(event.position!='zuo') return false;
+                            return player.countExpansions('tianPing_zuo')>1;
+                        },
+                        content: async function(event, trigger, player) {
+                            var cards=player.getExpansions('tianPing_zuo');
+                            var num=cards.length-1;
+                            var targets=await player.chooseTarget(`对${num}名目标对手造成1点攻击伤害③`,lib.filter.opponent,true,num).set('ai',function(target){
+                                return get.damageEffect2(target, _status.event.player, 1);
+                            }).forResultTargets();
+                            targets=targets.sortBySeat(player);
+                            for(var target of targets){
+                                await target.damage(1,player);
+                            }
+                        },
+                    },
+                    you:{
+                        mark:true,
+                        intro:{
+                            name:'天平·右',
+                            content:'expansion',
+                            markcount:'expansion',
+                            mark:function(dialog,storage,player){
+                                var cards=player.getExpansions('tianPing_you');
+                                if(cards.length>0) dialog.addAuto(cards);
+                                return `<span class='greentext'>[被动]圣方之右</span><br>
+                                    <span class='tiaoJian'>(每当本卡上的牌被弃掉且弃牌数>1)</span>你+1[治疗]。`;
+                            },
+                        },
+                        markimage: 'image/card/zhuanShu/tianPing_you.png',
+                        trigger:{player:'discard'},
+                        forced:true,
+                        filter:function(event,player){
+                            if(event.gaiPai!='tianPing_you') return false;
+                            return event.cards.length>1;
+                        },
+                        content: async function(event, trigger, player) {
+                            await player.changeZhiLiao(1);
+                        }
+                    },
+                    fangZhi:{
+                        trigger:{player:'addToExpansionBefore'},
+                        forced:true,
+                        filter:function(event,player){
+                            if(event.position!='zuo'&&event.position!='you') return false;
+                            var newCard=event.cards[0];
+                            var cards=player.getExpansions('tianPing_'+event.position);
+                            for(var card of cards){
+                                if(get.xiBie(card)!=get.xiBie(newCard)) return true;
+                            }
+                            return false;
+                        },
+                        content:async function(event, trigger, player) {
+                            var position='tianPing_'+trigger.position;
+                            var cards=player.getExpansions(position);
+                            await player.discard(cards,position);
+                            await player.addHong(1);
+                        },
+                    },
+                },
+            },
+            tianZui:{
+                type:'qiDong',
+                trigger:{player:'qiDong'},
+                filter:function(event,player){
+                    return player.canBiShaShuiJing();
+                },
+                content: async function(event, trigger, player) {
+                    await player.removeBiShaShuiJing();
+                    await player.addHong(1);
+                    await player.hengZhi();
+                    player.addTempSkill('tianZui_gongJi','phaseEnd');
+                },
+                check:function(event,player){
+                    if(!player.canGongJi()) return false;
+                    if(player.countCards('h',card=>lib.inpile.includes(card.name))<3) return false;
+                    var zuo_cards=player.getExpansions('tianPing_zuo');
+                    var you_cards=player.getExpansions('tianPing_you');
+                    return zuo_cards.length<=2||you_cards.length<=2;
+                },
+                group:['tianZui_chongZhi'],
+                ai:{
+                    shuiJing:true,
+                },
+                subSkill:{
+                    chongZhi:{
+                        trigger:{player:'phaseEnd'},
+                        direct:true,
+                        priority:0.1,
+                        filter:function(event,player){
+                            return player.isHengZhi();
+                        },
+                        content: async function(event, trigger, player) {
+                            await player.chongZhi();
+                        }
+                    },
+                    gongJi:{
+                        trigger:{player:'gongJiMingZhong'},
+                        filter:function(event,player){
+                            var num=0;
+                            var zuo_cards=player.getExpansions('tianPing_zuo');
+                            var you_cards=player.getExpansions('tianPing_you');
+                            if(zuo_cards.length<3) num++;
+                            if(you_cards.length<3) num++;
+                            if(num==0) return false;
+                            return player.countCards('h',card=>lib.inpile.includes(card.name))>=num;
+                        },
+                        async cost(event, trigger, player){
+                            var zuo_cards=player.getExpansions('tianPing_zuo');
+                            var you_cards=player.getExpansions('tianPing_you');
+                            var num=0;
+                            if(zuo_cards.length<3) num++;
+                            if(you_cards.length<3) num++;
+                            var str=`是否将手牌中${num}张基本牌面朝上`;
+                            if(num==2) str+='分别置于【天平·左】和【天平·右】上';
+                            else if(zuo_cards.length<3) str+='置于【天平·左】上';
+                            else if(you_cards.length<3) str+='置于【天平·右】上';
+
+                            var next= player.chooseCard('h',num,card=>lib.inpile.includes(card.name));
+                            next.set('prompt',get.prompt('tianZui'));
+                            next.set('prompt2',str);
+                            next.set('ai', function (card) {
+                                return 6-get.value(card);
+                            });
+                            event.result = await next.forResult();
+                        },
+                        content: async function(event, trigger, player) {
+                            await player.lose(event.cards,ui.ordering);
+                            await player.showCards(event.cards);
+                            var zuo_cards=player.getExpansions('tianPing_zuo');
+                            var you_cards=player.getExpansions('tianPing_you');
+                            if(zuo_cards.length<3&&you_cards.length<3&&event.cards.length==2){
+                                var next=player.chooseToMove('天罪：安排2张牌在【天平·左】和【天平·右】上的位置');
+                                next.set("list", [
+                                    ["天平·左", [event.cards[0]]],
+                                    ["天平·右", [event.cards[1]]],
+                                ]);
+                                 next.set("filterMove", function (from, to, moved) {
+                                    if (typeof to == "number") return false;
+                                    return true;
+                                });
+
+                                var result=await next.forResult();
+
+                                var zuo=result.moved[0];
+                                var you=result.moved[1];
+                                await lib.skill.tianPing.addPai(player,zuo,'zuo');
+                                await lib.skill.tianPing.addPai(player,you,'you');
+                            }else{
+                                if(zuo_cards.length<3) var position='zuo';
+                                else if(you_cards.length<3) var position='you';
+                                await lib.skill.tianPing.addPai(player,event.cards,position);
+                            }
+                        },
+                    },
+                },
+            },
+            zuiChiBiDao:{
+                type:'faShu',
+                enable:'faShu',
+                filter:function(event,player){
+                    return player.canBiShaShuiJing();
+                },
+                async content(event, trigger, player) {
+                    await player.removeBiShaShuiJing();
+                    player.addTempSkill('zuiChiBiDao_noHong','phaseAfter');
+                    var num=player.countZhiShiWu('zui');
+                    if(num>0) await player.removeHong(num);
+                    else return;
+                    var zuo_cards=player.getExpansions('tianPing_zuo');
+                    var you_cards=player.getExpansions('tianPing_you');
+
+                    while((zuo_cards.length<3||you_cards.length<3)&&player.countCards('h',card=>lib.inpile.includes(card.name)>0)&&num>0){
+                        let str=`罪迟比到：是否将手牌中1张基本牌面朝上放置到`;
+                        str+='【天平·左】或【天平·右】上';
+                        str+=`，剩余${num}次`;
+
+                        let list=[];
+                        if(zuo_cards.length<3) list.push(['zuo','天平·左']);
+                        if(you_cards.length<3) list.push(['you','天平·右']);
+
+                        let dialog=[str,[player.getCards('h',card=>lib.inpile.includes(card.name)),'card'],[list,'tdnodes']];
+                        let next=player.chooseButton(
+                            dialog,
+                            true,
+                            true,
+                            2,
+                            function(button){
+                                var link=button.link;
+                                var player=_status.event.player;
+                                if(typeof link=='string'){
+                                    if(link=='zuo') return 5- player.getExpansions('tianPing_zuo').length;
+                                    else return 5- player.getExpansions('tianPing_you').length;
+                                }else if(get.itemtype(link)=='card'){
+                                    return 8-get.value(link);
+                                }
+                                return 0.1;
+                            },
+                            function(button,player){
+                                if(ui.selected.buttons.length==0) return true;
+                                var link=button.link;
+                                var old=ui.selected.buttons[0].link;
+                                return typeof link!=typeof old;
+                            },
+                        );
+                        let links=await next.forResultLinks();
+                        let pos,card;
+                        for(let link of links){
+                            if(typeof link=='string') pos=link;
+                            else if(get.itemtype(link)=='card') card=link;
+                        }
+                        if(pos&&card) await lib.skill.tianPing.addPai(player,[card],pos);
+                        num--;
+                        var zuo_cards=player.getExpansions('tianPing_zuo');
+                        var you_cards=player.getExpansions('tianPing_you');
+                    }
+                },
+                ai:{
+                    order:function(item, player){
+                        if(player.isHengZhi()) return 0;
+                        if(player.countCards('h',card=>lib.inpile.includes(card.name))<=1) return 0;
+                        return 1.2+player.countZhiShiWu('zui');
+                    },
+                    shuiJing:true,
+                },
+                subSkill:{
+                    noHong:{
+                        trigger:{player:'changeZhiShiWuBegin'},
+                        direct:true,
+                        filter:function(event,player){
+                            return event.num>0&&event.zhiShiWu=='zui';
+                        },
+                        content:function(){
+                            trigger.cancel();
+                        },
+                    }
+                },
+            },
+            zui:{
+                intro: {
+                    max:3,
+                    content:'mark',
+                },
+                onremove: "storage",
+                markimage: 'image/card/zhiShiWu/hong.png',
             },
         },
         
@@ -3073,6 +3463,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             jiDuShaoNv: "嫉妒少女",
             jianZhiZi:'剑之子',
             moGongEX: "魔弓EX",
+            sheng_zhongCaiZhe:'仲裁者',
 
             jianZhiMoNv_name:"席拉",
             lingXiZhiChao_name: "濯香姬",
@@ -3081,6 +3472,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             daoDanLuoLi_name: "萝绮",
             luoLiFanZhang_name: "柠歌",
             jianXiZhiPian_name: "惕惕子",
+            sheng_zhongCaiZhe_name: "恩布拉",
 
             //技能
             //剑之魔女
@@ -3320,6 +3712,35 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 此攻击强制命中，但本次攻击伤害-1。`,
             gongShenHouBu_jingZhunSheJi:"[响应]精准射击",
             gongShenHouBu_shanGuangXianJing:"[响应]闪光陷阱",
+
+            //圣仲裁者
+            shenZhiTianPing:"[被动]神之天平",
+            shenZhiTianPing_info:"游戏初始时你拥有【天平·左】与【天平·右】。",
+            shenEBiJi:"[响应]善恶必计",
+            shenEBiJi_info:"[回合限定]<span class='tiaoJian'>(我方角色承受伤害⑥并结算完毕后，你将手牌中1张基础牌面朝上[展示]放到【天平·左】或【天平·右】上)</span>你摸1张牌[强制]。",
+            tianPingQingDao:"[被动]天平倾倒",
+            tianPingQingDao_info:"<span class='tiaoJian'>(你的回合开始时或你的回合结束时，若【天平·左】和【天平·右】上的牌差>1，移除牌数多的一方上所有牌)</span>展示牌堆顶4张牌[展示]，你将其中2张加入手牌[强制]并弃掉另外2张牌，你+1<span class='hong'>【罪】</span>，然后目标队友+2[治疗]。",
+            shenZhiShenPan:"[响应]神之审判",
+            shenZhiShenPan_info:"<span class='tiaoJian'>(你的回合结束时，若【天平·左】和【天平·右】上的牌数都>2)</span>移除【天平·左】与【天平·右】上的所有牌，然后对2名目标角色各造成2点攻击伤害③。",
+            tianPing:"(专)天平",
+            tianPingZuo:"天平·左",
+            tianPingYou:"天平·右",
+            tianPing_zuo:"[被动]罪灭之左",
+            tianPing_you:"[被动]圣方之右",
+            tianPing_fangZhi:"[被动]替罪羔羊",
+            tianPing_info:`<span class='greentext'>[被动]替罪羔羊</span><br>
+            <span class='tiaoJian'>(每当有新牌将被放置在本卡上时，若该卡与本卡上的牌不同系)</span>弃到本卡上所有卡，你+1<span class='hong'>【罪】</span>。<br>
+            <span class='greentext'>[被动]罪灭之左</span><br>
+            <span class='tiaoJian'>(每当本卡上的牌数增加，且增加后本卡上的牌数>1)</span>对(X-1)名目标对手造成1点攻击伤害③，X为本卡上的牌数。<br>
+            <span class='greentext'>[被动]圣方之右</span><br>
+            <span class='tiaoJian'>(每当本卡上的牌被弃掉且弃牌数>1)</span>你+1[治疗]。
+            `,
+            tianZui:"[启动]天罪", 
+            tianZui_info:"[水晶]你+1<span class='hong'>【罪】</span>。[横置]持续到本回合结束时，你主动攻击命中时②，可将手牌中2张基本牌面朝上[展示]分别放到【天平·左】和【天平·右】上。【天罪】的效果结束时[重置]。",
+            zuiChiBiDao:"[法术]罪迟必到",
+            zuiChiBiDao_info:"[水晶]本回合你无法获得<span class='hong'>【罪】</span>。<span class='tiaoJian'>(你移除所有</span><span class='hong'>【罪】</span><span class='tiaoJian'>)</span>你可将手牌中X张基本牌面朝上[展示]依次放到【天平·左】或【天平·右】上，X为移除的<span class='hong'>【罪】</span>数量",
+            zui:'罪',
+            zui_info:"<span class='hong'>【罪】</span>为仲裁者专有指示物，上限为3。",
         },
     };
 });
