@@ -159,7 +159,10 @@ window.noname_source_list = [
 
 	"mode/xingBei.js",
 	"mode/connect.js",
-
+	"mode/illustration.js",
+	"mode/leaderboard.js",
+	"mode/offlineChoose.js",
+	"mode/tutorial.js",
 
 	"theme/music/grid.png",
 	"theme/music/style.css",
