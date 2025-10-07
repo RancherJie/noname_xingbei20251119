@@ -413,7 +413,7 @@ export default () => {
                         }
                     }
                 }
-                var sortList=['shiZhouNian','yiDuanYeHuo','shenZiChuangLin','zhongMoDaoZhu','teDian','sanBan','siBan'];
+                var sortList=['shiZhouNian','yiDuanYeHuo','shenZiChuangLin','zhongMoDaoZhu','teDian','sanBan','siBan','poXiao'];
                 packlist.sort(function(a, b) {
                     var indexA = sortList.indexOf(a);
                     var indexB = sortList.indexOf(b);
@@ -490,6 +490,7 @@ export default () => {
                         if (group == "xueGroup") base += 0.02;
                         if (group == "yongGroup") base += 0.03;
                         if (group == "shengGroup") base += 0.04;
+                        if (group == "longGroup") base += 0.05;
                         if(info.hp) base += info.hp;
                         if(info.maxHp) base += info.maxHp / 10;
                         return base;

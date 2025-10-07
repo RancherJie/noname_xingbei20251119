@@ -7,6 +7,7 @@ window.noname_package = {
 		teDian:'特典',
 		sanBan:'三版',
 		siBan:'四版',
+		poXiao:'破晓',
 	},
 	card: {
 		xingBei:'星杯传说',
