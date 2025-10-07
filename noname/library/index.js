@@ -5253,9 +5253,6 @@ export class Library {
 				},
 			},
 		},
-		leaderboard:{
-			name:'排行榜',
-		},
 		offlineChoose: {
 			name: "线下选角",
 			config: {
@@ -5346,7 +5343,7 @@ export class Library {
 		leaderboard: {
 			name: "排行榜",
 			config:{
-				information:{
+				viewAll:{
 					name:'查看所有角色统计数据',
 					frequent:true,
 				}
