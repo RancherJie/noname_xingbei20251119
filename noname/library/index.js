@@ -5327,6 +5327,15 @@ export class Library {
 				}
 			}
 		},
+		leaderboard: {
+			name: "排行榜",
+			config:{
+				information:{
+					name:'查看所有角色统计数据',
+					frequent:true,
+				}
+			}
+		}
 	};
 	status = {
 		running: false,
