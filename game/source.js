@@ -108,6 +108,7 @@ window.noname_source_list = [
 	"character/zhongMoDaoZhu.js",
 	"character/teDian.js",
 	"character/replace.js",
+	"character/poXiao.js",
 
 	"font/motoyamaru.woff2",
 	"font/suits.woff2",

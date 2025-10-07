@@ -2,9 +2,25 @@ import { lib, game, ui, get, ai, _status } from "../noname.js";
 export const type = "mode";
 export default () => {
     return {
-        name:'illustration',
-        start:function(){
-            var characterDialog=function() {
+        name:'leaderboard',
+        start: async function(){
+            var fetchCharactersData = async (mode, ai) => {
+                try {
+                    // 请求角色的胜率排行榜数据
+                    const response = await fetch('https://agdatabase.ssyy.tech:50000/v1/leaderboard?include_ai=' + ai + mode, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Bearer FrRz9uz64OZUSglLKv7CcLs4yTjCedOk'
+                        }
+                    });
+                    const data = await response.json();
+                    return data;  // 获取返回的角色数据
+                } catch (error) {
+                    console.error('获取角色数据失败:', error);
+                    return undefined;
+                }
+            };
+            var characterDialog= async function() {
                 var characterDialogGroup=Object.assign({},lib.characterDialogGroup);
                 // 添加"最近"分组，显示最近使用的角色
                 characterDialogGroup['最近']=function (name, capt) {
@@ -13,6 +29,18 @@ export default () => {
                 };
                
                 var  str, noclick, expandall, heightset;
+                var payload = ["&mode=3v3", "false"];
+                // 获取排行榜数据
+                var charactersRankingData = await fetchCharactersData(payload[0],payload[1]);
+                // var charactersRankingData = [];
+                if (!Array.isArray(charactersRankingData)) {
+                    console.error('unexpected payload:', charactersRankingData);
+                    return;
+                }
+                // 建立索引方便后续筛选
+                var characterRankingMap = new Map(
+                    charactersRankingData.map(o => [o.character_id, o])
+                );
 
                 var list = [];
                 const groups = [];
@@ -366,6 +394,45 @@ export default () => {
                 } else {
                     packsource.innerHTML = "角色包";
                 }
+
+                // 排行榜筛选按钮
+                var rankingbtn1 = ui.create.div(".tdnode.pointerdiv.shadowed.reduce_radius.reduce_margin");
+                rankingbtn1.style.margin = "3px";
+                rankingbtn1.innerHTML = "模式：3v3";
+                rankingbtn1.classList.add("thundertext");
+                newlined.appendChild(rankingbtn1);
+
+                var rankingbtn2 = ui.create.div(".tdnode.pointerdiv.shadowed.reduce_radius.reduce_margin");
+                rankingbtn2.style.margin = "3px";
+                rankingbtn2.innerHTML = "AI：不包含";
+                rankingbtn2.classList.add("thundertext");
+                newlined.appendChild(rankingbtn2);
+
+                var rankingline1 = document.createElement("div");
+                rankingline1.style.marginTop = "5px";
+                rankingline1.style.display = "none";
+                rankingline1.style.fontFamily = "xinwei";
+                rankingline1.classList.add("pointernode");
+                if (get.is.phoneLayout()) {
+                    rankingline1.style.fontSize = "32px";
+                } else {
+                    rankingline1.style.fontSize = "22px";
+                }
+                rankingline1.style.textAlign = "center";
+                node.appendChild(rankingline1);
+
+                var rankingline2 = document.createElement("div");
+                rankingline2.style.marginTop = "5px";
+                rankingline2.style.display = "none";
+                rankingline2.style.fontFamily = "xinwei";
+                rankingline2.classList.add("pointernode");
+                if (get.is.phoneLayout()) {
+                    rankingline2.style.fontSize = "32px";
+                } else {
+                    rankingline2.style.fontSize = "22px";
+                }
+                rankingline2.style.textAlign = "center";
+                node.appendChild(rankingline2);
     
                 newlined2 = document.createElement("div");
                 newlined2.style.marginTop = "5px";
@@ -380,6 +447,56 @@ export default () => {
                 newlined2.style.textAlign = "center";
                 node.appendChild(newlined2);
     
+                rankingbtn1.addEventListener(lib.config.touchscreen ? "touchend" : "click", function () {
+                    if (_status.dragged) return;
+                    if (get.is.phoneLayout() && lib.config.filternode_button && filternode) {
+                        _status.filterCharacter = true;
+                        ui.window.classList.add("shortcutpaused");
+                        ui.window.appendChild(filternode);
+                        ui.refresh(filternode);
+                        filternode.classList.add("shown");
+                        var dh = filternode.offsetHeight - filternode.firstChild.offsetHeight;
+                        if (dh > 0) {
+                            filternode.firstChild.style.top = dh / 2 + "px";
+                        } else {
+                            filternode.firstChild.style.top = "";
+                        }
+                    } else {
+                        newlined2.style.display = "none";
+                        rankingline2.style.display = "none";
+                        if (rankingline1.style.display == "none") {
+                            rankingline1.style.display = "block";
+                        } else {
+                            rankingline1.style.display = "none";
+                        }
+                    }
+                });
+
+                rankingbtn2.addEventListener(lib.config.touchscreen ? "touchend" : "click", function () {
+                    if (_status.dragged) return;
+                    if (get.is.phoneLayout() && lib.config.filternode_button && filternode) {
+                        _status.filterCharacter = true;
+                        ui.window.classList.add("shortcutpaused");
+                        ui.window.appendChild(filternode);
+                        ui.refresh(filternode);
+                        filternode.classList.add("shown");
+                        var dh = filternode.offsetHeight - filternode.firstChild.offsetHeight;
+                        if (dh > 0) {
+                            filternode.firstChild.style.top = dh / 2 + "px";
+                        } else {
+                            filternode.firstChild.style.top = "";
+                        }
+                    } else {
+                        rankingline1.style.display = "none";
+                        newlined2.style.display = "none";
+                        if (rankingline2.style.display == "none") {
+                            rankingline2.style.display = "block";
+                        } else {
+                            rankingline2.style.display = "none";
+                        }
+                    }
+                });
+
                 packsource.addEventListener(lib.config.touchscreen ? "touchend" : "click", function () {
                     if (_status.dragged) return;
                     if (get.is.phoneLayout() && lib.config.filternode_button && filternode) {
@@ -413,6 +530,96 @@ export default () => {
                         }
                     }
                 }
+
+                const allIds = list.slice();
+                
+                let rankingFetchSeq = 0;
+
+                function getIdFromBtn(btn){ 
+                    return String(btn._link != null ? btn._link : btn.link); 
+                }
+                function getWinRateNumById(id){
+                    const row = characterRankingMap && characterRankingMap.get(String(id));
+                    if(!row) return -Infinity;
+                    const raw = (row.win_rate_pct != null) ? row.win_rate_pct : row.winRate || row.winrate;
+                    const n = (typeof raw === 'number') ? raw : parseFloat(String(raw).replace('%',''));
+                    return Number.isFinite(n) ? n : -Infinity;
+                }
+                function getGamesNumById(id){
+                    const row = characterRankingMap && characterRankingMap.get(String(id));
+                    if(!row) return -Infinity;
+                    const n = Number(row.games);
+                    return Number.isFinite(n) ? n : -Infinity;
+                }
+
+                function stableSortInPlace(arr, compareFn){
+                    const indexed = arr.map((item,i)=>({item,i}));
+                    indexed.sort((a,b)=>{ const r = compareFn(a.item,b.item); return r!==0 ? r : (a.i - b.i); });
+                    arr.splice(0, arr.length, ...indexed.map(x=>x.item));
+                }
+
+                function sortAllAndRepaginate({ direction = 'desc' } = {}) {
+                    const metrics = new Map();
+                    for (const btn of dialog.buttons) {
+                        const id = getIdFromBtn(btn);
+                        metrics.set(btn, {
+                        wr:   getWinRateNumById(id),
+                        g:    getGamesNumById(id),
+                        name: String(id),
+                        });
+                    }
+                    const sign = (direction === 'asc') ? 1 : -1;
+
+                    stableSortInPlace(dialog.buttons, (aBtn, bBtn) => {
+                        const A = metrics.get(aBtn), B = metrics.get(bBtn);
+                        if (A.wr !== B.wr) return sign * (A.wr - B.wr);
+                        if (A.g  !== B.g ) return B.g - A.g;
+                        return A.name.localeCompare(B.name);
+                    });
+
+                    const btnFrag = document.createDocumentFragment();
+                    const rowFrag = document.createDocumentFragment();
+                    for (const btn of dialog.buttons) {
+                        btn.classList.remove('nodisplay');
+                        btn.style.display = '';
+                        btnFrag.appendChild(btn);
+                        if (btn._row) rowFrag.appendChild(btn._row);
+                    }
+                    position.appendChild(btnFrag);
+                    tbody.appendChild(rowFrag);
+
+                    const p = dialog.paginationMap && dialog.paginationMap.get(position);
+                    const pageSize = dialog.paginationMaxCount?.get?.('character') || 20;
+                    if (p) {
+                        const nextData = dialog.buttons.filter(
+                        btn => btn.style.display !== 'none' && !btn.classList.contains('nodisplay')
+                        );
+                        if (Array.isArray(p.state.data)) {
+                        p.state.data.splice(0, p.state.data.length, ...nextData);
+                        } else {
+                        p.state.data = nextData;
+                        }
+                        p.setTotalPageCount(Math.ceil(p.state.data.length / pageSize));
+                        if (typeof p.onPageChange === 'function') {
+                        p.onPageChange({ pageNumber: 1, data: p.state.data });
+                        } else if (typeof p.setPageNumber === 'function') {
+                        p.setPageNumber(1);
+                        }
+                    }
+                }
+
+                let sortDir;             // 当前排序方向
+                let nextSort = 'desc';   // 下次点击方向
+                let sortWinRate = false; // 是否已启用胜率排序
+
+                var titleClick = function (e) {
+                    sortAllAndRepaginate({ direction: nextSort });
+                    sortWinRate = true;
+                    this.innerHTML = (nextSort === 'desc') ? '胜率↓' : '胜率↑';
+                    sortDir = nextSort;
+                    nextSort = (nextSort === 'desc') ? 'asc' : 'desc';
+                };
+
                 var sortList=['shiZhouNian','yiDuanYeHuo','shenZiChuangLin','zhongMoDaoZhu','teDian','sanBan','siBan','poXiao'];
                 packlist.sort(function(a, b) {
                     var indexA = sortList.indexOf(a);
@@ -472,10 +679,185 @@ export default () => {
                         span.touchlink.link = span;
                     }
                 }
-            
-        
+
+                function refreshAllVisibleButtons() {
+                    const newButtons = renderui();
+
+                    if (Array.isArray(dialog.buttons)) {
+                        dialog.buttons.splice(0, dialog.buttons.length, ...newButtons);
+                    } else {
+                        dialog.buttons = newButtons;
+                    }
+
+                    const p = dialog.paginationMap && dialog.paginationMap.get(position);
+                    if (p) {
+                        const pageSize = dialog.paginationMaxCount?.get?.('character') || 20;
+                        const nextData = dialog.buttons.filter(btn => btn.style.display !== 'none' && !btn.classList.contains('nodisplay'));
+                        if (Array.isArray(p.state.data)) {
+                            p.state.data.splice(0, p.state.data.length, ...nextData);
+                        } else {
+                            p.state.data = nextData;
+                        }
+                        p.setTotalPageCount(Math.ceil(p.state.data.length / pageSize));
+                        const currPage = Math.max(1, Math.min(p.state?.pageNumber || 1, Math.ceil(p.state.data.length / pageSize)));
+                        if (typeof p.onPageChange === 'function') {
+                            p.onPageChange({ pageNumber: currPage, data: p.state.data });
+                        } else if (typeof p.setPageNumber === 'function') {
+                            p.setPageNumber(currPage);
+                        }
+                    }
+                }
+                // 模式筛选
+                var modeSwitch = async function(e) {
+                    if (_status.dragged) return;
+                    if (dialog.currentcapt2 == "最近" && dialog.currentcaptnode2 != this && !dialog.currentcaptnode2.inited) {
+                        dialog.currentcapt2 = null;
+                        dialog.currentcaptnode2.classList.remove("thundertext");
+                        dialog.currentcaptnode2.inited = true;
+                        dialog.currentcaptnode2 = null;
+                    }
+                    if (!rankingline1) return;
+                    rankingline1.style.display = "none";
+                    
+                    var isActive = this.classList.contains("thundertext");
+                    
+                    var container = this.parentNode;
+                    if (container) {
+                        Array.from(container.children).forEach(function (node) {
+                            node.classList.remove("thundertext");
+                            if (node.touchlink) node.touchlink.classList.remove("active");
+                        });
+                    }
+                    if (!isActive) {
+                        this.classList.add("thundertext");
+                        if (this.touchlink) this.touchlink.classList.add("active");
+                        rankingbtn1.innerHTML = "模式：" + this.innerHTML;
+                        rankingbtn1.classList.add("thundertext");
+                    } else {
+                        rankingbtn1.innerHTML = "模式";
+                        rankingbtn1.classList.remove("thundertext");
+                    }
+                    
+                    payload[0] = !isActive ? "&mode=" + this.innerHTML : "";
+
+                    // 防抖
+                    const mySeq = ++rankingFetchSeq;
+                    // 更新数据
+                    const data = await fetchCharactersData(payload[0],payload[1]);
+                    if (mySeq !== rankingFetchSeq) return; 
+
+                    if (!Array.isArray(data)) {
+                        console.error('unexpected payload:', data);
+                        return;
+                    }
+                    charactersRankingData = data;
+                    // 重新建立索引
+                    characterRankingMap = new Map(
+                        data.map(o => [o.character_id, o])
+                    );
+                    // 更新ui
+                    refreshAllVisibleButtons();
+
+                    if(sortWinRate) sortAllAndRepaginate({ direction: sortDir || "desc" });
+                }
+
+                // AI筛选
+                var aiSwitch = async function(e) {
+                    if (_status.dragged) return;
+                    if (dialog.currentcapt2 == "最近" && dialog.currentcaptnode2 != this && !dialog.currentcaptnode2.inited) {
+                        dialog.currentcapt2 = null;
+                        dialog.currentcaptnode2.classList.remove("thundertext");
+                        dialog.currentcaptnode2.inited = true;
+                        dialog.currentcaptnode2 = null;
+                    }
+                    if (!rankingline2) return;
+                    rankingline2.style.display = "none";
+                    
+                    var isActive = this.classList.contains("thundertext");
+                    
+                    var container = this.parentNode;
+                    if (container) {
+                        Array.from(container.children).forEach(function (node) {
+                            node.classList.remove("thundertext");
+                            if (node.touchlink) node.touchlink.classList.remove("active");
+                        });
+                    }
+                    if (!isActive) {
+                        this.classList.add("thundertext");
+                        if (this.touchlink) this.touchlink.classList.add("active");
+                        
+                        rankingbtn2.innerHTML = "AI：" + this.innerHTML;
+                        rankingbtn2.classList.add("thundertext");
+                    } else {
+                        rankingbtn2.innerHTML = "AI";
+                        rankingbtn2.classList.remove("thundertext");
+                    }
+                    
+                    payload[1] = !isActive ? this.innerHTML==="包含"? "true": "false" : "false";
+
+                    const mySeq = ++rankingFetchSeq;
+                    // 更新数据
+                    const data = await fetchCharactersData(payload[0],payload[1]);
+                    if (mySeq !== rankingFetchSeq) return; 
+
+                    if (!Array.isArray(data)) {
+                        console.error('unexpected payload:', data);
+                        return;
+                    }
+                    charactersRankingData = data;
+                    // 重新建立索引
+                    characterRankingMap = new Map(
+                        data.map(o => [o.character_id, o])
+                    );
+
+                    // 更新ui
+                    refreshAllVisibleButtons();
+
+                    if(sortWinRate) sortAllAndRepaginate({ direction: sortDir || "desc" });
+                }
                 
-                //list.sort(lib.sort.character);
+                // 排行榜两个按钮的子选项
+                var modelist = ["3v3", "2v2"];
+                for(var i = 0; i < modelist.length; i++) {
+                    var modespan = document.createElement("div");
+                    modespan.style.display = "inline-block";
+                    modespan.style.width = "auto";
+                    modespan.style.margin = "5px";
+                    if (get.is.phoneLayout()) {
+                        modespan.style.fontSize = "32px";
+                    } else {
+                        modespan.style.fontSize = "22px";
+                    }
+                    modespan.innerHTML = modelist[i];
+                    // 初始默认筛选3v3
+                    if(modelist[i] === "3v3") {
+                        modespan.classList.add("thundertext");
+                    }
+                    modespan.link = modelist[i];
+                    modespan.addEventListener(lib.config.touchscreen ? "touchend" : "click", modeSwitch);
+                    rankingline1.appendChild(modespan);
+                }
+
+                var ailist = ["包含", "不包含"];
+                for(var i = 0; i < ailist.length; i++) {
+                    var aispan = document.createElement("div");
+                    aispan.style.display = "inline-block";
+                    aispan.style.width = "auto";
+                    aispan.style.margin = "5px";
+                    if (get.is.phoneLayout()) {
+                        aispan.style.fontSize = "32px";
+                    } else {
+                        aispan.style.fontSize = "22px";
+                    }
+                    aispan.innerHTML = ailist[i];
+                    // 初始默认筛选不包含AI
+                    if(ailist[i] === "不包含") {
+                        aispan.classList.add("thundertext");
+                    }
+                    aispan.link = ailist[i];
+                    aispan.addEventListener(lib.config.touchscreen ? "touchend" : "click", aiSwitch);
+                    rankingline2.appendChild(aispan);
+                }
 
                 var sort = function (a, b) {
                     const groupSort = function (name) {
@@ -622,7 +1004,288 @@ export default () => {
                 }
                 dialog.add(node);
 
-                dialog.add([list, "character"], noclick);
+                // 创建表格式布局来容纳排行榜
+                const characterList = document.createElement('table');
+                characterList.classList.add("character-list");
+                node.appendChild(characterList);
+
+                const thead = document.createElement('thead');
+                thead.classList.add('table-head');
+                characterList.appendChild(thead);
+
+                //表头
+                const thead_tr = document.createElement('tr');
+                thead.appendChild(thead_tr);
+
+                const character_head = document.createElement('th');
+                character_head.classList.add('character');
+                character_head.innerHTML = "角色";
+                thead_tr.appendChild(character_head);
+
+                const matchCount_head = document.createElement('th');
+                matchCount_head.classList.add('matchCount');
+                matchCount_head.innerHTML = "对局数";
+                thead_tr.appendChild(matchCount_head);
+
+                const winRate_head = document.createElement('th');
+                winRate_head.classList.add('winRate');
+                winRate_head.innerHTML = "胜率";
+                winRate_head.addEventListener(lib.config.touchscreen ? "touchend" : "click",titleClick);
+                thead_tr.appendChild(winRate_head);
+
+                const changeShiQi_head = document.createElement('th');
+                changeShiQi_head.classList.add('changeShiQi');
+                changeShiQi_head.innerHTML = "场均士<br>气输出";
+                thead_tr.appendChild(changeShiQi_head);
+
+                const changedShiQi_head = document.createElement('th');
+                changedShiQi_head.classList.add('changedShiQi');
+                changedShiQi_head.innerHTML = "场均士<br>气损失";
+                thead_tr.appendChild(changedShiQi_head);
+
+                const zhanJi_head = document.createElement('th');
+                zhanJi_head.classList.add('zhanJi');
+                zhanJi_head.innerHTML = "场均产石";
+                thead_tr.appendChild(zhanJi_head);
+
+                const zhiLiao_head = document.createElement('th');
+                zhiLiao_head.classList.add('zhiLiao');
+                zhiLiao_head.innerHTML = "场均治疗";
+                thead_tr.appendChild(zhiLiao_head);
+
+                const damage_head = document.createElement('th');
+                damage_head.classList.add('damage');
+                damage_head.innerHTML = "场均伤害";
+                thead_tr.appendChild(damage_head);
+
+                const damaged_head = document.createElement('th');
+                damaged_head.classList.add('damaged');
+                damaged_head.innerHTML = "场均受伤";
+                thead_tr.appendChild(damaged_head);
+
+                const tbody = document.createElement('tbody');
+                tbody.classList.add('table-body');
+                characterList.appendChild(tbody);
+
+                // 角色数据渲染
+                var position = ui.create.div(".buttons", dialog.content);
+                var buttons = [];
+                var proxyFragment = document.createDocumentFragment();
+
+                function createRowAndCells(charId) {
+                    const tr = document.createElement('tr');
+                    tr.dataset.character = String(charId);
+
+                    const mk = (cls, html='—') => {
+                        const td = document.createElement('td');
+                        if (cls) td.classList.add(cls);
+                        td.innerHTML = html;
+                        tr.appendChild(td);
+                        return td;
+                    };
+
+                    const tdCharacter = mk('character', '');
+                    const tdGames     = mk('matchCount');
+                    const tdWinRate   = mk('winRate');
+                    const tdCSQ       = mk('changeShiQi');
+                    const tdCdSQ      = mk('changedShiQi');
+                    const tdZhanJi    = mk('zhanJi');
+                    const tdZhiLiao   = mk('zhiLiao');
+                    const tdDamage    = mk('damage');
+                    const tdDamaged   = mk('damaged');
+
+                    tr._cells = { tdCharacter, tdGames, tdWinRate, tdCSQ, tdCdSQ, tdZhanJi, tdZhiLiao, tdDamage, tdDamaged };
+                    return tr;
+                }
+
+                function syncOne(proxyBtn) {
+                    const tr = proxyBtn._row;
+                    if (!tr) return;
+                    const hidden = proxyBtn.classList.contains('nodisplay') || proxyBtn.style.display === 'none';
+                    tr.style.display = hidden ? 'none' : '';
+                }
+
+                function fillVisibleAndStats(visibleBtn, item) {
+                    visibleBtn.setBackground(item, "character");
+                    if (visibleBtn.node) {
+                        visibleBtn.node.name?.remove();
+                        visibleBtn.node.hp?.remove();
+                        visibleBtn.node.group?.remove();
+                        visibleBtn.node.intro?.remove();
+                        visibleBtn.node.stats?.remove?.();
+                    }
+                    visibleBtn.node = {
+                        name: ui.create.div(".name", visibleBtn),
+                        hp: ui.create.div(".hp", visibleBtn),
+                        group: ui.create.div(".identity", visibleBtn),
+                        intro: ui.create.div(".intro", visibleBtn),
+                    };
+                    const infoitem = get.character(item);
+                    visibleBtn.node.name.innerHTML = get.slimName(item);
+
+                    if (lib.config.buttoncharacter_style == "default" || lib.config.buttoncharacter_style == "simple") {
+                        if (lib.config.buttoncharacter_style == "simple") {
+                            visibleBtn.node.group.style.display = "none";
+                        }
+                        visibleBtn.classList.add("newstyle");
+                        visibleBtn.node.name.dataset.nature = get.groupnature(get.bordergroup(infoitem));
+                        visibleBtn.node.group.dataset.nature = get.groupnature(get.bordergroup(infoitem), "raw");
+                        ui.create.div(visibleBtn.node.hp);
+                        var hp = infoitem.hp, maxHp = infoitem.maxHp, zhiLiao = infoitem.zhiLiao;
+                        var str = get.numStr(hp);
+                        if (hp !== maxHp) { str += "/"; str += get.numStr(maxHp); }
+                        ui.create.div(".text", str, visibleBtn.node.hp);
+                        visibleBtn.node.hp.dataset.condition = "xing";
+                    } else {
+                        var hp = infoitem.hp, maxHp = infoitem.maxHp, shield = infoitem.zhiLiao;
+                        if (maxHp > 14) {
+                            visibleBtn.node.hp.innerHTML = (hp !== maxHp || shield > 0) ? infoitem[2] : get.numStr(infoitem[2]);
+                            visibleBtn.node.hp.classList.add("text");
+                        } else {
+                            for (var i = 0; i < maxHp; i++) {
+                                var next = ui.create.div("", visibleBtn.node.hp);
+                                if (i >= hp) next.classList.add("exclude");
+                            }
+                            for (var i = 0; i < shield; i++) {
+                                ui.create.div(visibleBtn.node.hp, ".shield");
+                            }
+                        }
+                    }
+                    if (visibleBtn.node.hp.childNodes.length == 0) visibleBtn.node.name.style.top = "8px";
+                    if (visibleBtn.node.name.querySelectorAll("br").length >= 4) {
+                        visibleBtn.node.name.classList.add("long");
+                        if (lib.config.buttoncharacter_style == "old") {
+                            visibleBtn.addEventListener("mouseenter", ui.click.buttonnameenter);
+                            visibleBtn.addEventListener("mouseleave", ui.click.buttonnameleave);
+                        }
+                    }
+                    visibleBtn.node.intro.innerHTML = lib.config.intro;
+                    if (!noclick) lib.setIntro(visibleBtn);
+
+                    if (infoitem[1]) {
+                        const dbl = get.is.double(item, true);
+                        if (dbl) {
+                            visibleBtn.node.group.innerHTML = dbl.reduce(
+                                (p, g) => `${p}<div data-nature="${get.groupnature(g)}">${get.translation(g)}</div>`, ""
+                            );
+                            if (dbl.length > 4)
+                                if (new Set([5, 6, 9]).has(dbl.length)) visibleBtn.node.group.style.height = "48px";
+                                else visibleBtn.node.group.style.height = "64px";
+                        } else {
+                            visibleBtn.node.group.innerHTML = `<div>${get.translation(infoitem[1])}</div>`;
+                            visibleBtn.node.group.style.backgroundColor = get.translation(`${get.bordergroup(infoitem)}Color`);
+                        }
+                    } else {
+                        visibleBtn.node.group.style.display = "none";
+                    }
+
+                    const tr = visibleBtn.closest('tr');
+                    if (tr && tr._cells) {
+                        const cells = tr._cells;
+                        const rankingData = characterRankingMap.get(String(item));
+                        if (rankingData) {
+                            cells.tdGames.innerHTML   = rankingData.games;
+                            cells.tdWinRate.innerHTML = rankingData.win_rate_pct;
+                            cells.tdCSQ.innerHTML     = rankingData.avg_change_shiqi;
+                            cells.tdCdSQ.innerHTML    = rankingData.avg_changed_shiqi;
+                            cells.tdZhanJi.innerHTML  = rankingData.avg_add_zhanji;
+                            cells.tdZhiLiao.innerHTML = rankingData.avg_add_zhiliao;
+                            cells.tdDamage.innerHTML  = rankingData.avg_damage;
+                            cells.tdDamaged.innerHTML = rankingData.avg_damaged;
+                        }
+                    }
+                }
+
+                const observer = new MutationObserver((mutations) => {
+                    for (const m of mutations) {
+                        if (m.type === 'attributes' && (m.attributeName === 'class' || m.attributeName === 'style')) {
+                            const proxyBtn = m.target;
+                            syncOne(proxyBtn);
+                        }
+                    }
+                });
+
+                function renderui() {
+                    if (observer && observer.disconnect) observer.disconnect();
+
+                    while (tbody.firstChild) tbody.removeChild(tbody.firstChild);
+                    while (position.firstChild) position.removeChild(position.firstChild);
+
+                    buttons.length = 0;
+
+                    const localProxyFrag = document.createDocumentFragment();
+
+                    for (let i = 0; i < list.length; i++) {
+                        const charId = list[i];
+
+                        const proxyBtn = ui.create.div(".button.character");
+                        proxyBtn._link = charId;
+                        proxyBtn.link = charId;
+
+                        proxyBtn.refresh = function (node, item) {
+                            node.setBackground(item, "character");
+                            if (node.node) {
+                                node.node.name?.remove();
+                                node.node.hp?.remove();
+                                node.node.group?.remove();
+                                node.node.intro?.remove();
+                                node.node.stats?.remove?.();
+                            }
+                            node.node = { name: ui.create.div(".name", node) };
+                            node.node.name.innerHTML = get.slimName(item);
+                        };
+                        proxyBtn.refresh(proxyBtn, charId);
+                        Object.setPrototypeOf(proxyBtn, (lib.element.Button || Button).prototype);
+
+                        if (!noclick) {
+                            proxyBtn.addEventListener(lib.config.touchscreen ? "touchend" : "click", ui.click.button);
+                        } else {
+                            proxyBtn.classList.add("noclick");
+                            const intro = proxyBtn.querySelector(".intro");
+                            if (intro) intro.remove();
+                        }
+                        if (!proxyBtn.buttonid) proxyBtn.buttonid = get.id();
+                        proxyBtn.classList.add("button2");
+                        proxyBtn._args = [charId, "character", localProxyFrag, noclick, undefined];
+
+                        const tr = createRowAndCells(charId);
+                        tbody.appendChild(tr);
+                        proxyBtn._row = tr;
+
+                        const visibleBtn = ui.create.div(".button.character visible-in-cell");
+                        Object.setPrototypeOf(visibleBtn, (lib.element.Button || Button).prototype);
+                        visibleBtn._link = charId;
+                        visibleBtn.link = charId;
+                        visibleBtn._args = [charId, "character", tbody, noclick, undefined];
+                        visibleBtn._proxy = proxyBtn;
+
+                        visibleBtn.addEventListener(lib.config.touchscreen ? "touchend" : "click", function (ev) {
+                            const proxy = ev.currentTarget && ev.currentTarget._proxy ? ev.currentTarget._proxy : proxyBtn;
+                            if (!noclick) {
+                                proxy.dispatchEvent(new Event(lib.config.touchscreen ? "touchend" : "click", { bubbles: true }));
+                            } else {
+                                ui.click.button.call(proxy, ev);
+                            }
+                        });
+
+                        tr._cells.tdCharacter.appendChild(visibleBtn);
+                        fillVisibleAndStats(visibleBtn, charId);
+
+                        observer.observe(proxyBtn, { attributes: true, attributeFilter: ['class', 'style'] });
+                        syncOne(proxyBtn);
+
+                        localProxyFrag.appendChild(proxyBtn);
+                        buttons.push(proxyBtn);
+                    }
+
+                    position.appendChild(localProxyFrag);
+                    position.classList.add("buttons2");
+
+                    return buttons.slice();
+                }
+
+                const newBtns = renderui();
+                dialog.buttons.splice(0, dialog.buttons.length, ...newBtns);
 
                 dialog.add(ui.create.div(".placeholder"));
 
@@ -684,7 +1347,7 @@ export default () => {
                 return dialog;
             };
 
-            var dialog=characterDialog('heightset');
+            var dialog= await characterDialog('heightset');
             dialog.classList.add("fullwidth");
 			dialog.classList.add("fullheight");
             dialog.classList.add('fixed');

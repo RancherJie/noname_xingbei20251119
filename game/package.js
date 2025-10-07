@@ -7,6 +7,7 @@ window.noname_package = {
 		teDian:'特典',
 		sanBan:'三版',
 		siBan:'四版',
+		poXiao:'破晓',
 	},
 	card: {
 		xingBei:'星杯传说',
@@ -20,6 +21,7 @@ window.noname_package = {
 		offlineChoose: "线下选角",
 		illustration: "图鉴",
 		tutorial: "新手向导",
+		leaderboard: "排行榜",
 	},
 	submode: {
 		

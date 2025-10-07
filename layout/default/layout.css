@@ -5903,3 +5903,23 @@ progress.progress::-webkit-progress-value {
 	border-radius: 0.2rem;
 	background: rgb(0, 117, 255);
 }
+
+/* 排行榜css */
+.buttons2 {
+	display: none;
+}
+.character-list {
+	margin: 5px auto;
+}
+.winRate,
+.changeShiQi,
+.changedShiQi {
+	width: 80px;
+}
+.matchCount,
+.zhanJi,
+.zhiLiao,
+.damage,
+.damaged {
+	width: 90px;
+}
