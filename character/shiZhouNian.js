@@ -97,37 +97,37 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 		card:{
             diZhiFengYin:{
                 filterTarget:function(card,player,target){
-                    return !target.hasExpansions('diZhiFengYin_xiaoGuo');
+                    return !target.hasJiChuXiaoGuo('diZhiFengYin_xiaoGuo');
                 }
             },
             shuiZhiFengYin:{
                 filterTarget:function(card,player,target){
-                    return !target.hasExpansions('shuiZhiFengYin_xiaoGuo');
+                    return !target.hasJiChuXiaoGuo('shuiZhiFengYin_xiaoGuo');
                 }
             },
             huoZhiFengYin:{
                 filterTarget:function(card,player,target){
-                    return !target.hasExpansions('huoZhiFengYin_xiaoGuo');
+                    return !target.hasJiChuXiaoGuo('huoZhiFengYin_xiaoGuo');
                 }
             },
             fengZhiFengYin:{
                 filterTarget:function(card,player,target){
-                    return !target.hasExpansions('fengZhiFengYin_xiaoGuo');
+                    return !target.hasJiChuXiaoGuo('fengZhiFengYin_xiaoGuo');
                 }
             },
             leiZhiFengYin:{
                 filterTarget:function(card,player,target){
-                    return !target.hasExpansions('leiZhiFengYin_xiaoGuo');
+                    return !target.hasJiChuXiaoGuo('leiZhiFengYin_xiaoGuo');
                 }
             },
             weiLiCiFu:{
                 filterTarget:function(card,player,target){
-                    return !target.hasExpansions('weiLiCiFu_xiaoGuo');
+                    return !target.hasJiChuXiaoGuo('weiLiCiFu_xiaoGuo');
                 }
             },
             xunJieCiFu:{
                 filterTarget:function(card,player,target){
-                    return !target.hasExpansions('xunJieCiFu_xiaoGuo');
+                    return !target.hasJiChuXiaoGuo('xunJieCiFu_xiaoGuo');
                 }
             }
         },
@@ -207,7 +207,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 duYou:'lieFengJi',
                 trigger:{player:'gongJiShi'},
                 filter:function(event,player){
-                    return event.card.hasDuYou('lieFengJi')&&event.target.hasExpansions('_shengDun');
+                    return event.card.hasDuYou('lieFengJi')&&event.target.hasJiChuXiaoGuo('_shengDun');
                 },
                 content:function(){
                     'step 0'
@@ -359,7 +359,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     });
 				},
                 content:function(){
-                    return target.changeZhiLiao(2,player);
+                    target.changeZhiLiao(2,player);
                 },
                 ai: {
 					result: {
@@ -625,7 +625,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     target.addFengYin('diZhiFengYin_xiaoGuo',cards,player);
                 },
                 fengYinFilter:function(event,player,xiBie){
-                    if(!player.hasExpansions(`${xiBie}ZhiFengYin_xiaoGuo`)){
+                    if(!player.hasJiChuXiaoGuo(`${xiBie}ZhiFengYin_xiaoGuo`)){
                         return false
                     }
                     for(var card of event.cards){
@@ -642,10 +642,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         marktext:"地",
                         intro:{
-                            content:'expansion',
+                            content:'jiChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
-                            const cards = player.getExpansions(skill);
+                            const cards = player.getJiChuXiaoGuo(skill);
                             if (cards.length) player.loseToDiscardpile(cards);
                         },
                         trigger:{player:['daChuPai','showCardsEnd']},
@@ -656,7 +656,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:async function(event,trigger,player){
                             var fengYin=event.name;
-                            var cards=player.getExpansions(fengYin);
+                            var cards=player.getJiChuXiaoGuo(fengYin);
                             var source=player.storage.fengYin;
                             await player.discard(cards,fengYin).set('visible',true);
                             player.removeSkill(fengYin);
@@ -706,10 +706,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         marktext:"水",
                         intro:{
-                            content:'expansion',
+                            content:'jiChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
-                            const cards = player.getExpansions(skill);
+                            const cards = player.getJiChuXiaoGuo(skill);
                             if (cards.length) player.loseToDiscardpile(cards);
                         },
                         trigger:{player:['daChuPai','showCardsEnd']},
@@ -720,7 +720,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:async function(event,trigger,player){
                             var fengYin=event.name;
-                            var cards=player.getExpansions(fengYin);
+                            var cards=player.getJiChuXiaoGuo(fengYin);
                             var source=player.storage.fengYin;
                             await player.discard(cards,fengYin).set('visible',true);
                             player.removeSkill(fengYin);
@@ -770,10 +770,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         marktext:"火",
                         intro:{
-                            content:'expansion',
+                            content:'jiChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
-                            const cards = player.getExpansions(skill);
+                            const cards = player.getJiChuXiaoGuo(skill);
                             if (cards.length) player.loseToDiscardpile(cards);
                         },
                         trigger:{player:['daChuPai','showCardsEnd']},
@@ -784,7 +784,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:async function(event,trigger,player){
                             var fengYin=event.name;
-                            var cards=player.getExpansions(fengYin);
+                            var cards=player.getJiChuXiaoGuo(fengYin);
                             var source=player.storage.fengYin;
                             await player.discard(cards,fengYin).set('visible',true);
                             player.removeSkill(fengYin);
@@ -834,10 +834,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         marktext:"风",
                         intro:{
-                            content:'expansion',
+                            content:'jiChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
-                            const cards = player.getExpansions(skill);
+                            const cards = player.getJiChuXiaoGuo(skill);
                             if (cards.length) player.loseToDiscardpile(cards);
                         },
                         trigger:{player:['daChuPai','showCardsEnd']},
@@ -848,7 +848,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:async function(event,trigger,player){
                             var fengYin=event.name;
-                            var cards=player.getExpansions(fengYin);
+                            var cards=player.getJiChuXiaoGuo(fengYin);
                             var source=player.storage.fengYin;
                             await player.discard(cards,fengYin).set('visible',true);
                             player.removeSkill(fengYin);
@@ -887,7 +887,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return bool1&&bool2
 				},
                 filterTarget:function(card,player,target){
-                    if(target.hasExpansions('leiZhiFengYin_xiaoGuo')) return false;
+                    if(target.hasJiChuXiaoGuo('leiZhiFengYin_xiaoGuo')) return false;
                     if(target.side==player.side) return false;
                     return lib.filter.targetEnabled({name:'leiZhiFengYin'},player,target);
                 },
@@ -900,10 +900,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     xiaoGuo:{
                         marktext:"雷",
                         intro:{
-                            content:'expansion',
+                            content:'jiChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
-                            const cards = player.getExpansions(skill);
+                            const cards = player.getJiChuXiaoGuo(skill);
                             if (cards.length) player.loseToDiscardpile(cards);
                         },
                         trigger:{player:['daChuPai','showCardsEnd']},
@@ -914,7 +914,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:async function(event,trigger,player){
                             var fengYin=event.name;
-                            var cards=player.getExpansions(fengYin);
+                            var cards=player.getJiChuXiaoGuo(fengYin);
                             var source=player.storage.fengYin;
                             await player.discard(cards,fengYin).set('visible',true);
                             player.removeSkill(fengYin);
@@ -978,7 +978,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             var x=0;
                             for(var p of game.players){
                                 for(var xiaoGuo of game.jiChuXiaoGuo.fengYinShi_xiaoGuo){
-                                    if(p.hasExpansions(xiaoGuo)){
+                                    if(p.hasJiChuXiaoGuo(xiaoGuo)){
                                         x++;
                                     }
                                 }
@@ -991,7 +991,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             event.num=2+x;
 
                             var list=[`摸2+${x}张牌`,'跳过行动阶段'];
-                            if(player.hasExpansions('_xuRuo')){
+                            if(player.hasJiChuXiaoGuo('_xuRuo')){
                                 list[0]=`摸2+3+${x}张牌`;
                                 event.num+=3;
                             }
@@ -1015,8 +1015,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             delete player.storage.wuXiShuFuPlayer;
                             player.removeZhiShiWu('wuXiShuFu_xiaoGuo');
                             'step 3'
-                            if(player.hasExpansions('_xuRuo')){
-                                player.discard(player.getExpansions('_xuRuo'),'_xuRuo').set('visible',true); 
+                            if(player.hasJiChuXiaoGuo('_xuRuo')){
+                                player.discard(player.getJiChuXiaoGuo('_xuRuo'),'_xuRuo').set('visible',true); 
                             }
                             'step 4'
                             player.removeSkill('wuXiShuFu_xiaoGuo');
@@ -2039,7 +2039,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 1'
                     var cards=trigger.cards;
                     if(cards){
-                        player.addToExpansion('draw',trigger.cards,'log').gaintag.add('anYue');
+                        player.addGaiPai('anYue',cards);
                     }
                     'step 2'
                     trigger.cancel();
@@ -2055,7 +2055,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 0'
                     player.changeShiQi(-1);
                     'step 1'
-                    if(player.getExpansions('anYue').length==0){
+                    if(player.getGaiPai('anYue').length==0){
                         player.chongZhi();
                     }
                 }
@@ -2065,11 +2065,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 filter:function(event,player){
                     if(event.player.side==player.side) return false;
                     if(!event.card.isCard) return false;
-                    var anYue=player.getExpansions('anYue');
+                    var anYue=player.getGaiPai('anYue');
                     return anYue.length>0;
                 },
                 async cost(event, trigger, player) {
-                    var result = await player.chooseCardButton(player.getExpansions('anYue'),'是否发动【美杜莎之眼】<br>'+lib.translate.meiDuShaZhiYan_info)
+                    var result = await player.chooseCardButton(player.getGaiPai('anYue'),'是否发动【美杜莎之眼】<br>'+lib.translate.meiDuShaZhiYan_info)
                     .set('filterButton',function(button){
                         return get.xiBie(button.link)==_status.event.xiBie;
                     })
@@ -2113,12 +2113,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 trigger:{player:'phaseEnd'},
                 priority:1,
                 filter:function(event,player){
-                    return player.zhiLiao>0||player.getExpansions('anYue').length>0;
+                    return player.zhiLiao>0||player.getGaiPai('anYue').length>0;
                 },
                 async cost(event, trigger, player) {
                     var choices=[];
                     var choiceList=['<span class="tiaoJian">(移除1个【暗月】)</span>目标角色+1[治疗]',"<span class='tiaoJian'>(移除你的1[治疗])</span>你+1<span class='hong'>【</span>新月<span class='hong'>】</span>"];
-                    if(player.getExpansions('anYue').length>0){
+                    if(player.getGaiPai('anYue').length>0){
                         choices.push('选项一');
                     }
                     if(player.zhiLiao>0){
@@ -2128,7 +2128,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var result=await player.chooseControl(choices).set('prompt',"月之轮回：选择以下一项发动").set('choiceList',choiceList).set('ai',function(){
                         var player=_status.event.player;
                         if(player.zhiLiao>0) return "选项二";
-                        if(player.getExpansions('anYue').length>0) return "选项一";
+                        if(player.getGaiPai('anYue').length>0) return "选项一";
                         return 'cancel2';
                     }).forResult();
                     event.result = {
@@ -2138,7 +2138,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content:async function(event, trigger, player){
                     if(event.cost_data=='选项一'){
-                        var anYue=player.getExpansions('anYue');
+                        var anYue=player.getGaiPai('anYue');
                         var links=await player.chooseCardButton(anYue,true,'移除1个【暗月】目标角色+1[治疗]').forResult('links');
                         await player.discard(links,'anYue');
                         var targets=await player.chooseTarget(1,'月之轮回：选择1名目标角色+1[治疗]',true).forResult('targets');
@@ -2172,10 +2172,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 trigger:{source:'gongJiMingZhong'},
                 filter:function(event,player){
                     if(event.yingZhan==true) return false;
-                    return player.isHengZhi()&&player.canBiShaShuiJing()&&player.getExpansions('anYue').length>0;
+                    return player.isHengZhi()&&player.canBiShaShuiJing()&&player.getGaiPai('anYue').length>0;
                 },
                 async cost(event, trigger, player) {
-                    var result=await player.chooseCardButton(player.getExpansions('anYue'),'是否发动【暗月斩】<br>'+lib.translate.anYueZhan_info,[1, 2]).forResult();
+                    var result=await player.chooseCardButton(player.getGaiPai('anYue'),'是否发动【暗月斩】<br>'+lib.translate.anYueZhan_info,[1, 2]).forResult();
                     event.result = {
                         bool: result.bool,
                         cost_data: result.links,
@@ -2282,15 +2282,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             anYue:{
                 intro:{
                     name:'暗月',
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getExpansions('anYue');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    content:'gaiPai',
+                    markcount:'gaiPai',
                 },
                 onremove:function(player, skill) {
-                    const cards = player.getExpansions(skill);
+                    const cards = player.getGaiPai(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
             },
@@ -2655,10 +2651,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         var player=_status.event.player;
                         if(button.link=='tou'){
                             var zhanJi=get.zhanJi(!player.side);
-                            return zhanJi.includes('baoShi');
+                            return zhanJi.includes('baoShi')?1:0;
                         }
                         if(button.link=='huan'){
-                            return Math.random()*3;
+                            return Math.random()*2;
                         }
                     }
                 },
@@ -2671,8 +2667,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             'step 1'
                             var side=player.side;
                             player.changeZhanJi('baoShi',-1,!side)
-                            player.addZhanJi('baoShi',1);
                             'step 2'
+                            player.addZhanJi('baoShi',1);
+                            'step 3'
                             player.addGongJiOrFaShu();
                         }
                     },
@@ -3800,26 +3797,26 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         target.addSkill('weiLiCiFu_xiaoGuo');
                     }
                     'step 1'
-                    target.addToExpansion(cards,'gain2',player).gaintag.add('weiLiCiFu_xiaoGuo');
+                    target.addJiChuXiaoGuo('weiLiCiFu_xiaoGuo',cards);
                 },
                 subSkill:{
                     xiaoGuo:{
                         marktext:"威",
                         intro:{
-                            content:'expansion',
+                            content:'jiChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
-                            const cards = player.getExpansions(skill);
+                            const cards = player.getGaiPai(skill);
                             if (cards.length) player.loseToDiscardpile(cards);
                         },
                         trigger:{source:'gongJiMingZhong'},
                         priority:-1,
                         filter:function(event,player){
-                            return player.hasExpansions('weiLiCiFu_xiaoGuo');
+                            return player.hasGaiPai('weiLiCiFu_xiaoGuo');
                         },
                         content:function(){
                             'step 0'
-                            player.discard(player.getExpansions('weiLiCiFu_xiaoGuo'),'weiLiCiFu_xiaoGuo').set('visible',true);
+                            player.discard(player.getGaiPai('weiLiCiFu_xiaoGuo'),'weiLiCiFu_xiaoGuo').set('visible',true);
                             trigger.changeDamageNum(2);
                             'step 1'
                             player.removeSkill('weiLiCiFu_xiaoGuo');
@@ -3860,27 +3857,27 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         target.addSkill('xunJieCiFu_xiaoGuo');
                     }
                     'step 1'
-                    target.addToExpansion(cards,'gain2',player).gaintag.add('xunJieCiFu_xiaoGuo');
+                    target.addJiChuXiaoGuo('xunJieCiFu_xiaoGuo',cards);
                 },
                 subSkill:{
                     xiaoGuo:{
                         marktext:"迅",
                         intro:{
-                            content:'expansion',
+                            content:'jiaChuXiaoGuo',
                         },
                         onremove:function(player, skill) {
-                            const cards = player.getExpansions(skill);
+                            const cards = player.getGaiPai(skill);
                             if (cards.length) player.loseToDiscardpile(cards);
                         },
                         //priority:1,
                         trigger:{player:['gongJiEnd','faShuEnd']},
                         filter:function(event,player){
                             if(event.yingZhan==true) return false;
-                            return player.hasExpansions('xunJieCiFu_xiaoGuo');
+                            return player.hasJiChuXiaoGuo('xunJieCiFu_xiaoGuo');
                         },
                         content:function(){
                             'step 0'
-                            player.discard(player.getExpansions('xunJieCiFu_xiaoGuo'),'xunJieCiFu_xiaoGuo').set('visible',true);
+                            player.discard(player.getJiChuXiaoGuo('xunJieCiFu_xiaoGuo'),'xunJieCiFu_xiaoGuo').set('visible',true);
                             player.addGongJi();
                             'step 1'
                             player.removeSkill('xunJieCiFu_xiaoGuo');
@@ -4547,20 +4544,45 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     for(var i=1;i<=player.zhiLiao;i++){
                         list.push(i);
                     }
-                    var control=await player.chooseControl(list).set('prompt','转移[治疗]数量').set('num',list.length-1).set('ai',function(){
-                        var num=_status.event.num;
-                        if(num>3) return 3;
-                        return _status.event.num;
-                    }).forResultControl();
+                    //ai相关
+                    var num=0;
+                    var target;
+                    for(var cur of game.players){
+                        if(cur.side==player.side&&cur!=player){
+                            let empty=4-cur.zhiLiao;
+                            if(cur.hasSkillTag('zhiLiaoYiChu')) empty+=1;
+                            if(cur.hasSkillTag('noZhiLiao')) empty=0;
+                            if(empty>0&&empty>num) {
+                                num=empty;
+                                target=cur;
+                            }
+                        }
+                    }
+                    var result=await player.chooseButtonTarget({
+                        num: num,
+                        target:target,
+                        forced:true,
+                        createDialog:[
+                            `转移[治疗]数量及转移队友`,
+							[
+								list,
+								"tdnodes",
+							],
+                        ],
+                        filterTarget:lib.filter.teammate,
+                        ai1:function(button){
+                            if(button.link==_status.event.num) return 5;
+                            else return 1;
+                        },
+                        ai2:function(target){
+                            if(target==_status.event.target) return 10;
+                            else if(target.side==_status.event.player.side) return 1;
+                            return 0;
+                        },
+                    }).forResult();
 
-                    var targets=await player.chooseTarget('目标队友+'+control+'点[治疗]',true,function(card,player,target){
-                        return target.side==player.side&&target!=player;
-                    }).set('ai',function(target){
-                        var num=_status.event.control;
-                        var player=_status.event.player;
-                        return get.zhiLiaoEffect2(target,player,num);
-                    }).set('num',control).forResultTargets();
-                    var target=targets[0];
+                    var target=result.targets[0];
+                    var control=result.links[0];
 					if(control>0){
 						await player.changeZhiLiao(-control);
                         await target.changeZhiLiao(control,4,player).set('zhuanYi',true);
@@ -4574,7 +4596,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     if(player.getCards('h')==0&&player.countNengLiangAll()<=1) return false;
                     if(!(player.canGongJi()||player.canFaShu())) return false;
                     return game.hasPlayer(function(current){
+                        if(current==player) return false;
                         if(current.side!=player.side) return false;
+                        if(current.hasSkillTag('noZhiLiao')) return false;
                         if(current.zhiLiao+2<=4) return true;
                         return false;
                     });
@@ -5406,7 +5430,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             moGuanChongJi:{
                 trigger:{player:'gongJiBefore'},
                 filter:function(event,player){
-                    var cards=player.getExpansions('chongNengPai');
+                    var cards=player.getGaiPai('chongNengPai');
                     if(cards.length==0) return false;
                     if(event.yingZhan==true) return false;
                     if(event.getParent('xingDong').moGuanChongJi==false) return false;
@@ -5414,7 +5438,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return true;
                 },
                 async cost(event,trigger,player){
-                    var cards=player.getExpansions('chongNengPai');
+                    var cards=player.getGaiPai('chongNengPai');
                     var result=await player.chooseCardButton(cards,'是否发动【魔贯冲击】，弃1张火系【充能】,本次攻击伤害额外+1')
                         .set('filterButton',function(button){
                             return get.xiBie(button.link)=='huo';
@@ -5441,12 +5465,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         trigger:{source:'gongJiMingZhong'},
                         filter:function(event,player){
                             if(event.customArgs.moGuanChongJi!=true) return false;
-                            var cards=player.getExpansions('chongNengPai');
+                            var cards=player.getGaiPai('chongNengPai');
                             if(cards.length==0) return false;
                             return true; 
                         },
                         async cost(event,trigger,player){
-                            var cards=player.getExpansions('chongNengPai');
+                            var cards=player.getGaiPai('chongNengPai');
                             var result=await player.chooseCardButton(cards,'是否发动【魔贯冲击】，移除1张火系【充能】,本次攻击伤害额外+1')
                                 .set('filterButton',function(button){
                                     return get.xiBie(button.link)=='huo';
@@ -5484,7 +5508,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 enable:'faShu',
                 filter:function(event,player){
                     if(event.getParent('xingDong').leiGuangSanShe==false) return false;
-                    var cards=player.getExpansions('chongNengPai');
+                    var cards=player.getGaiPai('chongNengPai');
                     if(cards.length==0) return false;
                     for(var i=0;i<cards.length;i++){
                         if(get.xiBie(cards[i])=='lei') return true;
@@ -5494,7 +5518,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 chooseButton:{
                     dialog:function(event,player){
                         var dialog=ui.create.dialog('雷光散射：移除1+X个雷系【充能】[展示]','hidden');
-                        var cards=player.getExpansions('chongNengPai');
+                        var cards=player.getGaiPai('chongNengPai');
                         dialog.add(cards);
                         return dialog;
                     },
@@ -5550,7 +5574,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 ai:{
                     order:function(item,player){
-                        var cards=player.getExpansions('chongNengPai');
+                        var cards=player.getGaiPai('chongNengPai');
                         var num=1.5;
                         for(var i=0;i<cards.length;i++){
                             if(get.xiBie(cards[i])=='lei') num+=0.7;
@@ -5565,14 +5589,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             duoChongSheJi:{
                 trigger:{player:'gongJiEnd'},
                 filter:function(event,player){
-                    var cards=player.getExpansions('chongNengPai');
+                    var cards=player.getGaiPai('chongNengPai');
                     if(cards.length==0) return false;
                     if(event.yingZhan==true) return false;
                     if(event.getParent('xingDong').duoChongSheJi==false) return false;
                     return true;
                 },
                 async cost(event,trigger,player){
-                    var cards=player.getExpansions('chongNengPai');
+                    var cards=player.getGaiPai('chongNengPai');
                     var result=await player.chooseCardButton(cards,'是否发动【多重射击】')
                         .set('filterButton',function(button){
                             return get.xiBie(button.link)=='feng';
@@ -5650,7 +5674,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     });
                     'step 5'
                     if(result.cards){
-                        player.addToExpansion('draw',result.cards,'log').gaintag.add('chongNengPai');
+                        player.addGaiPai('chongNengPai',result.cards);
                     }
                     'step 6'
                     trigger.moGuanChongJi=false;
@@ -5720,7 +5744,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         event.goto(8);
                     }
                     'step 7'
-                    player.addToExpansion('draw',result.cards,'log').gaintag.add('chongNengPai');
+                    player.addGaiPai('chongNengPai',result.cards);
                     'step 8'
                     player.addNengLiang('shuiJing',1);
                 },
@@ -5741,25 +5765,21 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             chongNengPai:{
                 intro:{
                     name:'充能',
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getExpansions('chongNengPai');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    content:'gaiPai',
+                    markcount:'gaiPai',
                 },
                 onremove:function(player, skill) {
-                    const cards = player.getExpansions(skill);
+                    const cards = player.getGaiPai(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
-                trigger:{player:'addToExpansionAfter'},
+                trigger:{player:'addGaiPaiAfter'},
                 filter:function(event,player){
-                    return event.gaintag.includes('chongNengPai')&&player.getExpansions('chongNengPai').length>8;
+                    return event.gaiPai=='chongNengPai'&&player.getGaiPai('chongNengPai').length>8;
                 },
                 direct:true,
                 content:function(){
                     'step 0'
-                    var cards=player.getExpansions('chongNengPai');
+                    var cards=player.getGaiPai('chongNengPai');
                     player.chooseCardButton(cards,'舍弃'+(cards.length-8)+'张【充能】',true,cards.length-8);
                     'step 1'
                     if(result.links){
@@ -5848,7 +5868,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     if(game.hasPlayer(function(current){
                         if(current.side==player.side) return false;
                         var num=current.countCards('h');
-                        var bool=(num==1||num==2)&&player.canUse('anMie',current)&&player.canBiShaShuiJing()&&current.getExpansions('_shengDun').length==0;
+                        var bool=(num==1||num==2)&&player.canUse('anMie',current)&&player.canBiShaShuiJing()&&current.getGaiPai('_shengDun').length==0;
                         return bool;
                     })) return false;
                     if(player.getHandcardLimit()-player.countCards('h')>=2) return true;
@@ -6084,7 +6104,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             nianZhou:{
                 trigger:{player:'lingFu'},
                 filter:function(event,player){
-                    return player.countCards('h')>0&&player.getExpansions('yaoLi').length<2;
+                    return player.countCards('h')>0&&player.getGaiPai('yaoLi').length<2;
                 },
                 async cost(event,trigger,player){
                     event.result=await player.chooseCard('h')
@@ -6098,17 +6118,17 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         .forResult();
                 },
                 content:function(){
-                    player.addToExpansion('draw',event.cards,'log').gaintag.add('yaoLi');
+                    player.addGaiPai('yaoLi',event.cards);
                 }
             },
             baiGuiYeXing:{
                 trigger:{source:'gongJiMingZhong'},
                 filter:function(event,player){
                     if(event.yingZhan==true) return false;
-                    return player.getExpansions('yaoLi').length>0;
+                    return player.getGaiPai('yaoLi').length>0;
                 },
                 async cost(event,trigger,player){
-                    var result=await player.chooseCardButton(player.getExpansions('yaoLi'),'是否发动【百鬼夜行】，移除1张【妖力】,对目标角色造成1点法术伤害③').forResult();
+                    var result=await player.chooseCardButton(player.getGaiPai('yaoLi'),'是否发动【百鬼夜行】，移除1张【妖力】,对目标角色造成1点法术伤害③').forResult();
                     event.result={
                         bool:result.bool,
                         cost_data:result.links,
@@ -6167,21 +6187,18 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             yaoLi:{
                 intro:{
                     name:'妖力',
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getExpansions('yaoLi');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    content:'gaiPai',
+                    markcount:'gaiPai',
                 },
                 onremove:function(player, skill) {
-                    const cards = player.getExpansions(skill);
+                    const cards = player.getGaiPai(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
             },
             //吟游诗人
             chenLunXieZouQu:{
                 trigger:{global:'damageAfter'},//该时机不会因为治疗而被抵消
+                priority:-1,
                 filter:function(event,player){
                     if(player.isHengZhi()) return false;
                     if(event.faShu!=true) return false;
@@ -7359,7 +7376,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         if(link=='2'){
                             var bool=game.hasPlayer(function(current){
                                 return current.side!=player.side&&current.countCards('h')<=player.countCards('h')-1;
-                            })
+                            });
                             return player.zhiLiao>0&&bool;
                         }
                     },
@@ -7377,7 +7394,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         }else if(links[0]=='2'){
                             return;
                         }
-                        
+                    },
+                    check:function(button){
+                        var player=_status.event.player;
+                        var link=button.link;
+                        if(link=='1'){
+                            return player.countEmptyCards();
+                        }else if(link=='2'){
+                            return 1.1;
+                        }
+                        return 0.1;
                     },
                 },
                 subSkill:{
@@ -7411,8 +7437,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     },
                     2:{
                         type:'faShu',
-                        content:function(){
-                            'step 0'
+                        content:async function(event,trigger,player){
                             var targets=game.filterPlayer(function(current){
                                 return current.side!=player.side;
                             });
@@ -7427,35 +7452,54 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 if(i>cha) break;
                                 list.push(i);
                             }
-                            player.chooseControl(list).set('prompt','移除你的X[治疗]');
-                            'step 1'
-                            event.x=result.control;
-                            player.changeZhiLiao(-result.control);
-                            'step 2'
-                            player.chooseTarget(true,[1,event.x],function(card,player,target){
-                                return target.countCards('h')<=player.countCards('h')-_status.event.x&&target.side!=player.side;
-                            }).set('x',event.x);
-                            'step 3'
-                            event.targets=result.targets.sortBySeat(player);
-                            game.log(player,'选择了',event.targets);;
-                            player.chooseToDiscard(true,'h',event.x);
-                            'step 4'
-                            event.num=2;
-                            for(var i=0;i<event.targets.length;i++){
-                                if(event.targets[i].zhiLiao>0) event.num++;
+
+                            var result=await player.chooseButtonTarget({
+                                createDialog:[
+                                    `<span class='tiaoJian'>(移除你的X[治疗]，选择最多X名手牌数不大于你手牌数-X的对手)</span>你弃X张牌，然后对他们各造成(Y+2)点攻击伤害， Y为目标数中拥有[治疗]的人数，你+X<span class='hong'>【信仰】</span>。`,
+                                    [list,'tdnodes'],
+                                ],
+                                forced:true,
+                                selectTarget(){
+                                    if(!ui.selected.buttons.length) return 0;
+                                    else return [1,ui.selected.buttons[0].link];
+                                },
+                                filterTarget:function(card,player,target){
+                                    return target.countCards('h')<=player.countCards('h')-ui.selected.buttons[0].link&&target.side!=player.side;
+                                },
+                                ai1:function(button){
+                                    return button.link;
+                                },
+                                ai2:function(target){
+                                    var damageEffect= get.damageEffect2(target,player,2);
+                                    if(target.zhiLiao>0) damageEffect+=0.5;
+                                    return damageEffect;
+                                },
+                            }).forResult();
+
+                            var num=result.links[0];
+                            var targets=result.targets.sortBySeat(player);
+                            await player.changeZhiLiao(-num);
+                            game.log(player,'选择了',targets);
+                            await player.chooseToDiscard(true,'h',num);
+
+                            var damageNum=2;
+                            for(var i=0;i<targets.length;i++){
+                                if(targets[i].zhiLiao>0) damageNum++;
                             }
-                            'step 5'
-                            var target=event.targets.shift();
-                            target.damage(event.num,player);
-                            if(event.targets.length>0){
-                                event.redo();
+                            for(var i=0;i<targets.length;i++){
+                                await targets[i].damage(damageNum,player);
                             }
                         }
                     }
                 },
                 ai:{
                     order:function(item,player){
-                        return 8-player.countCards('h');
+                        var bool=game.hasPlayer(function(current){
+                            return current.side!=player.side&&current.countCards('h')<=player.countCards('h')-1;
+                        });
+                        if(bool&&player.zhiLiao>0){
+                            return player.countCards('h')-2;
+                        }else return 8-player.countCards('h');
                     },
                     result:{
                         player:1,
@@ -7481,7 +7525,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         return current.side==player.side&&current.zhiLiao<current.getZhiLiaoLimit();
                     });
 
-                    var control=await player.chooseControl(list).set('prompt','是否发动【流星圣弹】，移除1点[治疗]或1点<span class="hong">【信仰】</span>，我方目标角色+1[治疗]').set('ai',function(){
+                    var control=await player.chooseControl(list).set('prompt',get.prompt('liuXingShengDan')).set('prompt2','移除1点[治疗]或1点<span class="hong">【信仰】</span>，我方目标角色+1[治疗]').set('ai',function(){
                         var player=_status.event.player;
                         var bool=_status.event.bool;
                         if(player.hasZhiShiWu('shengHuangHuiGuangPaoX')){
@@ -7664,11 +7708,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 filter:function(event,player){
                     if(event.customArgs.tianShiZhiHun) return false;
                     if(event.customArgs.eMoZhiHun) return false;
-                    return event.yingZhan!=true&&player.getExpansions('jianHun').length<lib.skill.jianHun.intro.max;
+                    return event.yingZhan!=true&&player.getGaiPai('jianHun').length<lib.skill.jianHun.intro.max;
                 },
                 forced:true,
                 content:function(){
-                    player.addToExpansion('draw',trigger.card.cards,player,'log').gaintag.add('jianHun');
+                    player.addGaiPai('jianHun',trigger.card.cards);
                 }
             },
             yangGong:{
@@ -7736,7 +7780,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return event.yingZhan!=true&&lib.skill.jianHun.tianShiZhiHun(player)>0;
                 },
                 async cost(event,trigger,player){
-                    var cards=player.getExpansions('jianHun');
+                    var cards=player.getGaiPai('jianHun');
                     var result=await player.chooseCardButton(cards,'是否发动【天使之魂】').forResult();
                     event.result={
                         bool:result.bool,
@@ -7778,7 +7822,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     return event.yingZhan!=true&&lib.skill.jianHun.eMoZhiHun(player)>0;
                 },
                 async cost(event,trigger,player){
-                    var cards=player.getExpansions('jianHun');
+                    var cards=player.getGaiPai('jianHun');
                     var result=await player.chooseCardButton(cards,'是否发动【恶魔之魂】').forResult();
                     event.result={
                         bool:result.bool,
@@ -7822,26 +7866,22 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             jianHun:{
                 intro:{
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getExpansions('jianHun');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    content:'gaiPai',
+                    markcount:'gaiPai',
                     max:3,
                 },
                 onremove:function(player, skill) {
-                    const cards = player.getExpansions(skill);
+                    const cards = player.getGaiPai(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
                 tianShiZhiHun:function(player){
                     if(player.countNengLiangAll()==0) return 0;
-                    else if(player.countNengLiangAll()%2==1) return player.getExpansions('jianHun').length;
+                    else if(player.countNengLiangAll()%2==1) return player.getGaiPai('jianHun').length;
                     else return 0;
                 },
                 eMoZhiHun:function(player){
                     if(player.countNengLiangAll()==0) return 0;
-                    else if(player.countNengLiangAll()%2==0) return player.getExpansions('jianHun').length;
+                    else if(player.countNengLiangAll()%2==0) return player.getGaiPai('jianHun').length;
                     else return 0;
                 },
                 mod:{
@@ -8537,7 +8577,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     chongZhi:{
                         trigger:{
                             player:'loseAfter',
-                            global:['gainAfter','loseAsyncAfter','addToExpansionAfter'],
+                            global:['gainAfter'],
                         },
                         filter:function(event,player){
                             if(!player.isHengZhi()) return false;
@@ -8772,7 +8812,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                     'step 1'
                     var cards=get.cards();
-                    player.addToExpansion('draw',cards,'log').gaintag.add('jian');
+                    player.addGaiPai(cards,'jian');
                 },
                 check:function(card){
                     var player = _status.event.player;
@@ -8783,23 +8823,23 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     order:3.4,
                     result:{
                         player:function(player){
-                            return player.getExpansions('jian').length<=6?1:0;
+                            return player.getGaiPai('jian').length<=6?1:0;
                         },
                     }
                 },
                 mod:{
                     aiOrder:function(player,item,num){
-                        if(item=='_tiLian'&&player.getExpansions('jian').length>4) return num+1;
+                        if(item=='_tiLian'&&player.getGaiPai('jian').length>4) return num+1;
                     }
                 }
             },
             duFen:{
                 trigger:{global:'chanShengShangHai'},
                 filter:function(event,player){
-                    return event.num==1&&event.faShu==true&&player.getExpansions('jian').length>0;
+                    return event.num==1&&event.faShu==true&&player.getGaiPai('jian').length>0;
                 },
                 async cost(event,trigger,player){
-                    var cards=player.getExpansions('jian');
+                    var cards=player.getGaiPai('jian');
                     var name=get.colorName(trigger.player);
                     var result=await player.chooseCardButton(cards,"是否发动【毒粉】,移除1个【茧】,该次伤害额外+1，目标"+name)
                     .set('ai',function(button){
@@ -8824,10 +8864,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             chaoSheng:{
                 trigger:{player:'chengShouShangHai'},
                 filter:function(event,player){
-                    return event.num>0&&player.getExpansions('jian').length>0;
+                    return event.num>0&&player.getGaiPai('jian').length>0;
                 },
                 async cost(event,trigger,player){
-                    var cards=player.getExpansions('jian');
+                    var cards=player.getGaiPai('jian');
                     var result=await player.chooseCardButton(cards,"是否发动【朝圣】,移除1个【茧】,抵御1点该来源的伤害,目前伤害量"+trigger.num)
                     .set('ai',function(button){
                         var player=_status.event.player;
@@ -8854,10 +8894,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             jingHuaShuiYue:{
                 trigger:{global:'chengShouShangHaiBefore'},
                 filter:function(event,player){
-                    return event.num==2&&event.faShu==true&&player.getExpansions('jian').length>1;
+                    return event.num==2&&event.faShu==true&&player.getGaiPai('jian').length>1;
                 },
                 async cost(event,trigger,player){
-                    var cards=player.getExpansions('jian');
+                    var cards=player.getGaiPai('jian');
                     var name=get.colorName(trigger.player);
                     var result=await player.chooseCardButton(cards,2,"是否发动【镜花水月】，移除2张同系【茧】，目标"+name)
                     .set('filterButton',function(button){
@@ -8960,12 +9000,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.addZhiShiWu('DWZyong');
                     'step 2'
                     var card=get.cards(4);
-                    player.addToExpansion('draw',card,'log').gaintag.add('jian');
+                    player.addGaiPai(card,'jian');
                 },
                 ai:{
                     baoShi:true,
                     order:function(card,player){
-                        return 9-player.getExpansions('jian').length;
+                        return 9-player.getGaiPai('jian').length;
                     },
                     result:{
                         player:1,
@@ -8995,7 +9035,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         var target=targets[0];
                         await target.faShuDamage(1,player).set('canZhiLiao',false);
                     }else if(control=='选项二'){
-                        var cards=player.getExpansions('jian');
+                        var cards=player.getGaiPai('jian');
                         if(cards.length>0){
                             var result=await player.chooseCardButton(cards,2,'移除2个【茧】或对自己造成4点法术伤害③').forResult();
                         }else{
@@ -9019,26 +9059,22 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             jian:{
                 intro:{
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getExpansions('jian');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    markcount:'gaiPai',
+                    content:'gaiPai',
                 },
                 onremove:function(player, skill) {
-                    const cards = player.getExpansions(skill);
+                    const cards = player.getGaiPai(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
-                trigger:{player:'addToExpansionAfter'},
+                trigger:{player:'addGaiPaiAfter'},
                 filter:function(event,player){
-                    return event.gaintag.includes('jian')&&player.getExpansions('jian').length>8;
+                    return event.gaiPai=='jian'&&player.getGaiPai('jian').length>8;
                 },
                 direct:true,
                 content:function(){
                     'step 0'
-                    var num=player.getExpansions('jian').length;
-                    var cards=player.getExpansions('jian');
+                    var num=player.getGaiPai('jian').length;
+                    var cards=player.getGaiPai('jian');
                     player.chooseCardButton(num-8,true,cards,`舍弃${num-8}张【茧】`);
                     'step 1'
                     player.discard(result.links,'jian').set('sheQi',true);

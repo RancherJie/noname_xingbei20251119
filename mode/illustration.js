@@ -153,7 +153,7 @@ export default () => {
                             dialog.currentcaptnode2 = null;
                             this.classList.remove("thundertext");
                             if (!get.is.phoneLayout() || !lib.config.filternode_button){
-                                if(selectPack.length==1) packsource.innerHTML = get.translation(this.link+"_character_config");
+                                if(selectPack.length==1) packsource.innerHTML = get.translation(selectPack[0]+"_character_config");
                                 else packsource.innerHTML = selectPack.length?"角色包("+selectPack.length+")": "角色包";
                             }
                             if (this.touchlink) {
@@ -413,7 +413,7 @@ export default () => {
                         }
                     }
                 }
-                var sortList=['shiZhouNian','yiDuanYeHuo','shenZiChuangLin','zhongMoDaoZhu','teDian','sanBan','siBan'];
+                var sortList=['shiZhouNian','yiDuanYeHuo','shenZiChuangLin','zhongMoDaoZhu','teDian','sanBan','siBan','poXiao'];
                 packlist.sort(function(a, b) {
                     var indexA = sortList.indexOf(a);
                     var indexB = sortList.indexOf(b);
@@ -490,6 +490,7 @@ export default () => {
                         if (group == "xueGroup") base += 0.02;
                         if (group == "yongGroup") base += 0.03;
                         if (group == "shengGroup") base += 0.04;
+                        if (group == "longGroup") base += 0.05;
                         if(info.hp) base += info.hp;
                         if(info.maxHp) base += info.maxHp / 10;
                         return base;

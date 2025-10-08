@@ -65,7 +65,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 content:async function (event,trigger,player){
                     for(var current of game.players) current.update();
                     var cards=get.cards(3);
-                    await player.addToExpansion('draw',cards,'log').set('gaintag',['yiJi']);
+                    await player.addGaiPai(cards,'yiJi');
                     await player.showHiddenCards(cards);
                 }
             },
@@ -128,10 +128,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 usable:1,
                 trigger:{player:'gongJiShi'},
                 filter:function (event,player){
-                    return player.getExpansions('yiJi').length>0&&event.yingZhan!=true;s
+                    return player.getGaiPai('yiJi').length>0&&event.yingZhan!=true;s
                 },
                 cost: async function (event,trigger,player){
-                    event.list=player.getExpansions('yiJi');
+                    event.list=player.getGaiPai('yiJi');
                     event.chuLi=[];
                     for(var card of event.list){
                         let fakeCard=game.createCard(card.name,card.xiBie,card.mingGe,card.duYou);
@@ -177,7 +177,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         trigger.changeDamageNum(num-1);
                         player.addFaShu();
                     }
-                    if(player.getExpansions('yiJi').length==0) await player.addZhanJi('baoShi');
+                    if(player.getGaiPai('yiJi').length==0) await player.addZhanJi('baoShi');
                 }
             },
             xuanCuiJingLian:{
@@ -241,14 +241,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     card.remove();
                     card.destroyed = true;
                     game.log(card, "被移除了");
-                    await player.discard(player.getExpansions('yiJi'),'yiJi');
+                    await player.discard(player.getGaiPai('yiJi'),'yiJi');
                     var cards=[];
                     while(!(get.countTongXiPai(cards)>=2)){
                         let card=get.cards()[0];
                         await player.showHiddenCards([card]);
                         cards.push(card);
                     }
-                    await player.addToExpansion('draw',cards,'log').set('gaintag',['yiJi']);
+                    await player.addGaiPai(cards,'yiJi');
                     if(cards.length>3){
                         var targets=await player.chooseTarget(true,cards.length-3,`对${cards.length-3}名目标角色造成2点法术伤害③。`).set('ai',function(target){
                             var player=_status.event.player;
@@ -264,7 +264,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     order:3.4,
                     result:{
                         player:function(player){
-                            if(player.getExpansions('yiJi').length<=3) return 1;
+                            if(player.getGaiPai('yiJi').length<=3) return 1;
                             else return 0;
                         }
                     }
@@ -290,7 +290,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }, 
                     yiShiWeiJing:{
                         forced:true,
-                        trigger:{player:['daChuPai','discard','addToExpansionEnd'],global:'gainEnd'},
+                        trigger:{player:['daChuPai','discard','loseEnd'],global:'gainEnd'},
                         getIndex(event, player) {
 							const cards = [];
 							for(let i = 0; i < event.cards.length; i++) {
@@ -331,12 +331,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         content:async function (event,trigger,player){
                             var cards=await trigger.target.chooseCard('h',true).forResultCards();
                             if(cards.length>0){
-                                let next=player.addToExpansion('draw',cards,'log');
-                                next.set('gaintag',['yiJi']);
+                                let next=player.addGaiPai(cards,'yiJi');
                                 await next;
                             }
 
-                            var cards=player.getExpansions('yiJi');
+                            var cards=player.getGaiPai('yiJi');
                             if(player.countCards('h')==0||cards.length==0) return;
                             var next = player.chooseToMove("引稽编鉴：是否将手上X张牌与X个【遗迹】交换，X<3");
                             next.set("list", [
@@ -368,12 +367,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             if(!result.moved) return;
                             var pushs = result.moved[0],
                                 gains = result.moved[1];
-                            pushs.removeArray(player.getExpansions("yiJi"));
+                            pushs.removeArray(player.getGaiPai("yiJi"));
                             gains.removeArray(player.getCards("h"));
                             if (!pushs.length || pushs.length != gains.length) return;
                             await player.lose(pushs);
                             await player.lose(gains);
-                            await player.addToExpansion(pushs, "draw",'log').set('gaintag',['yiJi']);
+                            await player.addGaiPai(pushs,'yiJi');
                             game.log(player,`获得了${gains.length}张牌`);
                             await player.gain(gains, "draw");
                         }
@@ -423,8 +422,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 content:async function (event,trigger,player){
                     await player.removeBiShaShuiJing();
                     await player.addZhiShiWu('shiLiao',2);
-                    if(player.countCards('h')>=2&&player.getExpansions('yiJi').length>0){
-                        var cards=player.getExpansions('yiJi');
+                    if(player.countCards('h')>=2&&player.getGaiPai('yiJi').length>0){
+                        var cards=player.getGaiPai('yiJi');
                             var next = player.chooseToMove("古今互鉴：是否将2张手牌与X个【遗迹】交换，X>0");
                             next.set("list", [
                                 ["遗迹", cards],
@@ -435,7 +434,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 //交换前
                                 if (moved[0].length < 2||moved.length==0) return true;
                                 var h=player.getCards("h");
-                                var yiJi = player.getExpansions("yiJi");
+                                var yiJi = player.getGaiPai("yiJi");
                                 if(typeof to != "number"){
                                     //交换回去
                                     if((moved[0].includes(from.link)&&moved[1].includes(to.link))||moved[0].includes(to.link)&&moved[1].includes(from.link)) return true;
@@ -460,7 +459,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 var player=_status.event.player;
                                 var pushs = moved[0],
                                     gains = moved[1];
-                                pushs.removeArray(player.getExpansions("yiJi"));
+                                pushs.removeArray(player.getGaiPai("yiJi"));
                                 gains.removeArray(player.getCards("h"));
                                 return pushs.length==2&&gains.length>0;
                             });
@@ -471,7 +470,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             if (!pushs.length) return;
                             await player.lose(pushs);
                             await player.lose(gains);
-                            await player.addToExpansion(pushs, player, "giveAuto").set('gaintag',['yiJi']);
+                            await player.addGaiPai(pushs,'yiJi');
                             await player.gain(gains, "draw");
                     }
                 },
@@ -487,14 +486,15 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 intro:{
                     content:'expansion',
                     markcount:'expansion',
+                    show:true,
                 },
-                trigger:{player:'addToExpansionAfter'},
+                trigger:{player:'addGaiPaiAfter'},
                 direct:true,
                 filter:function (event,player){
-                    return event.gaintag.includes('shiShu')&&player.getExpansions('shiShu').length>8;
+                    return event.gaiPai=='shiShu'&&player.getGaiPai('shiShu').length>8;
                 },
                 content:async function (event,trigger,player){
-                    var list=player.getExpansions('shiShu');
+                    var list=player.getGaiPai('shiShu');
                     var next=player.chooseCardButton(list,true,list.length-8);
                     next.set('prompt',`舍弃${list.length-8}张【遗迹】`);
                     var result=await next.forResult();
@@ -626,7 +626,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var list=player.jiChuXiaoGuoList();
                     if(list.length>0){
                         for(var xiaoGuo of list){
-                            let cards=player.getExpansions(xiaoGuo);
+                            let cards=player.getGaiPai(xiaoGuo);
                             await player.loseToDiscardpile(cards);
                             if(xiaoGuo=='_zhongDu') player.storage.zhongDu=[];
                         }
@@ -807,7 +807,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             return player.getExpansions('wangQuanBaoZhuX_biaoJi').length>0;
                         },
                         content:async function (event,trigger,player){
-                            //await player.getNext().addToExpansion(player.getExpansions('wangQuanBaoZhuX_biaoJi'),player,'gain2').set('type','zhuanYi').set('gaintag',['wangQuanBaoZhuX_biaoJi']).set('special',true); 
                             await lib.skill.wangQuanBaoZhuX.wangQuanBaoZhu(player.getNext(),player.getExpansions('wangQuanBaoZhuX_biaoJi'),player,'zhuanYi');
                         },
                     },
@@ -881,7 +880,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     if(!player.hasSkill('wangQuanBaoZhuX')) player.addSkill('wangQuanBaoZhuX');
                     for(var current of game.players) current.storage.wangQuanBaoZhuX_player=player;
                     await lib.skill.wangQuanBaoZhuX.wangQuanBaoZhu(player,event.cards,player,'gain2');
-                    //await player.addToExpansion(event.cards,player,'gain2').set('type','fangZhi').set('gaintag',['wangQuanBaoZhuX_biaoJi']).set('special',true);
                 },
                 group:'xinYangChongZhu_teShu',
                 subSkill:{
@@ -1021,7 +1019,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var list=player.jiChuXiaoGuoList();
                     if(list.length>0){
                         for(var xiaoGuo of list){
-                            let cards=player.getExpansions(xiaoGuo);
+                            let cards=player.getJiChuXiaoGuo(xiaoGuo);
                             await player.loseToDiscardpile(cards);
                             if(xiaoGuo=='_zhongDu') player.storage.zhongDu=[];
                         }
@@ -1170,7 +1168,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }else if(h_num==0){
                         await player.draw();
                     }
-                    var cards1=await player.chooseToDiscard('h',true,1,'showCards').set('selfSkil',true).set('shiFeng',false).forResultCards();
+                    var cards1=await player.chooseToDiscard('h',true,1,'showCards').set('selfSkil',true).set('shiFeng',false).set('loseTo',ui.special).forResultCards();
                     await player.addZhiShiWu('qianCheng',1);
                     var cards2=await player.storage.luBiaoTarget.chooseToDiscard('h',true,1,'showCards').forResultCards();
                     if(cards2.length>0){
@@ -1358,8 +1356,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             }
                         }).forResultCards();
                         var name=get.name(cards[0]);
-                        if(((name=='xuRuo'||name=='shengDun')&&player.storage.luBiaoTarget.getExpansions("_"+name).length==0)||name=='zhongDu'){
-                            await player.storage.luBiaoTarget.addToExpansion(cards,player,'gain2').set('gaintag',["_"+name]);
+                        if(((name=='xuRuo'||name=='shengDun')&&player.storage.luBiaoTarget.getJiChuXiaoGuo("_"+name).length==0)||name=='zhongDu'){
+                            await player.storage.luBiaoTarget.addJiChuXiaoGuo("_"+name,cards);
                             if(name=='zhongDu') player.storage.luBiaoTarget.storage.zhongDu.push(player);
                             cards=[];
                         }
@@ -1390,7 +1388,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 mod:{
                     maxHandcard:function (player,num){
-                        if(player.hasExpansions('yuYan')) return num-1;
+                        if(player.hasGaiPai('yuYan')) return num-1;
                     }
                 }
             },
@@ -1436,11 +1434,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         await event.targets[0].gain(card,'draw');
                         cards.remove(card[0]);
                     }
-                    if(player.getExpansions('yuYan').length>=6) return;
-                    if(player.hasExpansions('yuYan')&&cards.length>0){
+                    if(player.getGaiPai('yuYan').length>=6) return;
+                    if(player.hasGaiPai('yuYan')&&cards.length>0){
                         cards.randomSort();
-                        if(cards.length+player.countExpansions('yuYan')>6){
-                            cards=cards.randomGets(6-player.getExpansions('yuYan').length);
+                        if(cards.length+player.countGaiPai('yuYan')>6){
+                            cards=cards.randomGets(6-player.getGaiPai('yuYan').length);
                         }
                         await lib.skill.yuYan.add(player,cards);
                     }
@@ -1472,7 +1470,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 type:'qiDong',
                 trigger:{player:'qiDong'},
                 filter:function (event,player){
-                    return player.hasExpansions('yuYan');
+                    return player.hasGaiPai('yuYan');
                 },
                 content:async function (event,trigger,player){
                     var list=lib.xiBie.slice();
@@ -1480,7 +1478,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         var num=Math.random();
                         if(num>0.1){
                             var player=_status.event.player;
-                            var cards=player.getExpansions('yuYan');
+                            var cards=player.getGaiPai('yuYan');
                             var card=cards[cards.length-1];
                             return get.xiBie(card);
                         }else{
@@ -1490,8 +1488,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }).forResultControl();
                     game.log(player,`指定了${get.translation(xiBie)}系`);
                     player.popup(get.translation(xiBie));
-                    var yuYan=player.getExpansions('yuYan');
-                    var card=player.getExpansions('yuYan')[yuYan.length-1];
+                    var yuYan=player.getGaiPai('yuYan');
+                    var card=player.getGaiPai('yuYan')[yuYan.length-1];
                     player.showHiddenCards(card);
                     var xiBie2=get.xiBie(card);
                     if(xiBie==xiBie2){
@@ -1531,7 +1529,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         else return 1;
                     }).forResultControl();
                     await player.draw(num);
-                    await player.discard(player.getExpansions('yuYan'));
+                    await player.discard(player.getGaiPai('yuYan'));
                     player.removeSkill('yuYan_zero');
 
                     list=[];
@@ -1563,7 +1561,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 ai:{
                     shuiJing:true,
                     order:function(item,player){
-                        if(!player.hasExpansions('yuYan')) return 4;
+                        if(!player.hasGaiPai('yuYan')) return 4;
                         else return 3;
                     },
                     result:{
@@ -1591,11 +1589,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             yuYan:{
                 add:async function(player,cards){
-                    game.log(player,`将${cards.length}张牌加入`,`#g【预言】`);
+                    //game.log(player,`将${cards.length}张牌加入`,`#g【预言】`);
                     var next=game.createEvent('yuYanAdd',false);
                     next.setContent('addToExpansion');
                     next.set('player',player);
                     next.set('cards',cards);
+                    next.set('log',true);
                     next.set('gaintag',["yuYan"]);
                     next.set('animate','draw');
                     next.getd = function (player, key, position) {
@@ -1679,6 +1678,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     zero:{
                         trigger:{global:'damageAfter',player:'xianJi'},
                         forced:true,
+                        priority:-2,
                         filter:function (event,player){
                             return !player.hasExpansions('yuYan');
                         },
@@ -1722,7 +1722,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 }
                             });
                             if(event.bool){
-                                next.set('prompt',`选择前发动的选项`);
+                                next.set('prompt',`选择先发动的选项`);
                             }else{
                                 next.set('prompt',`选择以下一项发动`);
                             }
@@ -1737,17 +1737,29 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             
                             for(var xiBie of xiBieList){
                                 var xiBieName=get.translation(xiBie);
-                                var cards=await player.chooseToDiscard('h',true,[0,4],'showCards',card=>get.xiBie(card)==_status.event.xiBie,`弃X张${xiBieName}系牌[展示]，摸X张牌，X最大为4`).set('ai',function(card){
-                                    return 1;
-                                }).set('xiBie',xiBie).forResultCards();
-                                var num=cards.length;
-                                if(num>0) await player.draw(num);
-                                var targets=await player.chooseTarget(true,`选择1个目标角色弃Y张${xiBieName}系牌[展示]，然后你对他造成(${num}+1)点法术伤害③`).set('ai',function(target){
-                                    var player=_status.event.player;
-                                    var num=_status.event.num;
-                                    return get.damageEffect2(target,player,num+1);
-                                }).set('num',num).forResultTargets();
-                                var target=targets[0];
+                                var result=await player.chooseCardTarget({
+                                    forced:true,
+                                    xiBie:xiBie,
+                                    filterCard:card=>get.xiBie(card)==_status.event.xiBie,
+                                    selectCard:[0,4],
+                                    filterTarget:lib.filter.opponent,
+                                    selectTarget:1,
+                                    prompt:`弃X张${xiBieName}系牌[展示]，摸X张牌，X最大为4，目标对手弃Y张${xiBieName}系牌[展示]，然后你对他造成(X+1)点法术伤害③`,
+                                    ai1:function(card){
+                                        return 1;
+                                    },
+                                    ai2:function(target){
+                                        var player=_status.event.player;
+                                        return get.damageEffect2(target,player,ui.selected.cards.length+1);
+                                    }
+                                }).forResult();
+
+                                var num=result.cards.length;
+                                if(num>0){
+                                    await player.discard(result.cards,'showCards');
+                                    await player.draw(num);
+                                }
+                                var target=result.targets[0];
                                 await target.chooseToDiscard('h',true,[0,Infinity],'showCards',card=>get.xiBie(card)==_status.event.xiBie,`弃Y张${xiBieName}系牌[展示]`).set('ai',function(card){
                                     return 1;
                                 }).set('xiBie',xiBie);
@@ -1789,7 +1801,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                 }
                             });
                             if(event.bool){
-                                next.set('prompt',`选择前发动的选项`);
+                                next.set('prompt',`选择先发动的选项`);
                             }else{
                                 next.set('prompt',`选择以下一项发动`);
                             }
@@ -1804,17 +1816,29 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             
                             for(var xiBie of xiBieList){
                                 var xiBieName=get.translation(xiBie);
-                                var cards=await player.chooseToDiscard('h',true,[0,4],'showCards',card=>get.xiBie(card)==_status.event.xiBie,`弃X张${xiBieName}系牌[展示]，摸X张牌，X最大为4`).set('ai',function(card){
-                                    return 1;
-                                }).set('xiBie',xiBie).forResultCards();
-                                var num=cards.length;
-                                if(num>0) await player.draw(num);
-                                var targets=await player.chooseTarget(true,`选择1个目标角色弃Y张${xiBieName}系牌[展示]，然后你对他造成(${num}+1)点法术伤害③`).set('ai',function(target){
-                                    var player=_status.event.player;
-                                    var num=_status.event.num;
-                                    return get.damageEffect2(target,player,num+1);
-                                }).set('num',num).forResultTargets();
-                                var target=targets[0];
+                                var result=await player.chooseCardTarget({
+                                    forced:true,
+                                    xiBie:xiBie,
+                                    filterCard:card=>get.xiBie(card)==_status.event.xiBie,
+                                    selectCard:[0,4],
+                                    filterTarget:lib.filter.opponent,
+                                    selectTarget:1,
+                                    prompt:`弃X张${xiBieName}系牌[展示]，摸X张牌，X最大为4，目标对手弃Y张${xiBieName}系牌[展示]，然后你对他造成(X+1)点法术伤害③`,
+                                    ai1:function(card){
+                                        return 1;
+                                    },
+                                    ai2:function(target){
+                                        var player=_status.event.player;
+                                        return get.damageEffect2(target,player,ui.selected.cards.length+1);
+                                    }
+                                }).forResult();
+
+                                var num=result.cards.length;
+                                if(num>0){
+                                    await player.discard(result.cards,'showCards');
+                                    await player.draw(num);
+                                }
+                                var target=result.targets[0];
                                 await target.chooseToDiscard('h',true,[0,Infinity],'showCards',card=>get.xiBie(card)==_status.event.xiBie,`弃Y张${xiBieName}系牌[展示]`).set('ai',function(card){
                                     return 1;
                                 }).set('xiBie',xiBie);
