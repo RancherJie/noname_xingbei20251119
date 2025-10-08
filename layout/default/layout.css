@@ -5923,3 +5923,6 @@ progress.progress::-webkit-progress-value {
 .damaged {
 	width: 90px;
 }
+.rank{
+	width: 50px;
+}
