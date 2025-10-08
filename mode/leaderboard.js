@@ -552,6 +552,54 @@ export default () => {
                     return Number.isFinite(n) ? n : -Infinity;
                 }
 
+                // 计算排名函数
+                function recomputeAndRenderRanks() {
+                    const EPS = 1e-6;
+
+                    const candidates = dialog.buttons.filter(
+                        btn => btn.style.display !== 'none' && !btn.classList.contains('nodisplay')
+                    );
+
+                    const metrics = new Map();
+                    for (const btn of candidates) {
+                        const id = getIdFromBtn(btn);
+                        metrics.set(btn, {
+                            wr: getWinRateNumById(id),
+                            g:  getGamesNumById(id),
+                            nm: String(id),
+                        });
+                    }
+
+                    const sorted = candidates.slice().sort((a, b) => {
+                        const A = metrics.get(a), B = metrics.get(b);
+                        if (Math.abs(A.wr - B.wr) > EPS) return B.wr - A.wr;  // 胜率降序
+                        if (A.g !== B.g) return B.g - A.g;                    // 对局数降序
+                        return A.nm.localeCompare(B.nm);                      // 名称升序
+                    });
+
+                    // 赋并列名次：1,1,3...
+                    let lastWr = null;
+                    let lastRank = 0;     // 上一次写入的名次
+                    let seenValid = 0;    // 已计入排名的有效项数量（无数据的不计入）
+                    for (const btn of sorted) {
+                        const row = btn._row;
+                        if (!row || !row._cells || !row._cells.tdRank) continue;
+
+                        const m = metrics.get(btn);
+                        if (!m || m.wr === -Infinity) {
+                            row._cells.tdRank.innerHTML = '';  // 无数据
+                            continue;
+                        }
+
+                        seenValid += 1;
+                        if (lastWr === null || Math.abs(m.wr - lastWr) > EPS) {
+                            lastRank = seenValid;
+                            lastWr = m.wr;
+                        }
+                        row._cells.tdRank.innerHTML = String(lastRank);
+                    }
+                }
+
                 function stableSortInPlace(arr, compareFn){
                     const indexed = arr.map((item,i)=>({item,i}));
                     indexed.sort((a,b)=>{ const r = compareFn(a.item,b.item); return r!==0 ? r : (a.i - b.i); });
@@ -588,24 +636,8 @@ export default () => {
                     position.appendChild(btnFrag);
                     tbody.appendChild(rowFrag);
 
-                    const p = dialog.paginationMap && dialog.paginationMap.get(position);
-                    const pageSize = dialog.paginationMaxCount?.get?.('character') || 20;
-                    if (p) {
-                        const nextData = dialog.buttons.filter(
-                        btn => btn.style.display !== 'none' && !btn.classList.contains('nodisplay')
-                        );
-                        if (Array.isArray(p.state.data)) {
-                        p.state.data.splice(0, p.state.data.length, ...nextData);
-                        } else {
-                        p.state.data = nextData;
-                        }
-                        p.setTotalPageCount(Math.ceil(p.state.data.length / pageSize));
-                        if (typeof p.onPageChange === 'function') {
-                        p.onPageChange({ pageNumber: 1, data: p.state.data });
-                        } else if (typeof p.setPageNumber === 'function') {
-                        p.setPageNumber(1);
-                        }
-                    }
+                    recomputeAndRenderRanks();
+                    applyActiveFilters();
                 }
 
                 let sortDir;             // 当前排序方向
@@ -688,24 +720,6 @@ export default () => {
                     } else {
                         dialog.buttons = newButtons;
                     }
-
-                    const p = dialog.paginationMap && dialog.paginationMap.get(position);
-                    if (p) {
-                        const pageSize = dialog.paginationMaxCount?.get?.('character') || 20;
-                        const nextData = dialog.buttons.filter(btn => btn.style.display !== 'none' && !btn.classList.contains('nodisplay'));
-                        if (Array.isArray(p.state.data)) {
-                            p.state.data.splice(0, p.state.data.length, ...nextData);
-                        } else {
-                            p.state.data = nextData;
-                        }
-                        p.setTotalPageCount(Math.ceil(p.state.data.length / pageSize));
-                        const currPage = Math.max(1, Math.min(p.state?.pageNumber || 1, Math.ceil(p.state.data.length / pageSize)));
-                        if (typeof p.onPageChange === 'function') {
-                            p.onPageChange({ pageNumber: currPage, data: p.state.data });
-                        } else if (typeof p.setPageNumber === 'function') {
-                            p.setPageNumber(currPage);
-                        }
-                    }
                 }
 
                 function applyActiveFilters() {
@@ -742,7 +756,7 @@ export default () => {
                         if (typeof p.onPageChange === 'function') p.onPageChange({ pageNumber: 1, data: p.state.data });
                         else if (typeof p.setPageNumber === 'function') p.setPageNumber(1);
                     }
-                    }
+                }
                 // 模式筛选
                 var modeSwitch = async function(e) {
                     if (_status.dragged) return;
@@ -793,9 +807,12 @@ export default () => {
                     );
                     // 更新ui
                     refreshAllVisibleButtons();
-                    applyActiveFilters();
 
                     if(sortWinRate) sortAllAndRepaginate({ direction: sortDir || "desc" });
+                    else {
+                        recomputeAndRenderRanks();
+                        applyActiveFilters();
+                    }
                 }
 
                 // AI筛选
@@ -849,9 +866,12 @@ export default () => {
 
                     // 更新ui
                     refreshAllVisibleButtons();
-                    applyActiveFilters();
 
                     if(sortWinRate) sortAllAndRepaginate({ direction: sortDir || "desc" });
+                    else {
+                        recomputeAndRenderRanks();
+                        applyActiveFilters();
+                    }
                 }
                 
                 // 排行榜两个按钮的子选项
@@ -1055,6 +1075,11 @@ export default () => {
                 const thead_tr = document.createElement('tr');
                 thead.appendChild(thead_tr);
 
+                const character_rank = document.createElement('th');
+                character_rank.classList.add('rank');
+                character_rank.innerHTML = "排名";
+                thead_tr.appendChild(character_rank);
+
                 const character_head = document.createElement('th');
                 character_head.classList.add('character');
                 character_head.innerHTML = "角色";
@@ -1122,6 +1147,7 @@ export default () => {
                         return td;
                     };
 
+                    const tdRank     = mk('rank', '');
                     const tdCharacter = mk('character', '');
                     const tdGames     = mk('matchCount');
                     const tdWinRate   = mk('winRate');
@@ -1132,7 +1158,7 @@ export default () => {
                     const tdDamage    = mk('damage');
                     const tdDamaged   = mk('damaged');
 
-                    tr._cells = { tdCharacter, tdGames, tdWinRate, tdCSQ, tdCdSQ, tdZhanJi, tdZhiLiao, tdDamage, tdDamaged };
+                    tr._cells = { tdRank, tdCharacter, tdGames, tdWinRate, tdCSQ, tdCdSQ, tdZhanJi, tdZhiLiao, tdDamage, tdDamaged };
                     return tr;
                 }
 
@@ -1329,6 +1355,7 @@ export default () => {
 
                 const newBtns = renderui();
                 dialog.buttons.splice(0, dialog.buttons.length, ...newBtns);
+                recomputeAndRenderRanks();
 
                 dialog.add(ui.create.div(".placeholder"));
 
