@@ -5468,7 +5468,7 @@ export const Content = {
 			}
 		}
 		if(!game.online){
-			event.done=player.discard(event.result.cards);
+			event.done=player.discard(event.result.cards,event.loseTo);
 			if(typeof event.delay=='boolean'){
 				event.done.set('delay',event.delay);
 			}
@@ -10238,7 +10238,7 @@ export const Content = {
 		if(event.animate=='draw'){
 			player.$draw(cards.length);
 			//if(event.log) game.log(player,'将',get.cnNumber(cards.length),'张牌置于了角色牌上');
-			if(event.log) game.log(player,'将',cards.length,'张牌置于了角色牌上');
+			if(event.log) game.log(player,'将',cards.length,'张',`【${get.translation(event.gaintag[0])}】`,'置于了角色牌上');
 			game.pause();
 			setTimeout(function(){
 				player.$addToExpansion(cards,null,event.gaintag);
@@ -10256,6 +10256,11 @@ export const Content = {
 			},get.delayx(700,700));
 		}
 		else if(event.animate=='gain2'||event.animate=='draw2'){
+			if(event.log){
+				if(event.source) game.log(event.source,'将',cards,`【${get.translation(event.gaintag[0])}】`,'置于',player,'角色牌上');
+				else game.log(player,'将',cards,`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
+			}
+
 			var gain2t=300;
 			if(player.$gain2(cards)&&player==game.me){
 				gain2t=500;
@@ -10273,20 +10278,22 @@ export const Content = {
 				for(var i in evtmap){
 					var source=(_status.connectMode?lib.playerOL:game.playerMap)[i];
 					source.$give(evtmap[i][0],player,false);
-					if(event.log) game.log(player,'将',evtmap[i][0],'置于了角色牌上');
+					if(event.log){
+						game.log(player,'将',evtmap[i][0],`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
+					}
 				}
 			}
 			else{
 				for(var i in evtmap){
 					var source=(_status.connectMode?lib.playerOL:game.playerMap)[i];
 					if(evtmap[i][1].length){
-						source.$giveAuto(evtmap[i][1],player,false);
+						source.$giveAuto(evtmap[i][1].length,player,false);
 						//if(event.log) game.log(player,'将',get.cnNumber(evtmap[i][1].length),'张牌置于了角色牌上');
-						if(event.log) game.log(player,'将',evtmap[i][1].length,'张牌置于了角色牌上');
+						if(event.log) game.log(player,'将',evtmap[i][1].length,'张',`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
 					}
 					if(evtmap[i][2].length){
 						source.$give(evtmap[i][2],player,false);
-						if(event.log) game.log(player,'将',evtmap[i][2],'置于了角色牌上');
+						if(event.log) game.log(player,'将',evtmap[i][2],`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
 					}
 				}
 			}
@@ -10312,6 +10319,7 @@ export const Content = {
 			event.finish();
 		}
 		"step 4"
+		event.trigger('addToExpansion');
 		game.delayx();
 		if(event.updatePile) game.updateRoundNumber();
 	},
@@ -11850,6 +11858,116 @@ export const Content = {
 		}
 		event.result = result;
 	},
+	//先选择按钮再选择目标的函数，可以简化一些交互流程，目前可以隐藏弹窗
+	//该事件目前采用async contents的写法
+	chooseButtonTarget: [
+		async (event, _trigger, player) => {
+			//根据player.chooseButtonTarget获取到的dialog信息创建对话框，也支持createDialog
+			if (typeof event.dialog == "number") {
+				event.dialog = get.idDialog(event.dialog);
+			}
+			if (event.createDialog && !event.dialog) {
+				if (Array.isArray(event.createDialog)) {
+					event.createDialog.add("hidden");
+					event.dialog = ui.create.dialog.apply(this, event.createDialog);
+				}
+				event.closeDialog = true;
+			}
+			if (event.dialog == undefined) event.dialog = ui.dialog;
+			if (event.isMine()) {
+				if (event.hsskill && !event.forced && _status.prehidden_skills.includes(event.hsskill)) {
+					ui.click.cancel();
+					return;
+				}
+				if (event.isMine() || event.dialogdisplay) {
+					event.dialog.style.display = "";
+					event.dialog.open();
+					if (event.canHidden) {
+						//增加隐藏窗口的按钮
+						const func = () => {
+							const event = get.event();
+							const controls = [
+								link => {
+									ui.selected.buttons.length = 0;
+									game.check();
+									return;
+								},
+							];
+							event.controls = [
+								ui.create.control(
+									controls.concat([
+										"隐藏窗口",
+										"stayleft",
+										link => {
+											const control = event.controls[0];
+											if (event.dialog.style.display == "none") {
+												control.childNodes[0].innerHTML = "隐藏窗口";
+												event.dialog.style.display = "";
+											} else {
+												control.childNodes[0].innerHTML = "显示窗口";
+												event.dialog.style.display = "none";
+											}
+										},
+									])
+								),
+							];
+						};
+						if (event.isMine()) func(event);
+						else if (event.isOnline()) event.player.send(func, event);
+						if (event.custom == undefined)
+							event.custom = {
+								add: {},
+								replace: {},
+							};
+						if (event.custom.add.confirm == undefined) {
+							//如果有人canHidden是true然后还动了这部分请把一部分代码复制过去适配一下，不然隐藏的按钮不会关闭
+							event.custom.add.confirm = function (bool) {
+								if (bool != true) return;
+								const event = get.event();
+								if (event.controls) event.controls.forEach(i => i.close());
+								if (ui.confirm) ui.confirm.close();
+								game.uncheck();
+							};
+						}
+					}
+				}
+				game.check();
+				game.pause();
+			} else if (event.isOnline()) {
+				event.result = await event.sendAsync();
+			} else {
+				//考虑中途托管的情况
+				event.result = "ai";
+			}
+		},
+		async (event, _trigger, player, result) => {
+			//处理ai的选择结果
+			if (event.result == "ai") {
+				game.check();
+				if (ai.basic.chooseButton(event.ai1) || event.forced) {
+					if ((ai.basic.chooseTarget(event.ai2) || event.forced) && (!event.filterOk || event.filterOk())) {
+						ui.click.ok();
+						_status.event._aiexclude.length = 0;
+					} else {
+						ui.click.cancel();
+					}
+				} else {
+					ui.click.cancel();
+				}
+			}
+		},
+		async (event, _trigger, player, result) => {
+			//处理选择的结果
+			event.resume();
+			if (event.result.bool && event.animate !== false) {
+				for (var i = 0; i < event.result.targets.length; i++) {
+					event.result.targets[i].addTempClass("target");
+				}
+			}
+			if (event.dialog) event.dialog.close();
+		},
+	],
+
 	//xingbei
 	changeXingBei:function(){
 		'step 0'
@@ -12182,6 +12300,10 @@ export const Content = {
 			target.storage.zhongDu.splice(index, 1);
 			event.card=card;
 		}
+		event.result={
+			xiaoGuo:event.control,
+			card:event.card,
+		};
 		'step 3'
 		game.log(player,'获得了',event.card);
 		player.gain(event.card);
@@ -12190,6 +12312,7 @@ export const Content = {
 			target.removeSkill(event.control);
 		}
 		'step 5'
+		//在此时机获取result可用tigger.result获取result
 		event.trigger('gainJiChuXiaoGuo');
 	},
 	removeJiChuXiaoGuo:function(){
@@ -12239,6 +12362,10 @@ export const Content = {
 			target.storage.zhongDu.splice(index, 1);
 			event.card=card;
 		}
+		event.result={
+			xiaoGuo:event.control,
+			card:event.card,
+		};
 		'step 3'
 		target.loseToDiscardpile(event.card);
 		'step 4'
@@ -12246,6 +12373,7 @@ export const Content = {
 			target.removeSkill(event.control);
 		}
 		'step 5'
+		//在此时机获取result可用tigger.result获取result
 		event.trigger('removeJiChuXiaoGuo');
 	},
 	tiaoZhengShouPai: async function (event, trigger, player) {

@@ -411,7 +411,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                     },
                     gaiPai: {
-                        trigger: {player: "addToExpansionEnd",},
+                        trigger: {player: "addGaiPaiEnd",},
                         getIndex(event, player) {
 							const cards = [];
 							for(let i = 0; i < event.cards.length; i++) {
@@ -754,49 +754,41 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 filter:function(event,player){
                     return player.canBiShaShuiJing();
                 },
-                content:function(){
-                    'step 0'
-                    player.removeBiShaShuiJing();
-                    'step 1'
-                    player.tiaoZhengShouPai(4);
-                    'step 2'
+                content:async function(event, trigger, player){
+                    await player.removeBiShaShuiJing();
+                    await player.tiaoZhengShouPai(4);
+                    
                     var list=get.zhanJi(player.side);
                     if(list.length>0){
                         var listx=[];
                         for(var i=0;i<list.length;i++){
                             listx.push([list[i],get.translation(list[i])]);
                         }
-                        var next=player.chooseButton([
-                            '是否移除1个星石<br>将一名其他角色手牌调整为4张[强制]',
-                            [listx,'tdnodes'],
-                        ]);
-                        next.set('selectButton',1);
-                        next.set('ai',function(button){
-                            return -1;
-                        });
-                    }else{
-                        event.finish();
-                    }
-                    'step 3'
-                    if(result.bool){
-                        if(result.links[0]=='baoShi'){
-                            player.removeZhanJi("baoShi");
-                        }else{
-                            player.removeZhanJi("shuiJing");
+
+                        let result=await player.chooseButtonTarget({
+                            createDialog:[
+                                '是否移除1个星石<br>将一名其他角色手牌调整为4张[强制]',
+                                [listx,'tdnodes'],
+                            ],
+                            filterTarget:lib.filter.notMe,
+                            ai1:function(button){
+                                return -1;
+                            },
+                            ai2:function(target){
+                                if(target.countCards('h')==4) return -1;
+                                return Math.random();
+                            },
+                        }).forResult();
+                        if(result.bool){
+                            if(result.links[0]=='baoShi'){
+                                await player.removeZhanJi("baoShi");
+                            }else{
+                                await player.removeZhanJi("shuiJing");
+                            }
+                            let target=result.targets[0];
+                            await target.tiaoZhengShouPai(4);
                         }
-                    }else{
-                        event.finish();
                     }
-                    'step 4'
-                    player.chooseTarget('将一名其他角色手牌调整为4张[强制]',true,function(card,player,target){
-                        return target!=player;
-                    }).set('ai',function(target){
-                        if(target.countCards('h')==4) return -1;
-                        return Math.random();
-                    });
-                    'step 5'
-                    var target=result.targets[0];
-                    target.tiaoZhengShouPai(4);
                 },
                 check:function(event,player){
                     if(player.countCards('h')==4) return false;
@@ -870,17 +862,17 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content:function(){
                     'step 0'
-                    player.addToExpansion('draw',trigger.cards,'log').gaintag.add('ying');
+                    player.addGaiPai(trigger.cards,'ying');
                 }
             },
             shun:{
                 trigger:{source:"gongJiWeiMingZhong"},
                 filter:function(event,player){
-                    return get.is.zhuDongGongJi(event)&&player.getExpansions('ying').length>0;
+                    return get.is.zhuDongGongJi(event)&&player.getGaiPai('ying').length>0;
                 },
                 usable:1,
                 async cost(event,trigger,player){
-                    var cards=player.getExpansions('ying');
+                    var cards=player.getGaiPai('ying');
                     var result=await player.chooseCardButton(cards,'是否移除1个【影】，发动【瞬·影·杀】,额外+1[攻击行动]，本回合你的主动攻击无法应战但无法发动【秘术·摹影】').set('ai',function(button){
                         var bool=_status.event.bool;
                         if(bool) return Math.random();
@@ -940,15 +932,30 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     trigger.player.chooseToDiscard(true,event.num);
                     'step 2'
                     event.cards=result.cards;
+                    var xiBies={};
+                    var ying=player.getGaiPai('ying');
+                    for(let card of ying){
+                        if(xiBies[get.xiBie(card)]) xiBies[get.xiBie(card)]++;
+                        else xiBies[get.xiBie(card)]=1;
+                    }
+                    var xiBie;
+                    for(let key in xiBies){
+                        if(!xiBie) xiBie=key;
+                        else{
+                            if(xiBies[key]>xiBies[xiBie]) xiBie=key;
+                        }
+                    }
+
                     if(event.cards.length>0){
                         player.chooseCardButton(event.cards,true,1,'你观看并将其中1张弃牌面朝下放置在你角色旁作为【影】').set('ai',function(button){
+                            if(_status.event.xiBie) return get.xiBie(button.link)==_status.event.xiBie?1:0.1;
                             return Math.random();
-                        });
+                        }).set('xiBie',xiBie);
                     }else{
                         event.goto(4);
                     }
                     'step 3'
-                    player.addToExpansion('draw',result.links,'log').gaintag.add('ying');
+                    player.addGaiPai(result.links,'ying');
                     'step 4'
                     if(event.num>event.cards.length){
                         trigger.player.changeShiQi(-1);
@@ -958,13 +965,28 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shiFengZhiDao:{
                 trigger:{player:'phaseEnd'},
                 filter:function(event,player){
-                    return player.getExpansions('ying').length>=2;
+                    return player.getGaiPai('ying').length>=2;
                 },
                 async cost(event,trigger,player){
-                    var cards=player.getExpansions('ying');
+                    var cards=player.getGaiPai('ying');
+                    var xiBies={};
+                    for(let card of cards){
+                        if(xiBies[get.xiBie(card)]) xiBies[get.xiBie(card)]++;
+                        else xiBies[get.xiBie(card)]=1;
+                    }
+                    var xiBie;
+                    for(let key in xiBies){
+                        if(xiBies[key]<2) continue;
+                        if(!xiBie) xiBie=key;
+                        else{
+                            if(xiBies[key]>xiBies[xiBie]) xiBie=key;
+                        }
+                    }
+                    
                     var result=await player.chooseCardButton(cards,2,`是否发动【侍奉之道】，移除2张【影】[展示]<br>你+1<span class='hong'>【糸】</span>；<span class='tiaoJian'>(若移除的【影】系别相同)</span>将其中1个【影】交给目标角色[强制]，然后你[横置][持续]`).set('ai',function(button){
+                        if(_status.event.xiBie) return get.xiBie(button.link)==_status.event.xiBie?1: 0.4- Math.random();
                         return 0.5-Math.random();
-                    }).forResult();
+                    }).set('xiBie',xiBie).forResult();
                     event.result={
                         bool:result.bool,
                         cost_data:result.links,
@@ -981,7 +1003,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var xiBie2=get.xiBie(event.cards[1]);
                     if(xiBie1==xiBie2){
                         player.chooseCardButton(event.cards,true,1,'将其中1个【影】交给目标角色[强制]').set('ai',function(button){
-                            return Math.random();
+                            return 7-get.value(button.link);
                         });
                     }else{
                         event.finish();
@@ -1007,7 +1029,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 check:function(event,player){
                     var num=Math.random();
                     if(player.isHengZhi()) return num>0.1;
-                    var cards=player.getExpansions('ying');
+                    var cards=player.getGaiPai('ying');
                     var num=get.countTongXiPai(cards);
                     if(num>=2) return true;
                     else return false;
@@ -1095,7 +1117,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         content:function(){
                             'step 0'
                             const cards = event.indexedData;
-                            player.storage.fengXue_player.addToExpansion('draw',cards,'log').gaintag.add('ying');
+                            player.storage.fengXue_player.addGaiPai(cards,'ying');
                             'step 1'
                             delete player.storage.yingZhiFengCard;
                         }
@@ -1123,7 +1145,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             player.chooseToDiscard(2,true);
                             'step 2'
                             if(result.cards.length>0){
-                                player.storage.fengXue_player.addToExpansion('draw',result.cards,'log').gaintag.add('ying');
+                                player.storage.fengXue_player.addGaiPai(result.cards,'ying');
                             }
                             'step 3'
                             player.removeZhiShiWu('fengXueX');
@@ -1143,38 +1165,67 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 0'
                     player.removeBiShaBaoShi();
                     'step 1'
+                    var xiBies={};
+                    var ying=player.getGaiPai('ying');
+                    for(let card of ying){
+                        if(xiBies[get.xiBie(card)]) xiBies[get.xiBie(card)]++;
+                        else xiBies[get.xiBie(card)]=1;
+                    }
+                    var xiBie;
+                    for(let key in xiBies){
+                        if(!xiBie) xiBie=key;
+                        else{
+                            if(xiBies[key]>xiBies[xiBie]) xiBie=key;
+                        }
+                    }
                     player.chooseCard('h',2,true,'将2张手牌面朝下放置在你角色旁作为【影】').set('ai',function(card){
-                        return 6-get.value(card);
-                    });
+                        if(_status.event.xiBie){
+                            if(get.xiBie(card)==_status.event.xiBie) return 7 - get.value(card);
+                        }
+                        return 5-get.value(card);
+                    }).set('xiBie',xiBie);
                     'step 2'
-                    player.addToExpansion('draw',result.cards,'log').gaintag.add('ying');
+                    player.addGaiPai(result.cards,'ying');
                 },
                 check:function(event,player){
-                    return player.countCards('h',card=>get.type(card)=='gongJi')>3&&player.countExpansions('ying')<=1;
+                    return player.countCards('h',card=>get.type(card)=='gongJi')>3&&player.countGaiPai('ying')<=1;
                 }
             },
             ying:{
                 intro:{
-                    markcount:'expansion',
-                    mark:function(dialog,storage,player){
-						var cards=player.getExpansions('ying');
-						if(player.isUnderControl(true)) dialog.addAuto(cards);
-						else return '共有'+cards.length+'张牌';
-					},
+                    markcount:'gaiPai',
+                    content:'gaiPai',
                 },
                 onremove:function(player, skill) {
-                    const cards = player.getExpansions(skill);
+                    const cards = player.getGaiPai(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
                 direct:true,
-                trigger:{player:'addToExpansionAfter'},
+                trigger:{player:'addGaiPaiAfter'},
                 filter:function(event,player){
-                    return player.getExpansions('ying').length>3;
+                    return player.getGaiPai('ying').length>3;
                 },
                 content:function(){
                     'step 0'
-                    var cards=player.getExpansions('ying');
-                    var next=player.chooseCardButton(cards,true,cards.length-3,`舍弃${cards.length-3}张【影】`);
+                    var cards=player.getGaiPai('ying');
+                    var xiBies={};
+                    for(let card of cards){
+                        if(xiBies[get.xiBie(card)]) xiBies[get.xiBie(card)]++;
+                        else xiBies[get.xiBie(card)]=1;
+                    }
+                    var xiBie;
+                    for(let key in xiBies){
+                        if(!xiBie) xiBie=key;
+                        else{
+                            if(xiBies[key]>xiBies[xiBie]) xiBie=key;
+                        }
+                    }
+                    var next=player.chooseCardButton(cards,true,cards.length-3,`舍弃${cards.length-3}张【影】`).set('xiBie',xiBie).set('ai',function(button){
+                        if(_status.event.xiBie) {
+                            if(get.xiBie(button.link)==_status.event.xiBie) return 0.1;
+                        }
+                        return 1;
+                    });
                     'step 1'
                     player.discard(result.links,'ying').set('sheQi',true);
                 }
@@ -1193,14 +1244,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 type:'faShu',
                 enable:['faShu'],
                 filter:function(event,player){
-                    return !player.getExpansions('jieJie').length>0&&player.hasSkill('jieJie');
+                    return !player.getGaiPai('jieJie').length>0&&player.hasSkill('jieJie');
                 },
                 selectCard:2,
                 discard:false,
                 filterCard:true,
                 content:function(){
                     'step 0'
-                    player.addToExpansion('draw',cards,'log').gaintag.add('jieJie');
+                    player.addGaiPai(cards,'jieJie');
                     'step 1'
                     player.showCards(cards);
                     'step 2'
@@ -1220,7 +1271,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 forced:true,
                 trigger:{global:'gongJiMingZhong'},
                 filter:function(event,player){
-                    var cards=player.getExpansions('jieJie');
+                    var cards=player.getGaiPai('jieJie');
                     if(cards.length==0) return false;
                     for(var i of cards){
                         if(get.xiBie(event.card)==get.xiBie(i)) return true;
@@ -1236,7 +1287,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 trigger:{global:'gongJiShi'},
                 filter:function(event,player){
                     if(!get.is.zhuDongGongJi(event)) return false;
-                    var cards=player.getExpansions('jieJie');
+                    var cards=player.getGaiPai('jieJie');
                     if(cards.length==0) return false;
                     for(var i of cards){
                         if(get.xiBie(event.card)==get.xiBie(i)) return true;
@@ -1268,7 +1319,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         player.chooseToDiscard(1,true);
                     }
                     'step 4'
-                    var cards=player.getExpansions('jieJie');
+                    var cards=player.getGaiPai('jieJie');
                     player.chooseCardButton(cards,true,'移除1个【结界】');
                     'step 5'
                     player.discard(result.links,'jieJie').set('visible',true);
@@ -1334,19 +1385,19 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     'step 4'
                     event.cards=result.cards;
                     'step 5'
-                    if(player.getExpansions('jieJie').length>=2){
+                    if(player.countGaiPai('jieJie')>=2){
                         event.finish();
                     }else{
                         var list=['是','否'];
                         player.chooseControl(list).set('prompt',`是否将${get.translation(event.cards)}作为【结界】`).set('ai',function(){
                             var player=_status.event.player;
-                            if(player.getExpansions('jieJie').length==0) return 1;
+                            if(player.getGaiPai('jieJie').length==0) return 1;
                             else return 0;
                         });
                     }
                     'step 6'
                     if(result.control=='是'){
-                        player.addToExpansion('draw',event.cards,'log').gaintag.add('jieJie');
+                        player.addGaiPai(event.cards,'jieJie');
                     }
                 }
             },
@@ -1371,9 +1422,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         forced:true,
                         trigger:{global:['discard','changeZhiShiWuAfter','gainAfter']},
                         filter:function(event,player,name){
-                            if(name=='changeZhiShiWuAfter') return event.zhiShiWu=='jueJieX'&&player.storage.jueJie_player.getExpansions('jieJie').length==0;
-                            else if(name=='discard') return event.gaiPai=='jieJie'&&player.storage.jueJie_player.getExpansions('jieJie').length==0;
-                            else if(name=='gainAfter') return event.jieJie==true&&player.storage.jueJie_player.getExpansions('jieJie').length==0;
+                            if(name=='changeZhiShiWuAfter') return event.zhiShiWu=='jueJieX'&&player.storage.jueJie_player.getGaiPai('jieJie').length==0;
+                            else if(name=='discard') return event.gaiPai=='jieJie'&&player.storage.jueJie_player.getGaiPai('jieJie').length==0;
+                            else if(name=='gainAfter') return event.jieJie==true&&player.storage.jueJie_player.getGaiPai('jieJie').length==0;
                         },
                         content:function(){
                             'step 0'
@@ -1392,7 +1443,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         content:function(){
                             'step 0'
-                            var cards=player.storage.jueJie_player.getExpansions('jieJie');
+                            var cards=player.storage.jueJie_player.getGaiPai('jieJie');
                             if(cards.length>0){
                                 player.storage.jueJie_player.chooseCardButton(cards,true,'移除1个【结界】');
                             }else{
@@ -1411,7 +1462,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             'step 0'
                             player.storage.jueJie_player.addZhiShiWu('jiX');
                             'step 1'
-                            var cards=player.storage.jueJie_player.getExpansions('jieJie');
+                            var cards=player.storage.jueJie_player.getGaiPai('jieJie');
                             if(cards.length>0){
                                 player.chooseCardButton(cards,true,'将1个【结界】加入手牌[强制]');
                             }else{
@@ -1507,11 +1558,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             jieJie:{
                 intro:{
-					content:'expansion',
-					markcount:'expansion',
+					content:'gaiPai',
+					markcount:'gaiPai',
+                    show:true,
 				},
                 onremove:function(player, skill) {
-                    const cards = player.getExpansions(skill);
+                    const cards = player.getGaiPai(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
             },
@@ -1536,13 +1588,13 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 discard:false,
                 content:function(){
                     'step 0'
-                    player.addToExpansion('draw',cards,'log').gaintag.add('yanLing');
+                    player.addGaiPai(cards,'yanLing')
                     'step 1'
                     player.showCards(cards);
                     'step 2'
                     player.draw();
                     'step 3'
-                    var yanLing=player.getExpansions('yanLing');
+                    var yanLing=player.getGaiPai('yanLing');
                     var xiBie=[];
                     for(var i=0;i<yanLing.length;i++){
                         if(!xiBie.includes(get.xiBie(yanLing[i]))){
@@ -1569,10 +1621,10 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     order:3.8,
                     result:{
                         player:function(player){
-                            var cards=player.getExpansions('yanLing');
-                            if(cards.length==0) return 1;
-                            if(cards.length==1) return 1.5;
-                            if(cards.length==2) return 0;
+                            var cards=player.countGaiPai('yanLing');
+                            if(cards==0) return 1;
+                            if(cards==1) return 1.5;
+                            if(cards==2) return 0;
                             return 0;
                         }
                     }
@@ -1583,11 +1635,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 trigger:{target:'gongJiMingZhong'},
                 firstDo:true,
                 filter:function(event,player){
-                    return player.getExpansions('yanLing').length>0&&get.is.zhuDongGongJi(event.getParent())&&(player.getExpansions('yanLing').length>0||player.countZhiShiWu('miShu')>0);
+                    return player.countGaiPai('yanLing')>0&&get.is.zhuDongGongJi(event.getParent())&&(player.countGaiPai('yanLing')>0||player.countZhiShiWu('miShu')>0);
                 },
                 content:function(){
                     'step 0'
-                    var cards=player.getExpansions('yanLing');
+                    var cards=player.getGaiPai('yanLing');
                     player.chooseCardButton(cards,true,'移除1个【言灵】').set('ai',function(){
                         return Math.random();
                     });
@@ -1607,14 +1659,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.showCards(result.cards);
                     event.cards=result.cards;
                     'step 5'
-                    player.addToExpansion('draw',event.cards,'log').gaintag.add('yanLing');
+                    player.addGaiPai(event.cards,'yanLing');
                 }
             },
             zhenYanShu:{
                 type:'faShu',
                 enable:['faShu'],
                 filter:function(event,player){
-                    var yanLing=player.getExpansions('yanLing');
+                    var yanLing=player.getGaiPai('yanLing');
                     var cards=[];
                     for(var i=0;i<yanLing.length;i++){
                         if(get.xiBie(yanLing[i])!='guang') cards.push(yanLing[i]);
@@ -1623,7 +1675,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content:function(){
                     'step 0'
-                    var yanLing=player.getExpansions('yanLing');
+                    var yanLing=player.getGaiPai('yanLing');
                     player.chooseCardButton(yanLing,true,'选择1个除光系外的【言灵】视为手牌使用').set('ai',function(card){
                         return Math.random();
                     }).set('filterButton',function(button){
@@ -1691,9 +1743,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     game.log(player,'选择了',targets);
                     for(var target of targets){
                         if(target.countCards('h')>0){
-                            let cards=await target.chooseToDiscard('h',true).forResultCards();
+                            let cards=await target.chooseToDiscard('h',true,'禁忌秘法：弃1张牌').forResultCards();
                             await player.showCards(cards);
-                            await player.addToExpansion('draw',cards,'log').set('gaintag',['yanLing']); 
+                            await player.addGaiPai(cards,'yanLing');
                         }
                     }
                 }
@@ -1748,7 +1800,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var target=result.targets[0];
                     target.faShuDamage(1,player);
                     'step 2'
-                    var yanLing=player.getExpansions('yanLing');
+                    var yanLing=player.getGaiPai('yanLing');
                     var cards=[];
                     for(var i=0;i<yanLing.length;i++){
                         if(get.xiBie(yanLing[i])!='guang') cards.push(yanLing[i]);
@@ -1767,21 +1819,22 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             yanLing:{
                 intro:{
-					content:'expansion',
-					markcount:'expansion',
+					content:'gaiPai',
+					markcount:'gaiPai',
+                    show:true,
 				},
                 onremove:function(player, skill) {
-                    const cards = player.getExpansions(skill);
+                    const cards = player.getGaiPai(skill);
                     if (cards.length) player.loseToDiscardpile(cards);
                 },
                 direct:true,
-                trigger:{player:'addToExpansionAfter'},
+                trigger:{player:'addGaiPaiAfter'},
                 filter:function(event,player){
-                    return player.getExpansions('yanLing').length>3;
+                    return player.countGaiPai('yanLing')>3;
                 },
                 content:function(){
                     'step 0'
-                    var cards=player.getExpansions('yanLing');
+                    var cards=player.getGaiPai('yanLing');
                     var next=player.chooseCardButton(cards,true,cards.length-3,`舍弃${cards.length-3}张【言灵】`);
                     'step 1'
                     player.discard(result.links,'yanLing').set('sheQi',true);

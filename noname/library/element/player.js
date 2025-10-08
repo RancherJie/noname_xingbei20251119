@@ -3722,7 +3722,7 @@ export class Player extends HTMLDivElement {
 			var num = 0;
 			if (typeof lib.skill[i].intro.markcount == "function") {
 				num = lib.skill[i].intro.markcount(this.storage[i], this);
-			} else if (lib.skill[i].intro.markcount == "expansion") {
+			} else if (lib.skill[i].intro.markcount == "expansion" || lib.skill[i].intro.markcount == "gaiPai") {
 				num = this.countCards("x", card => card.hasGaintag(i));
 			} else if (typeof this.storage[i + "_markcount"] == "number") {
 				num = this.storage[i + "_markcount"];
@@ -5420,6 +5420,42 @@ export class Player extends HTMLDivElement {
 			};
 		if (next.complexSelect !== false) next.complexSelect = true;
 		next.setContent("choosePlayerCard");
+		next._args = Array.from(arguments);
+		return next;
+	}
+	chooseButtonTarget(choose) {
+		var next = game.createEvent("chooseButtonTarget");
+		next.player = this;
+		if (arguments.length == 1) {
+			for (var i in choose) {
+				next[i] = choose[i];
+			}
+		}
+		if (typeof next.filterButton == "object") {
+			next.filterButton = get.filter(next.filterButton);
+		}
+		if (typeof next.filterTarget == "object") {
+			next.filterTarget = get.filter(next.filterTarget, 2);
+		}
+		if (next.filterButton == undefined || next.filterButton === true) {
+			next.filterButton = lib.filter.filterButton;
+		}
+		if (next.selectButton == undefined) {
+			next.selectButton = 1;
+		}
+		if (next.filterTarget == undefined || next.filterTarget === true) {
+			next.filterTarget = lib.filter.all;
+		}
+		if (next.selectTarget == undefined) {
+			next.selectTarget = 1;
+		}
+		if (next.ai1 == undefined)
+			next.ai1 = function () {
+				return 1;
+			};
+		if (next.ai2 == undefined) next.ai2 = get.attitude2;
+		if (next.canHidden == undefined) next.canHidden = true;
+		next.setContent("chooseButtonTarget");
 		next._args = Array.from(arguments);
 		return next;
 	}
@@ -10832,6 +10868,15 @@ export class Player extends HTMLDivElement {
 		};
 		return next;
 	}
+	addShiQi(num,side){//xingbei
+		if(typeof num!='number'||!num) num=1;
+		return this.changeShiQi(num,side);
+	}
+	removeShiQi(num,side){//xingbei
+		if(typeof num!='number'||!num) num=1;
+		return this.changeShiQi(-num,side);
+	}
+
 	changeZhanJi(xingShi,num,side){//xingbei
 		var sidex;
 		if(side==undefined){
@@ -11233,6 +11278,32 @@ export class Player extends HTMLDivElement {
 		if(num>0) num=-num;
 		return this.changeLan(num);
 	}
+	countHong(){//统计红点
+		var num=0;
+		var skills=this.getSkills();
+		for(var i=0;i<skills.length;i++){
+			let skill=skills[i];
+			let info=get.info(skill);
+			if(info.markimage=='image/card/zhiShiWu/hong.png'){
+				num+=this.countMark(skill);
+				break;
+			}
+		}
+		return num;
+	}
+	countLan(){//统计蓝点
+		var num=0;
+		var skills=this.getSkills();
+		for(var i=0;i<skills.length;i++){
+			let skill=skills[i];
+			let info=get.info(skill);
+			if(info.markimage=='image/card/zhiShiWu/lan.png'){
+				num+=this.countMark(skill);
+				break;
+			}
+		}
+		return num;
+	}
 	/**
 	 * 
 	 * @param {*} num 治疗改变量
@@ -11298,6 +11369,14 @@ export class Player extends HTMLDivElement {
 		if(num>0) num=-num;
 		return this.changeZhiLiao(num);
 	}
+	countZhiLiao(){
+		return this.zhiLiao;
+	}
+	countEmptyZhiLiao(){
+		let num=this.getZhiLiaoLimit()-this.countZhiLiao();
+		num=Math.max(0,num);
+		return num;
+	}
 
 	countEmptyCards(){
 		return this.getHandcardLimit()-this.countCards('h');
@@ -11349,15 +11428,19 @@ export class Player extends HTMLDivElement {
 		next.setContent('removeJiChuXiaoGuo');
 		return next;
 	}
-	hasJiChuXiaoGuo(){
-		var skill=this.getSkills().concat(lib.skill.global);
-		for(var i=0;i<skill.length;i++){
-			let info=get.info(skill[i]);
-			if(info&&info.tag&&info.tag.jiChuXiaoGuo&&this.hasExpansions(skill[i])){
-				return true;
+	hasJiChuXiaoGuo(jiChuXiaoGuo){
+		if(jiChuXiaoGuo) return this.hasExpansions(jiChuXiaoGuo);
+		else{
+			var skill=this.getSkills().concat(lib.skill.global);
+			for(var i=0;i<skill.length;i++){
+				let info=get.info(skill[i]);
+				if(info&&info.tag&&info.tag.jiChuXiaoGuo&&this.hasExpansions(skill[i])){
+					return true;
+				}
 			}
+			return false;
 		}
-		return false;
+		
 	}
 	jiChuXiaoGuoList(){
 		var list=[];
@@ -11416,7 +11499,7 @@ export class Player extends HTMLDivElement {
 			this.addSkill(fengYin);
 		}
 		this.storage.fengYin=source;
-		return this.addToExpansion(cards,source,'gain2').set('gaintag',[fengYin]);
+		return this.addJiChuXiaoGuo(cards,source,fengYin);
 	}
 
 	tiaoZhengShouPai(num){
@@ -11480,6 +11563,204 @@ export class Player extends HTMLDivElement {
 		next._args = Array.from(arguments);
 		return next;
 	}
+	addGaiPai(){
+		var next=game.createEvent('addGaiPai');
+		next.player = this;
+		next.log = true;
+		for (var i = 0; i < arguments.length; i++) {
+			if (get.itemtype(arguments[i]) == "player") {
+				next.source = arguments[i];
+			} else if (get.itemtype(arguments[i]) == "cards") {
+				next.cards = arguments[i].slice(0);
+			} else if (get.itemtype(arguments[i]) == "card") {
+				next.cards = [arguments[i]];
+			} else if (typeof arguments[i] == "string") {
+				next.gaintag = [arguments[i]];
+				next.gaiPai = arguments[i];
+			} else if (typeof arguments[i] == "boolean") {
+				//是否是展示盖牌
+				next.show = arguments[i];
+			}
+		}
+		var info=get.info(next.gaintag[0]);
+		if(info&&info.intro&&info.intro.show) next.show=true;
+
+		next.animate=function(event){
+			var cards=event.cards;
+			if(event.show){
+				game.log(event.player,'将',cards,`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
+			}else{
+				cards=cards.length;
+				game.log(event.player,'将',cards,'张',`【${get.translation(event.gaintag[0])}】`,'置于角色牌上');
+			}
+			if(event.source){
+				event.source.$give(cards,event.player,false);
+			}else{
+				event.player.$draw(cards);
+			}
+			return 500; 
+		};
+
+		next.setContent("addToExpansion");
+		next.getd = function (player, key, position) {
+			if (!position) position = ui.discardPile;
+			if (!key) key = "cards";
+			var cards = [],
+				event = this;
+			game.checkGlobalHistory("cardMove", function (evt) {
+				if (evt.name != "lose" || evt.position != position || evt.getParent() != event) return;
+				if (player && player != evt.player) return;
+				cards.addArray(evt[key]);
+			});
+			return cards;
+		};
+		next.getl = function (player) {
+			const that = this;
+			const map = {
+				player: player,
+				hs: [],
+				es: [],
+				js: [],
+				ss: [],
+				xs: [],
+				cards: [],
+				cards2: [],
+				gaintag_map: {},
+				vcard_map: new Map(),
+			};
+			player.checkHistory("lose", function (evt) {
+				if (evt.parent == that) {
+					map.hs.addArray(evt.hs);
+					map.es.addArray(evt.es);
+					map.js.addArray(evt.js);
+					map.ss.addArray(evt.ss);
+					map.xs.addArray(evt.xs);
+					map.cards.addArray(evt.cards);
+					map.cards2.addArray(evt.cards2);
+					for (let key in evt.gaintag_map) {
+						if (!map.gaintag_map[key]) map.gaintag_map[key] = [];
+						map.gaintag_map[key].addArray(evt.gaintag_map[key]);
+					}
+					evt.vcard_map.forEach((value, key) => {
+						map.vcard_map.set(key, value);
+					});
+				}
+			});
+			return map;
+		};
+		if(!next.gaiPai){
+			_status.event.next.remove(next);
+			next.resolve();
+		}
+
+		return next;
+	}
+	countGaiPai(gaintag){//统计盖牌
+		return this.countExpansions(gaintag);
+	}
+	getGaiPai(gaintag){//获取盖牌
+		return this.getExpansions(gaintag);
+	}
+	hasGaiPai(gaintag){//是否拥有盖牌
+		return this.hasExpansions(gaintag);
+	}
+	addJiChuXiaoGuo(){
+		var next=game.createEvent('addJiChuXiaoGuo');
+		next.player=this;
+		next.log = true;
+		for (var i = 0; i < arguments.length; i++) {
+			if (get.itemtype(arguments[i]) == "player") {
+				next.source = arguments[i];
+			} else if (typeof arguments[i] == "string") {
+				next.gaintag = [arguments[i]];
+				next.jiChuXiaoGuo = arguments[i];
+			}else if (typeof arguments[i] == "boolean") {
+				next.log = arguments[i];
+			}else if (get.itemtype(arguments[i]) == "cards") {
+				next.cards = arguments[i].slice(0);
+			} else if (get.itemtype(arguments[i]) == "card") {
+				next.cards = [arguments[i]];
+			}
+		}
+		if(!next.source) next.source=_status.event.player;
+		next.animate='gain2';
+
+		next.setContent("addToExpansion");
+		next.getd = function (player, key, position) {
+			if (!position) position = ui.discardPile;
+			if (!key) key = "cards";
+			var cards = [],
+				event = this;
+			game.checkGlobalHistory("cardMove", function (evt) {
+				if (evt.name != "lose" || evt.position != position || evt.getParent() != event) return;
+				if (player && player != evt.player) return;
+				cards.addArray(evt[key]);
+			});
+			return cards;
+		};
+		next.getl = function (player) {
+			const that = this;
+			const map = {
+				player: player,
+				hs: [],
+				es: [],
+				js: [],
+				ss: [],
+				xs: [],
+				cards: [],
+				cards2: [],
+				gaintag_map: {},
+				vcard_map: new Map(),
+			};
+			player.checkHistory("lose", function (evt) {
+				if (evt.parent == that) {
+					map.hs.addArray(evt.hs);
+					map.es.addArray(evt.es);
+					map.js.addArray(evt.js);
+					map.ss.addArray(evt.ss);
+					map.xs.addArray(evt.xs);
+					map.cards.addArray(evt.cards);
+					map.cards2.addArray(evt.cards2);
+					for (let key in evt.gaintag_map) {
+						if (!map.gaintag_map[key]) map.gaintag_map[key] = [];
+						map.gaintag_map[key].addArray(evt.gaintag_map[key]);
+					}
+					evt.vcard_map.forEach((value, key) => {
+						map.vcard_map.set(key, value);
+					});
+				}
+			});
+			return map;
+		};
+		if(!next.jiChuXiaoGuo){
+			_status.event.next.remove(next);
+			next.resolve();
+		}
+		return next;
+	}
+	getJiChuXiaoGuo(jiChuXiaoGuo){//获取基础效果
+		if(jiChuXiaoGuo) return this.getExpansions(jiChuXiaoGuo);
+		else{
+			var list=[];
+			var xiaoGuoList= this.jiChuXiaoGuoList();
+			for(var xiaoGuo of xiaoGuoList){
+				list=list.concat(this.getExpansions(xiaoGuo));
+			}
+			return list;
+		}
+	}
+	countJiChuXiaoGuo(jiChuXiaoGuo){//统计基础效果
+		if(jiChuXiaoGuo) return this.countExpansions(jiChuXiaoGuo);
+		else{
+			var list=[];
+			var xiaoGuoList= this.jiChuXiaoGuoList();
+			for(var xiaoGuo of xiaoGuoList){
+				list=list.concat(this.getExpansions(xiaoGuo));
+			}
+			return list.length;
+		}
+	}
+	
 	
 
 	$drawAuto(cards, target) {

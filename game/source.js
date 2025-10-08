@@ -108,6 +108,7 @@ window.noname_source_list = [
 	"character/zhongMoDaoZhu.js",
 	"character/teDian.js",
 	"character/replace.js",
+	"character/poXiao.js",
 
 	"font/motoyamaru.woff2",
 	"font/suits.woff2",
@@ -158,7 +159,10 @@ window.noname_source_list = [
 
 	"mode/xingBei.js",
 	"mode/connect.js",
-
+	"mode/illustration.js",
+	"mode/leaderboard.js",
+	"mode/offlineChoose.js",
+	"mode/tutorial.js",
 
 	"theme/music/grid.png",
 	"theme/music/style.css",

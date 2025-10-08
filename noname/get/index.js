@@ -2476,7 +2476,7 @@ export class Get extends GetCompatible {
 			if (player !== false) {
 				const owner = player || get.owner(card);
 				if (owner) {
-					return game.checkMod(card, owner, game.checkMod(card, card.xiBie, "xiBie", owner), "cardXiBie", owner);
+					return game.checkMod(card, owner, card.xiBie, "cardXiBie", owner);
 				}
 			}
 			if (card.xiBie === "unsure" || lib.xiBies.includes(card.xiBie)) return card.xiBie;
@@ -3635,6 +3635,18 @@ export class Get extends GetCompatible {
 				}
 				return false;
 			}
+			case "jiChuXiaoGuo":{
+				content = player.getCards("x", function (card) {
+					return card.hasGaintag(skill);
+				});
+				if(dialog) dialog.addText("基础效果");
+				if (dialog && content.length) {
+					dialog.addAuto(content);
+				} else {
+					return "没有卡牌";
+				}
+				return false;
+			}
 			case "expansion": {
 				content = player.getCards("x", function (card) {
 					return card.hasGaintag(skill);
@@ -3692,6 +3704,24 @@ export class Get extends GetCompatible {
 					}
 					return false;
 				}
+			}
+			case 'gaiPai':{
+				content = player.getCards("x", function (card) {
+					return card.hasGaintag(skill);
+				});
+				let info=get.info(skill);
+				var show=info&&info.intro&&info.intro.show;
+				if(show) var str='角色专有展示盖牌';
+				else var str='角色专有盖牌';
+				if(dialog) dialog.addText(str);
+				if(dialog&&content.length){
+					if(player.isUnderControl(true)||show){
+						dialog.addAuto(content);
+					}else{
+						return '共有'+content.length+'张牌';
+					}
+				}else return "没有卡牌";
+				return false;
 			}
 			default: {
 				if (typeof type == "string") {

@@ -28,6 +28,7 @@ import security from "../util/security.js";
 import { ErrorManager } from "../util/error.js";
 
 import { defaultSplashs } from "../init/onload/index.js";
+import dedent from "../../game/dedent.js"
 
 export class Library {
 	// 数据库相关
@@ -1124,6 +1125,21 @@ export class Library {
 							delete window.lib;
 							delete window._status;
 						}
+					},
+					unfrequent: true,
+				},
+				extension_auto_import: {
+					name: "自动导入扩展",
+					intro: dedent`
+						开启后无名杀会自动导入扩展目录下的扩展（以此法导入的扩展默认关闭）
+						<br />
+						※ 如果你的运行环境不支持文件操作，则该选项无效
+						<br />
+						※ 鉴于不同平台下文件操作的性能区别，开启后可能会降低加载速度
+					`,
+					init: false,
+					async onclick(bool) {
+						await game.promises.saveConfig("extension_auto_import", bool);
 					},
 					unfrequent: true,
 				},
@@ -5237,9 +5253,6 @@ export class Library {
 				},
 			},
 		},
-		leaderboard:{
-			name:'排行榜',
-		},
 		offlineChoose: {
 			name: "线下选角",
 			config: {
@@ -5327,6 +5340,25 @@ export class Library {
 				}
 			}
 		},
+		leaderboard: {
+			name: "排行榜",
+			config:{
+				viewAll:{
+					name:'查看所有角色统计数据',
+					frequent:true,
+				},
+				sort:{
+					name:'排行榜排序方式',
+					init:'null',
+					item:{
+						null:'无',
+						desc:'胜率↓',
+						asc:'胜率↑',
+					},
+					frequent:true,
+				}
+			}
+		}
 	};
 	status = {
 		running: false,
@@ -6478,12 +6510,14 @@ export class Library {
 					b = 0,
 					c = 0,
 					d = 0,
-					e = 0;
+					e = 0,
+					f = 0;
 				let sa = 0,
 					sb = 0,
 					sc = 0,
 					sd = 0,
-					se = 0;
+					se = 0,
+					sf = 0;
 				for (let i in lib.character) {
 					switch (lib.character[i][1]) {
 						case "jiGroup":
@@ -6506,6 +6540,10 @@ export class Library {
 							e++;
 							if (lib.config.banned.includes(i)) se++;
 							break;
+						case "longGroup":
+							f++;
+							if (lib.config.banned.includes(i)) sf++;
+							break;
 					}
 				}
 				log("技：" + (a - sa) + "/" + a);
@@ -6513,7 +6551,8 @@ export class Library {
 				log("圣：" + (c - sc) + "/" + c);
 				log("血：" + (d - sd) + "/" + d);
 				log("幻：" + (e - se) + "/" + e);
-				log("已启用：" + (a + b + c + d + e  - (sa + sb + sc + sd + se )) + "/" + (a + b + c + d + e ));
+				log("龙：" + (f - sf) + "/" + f);
+				log("已启用：" + (a + b + c + d + e + f  - (sa + sb + sc + sd + se + sf )) + "/" + (a + b + c + d + e + f ));
 			})();
 			(function () {
 				let a = 0,
@@ -7393,11 +7432,13 @@ export class Library {
 		jiGroup:"战技殿堂",
 		shengGroup:"神圣教廷",
 		huanGroup:"幻影联盟",
+		longGroup:"龙魂帝国",
 		xueGroupColor:"#7D0101",
 		yongGroupColor:"#C6813C",
 		jiGroupColor:"#A5BE7D",
 		shengGroupColor:"#22A3C3",
 		huanGroupColor:"#635282",
+		longGroupColor:"#4b4556ff",
 		jiuGuan:"酒馆",
 
 		zhiLiao:"治疗",
@@ -8186,6 +8227,15 @@ export class Library {
 		isMe: function (card, player, target) {
 			return player == target;
 		},
+		teammate: function (card, player, target) {
+			return player.side == target.side && player != target;
+		},
+		opponent: function (card, player, target) {
+			return player.side != target.side;
+		},
+		ourSide: function (card, player, target) {
+			return player.side == target.side;
+		},
 		attackFrom: function (card, player, target) {
 			return get.distance(player, target, "attack") <= 1;
 		},
@@ -8257,6 +8307,7 @@ export class Library {
 				if (group == "xueGroup") return base + 2;
 				if (group == "yongGroup") return base + 3;
 				if (group == "shengGroup") return base + 4;
+				if (group == "longGroup") return base + 5;
 				//if (group == "key") return base + 5;
 				//if (group == "western") return base + 6;
 				//if (group == "shen") return base + 7;
@@ -8277,6 +8328,7 @@ export class Library {
 				if (group == "xueGroup") return base + 2;
 				if (group == "yongGroup") return base + 3;
 				if (group == "shengGroup") return base + 4;
+				if (group == "longGroup") return base + 5;
 				return base + 7;
 			};
 			const del = groupSort(a) - groupSort(b);
@@ -10534,7 +10586,7 @@ export class Library {
 			//marktext:"虚",
 			markimage:'image/card/xuRuo.png',
 			intro:{
-				content:'expansion',
+				content:'jiChuXiaoGuo',
 			},
 			filter:function(event,player){
 				return player.hasExpansions('_xuRuo');
@@ -10584,7 +10636,7 @@ export class Library {
 			//marktext:"毒",
 			markimage:'image/card/zhongDu.png',
 			intro:{
-				content:'expansion',
+				content:'jiChuXiaoGuo',
 				markcount:'expansion',
 			},
 			trigger:{player:'xingDongBefore'},
@@ -10614,7 +10666,7 @@ export class Library {
 			//marktext:"盾",
 			markimage:'image/card/shengDun.png',
 			intro:{
-				content:'expansion',
+				content:'jiChuXiaoGuo',
 			},
 			trigger:{target:['shouDaoGongJi','shouDaoMoDan']},
 			direct:true,
@@ -10809,7 +10861,7 @@ export class Library {
 			}
 		},
 		_baoPai:{
-			trigger:{global:['hengZhiAfter','chongZhiAfter','changeZhiShiWuAfter','changeNengLiangAfter','changeZhiLiaoAfter','addToExpansionAfter','loseToDiscardpileAfter','changeZhanJiAfter','changeXingBeiAfter','changeShiQiAfter','useSkillAfter','useCardAfter']},
+			trigger:{global:['hengZhiAfter','chongZhiAfter','changeZhiShiWuAfter','changeNengLiangAfter','changeZhiLiaoAfter','addToExpansion','loseToDiscardpileAfter','changeZhanJiAfter','changeXingBeiAfter','changeShiQiAfter','useSkillAfter','useCardAfter']},
 			direct:true,
 			lastDo:true,
 			/*
@@ -12101,7 +12153,7 @@ export class Library {
 		red: ["diamond", "heart"],
 		none: ["none"],
 	};
-	group = ["jiGroup", "xueGroup", "huanGroup", "shengGroup", "yongGroup"];
+	group = ["jiGroup", "xueGroup", "huanGroup", "shengGroup", "yongGroup", "longGroup"];
 	//数值代表各元素在名称中排列的先后顺序
 	nature = new Map([
 		["fire", 20],

@@ -210,14 +210,14 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				enable:true,
 				selectTarget:1,
 				filterTarget:function(event,player,target){
-					if(target.hasExpansions('_shengDun')){
+					if(target.hasJiChuXiaoGuo('_shengDun')){
 						return false;
 					}else{
 						return true;
 					}
 				},
 				content:function(){
-					target.addToExpansion(event.cards,'gain2',player).gaintag.add('_shengDun');
+					target.addJiChuXiaoGuo(event.cards,player,'_shengDun');
 				},
 				ai:{
 					order:function(item,player){
@@ -247,14 +247,14 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				enable:true,
 				selectTarget:1,
 				filterTarget:function(event,player,target){
-					if(target.hasExpansions('_xuRuo')){
+					if(target.hasJiChuXiaoGuo('_xuRuo')){
 						return false;
 					}else{
 						return true;
 					}
 				},
 				content:function(){
-                    target.addToExpansion(event.cards,player,'gain2').gaintag.add('_xuRuo');
+                    target.addJiChuXiaoGuo(event.cards,player,'_xuRuo');
 
                 },
 				ai:{
@@ -290,7 +290,7 @@ game.import('card',function(lib,game,ui,get,ai,_status){
 				},
                 content:function(){
 					target.storage.zhongDu.push(player);
-					target.addToExpansion(event.cards,player,'gain2').gaintag.add('_zhongDu');
+					target.addJiChuXiaoGuo(event.cards,player,'_zhongDu');
 				},
 				ai:{
 					order:3,
