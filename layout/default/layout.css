@@ -5917,7 +5917,7 @@ progress.progress::-webkit-progress-value {
 	width: 80px;
 }
 .matchCount,
-.zhanJi,
+.zhanJi:not(.table),
 .zhiLiao,
 .damage,
 .damaged {
