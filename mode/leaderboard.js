@@ -647,7 +647,7 @@ export default () => {
                 var titleClick = function (e) {
                     sortAllAndRepaginate({ direction: nextSort });
                     sortWinRate = true;
-                    this.innerHTML = (nextSort === 'desc') ? '胜率↓' : '胜率↑';
+                    this.innerHTML = (nextSort === 'desc') ? `<span class='firetext'>胜率↓</span>` : `<span class='firetext'>胜率↑</span>`;
                     sortDir = nextSort;
                     nextSort = (nextSort === 'desc') ? 'asc' : 'desc';
                 };
@@ -1092,7 +1092,7 @@ export default () => {
 
                 const winRate_head = document.createElement('th');
                 winRate_head.classList.add('winRate');
-                winRate_head.innerHTML = "胜率";
+                winRate_head.innerHTML = "<span class='firetext'>胜率</span>";
                 winRate_head.addEventListener(lib.config.touchscreen ? "touchend" : "click",titleClick);
                 thead_tr.appendChild(winRate_head);
 
