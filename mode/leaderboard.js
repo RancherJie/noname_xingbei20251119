@@ -707,6 +707,42 @@ export default () => {
                         }
                     }
                 }
+
+                function applyActiveFilters() {
+                    const btns = dialog.buttons;
+                    for (const btn of btns) {
+                        let hide = false;
+                        // 字母/最近等一级筛选
+                        if (dialog.currentcapt && btn.capt != dialog.getCurrentCapt(btn.link, btn.capt)) {
+                        hide = true;
+                        }
+                        // 角色包/收藏/最近等二级筛选
+                        if (!hide && (dialog.currentcapt2 || selectPack.length) &&
+                            btn.capt != dialog.getCurrentCapt(btn.link, btn.capt, true)) {
+                        hide = true;
+                        }
+                        // 势力/双势力筛选
+                        if (!hide && dialog.currentgroup) {
+                        if (dialog.currentgroup === 'double') {
+                            hide = !btn._changeGroup;
+                        } else {
+                            hide = (btn._changeGroup || btn.group != dialog.currentgroup);
+                        }
+                        }
+                        btn.classList.toggle('nodisplay', hide);
+                    }
+                    // 分页同步
+                    const p = dialog.paginationMap && dialog.paginationMap.get(position);
+                    if (p) {
+                        const pageSize = dialog.paginationMaxCount?.get?.('character') || 20;
+                        const data = dialog.buttons.filter(b => !b.classList.contains('nodisplay') && b.style.display !== 'none');
+                        if (Array.isArray(p.state.data)) p.state.data.splice(0, p.state.data.length, ...data);
+                        else p.state.data = data;
+                        p.setTotalPageCount(Math.ceil(data.length / pageSize));
+                        if (typeof p.onPageChange === 'function') p.onPageChange({ pageNumber: 1, data: p.state.data });
+                        else if (typeof p.setPageNumber === 'function') p.setPageNumber(1);
+                    }
+                    }
                 // 模式筛选
                 var modeSwitch = async function(e) {
                     if (_status.dragged) return;
@@ -757,6 +793,7 @@ export default () => {
                     );
                     // 更新ui
                     refreshAllVisibleButtons();
+                    applyActiveFilters();
 
                     if(sortWinRate) sortAllAndRepaginate({ direction: sortDir || "desc" });
                 }
@@ -812,6 +849,7 @@ export default () => {
 
                     // 更新ui
                     refreshAllVisibleButtons();
+                    applyActiveFilters();
 
                     if(sortWinRate) sortAllAndRepaginate({ direction: sortDir || "desc" });
                 }
@@ -1221,6 +1259,11 @@ export default () => {
                         const proxyBtn = ui.create.div(".button.character");
                         proxyBtn._link = charId;
                         proxyBtn.link = charId;
+
+                        // 修复筛选问题
+                        proxyBtn.capt  = getCapt(charId);
+                        proxyBtn.group = (allCharacterDict[charId] && allCharacterDict[charId][1]) || (get.character(charId) || [])[1];
+                        if (get.is.double(charId, true)) proxyBtn._changeGroup = true;
 
                         proxyBtn.refresh = function (node, item) {
                             node.setBackground(item, "character");
