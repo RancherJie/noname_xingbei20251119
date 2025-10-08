@@ -5926,3 +5926,6 @@ progress.progress::-webkit-progress-value {
 .rank{
 	width: 50px;
 }
+#arena.leaderboard   .identity {
+	font-size: 18px;
+}

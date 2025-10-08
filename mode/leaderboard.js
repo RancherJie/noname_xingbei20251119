@@ -1417,6 +1417,8 @@ export default () => {
                 return dialog;
             };
 
+            ui.arena.classList.add('leaderboard');
+            
             var dialog= await characterDialog('heightset');
             dialog.classList.add("fullwidth");
 			dialog.classList.add("fullheight");
