@@ -153,7 +153,7 @@ export default () => {
                             dialog.currentcaptnode2 = null;
                             this.classList.remove("thundertext");
                             if (!get.is.phoneLayout() || !lib.config.filternode_button){
-                                if(selectPack.length==1) packsource.innerHTML = get.translation(this.link+"_character_config");
+                                if(selectPack.length==1) packsource.innerHTML = get.translation(selectPack[0]+"_character_config");
                                 else packsource.innerHTML = selectPack.length?"角色包("+selectPack.length+")": "角色包";
                             }
                             if (this.touchlink) {
