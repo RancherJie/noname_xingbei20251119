@@ -652,6 +652,7 @@ export default () => {
                     nextSort = (nextSort === 'desc') ? 'asc' : 'desc';
                 };
 
+
                 var sortList=['shiZhouNian','yiDuanYeHuo','shenZiChuangLin','zhongMoDaoZhu','teDian','sanBan','siBan','poXiao'];
                 packlist.sort(function(a, b) {
                     var indexA = sortList.indexOf(a);
@@ -1414,6 +1415,13 @@ export default () => {
                     });
                 }
         
+                if(get.config('sort')!=='null') {
+                    if(get.config('sort')==='desc') nextSort='desc';
+                    else if(get.config('sort')==='asc') nextSort='asc';
+                    // 初始按胜率排序
+                    titleClick.call(winRate_head, null);
+                }
+
                 return dialog;
             };
 

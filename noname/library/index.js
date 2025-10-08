@@ -5346,6 +5346,16 @@ export class Library {
 				viewAll:{
 					name:'查看所有角色统计数据',
 					frequent:true,
+				},
+				sort:{
+					name:'排行榜排序方式',
+					init:'null',
+					item:{
+						null:'无',
+						desc:'胜率↓',
+						asc:'胜率↑',
+					},
+					frequent:true,
 				}
 			}
 		}
