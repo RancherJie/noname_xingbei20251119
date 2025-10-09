@@ -1704,6 +1704,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         marktext: "T",
                         intro: {
                             content: "jiChuXiaoGuo",
+                            mark:function (dialog, content, player) {
+                                dialog.addText("基础效果");
+                            },
                         },
                         onremove: function (player, skill) {
                             const cards = player.hasJiChuXiaoGuo(skill);
@@ -1739,7 +1742,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             target.addSkill("tricky_xiaoGuo");
                         }
                         var cards = await get.cards();
-                        await target.addJiChuXiaoGuo('tricky_xiaoGuo', player, cards);
+                        await target.addJiChuXiaoGuo('tricky_xiaoGuo', player, cards).set('animate','draw');
                     }
                 },
             },
@@ -1915,7 +1918,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         if (!target.hasSkill("tricky_xiaoGuo")) {
                             target.addSkill("tricky_xiaoGuo");
                         }
-                        await target.addJiChuXiaoGuo('tricky_xiaoGuo', player, cards);
+                        await target.addJiChuXiaoGuo('tricky_xiaoGuo', player, cards).set('animate','draw');
                         bool=game.hasPlayer(function(current){
                             return lib.filter.targetEnabled({ name: "tricky" }, player, current);
                         });
