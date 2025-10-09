@@ -9490,7 +9490,7 @@ export const Content = {
 			var next=player.showHiddenCards(cards);
 		}
 		"step 2"
-		event.trigger('discard');
+		if(!event.sheQi) event.trigger('discard');
 		'step 3'
 		if(event.baoPai==true){
 			if(event.shiQiXiaJiang!=false){
