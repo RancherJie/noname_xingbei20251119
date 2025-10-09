@@ -3729,7 +3729,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             tianPing_you:"[被动]圣方之右",
             tianPing_fangZhi:"[被动]替罪羔羊",
             tianPing_info:`<span class='greentext'>[被动]替罪羔羊</span><br>
-            <span class='tiaoJian'>(每当有新牌将被放置在本卡上时，若该卡与本卡上的牌不同系)</span>弃到本卡上所有卡，你+1<span class='hong'>【罪】</span>。<br>
+            <span class='tiaoJian'>(每当有新牌将被放置在本卡上时，若该卡与本卡上的牌不同系)</span>弃掉本卡上所有卡，你+1<span class='hong'>【罪】</span>。<br>
             <span class='greentext'>[被动]罪灭之左</span><br>
             <span class='tiaoJian'>(每当本卡上的牌数增加，且增加后本卡上的牌数>1)</span>对(X-1)名目标对手造成1点攻击伤害③，X为本卡上的牌数。<br>
             <span class='greentext'>[被动]圣方之右</span><br>
