@@ -3074,7 +3074,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var zuo_cards=player.getExpansions('tianPing_zuo');
                     var you_cards=player.getExpansions('tianPing_you');
                     if(zuo_cards.length>=3&&you_cards.length>=3) return false;
-                    return event.player.side==player.side&&player.countCards('h',card=>lib.inpile.includes(card.name))>0;
+                    return event.player.side==player.side&&event.shenEBiJi&&player.countCards('h',card=>lib.inpile.includes(card.name))>0;
                 },
                 async cost(event, trigger, player) {
                     var next= player.chooseCard('h',1,card=>lib.inpile.includes(card.name));
@@ -3109,6 +3109,19 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     await lib.skill.tianPing.addPai(player,event.cards,position);
                     await player.draw();
                 },
+                group:'',
+                subSkill:{
+                    shuXing:{
+                        trigger:{global:'chengShouShangHai'},
+                        direct:true,
+                        filter:function(event,player){
+                            return event.player.side==player.side;
+                        },
+                        content: async function(event, trigger, player) {
+                            trigger.shenEBiJi=true;
+                        },
+                    }
+                }
             },
             tianPingQingDao:{
                 forced:true,
