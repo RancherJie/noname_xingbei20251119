@@ -2133,33 +2133,27 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         trigger: {
                             source:'zaoChengShangHai'
                         },
-                        forced: true,
-                        filter:function(event,player){
-                            return true;
-                        },
+                        direct: true,
                         content: async function(event,trigger,player){
-                            console.log(trigger.fashu);
+                            //console.log(trigger.fashu);
                             if(trigger.faShu) {
                                 player.storage.damageFaShu = true;
                             } else {
                                 player.storage.damageGongJi = true;
                             }
                         },
-                        "_priority": 1
                     },
                     clear: {
                         trigger: {
                             player: "phaseBegin"
                         },
-                        forced: true,
+                        direct: true,
                         content: function() {
                             player.storage.damageFaShu = false;
                             player.storage.damageGongJi = false;
                         },
-                        "_priority": 1
                     }
                 },
-                "_priority": 0
             },
             longHunNingShi: {
                 trigger: {
