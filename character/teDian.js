@@ -3328,15 +3328,19 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                     ["天平·左", [event.cards[0]]],
                                     ["天平·右", [event.cards[1]]],
                                 ]);
-                                 next.set("filterMove", function (from, to, moved) {
+                                next.set("filterMove", function (from, to, moved) {
                                     if (typeof to == "number") return false;
                                     return true;
                                 });
-
                                 var result=await next.forResult();
 
-                                var zuo=result.moved[0];
-                                var you=result.moved[1];
+                                if(!result.moved){
+                                    var zuo=event.cards[0];
+                                    var you=event.cards[1];
+                                }else{
+                                    var zuo=result.moved[0];
+                                    var you=result.moved[1];
+                                }
                                 await lib.skill.tianPing.addPai(player,zuo,'zuo');
                                 await lib.skill.tianPing.addPai(player,you,'you');
                             }else{
