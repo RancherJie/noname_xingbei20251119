@@ -7444,6 +7444,10 @@ export class Library {
 		zhiLiao:"治疗",
 
 		FAQ:'FAQ',
+		'1xing':'1星',
+		'1.5xing':'1.5星',
+		'2xing':'2星',
+		'2.5xing':'2.5星',
 		'3xing':'3星',
 		'3.5xing':'3.5星',
 		'4xing':'4星',
