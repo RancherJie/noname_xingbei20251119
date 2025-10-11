@@ -1432,31 +1432,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     .forResult();
                 },
                 content: async function(event,trigger,player) {
-                    player.storage.weiJianErShengTargets=trigger.player;
                     await player.discard(event.cards).set('showCards',true);
                     var choose = await player.chooseTarget(1,"选择除本次攻击的角色以外的另一角色造成X点伤害", true, function(card, player, target) {
-                        return player.storage.weiJianErShengTargets != target && player.side != target.side;
-                    }).forResult();
+                        const targetx = _status.event.targetx;
+                        return targetx != target && player.side != target.side;
+                    }).set("targetx",trigger.player).forResult();
                     await choose.targets[0].faShuDamage(event.cards.length,player);
-                },
-                group: "weiJianErSheng_clear",
-                subSkill: {
-                    clear: {
-                        trigger: {
-                            source: "gongJiAfter",
-                        },
-                        silent: true,
-                        content: function () {
-                            if(player.storage.weiJianErShengTargets){
-                                player.storage.weiJianErShengTargets = undefined;
-                            }
-                        },
-                        sub: true,
-                        sourceSkill: "weiJianErSheng",
-                        forced: true,
-                        popup: false,
-                        "_priority": 1,
-                    },
                 },
                 "_priority": 0
             },
@@ -1480,31 +1461,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     .forResult();
                 },
                 content: async function(event,trigger,player) {
-                    player.storage.duiJianErShiTargets=trigger.target;
                     await player.discard(event.cards).set('showCards',true);
                     var choose = await player.chooseTarget(1,"选择除本次攻击的角色以外的另一角色造成X点伤害", true, function(card, player, target) {
-                        return player.storage.duiJianErShiTargets != target && player.side !=target.side;
-                    }).forResult();
+                        const targetx = _status.event.targetx;
+                        return targetx != target && player.side !=target.side;
+                    }).set("targetx",trigger.target).forResult();
                     await choose.targets[0].faShuDamage(event.cards.length,player);
-                },
-                group: "duiJianErShi_clear",
-                subSkill: {
-                    clear: {
-                        trigger: {
-                            source: "gongJiAfter",
-                        },
-                        silent: true,
-                        content: function () {
-                            if(player.storage.duiJianErShiTargets){
-                                player.storage.duiJianErShiTargets = undefined;
-                            }
-                        },
-                        sub: true,
-                        sourceSkill: "duiJianErShi",
-                        forced: true,
-                        popup: false,
-                        "_priority": 1,
-                    },
                 },
                 "_priority": 0
             },
@@ -1517,13 +1479,12 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 content: async function(event,trigger,player) {
                     await player.removeBiShaBaoShi();
                     player.storage.jianWu = true;
+                    await player.addSkill("jianWuYiShi_addLimit");
+                    await player.update();
                     await player.draw(3);
                     await player.addGongJi();
                 },
                 mod:{
-                    maxHandcard:function(player,num){
-                        if(player.storage.jianWu) return num+3;
-                    },
                     aiOrder:function(player,card,num){
                         if(get.type(card)=='gongJi') return num+1;
                     }
@@ -1536,14 +1497,21 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         filter:function(event,player){
                             return player.storage.jianWu;
                         },
-                        content:function(){
+                        content:async function(event,trigger,player) {
                             player.storage.jianWu = false;
-                            if(player.countCards('h') > player.getHandcardLimit()){
-                                player.qiPai();
-                            }
+                            await player.removeSkill("jianWuYiShi_addLimit");
+                            await player.update();
+                            await player.qiPai();
                         },
                         "_priority": 1
                     },
+                    addLimit:{
+                        mod:{
+                            maxHandcard:function(player,num){
+                                return num+3;
+                            }
+                        }
+                    }
                 },
                 ai:{
                     baoShi:true,
