@@ -2311,7 +2311,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 filter:function(event,player){
                     if(player.isHengZhi() && player.countCards("h")>=2){
                         // 盖亚化身形态内，且牌数大于等于2即可发动（形态内所有牌均可视为地裂斩）
-                        return true;
+                        return player.storage.poXieZhan_enabled;
                     }
                     var bool1=player.countTongXiPai()>=2;
                     var bool2=game.hasPlayer(current=>lib.skill.qiZha.filterTarget('',player,current));
