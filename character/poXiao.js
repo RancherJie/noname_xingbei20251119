@@ -2706,7 +2706,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 content: async function(event,trigger,player) {
                     await player.draw(1);
                 },
-                "_priority": 0
+                "_priority": 2
             },
             shenShengHuWei: {
                 trigger: {
