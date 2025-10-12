@@ -269,7 +269,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 position: "h",
                 selectCard: 2,
                 discard: true,
-		            showCards: true,
+		        showCards: true,
                 selectTarget: 1,
                 filter: function (event, player) {
                     return player.countTongXiPai() >= 2;
@@ -530,6 +530,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 selectCard: 1,
                 discard: true,
+                showCards: true,
                 prompt: "任意分配3点[治疗]给目标角色",
                 content: function () {
                     'step 0'
