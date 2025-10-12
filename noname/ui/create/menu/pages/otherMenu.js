@@ -1536,6 +1536,71 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 					lib.videos.push(cursor.value);
 					cursor.continue();
 				} else {
+
+					var importVideoNode = ui.create.div(
+						".config.switcher.pointerspan",
+						'<span class="underlinenode slim ">导入录像...</span>',
+						function () {
+							this.nextSibling.classList.toggle("hidden");
+						},
+						page
+					);
+					importVideoNode.style.marginLeft = "12px";
+					importVideoNode.style.marginTop = "3px";
+					var importVideo = ui.create.div(".config.hidden", page);
+					importVideo.style.whiteSpace = "nowrap";
+					importVideo.style.marginBottom = "20px";
+					importVideo.style.marginLeft = "13px";
+					importVideo.style.width = "calc(100% - 30px)";
+					importVideo.innerHTML = '<input type="file" accept="*/*" style="width:calc(100% - 40px)">' + '<button style="width:40px">确定</button>';
+					importVideo.lastChild.onclick = function () {
+						var fileToLoad = importVideo.firstChild.files[0];
+						var fileReader = new FileReader();
+						fileReader.onload = function (fileLoadedEvent) {
+							var data = fileLoadedEvent.target.result;
+							if (!data) return;
+							try {
+								data = JSON.parse(lib.init.decode(data));
+							} catch (e) {
+								console.log(e);
+								alert("导入失败");
+								return;
+							}
+							var store = lib.db.transaction(["video"], "readwrite").objectStore("video");
+							var videos = lib.videos.slice(0);
+							for (var i = 0; i < videos.length; i++) {
+								if (videos[i].starred) {
+									videos.splice(i--, 1);
+								}
+							}
+							for (var deletei = 0; deletei < 5; deletei++) {
+								if (videos.length >= parseInt(lib.config.video) && videos.length) {
+									var toremove = videos.pop();
+									lib.videos.remove(toremove);
+									store.delete(toremove.time);
+									for (var i = 0; i < page.childNodes.length; i++) {
+										if (page.childNodes[i].link == toremove) {
+											page.childNodes[i].remove();
+											break;
+										}
+									}
+								} else {
+									break;
+								}
+							}
+							for (var i = 0; i < lib.videos.length; i++) {
+								if (lib.videos[i].time == data.time) {
+									alert("录像已存在");
+									return;
+								}
+							}
+							lib.videos.unshift(data);
+							store.put(data);
+							createNode(data, true);
+						};
+						fileReader.readAsText(fileToLoad, "UTF-8");
+					};
+
 					lib.videos.sort(function (a, b) {
 						return parseInt(b.time) - parseInt(a.time);
 					});
@@ -1600,69 +1665,7 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 						createNode(lib.videos[i]);
 					}
 					ui.create.videoNode = createNode;
-					var importVideoNode = ui.create.div(
-						".config.switcher.pointerspan",
-						'<span class="underlinenode slim ">导入录像...</span>',
-						function () {
-							this.nextSibling.classList.toggle("hidden");
-						},
-						page
-					);
-					importVideoNode.style.marginLeft = "12px";
-					importVideoNode.style.marginTop = "3px";
-					var importVideo = ui.create.div(".config.hidden", page);
-					importVideo.style.whiteSpace = "nowrap";
-					importVideo.style.marginBottom = "80px";
-					importVideo.style.marginLeft = "13px";
-					importVideo.style.width = "calc(100% - 30px)";
-					importVideo.innerHTML = '<input type="file" accept="*/*" style="width:calc(100% - 40px)">' + '<button style="width:40px">确定</button>';
-					importVideo.lastChild.onclick = function () {
-						var fileToLoad = importVideo.firstChild.files[0];
-						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
-							var data = fileLoadedEvent.target.result;
-							if (!data) return;
-							try {
-								data = JSON.parse(lib.init.decode(data));
-							} catch (e) {
-								console.log(e);
-								alert("导入失败");
-								return;
-							}
-							var store = lib.db.transaction(["video"], "readwrite").objectStore("video");
-							var videos = lib.videos.slice(0);
-							for (var i = 0; i < videos.length; i++) {
-								if (videos[i].starred) {
-									videos.splice(i--, 1);
-								}
-							}
-							for (var deletei = 0; deletei < 5; deletei++) {
-								if (videos.length >= parseInt(lib.config.video) && videos.length) {
-									var toremove = videos.pop();
-									lib.videos.remove(toremove);
-									store.delete(toremove.time);
-									for (var i = 0; i < page.childNodes.length; i++) {
-										if (page.childNodes[i].link == toremove) {
-											page.childNodes[i].remove();
-											break;
-										}
-									}
-								} else {
-									break;
-								}
-							}
-							for (var i = 0; i < lib.videos.length; i++) {
-								if (lib.videos[i].time == data.time) {
-									alert("录像已存在");
-									return;
-								}
-							}
-							lib.videos.unshift(data);
-							store.put(data);
-							createNode(data, true);
-						};
-						fileReader.readAsText(fileToLoad, "UTF-8");
-					};
+					
 
 					playButton.listen(function () {
 						var current = this.parentNode.querySelector(".videonode.active");
