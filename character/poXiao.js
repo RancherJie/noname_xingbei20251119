@@ -1479,13 +1479,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content: async function(event,trigger,player) {
                     await player.removeBiShaBaoShi();
-                    player.storage.jianWu = true;
-                    await player.addSkill("jianWuYiShi_addLimit");
-                    await player.update();
+                    await player.hengZhi();
                     await player.draw(3);
                     await player.addGongJi();
                 },
                 mod:{
+                    maxHandcard:function(player,num){
+                        if(player.isHengZhi()) return num+3;
+                    },
                     aiOrder:function(player,card,num){
                         if(get.type(card)=='gongJi') return num+1;
                     }
@@ -1496,23 +1497,14 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         trigger:{player:'phaseEnd'},
                         direct:true,
                         filter:function(event,player){
-                            return player.storage.jianWu;
+                            return player.isHengZhi();
                         },
                         content:async function(event,trigger,player) {
-                            player.storage.jianWu = false;
-                            await player.removeSkill("jianWuYiShi_addLimit");
-                            await player.update();
+                            await player.chongZhi();
                             await player.qiPai();
                         },
                         "_priority": 1
                     },
-                    addLimit:{
-                        mod:{
-                            maxHandcard:function(player,num){
-                                return num+3;
-                            }
-                        }
-                    }
                 },
                 ai:{
                     baoShi:true,
@@ -1594,7 +1586,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             },
             huJiaoZhiXin: {
                 trigger: {
-                    source: "gongJiMingZhongAfter"
+                    source: "gongJiMingZhong"
                 },
                 filter: function(event,player) {
                     return !event.yingZhan;
