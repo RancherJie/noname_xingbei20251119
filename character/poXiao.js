@@ -2266,6 +2266,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         await player.discard(qipai.cards).set('showCards',true);
                         var choose = await player.chooseTarget(1,"对任意角色造成1点法术伤害", true).forResult();
                         await choose.targets[0].faShuDamage(1,player);
+                        await event.trigger("faDongJiNeng_youHun");
                     }
                 },
                 "_priority": 0
