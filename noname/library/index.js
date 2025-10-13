@@ -5336,6 +5336,7 @@ export class Library {
 			config:{
 				viewAll:{
 					name:'查看所有角色统计数据',
+					init:true,
 					frequent:true,
 				},
 				sort:{
