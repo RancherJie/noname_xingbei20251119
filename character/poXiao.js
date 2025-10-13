@@ -2819,17 +2819,22 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 content: async function(event,trigger,player){
                     await player.removeBiShaShuiJing();
+                    event.target.storage.zhouFuSource=player;   // 存储咒缚来源对象
                     await event.target.addSkill('zhouFu_xiaoGuo');
 					await event.target.addMark('zhouFu_xiaoGuo');
                 },
                 subSkill:{
                     xiaoGuo:{
                         priority:2,
-                        trigger:{player:'xingDongBefore'},
+                        trigger:{player:'phaseBefore'},
                         forced:true,
                         markimage:'image/card/zhuanShu/zhouFu.jpg',
                         intro:{
-                            content: "将【咒缚】放置于一名对手前，在其回合开始前，他选择跳过他的行动阶段或者受到3点法术伤害并继续行动，之后你收回【咒缚】。",
+                            content: `[水晶]将【咒缚】放置于目标对手前，<span class='tiaoJian'>(拥有此卡的角色回合开始前)</span>他选择以下一项发动:<br>
+                            跳过他的回合<br>
+                            你对他造成3点法术伤害③，继续他的回合。<br>
+                            触发后移除此卡。<br>
+                            【咒缚】为咒术师的专属牌，上限为1。`,
                             nocount:true,
                         },
                         onremove:'storage',
@@ -2837,38 +2842,48 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             return player.hasZhiShiWu('zhouFu_xiaoGuo');
                         },
                         content: async function(event,trigger,player){
-                            var list=[`受到3点法术伤害`,'跳过行动阶段'];
+                            var list=[`受到3点法术伤害`,'跳过本回合'];
                             var result = await player.chooseControl().set('choiceList',list).set('prompt','咒缚：选择一项').set('ai',function(){
                                 var player=_status.event.player;
-                                if(player.countCards('h')+3>player.getHandcardLimit()){
-                                    return 1;
-                                }else{
+                                if(player.countCards('h') + 3 <= player.getHandcardLimit() + player.ZhiLiao){
                                     return 0;
+                                }else{
+                                    return 1;
                                 }
-                            }).set('num',3).forResult();
+                            }).forResult();
                             if(result.index==1){
-                                trigger.xuRuo=true;
+                                await trigger.cancel();
                             }else if(result.index==0){
-                                await player.faShuDamage(3); 
+                                await player.faShuDamage(3,player.storage.zhouFuSource); 
                             }
+                            delete player.storage.zhouFuSource;
                             await player.removeZhiShiWu('zhouFu_xiaoGuo');
-                            if(player.hasExpansions('_xuRuo')){
-                                await player.discard(player.getExpansions('_xuRuo'),'_xuRuo').set('visible',true); 
-                            }
                             await player.removeSkill('zhouFu_xiaoGuo');
                         },
                     }
                 },
                 ai:{
-                    shuiJing:true,
-                    order:4,
-                    result:{
-                        target:function(player,target){
-                            if(target.countCards('h')>3) return -3;
-                            return -1;
-                        }
-                    }
-                },
+                    shuiJing: true,
+					order:function(item,player){
+						var num=game.filterPlayer(function(current){
+							return current.side != player.side && current.countCards('h') + 3 > current.getHandcardLimit() + current.ZhiLiao;
+						});
+						if(num.length>=1){
+							return 3.4;
+						}else{
+							return 3;
+						}
+					},
+					basic:{
+						useful:[4,1],
+						value:[5,3,1],
+					},
+					result:{
+						target:function(player,target){
+							return -target.countCards('h');
+						}
+					}
+				},
                 "_priority": 0
             },
             zhanZhengGeYao: {
