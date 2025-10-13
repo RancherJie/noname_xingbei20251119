@@ -5796,9 +5796,10 @@ export class Get extends GetCompatible {
 		if(target.side!=player.side) return -1;
 		return get.zhiLiaoEffect(target,num);
 	}
-	countTongXiPai(cards){
+	countTongXiPai(cards,type){
 		var dict={};
 		for(var i=0;i<cards.length;i++){
+			if(type&&get.type(cards[i])!=type) continue;
 			var xiBie=get.xiBie(cards[i]);
 			if(!xiBie) continue;
 			if(!dict[xiBie]) dict[xiBie]=0;
@@ -5812,9 +5813,10 @@ export class Get extends GetCompatible {
 		}
 		return maxValue;
 	}
-	countYiXiPai(cards){
+	countYiXiPai(cards,type){
 		var dict={};
 		for(var i=0;i<cards.length;i++){
+			if(type&&get.type(cards[i])!=type) continue;
 			var xiBie=get.xiBie(cards[i]);
 			if(!xiBie) continue;
 			if(!dict[xiBie]) dict[xiBie]=0;

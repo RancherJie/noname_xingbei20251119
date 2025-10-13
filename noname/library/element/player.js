@@ -11233,10 +11233,11 @@ export class Player extends HTMLDivElement {
 		}
 		return maxValue;  
 	}
-	countYiXiPai(){//统计异系牌数
+	countYiXiPai(type){//统计异系牌数
 		var h=this.getCards('h');
 		var dict={};
 		for(var i=0;i<h.length;i++){
+			if(type&&get.type(h[i])!=type) continue;
 			var xiBie=get.xiBie(h[i]);
 			if(!dict[xiBie]) dict[xiBie]=0;
 			dict[xiBie]++;
