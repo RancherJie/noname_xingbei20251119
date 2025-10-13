@@ -213,6 +213,8 @@ export const startMenu = function (connectMenu) {
 							30: "30秒",
 							60: "60秒",
 							90: "90秒",
+							180: "180秒",
+							360: "360秒",
 						},
 						connect: true,
 						frequent: true,
