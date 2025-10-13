@@ -1066,6 +1066,7 @@ export default () => {
                 // 创建表格式布局来容纳排行榜
                 const characterList = document.createElement('table');
                 characterList.classList.add("character-list");
+                characterList.style.fontSize = lib.config.touchscreen ? "16px" : "18px";
                 node.appendChild(characterList);
 
                 const thead = document.createElement('thead');
@@ -1332,7 +1333,11 @@ export default () => {
                         visibleBtn.addEventListener(lib.config.touchscreen ? "touchend" : "click", function (ev) {
                             const proxy = ev.currentTarget && ev.currentTarget._proxy ? ev.currentTarget._proxy : proxyBtn;
                             if (!noclick) {
-                                proxy.dispatchEvent(new Event(lib.config.touchscreen ? "touchend" : "click", { bubbles: true }));
+                                if(lib.config.touchscreen) {
+                                    proxy.dispatchEvent(new TouchEvent("touchend", { bubbles: true }));
+                                } else {
+                                    proxy.dispatchEvent(new Event("click", { bubbles: true }));
+                                }
                             } else {
                                 ui.click.button.call(proxy, ev);
                             }
