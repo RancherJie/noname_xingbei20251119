@@ -5331,15 +5331,6 @@ export class Library {
 				},
 			}
 		},
-		tutorial:{
-			name:'新手向导',
-			config:{
-				information:{
-					name:'相关信息在其他(右上角)->帮助-><br>关于游戏中查看',
-					frequent:true,
-				}
-			}
-		},
 		leaderboard: {
 			name: "排行榜",
 			config:{
@@ -5358,7 +5349,16 @@ export class Library {
 					frequent:true,
 				}
 			}
-		}
+		},
+		tutorial:{
+			name:'新手向导',
+			config:{
+				information:{
+					name:'相关信息在其他(右上角)->帮助-><br>关于游戏中查看',
+					frequent:true,
+				}
+			}
+		},
 	};
 	status = {
 		running: false,

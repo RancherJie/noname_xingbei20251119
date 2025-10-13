@@ -20,8 +20,8 @@ window.noname_package = {
 		connect: "联机",
 		offlineChoose: "线下选角",
 		illustration: "图鉴",
-		tutorial: "新手向导",
 		leaderboard: "排行榜",
+		tutorial: "新手向导",
 	},
 	submode: {
 		
