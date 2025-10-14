@@ -5742,7 +5742,7 @@ export class Get extends GetCompatible {
 	characterGets(list,num){
 		var result=list.slice();
 		if(result.includes('hongLianQiShi')&&result.includes('shengDianQiShi')){
-			var num=Math.random();
+			let num=Math.random();
 			if(num<0.5){
 				result.remove('hongLianQiShi');
 			}else{
@@ -5750,7 +5750,7 @@ export class Get extends GetCompatible {
 			}
 		}
 		if(result.includes('shengNv')&&result.includes('jinGuiZhiNv')){
-			var num=Math.random();
+			let num=Math.random();
 			if(num<0.5){
 				result.remove('shengNv');
 			}else{
@@ -5758,7 +5758,7 @@ export class Get extends GetCompatible {
 			}
 		}
 		if(result.includes('fengZhiJianSheng')&&result.includes('jianZhiZi')){
-			var num=Math.random();
+			let num=Math.random();
 			if(num<0.5){
 				result.remove('fengZhiJianSheng');
 			}else{
