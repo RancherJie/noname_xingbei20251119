@@ -5494,6 +5494,7 @@ export const Content = {
 			}
 			if(event.showCards==true) event.done.set('showCards',true);
 			if(event.showHiddenCards==true) event.done.set('showHiddenCards',true);
+			if(event.delay_time) event.done.set('delay_time',event.delay_time);
 			event.done.discarder=player;
 		}
 		if(event.dialog&&event.dialog.close) event.dialog.close();
@@ -9486,8 +9487,10 @@ export const Content = {
 		'step 1'
 		if(event.showCards==true){
 			var next=player.showCards(cards).set('discard',true);
+			if(event.delay_time) next.set('delay_time',event.delay_time);
 		}else if(event.showHiddenCards==true){
 			var next=player.showHiddenCards(cards);
+			if(event.delay_time) next.set('delay_time',event.delay_time);
 		}
 		"step 2"
 		if(!event.sheQi) event.trigger('discard');
