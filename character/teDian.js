@@ -3731,7 +3731,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 <span class="greentext">(独)[响应]精准射击</span><br>
                 此攻击强制命中，但本次攻击伤害-1。`,
             gongShenHouBu_jingZhunSheJi:"[响应]精准射击",
-            gongShenHouBu_shanGuangXianJing:"[响应]闪光陷阱",
+            gongShenHouBu_shanGuangXianJing:"[法术]闪光陷阱",
 
             //圣仲裁者
             shenZhiTianPing:"[被动]神之天平",
