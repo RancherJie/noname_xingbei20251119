@@ -110,7 +110,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 'sheng_zhongCaiZhe_name',
                 'shengGroup',
                 '4/5',
-                ['shenZhiTianPing','shenEBiJi','tianPingQingDao','shenZhiShenPan','tianPing','tianZui','zuiChiBiDao','zui'],
+                ['shenZhiTianPing','shanEBiJi','tianPingQingDao','shenZhiShenPan','tianPing','tianZui','zuiChiBiDao','zui'],
                 ["des:新的裁判钟声已经敲响，不知道是新生的喜悦钟声，还是赴死的丧钟。咚，咚，咚。。。"],
             ],
         },
@@ -3067,19 +3067,19 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     player.addSkill('tianPing_zuo');
                 },
             },
-            shenEBiJi:{
+            shanEBiJi:{
                 usable:1,
                 trigger: {global:'damageAfter'},
                 filter: function (event, player) {
                     var zuo_cards=player.getExpansions('tianPing_zuo');
                     var you_cards=player.getExpansions('tianPing_you');
                     if(zuo_cards.length>=3&&you_cards.length>=3) return false;
-                    return event.player.side==player.side&&event.shenEBiJi&&player.countCards('h',card=>lib.inpile.includes(card.name))>0;
+                    return event.player.side==player.side&&event.shanEBiJi&&player.countCards('h',card=>lib.inpile.includes(card.name))>0;
                 },
                 async cost(event, trigger, player) {
                     var next= player.chooseCard('h',1,card=>lib.inpile.includes(card.name));
-                    next.set('prompt',get.prompt('shenEBiJi'));
-                    next.set('prompt2',lib.translate['shenEBiJi_info']);
+                    next.set('prompt',get.prompt('shanEBiJi'));
+                    next.set('prompt2',lib.translate['shanEBiJi_info']);
                     next.set('ai', function (card) {
                         return 6-get.value(card);
                     });
@@ -3109,16 +3109,16 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     await lib.skill.tianPing.addPai(player,event.cards,position);
                     await player.draw();
                 },
-                group:'',
+                group:'shanEBiJi_set',
                 subSkill:{
-                    shuXing:{
+                    set:{
                         trigger:{global:'chengShouShangHai'},
                         direct:true,
                         filter:function(event,player){
                             return event.player.side==player.side;
                         },
                         content: async function(event, trigger, player) {
-                            trigger.shenEBiJi=true;
+                            trigger.shanEBiJi=true;
                         },
                     }
                 }
@@ -3736,8 +3736,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             //圣仲裁者
             shenZhiTianPing:"[被动]神之天平",
             shenZhiTianPing_info:"游戏初始时你拥有【天平·左】与【天平·右】。",
-            shenEBiJi:"[响应]善恶必计",
-            shenEBiJi_info:"[回合限定]<span class='tiaoJian'>(我方角色承受伤害⑥并结算完毕后，你将手牌中1张基础牌面朝上[展示]放到【天平·左】或【天平·右】上)</span>你摸1张牌[强制]。",
+            shanEBiJi:"[响应]善恶必计",
+            shanEBiJi_info:"[回合限定]<span class='tiaoJian'>(我方角色承受伤害⑥并结算完毕后，你将手牌中1张基础牌面朝上[展示]放到【天平·左】或【天平·右】上)</span>你摸1张牌[强制]。",
             tianPingQingDao:"[被动]天平倾倒",
             tianPingQingDao_info:"<span class='tiaoJian'>(你的回合开始时或你的回合结束时，若【天平·左】和【天平·右】上的牌差>1，舍弃牌数多的一方上所有牌)</span>展示牌堆顶4张牌[展示]，你将其中2张加入手牌[强制]并弃掉另外2张牌，你+1<span class='hong'>【罪】</span>，然后目标队友+2[治疗]。",
             shenZhiShenPan:"[响应]神之审判",
