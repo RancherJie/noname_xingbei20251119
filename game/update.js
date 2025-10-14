@@ -5,12 +5,11 @@ window.noname_update = {
 			"功能",
 			"新增玩家函数chooseButtonCard，暂无角色使用",
 			"玩家函数countTongXiPai和countYiXiPai支持type参数",
+			"玩家函数可set'chooseToDiscard'参数，用于展示牌时间设置，默认2.5s",
 			
-			"ai",
-
 			"优化",
 			"完善破晓技能描述",
-			"修复神仲裁者替罪羔羊错别描述",
+			"修复圣仲裁者替罪羔羊错别描述",
 			"修复舍弃牌会触发discard触发器",
 			"完善星级翻译",
 			"重新修改破晓角色技能文本描述，使其更规范化",
