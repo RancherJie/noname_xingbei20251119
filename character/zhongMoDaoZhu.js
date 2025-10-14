@@ -1168,7 +1168,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }else if(h_num==0){
                         await player.draw();
                     }
-                    var cards1=await player.chooseToDiscard('h',true,1,'showCards').set('selfSkil',true).set('shiFeng',false).set('loseTo',ui.special).forResultCards();
+                    var cards1=await player.chooseToDiscard('h',true,1,'showCards').set('selfSkil',true).set('shiFeng',false).set('loseTo',ui.special).set('delay_time',3.5).forResultCards();
                     await player.addZhiShiWu('qianCheng',1);
                     var cards2=await player.storage.luBiaoTarget.chooseToDiscard('h',true,1,'showCards').forResultCards();
                     if(cards2.length>0){
