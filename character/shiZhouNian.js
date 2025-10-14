@@ -6704,7 +6704,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 					}
                     player.removeSkill('tiaoXinX');
                 },
-                group:['tiaoXinX_qiDongQian','tiaoXinX_qiDongHou','tiaoXinX_kaiShi','tiaoXinX_sheZhi','tiaoXinX_yiChu','tiaoXinX_wuFaXingDong'],
+                group:['tiaoXinX_qiDongQian','tiaoXinX_qiDongHou','tiaoXinX_sheZhi','tiaoXinX_yiChu','tiaoXinX_wuFaXingDong'],
                 subSkill:{
                     qiDongQian:{
 						trigger:{player:'qiDong'},
@@ -6733,22 +6733,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         content:async function(event,trigger,player){
                             var list=['继续回合','跳过回合'];
                             var control=await player.chooseControl(list).set('prompt','启动前：你被挑衅了').forResultControl();
-                            if(control=='跳过回合'){
-                                await player.removeZhiShiWu('tiaoXinX')
-                                player.removeSkill('tiaoXinX');
-                                trigger.cancel();
-                            }
-                        },
-                    },
-                    kaiShi:{
-						trigger:{player:'phaseBegin'},
-						filter:function(event,player){
-							return lib.skill.tiaoXinX.filterx(event,player);
-						},
-                        direct:true,
-                        content:async function(event,trigger,player){
-                            var list=['继续回合','跳过回合'];
-                            var control=await player.chooseControl(list).set('prompt','行动开始：你被挑衅了').forResultControl();
                             if(control=='跳过回合'){
                                 await player.removeZhiShiWu('tiaoXinX')
                                 player.removeSkill('tiaoXinX');
