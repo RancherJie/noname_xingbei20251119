@@ -414,7 +414,7 @@ export default () => {
                 rankingline1.style.fontFamily = "xinwei";
                 rankingline1.classList.add("pointernode");
                 if (get.is.phoneLayout()) {
-                    rankingline1.style.fontSize = "32px";
+                    rankingline1.style.fontSize = "18px";
                 } else {
                     rankingline1.style.fontSize = "22px";
                 }
@@ -427,7 +427,7 @@ export default () => {
                 rankingline2.style.fontFamily = "xinwei";
                 rankingline2.classList.add("pointernode");
                 if (get.is.phoneLayout()) {
-                    rankingline2.style.fontSize = "32px";
+                    rankingline2.style.fontSize = "18px";
                 } else {
                     rankingline2.style.fontSize = "22px";
                 }
@@ -440,7 +440,7 @@ export default () => {
                 newlined2.style.fontFamily = "xinwei";
                 newlined2.classList.add("pointernode");
                 if (get.is.phoneLayout()) {
-                    newlined2.style.fontSize = "32px";
+                    newlined2.style.fontSize = "18px";
                 } else {
                     newlined2.style.fontSize = "22px";
                 }
@@ -449,51 +449,23 @@ export default () => {
     
                 rankingbtn1.addEventListener(lib.config.touchscreen ? "touchend" : "click", function () {
                     if (_status.dragged) return;
-                    if (get.is.phoneLayout() && lib.config.filternode_button && filternode) {
-                        _status.filterCharacter = true;
-                        ui.window.classList.add("shortcutpaused");
-                        ui.window.appendChild(filternode);
-                        ui.refresh(filternode);
-                        filternode.classList.add("shown");
-                        var dh = filternode.offsetHeight - filternode.firstChild.offsetHeight;
-                        if (dh > 0) {
-                            filternode.firstChild.style.top = dh / 2 + "px";
-                        } else {
-                            filternode.firstChild.style.top = "";
-                        }
+                    newlined2.style.display = "none";
+                    rankingline2.style.display = "none";
+                    if (rankingline1.style.display == "none") {
+                        rankingline1.style.display = "block";
                     } else {
-                        newlined2.style.display = "none";
-                        rankingline2.style.display = "none";
-                        if (rankingline1.style.display == "none") {
-                            rankingline1.style.display = "block";
-                        } else {
-                            rankingline1.style.display = "none";
-                        }
+                        rankingline1.style.display = "none";
                     }
                 });
 
                 rankingbtn2.addEventListener(lib.config.touchscreen ? "touchend" : "click", function () {
                     if (_status.dragged) return;
-                    if (get.is.phoneLayout() && lib.config.filternode_button && filternode) {
-                        _status.filterCharacter = true;
-                        ui.window.classList.add("shortcutpaused");
-                        ui.window.appendChild(filternode);
-                        ui.refresh(filternode);
-                        filternode.classList.add("shown");
-                        var dh = filternode.offsetHeight - filternode.firstChild.offsetHeight;
-                        if (dh > 0) {
-                            filternode.firstChild.style.top = dh / 2 + "px";
-                        } else {
-                            filternode.firstChild.style.top = "";
-                        }
+                    rankingline1.style.display = "none";
+                    newlined2.style.display = "none";
+                    if (rankingline2.style.display == "none") {
+                        rankingline2.style.display = "block";
                     } else {
-                        rankingline1.style.display = "none";
-                        newlined2.style.display = "none";
-                        if (rankingline2.style.display == "none") {
-                            rankingline2.style.display = "block";
-                        } else {
-                            rankingline2.style.display = "none";
-                        }
+                        rankingline2.style.display = "none";
                     }
                 });
 
@@ -883,7 +855,7 @@ export default () => {
                     modespan.style.width = "auto";
                     modespan.style.margin = "5px";
                     if (get.is.phoneLayout()) {
-                        modespan.style.fontSize = "32px";
+                        modespan.style.fontSize = "20px";
                     } else {
                         modespan.style.fontSize = "22px";
                     }
@@ -904,7 +876,7 @@ export default () => {
                     aispan.style.width = "auto";
                     aispan.style.margin = "5px";
                     if (get.is.phoneLayout()) {
-                        aispan.style.fontSize = "32px";
+                        aispan.style.fontSize = "20px";
                     } else {
                         aispan.style.fontSize = "22px";
                     }
@@ -1066,6 +1038,7 @@ export default () => {
                 // 创建表格式布局来容纳排行榜
                 const characterList = document.createElement('table');
                 characterList.classList.add("character-list");
+                characterList.style.fontSize = lib.config.touchscreen ? "16px" : "18px";
                 node.appendChild(characterList);
 
                 const thead = document.createElement('thead');
@@ -1332,7 +1305,11 @@ export default () => {
                         visibleBtn.addEventListener(lib.config.touchscreen ? "touchend" : "click", function (ev) {
                             const proxy = ev.currentTarget && ev.currentTarget._proxy ? ev.currentTarget._proxy : proxyBtn;
                             if (!noclick) {
-                                proxy.dispatchEvent(new Event(lib.config.touchscreen ? "touchend" : "click", { bubbles: true }));
+                                if(lib.config.touchscreen) {
+                                    proxy.dispatchEvent(new TouchEvent("touchend", { bubbles: true }));
+                                } else {
+                                    proxy.dispatchEvent(new Event("click", { bubbles: true }));
+                                }
                             } else {
                                 ui.click.button.call(proxy, ev);
                             }
