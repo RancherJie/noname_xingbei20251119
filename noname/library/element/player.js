@@ -5459,6 +5459,42 @@ export class Player extends HTMLDivElement {
 		next._args = Array.from(arguments);
 		return next;
 	}
+	chooseButtonCard(choose) {
+		var next = game.createEvent("chooseButtonCard");
+		next.player = this;
+		if (arguments.length == 1) {
+			for (var i in choose) {
+				next[i] = choose[i];
+			}
+		}
+		if (typeof next.filterButton == "object") {
+			next.filterButton = get.filter(next.filterButton);
+		}
+		if (typeof next.filterCard == "object") {
+			next.filterCard = get.filter(next.filterCard);
+		}
+		if (next.filterButton == undefined || next.filterButton === true) {
+			next.filterButton = lib.filter.filterButton;
+		}
+		if (next.selectButton == undefined) {
+			next.selectButton = 1;
+		}
+		if (next.filterCard == undefined || next.filterCard === true) {
+			next.filterCard = lib.filter.all;
+		}
+		if (next.selectCard == undefined) {
+			next.selectCard = 1;
+		}
+		if (next.ai1 == undefined)
+			next.ai1 = function () {
+				return 1;
+			};
+		if (next.ai2 == undefined) next.ai2 = get.unuseful2;
+		next.setContent("chooseButtonCard");
+		next._args = Array.from(arguments);
+		return next;
+	}
+
 	discardPlayerCard() {
 		var next = game.createEvent("discardPlayerCard");
 		next.player = this;
@@ -11197,10 +11233,11 @@ export class Player extends HTMLDivElement {
 		}
 		return maxValue;  
 	}
-	countYiXiPai(){//统计异系牌数
+	countYiXiPai(type){//统计异系牌数
 		var h=this.getCards('h');
 		var dict={};
 		for(var i=0;i<h.length;i++){
+			if(type&&get.type(h[i])!=type) continue;
 			var xiBie=get.xiBie(h[i]);
 			if(!dict[xiBie]) dict[xiBie]=0;
 			dict[xiBie]++;

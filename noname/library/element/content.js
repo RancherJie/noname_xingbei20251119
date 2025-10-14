@@ -9490,7 +9490,7 @@ export const Content = {
 			var next=player.showHiddenCards(cards);
 		}
 		"step 2"
-		event.trigger('discard');
+		if(!event.sheQi) event.trigger('discard');
 		'step 3'
 		if(event.baoPai==true){
 			if(event.shiQiXiaJiang!=false){
@@ -11946,6 +11946,65 @@ export const Content = {
 				game.check();
 				if (ai.basic.chooseButton(event.ai1) || event.forced) {
 					if ((ai.basic.chooseTarget(event.ai2) || event.forced) && (!event.filterOk || event.filterOk())) {
+						ui.click.ok();
+						_status.event._aiexclude.length = 0;
+					} else {
+						ui.click.cancel();
+					}
+				} else {
+					ui.click.cancel();
+				}
+			}
+		},
+		async (event, _trigger, player, result) => {
+			//处理选择的结果
+			event.resume();
+			if (event.result.bool && event.animate !== false) {
+				for (var i = 0; i < event.result.targets.length; i++) {
+					event.result.targets[i].addTempClass("target");
+				}
+			}
+			if (event.dialog) event.dialog.close();
+		},
+	],
+	chooseButtonCard: [
+		async (event, _trigger, player) => {
+			//根据player.chooseButtonCard获取到的dialog信息创建对话框，也支持createDialog
+			if (typeof event.dialog == "number") {
+				event.dialog = get.idDialog(event.dialog);
+			}
+			if (event.createDialog && !event.dialog) {
+				if (Array.isArray(event.createDialog)) {
+					event.createDialog.add("hidden");
+					event.dialog = ui.create.dialog.apply(this, event.createDialog);
+				}
+				event.closeDialog = true;
+			}
+			if (event.dialog == undefined) event.dialog = ui.dialog;
+			if (event.isMine()) {
+				if (event.hsskill && !event.forced && _status.prehidden_skills.includes(event.hsskill)) {
+					ui.click.cancel();
+					return;
+				}
+				if (event.isMine() || event.dialogdisplay) {
+					event.dialog.style.display = "";
+					event.dialog.open();
+				}
+				game.check();
+				game.pause();
+			} else if (event.isOnline()) {
+				event.result = await event.sendAsync();
+			} else {
+				//考虑中途托管的情况
+				event.result = "ai";
+			}
+		},
+		async (event, _trigger, player, result) => {
+			//处理ai的选择结果
+			if (event.result == "ai") {
+				game.check();
+				if (ai.basic.chooseButton(event.ai1) || event.forced) {
+					if ((ai.basic.chooseCard(event.ai2) || event.forced) && (!event.filterOk || event.filterOk())) {
 						ui.click.ok();
 						_status.event._aiexclude.length = 0;
 					} else {

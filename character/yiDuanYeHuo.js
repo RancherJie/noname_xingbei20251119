@@ -1393,7 +1393,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 direct:true,
                 trigger:{player:'addGaiPaiAfter'},
                 filter:function(event,player){
-                    return player.countGaiPai('luEn').length>6;
+                    return player.countGaiPai('luEn')>6;
                 },
                 content:function(){
                     'step 0'

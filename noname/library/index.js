@@ -5331,20 +5331,12 @@ export class Library {
 				},
 			}
 		},
-		tutorial:{
-			name:'新手向导',
-			config:{
-				information:{
-					name:'相关信息在其他(右上角)->帮助-><br>关于游戏中查看',
-					frequent:true,
-				}
-			}
-		},
 		leaderboard: {
 			name: "排行榜",
 			config:{
 				viewAll:{
 					name:'查看所有角色统计数据',
+					init:true,
 					frequent:true,
 				},
 				sort:{
@@ -5358,7 +5350,16 @@ export class Library {
 					frequent:true,
 				}
 			}
-		}
+		},
+		tutorial:{
+			name:'新手向导',
+			config:{
+				information:{
+					name:'相关信息在其他(右上角)->帮助-><br>关于游戏中查看',
+					frequent:true,
+				}
+			}
+		},
 	};
 	status = {
 		running: false,
@@ -7444,6 +7445,10 @@ export class Library {
 		zhiLiao:"治疗",
 
 		FAQ:'FAQ',
+		'1xing':'1星',
+		'1.5xing':'1.5星',
+		'2xing':'2星',
+		'2.5xing':'2.5星',
 		'3xing':'3星',
 		'3.5xing':'3.5星',
 		'4xing':'4星',

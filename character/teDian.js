@@ -1704,6 +1704,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         marktext: "T",
                         intro: {
                             content: "jiChuXiaoGuo",
+                            mark:function (dialog, content, player) {
+                                dialog.addText("基础效果");
+                            },
                         },
                         onremove: function (player, skill) {
                             const cards = player.hasJiChuXiaoGuo(skill);
@@ -1739,7 +1742,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             target.addSkill("tricky_xiaoGuo");
                         }
                         var cards = await get.cards();
-                        await target.addJiChuXiaoGuo('tricky_xiaoGuo', player, cards);
+                        await target.addJiChuXiaoGuo('tricky_xiaoGuo', player, cards).set('animate','draw');
                     }
                 },
             },
@@ -1915,7 +1918,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         if (!target.hasSkill("tricky_xiaoGuo")) {
                             target.addSkill("tricky_xiaoGuo");
                         }
-                        await target.addJiChuXiaoGuo('tricky_xiaoGuo', player, cards);
+                        await target.addJiChuXiaoGuo('tricky_xiaoGuo', player, cards).set('animate','draw');
                         bool=game.hasPlayer(function(current){
                             return lib.filter.targetEnabled({ name: "tricky" }, player, current);
                         });
@@ -3071,7 +3074,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var zuo_cards=player.getExpansions('tianPing_zuo');
                     var you_cards=player.getExpansions('tianPing_you');
                     if(zuo_cards.length>=3&&you_cards.length>=3) return false;
-                    return event.player.side==player.side&&player.countCards('h',card=>lib.inpile.includes(card.name))>0;
+                    return event.player.side==player.side&&event.shenEBiJi&&player.countCards('h',card=>lib.inpile.includes(card.name))>0;
                 },
                 async cost(event, trigger, player) {
                     var next= player.chooseCard('h',1,card=>lib.inpile.includes(card.name));
@@ -3106,6 +3109,19 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     await lib.skill.tianPing.addPai(player,event.cards,position);
                     await player.draw();
                 },
+                group:'',
+                subSkill:{
+                    shuXing:{
+                        trigger:{global:'chengShouShangHai'},
+                        direct:true,
+                        filter:function(event,player){
+                            return event.player.side==player.side;
+                        },
+                        content: async function(event, trigger, player) {
+                            trigger.shenEBiJi=true;
+                        },
+                    }
+                }
             },
             tianPingQingDao:{
                 forced:true,
@@ -3119,9 +3135,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var zuo_cards=player.getExpansions('tianPing_zuo');
                     var you_cards=player.getExpansions('tianPing_you');
                     if(zuo_cards.length>you_cards.length){
-                        await player.discard(zuo_cards,'tianPing_zuo');
+                        await player.discard(zuo_cards,'tianPing_zuo','sheQi');
                     }else{
-                        await player.discard(you_cards,'tianPing_you');
+                        await player.discard(you_cards,'tianPing_you','sheQi');
                     }
                     var cards=get.cards(4);
                     await player.showHiddenCards(cards);
@@ -3151,8 +3167,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 content: async function(event, trigger, player) {
                     var zuo_cards=player.getExpansions('tianPing_zuo');
                     var you_cards=player.getExpansions('tianPing_you');
-                    await player.discard(zuo_cards,'tianPing_zuo');
-                    await player.discard(you_cards,'tianPing_you');
+                    await player.discard(zuo_cards,'tianPing_zuo','sheQi');
+                    await player.discard(you_cards,'tianPing_you','sheQi');
                     var targets=await player.chooseTarget('神之审判：对2名目标对手各造成2点攻击伤害③',2,lib.filter.opponent,true).set('ai',function(target){
                         return get.damageEffect2(target, _status.event.player, 2);
                     }).forResultTargets();
@@ -3328,15 +3344,19 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                                     ["天平·左", [event.cards[0]]],
                                     ["天平·右", [event.cards[1]]],
                                 ]);
-                                 next.set("filterMove", function (from, to, moved) {
+                                next.set("filterMove", function (from, to, moved) {
                                     if (typeof to == "number") return false;
                                     return true;
                                 });
-
                                 var result=await next.forResult();
 
-                                var zuo=result.moved[0];
-                                var you=result.moved[1];
+                                if(!result.moved){
+                                    var zuo=event.cards[0];
+                                    var you=event.cards[1];
+                                }else{
+                                    var zuo=result.moved[0];
+                                    var you=result.moved[1];
+                                }
                                 await lib.skill.tianPing.addPai(player,zuo,'zuo');
                                 await lib.skill.tianPing.addPai(player,you,'you');
                             }else{
@@ -3711,7 +3731,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 <span class="greentext">(独)[响应]精准射击</span><br>
                 此攻击强制命中，但本次攻击伤害-1。`,
             gongShenHouBu_jingZhunSheJi:"[响应]精准射击",
-            gongShenHouBu_shanGuangXianJing:"[响应]闪光陷阱",
+            gongShenHouBu_shanGuangXianJing:"[法术]闪光陷阱",
 
             //圣仲裁者
             shenZhiTianPing:"[被动]神之天平",
@@ -3719,9 +3739,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             shenEBiJi:"[响应]善恶必计",
             shenEBiJi_info:"[回合限定]<span class='tiaoJian'>(我方角色承受伤害⑥并结算完毕后，你将手牌中1张基础牌面朝上[展示]放到【天平·左】或【天平·右】上)</span>你摸1张牌[强制]。",
             tianPingQingDao:"[被动]天平倾倒",
-            tianPingQingDao_info:"<span class='tiaoJian'>(你的回合开始时或你的回合结束时，若【天平·左】和【天平·右】上的牌差>1，移除牌数多的一方上所有牌)</span>展示牌堆顶4张牌[展示]，你将其中2张加入手牌[强制]并弃掉另外2张牌，你+1<span class='hong'>【罪】</span>，然后目标队友+2[治疗]。",
+            tianPingQingDao_info:"<span class='tiaoJian'>(你的回合开始时或你的回合结束时，若【天平·左】和【天平·右】上的牌差>1，舍弃牌数多的一方上所有牌)</span>展示牌堆顶4张牌[展示]，你将其中2张加入手牌[强制]并弃掉另外2张牌，你+1<span class='hong'>【罪】</span>，然后目标队友+2[治疗]。",
             shenZhiShenPan:"[响应]神之审判",
-            shenZhiShenPan_info:"<span class='tiaoJian'>(你的回合结束时，若【天平·左】和【天平·右】上的牌数都>2)</span>移除【天平·左】与【天平·右】上的所有牌，然后对2名目标角色各造成2点攻击伤害③。",
+            shenZhiShenPan_info:"<span class='tiaoJian'>(你的回合结束时，若【天平·左】和【天平·右】上的牌数都>2)</span>舍弃【天平·左】与【天平·右】上的所有牌，然后对2名目标角色各造成2点攻击伤害③。",
             tianPing:"(专)天平",
             tianPingZuo:"天平·左",
             tianPingYou:"天平·右",
@@ -3729,11 +3749,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             tianPing_you:"[被动]圣方之右",
             tianPing_fangZhi:"[被动]替罪羔羊",
             tianPing_info:`<span class='greentext'>[被动]替罪羔羊</span><br>
-            <span class='tiaoJian'>(每当有新牌将被放置在本卡上时，若该卡与本卡上的牌不同系)</span>弃到本卡上所有卡，你+1<span class='hong'>【罪】</span>。<br>
+            <span class='tiaoJian'>(每当有新牌将被放置在本卡上时，若该卡与本卡上的牌不同系)</span>移除本卡上所有卡，你+1<span class='hong'>【罪】</span>。<br>
             <span class='greentext'>[被动]罪灭之左</span><br>
             <span class='tiaoJian'>(每当本卡上的牌数增加，且增加后本卡上的牌数>1)</span>对(X-1)名目标对手造成1点攻击伤害③，X为本卡上的牌数。<br>
             <span class='greentext'>[被动]圣方之右</span><br>
-            <span class='tiaoJian'>(每当本卡上的牌被弃掉且弃牌数>1)</span>你+1[治疗]。
+            <span class='tiaoJian'>(每当本卡上的牌被移除且移除牌数>1)</span>你+1[治疗]。
             `,
             tianZui:"[启动]天罪", 
             tianZui_info:"[水晶]你+1<span class='hong'>【罪】</span>。[横置]持续到本回合结束时，你主动攻击命中时②，可将手牌中2张基本牌面朝上[展示]分别放到【天平·左】和【天平·右】上。【天罪】的效果结束时[重置]。",

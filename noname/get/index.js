@@ -5740,39 +5740,32 @@ export class Get extends GetCompatible {
 	}
 	//xingbei
 	characterGets(list,num){
-		var result=[];
-		if(!num){
-			result=list;
-		}else{
-			result=list.randomRemove(num);
-		}
+		var result=list.slice();
 		if(result.includes('hongLianQiShi')&&result.includes('shengDianQiShi')){
 			var num=Math.random();
 			if(num<0.5){
-				result=result.filter(item=>item!='hongLianQiShi');
+				result.remove('hongLianQiShi');
 			}else{
-				result=result.filter(item=>item!='shengDianQiShi');
+				result.remove('shengDianQiShi');
 			}
-			result.push(list.randomRemove());
 		}
 		if(result.includes('shengNv')&&result.includes('jinGuiZhiNv')){
 			var num=Math.random();
 			if(num<0.5){
-				result=result.filter(item=>item!='shengNv');
+				result.remove('shengNv');
 			}else{
-				result=result.filter(item=>item!='jinGuiZhiNv');
+				result.remove('jinGuiZhiNv');
 			}
-			result.push(list.randomRemove());
 		}
 		if(result.includes('fengZhiJianSheng')&&result.includes('jianZhiZi')){
 			var num=Math.random();
 			if(num<0.5){
-				result=result.filter(item=>item!='fengZhiJianSheng');
+				result.remove('fengZhiJianSheng');
 			}else{
-				result=result.filter(item=>item!='jianZhiZi');
+				result.remove('jianZhiZi');
 			}
-			result.push(list.randomRemove());
 		}
+		if(typeof num=='number'&&num>0) result=result.randomGets(num);
 		return result;
 	}
 	zhiLiaoEffect(target,num){
@@ -5796,9 +5789,10 @@ export class Get extends GetCompatible {
 		if(target.side!=player.side) return -1;
 		return get.zhiLiaoEffect(target,num);
 	}
-	countTongXiPai(cards){
+	countTongXiPai(cards,type){
 		var dict={};
 		for(var i=0;i<cards.length;i++){
+			if(type&&get.type(cards[i])!=type) continue;
 			var xiBie=get.xiBie(cards[i]);
 			if(!xiBie) continue;
 			if(!dict[xiBie]) dict[xiBie]=0;
@@ -5812,9 +5806,10 @@ export class Get extends GetCompatible {
 		}
 		return maxValue;
 	}
-	countYiXiPai(cards){
+	countYiXiPai(cards,type){
 		var dict={};
 		for(var i=0;i<cards.length;i++){
+			if(type&&get.type(cards[i])!=type) continue;
 			var xiBie=get.xiBie(cards[i]);
 			if(!xiBie) continue;
 			if(!dict[xiBie]) dict[xiBie]=0;

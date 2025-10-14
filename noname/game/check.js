@@ -120,6 +120,8 @@ export class Check {
 			event._skillChoice = game
 				.expandSkills(player.getSkills("invisible").concat(lib.skill.global))
 				.filter((skill) => lib.filter.filterEnable(event, player, skill));
+		//针对展开后的子技能再次判断是否被禁止，修复见习制片等被挑衅还可以使用其他角色独有的法术技能
+		event._skillChoice=game.filterSkills(event._skillChoice,player,'es');
 
 		const skills = event._skillChoice.filter((i) => event.isMine() || !event._aiexclude.includes(i));
 		const globallist = game.expandSkills(lib.skill.global.slice());
