@@ -5,7 +5,7 @@ window.noname_update = {
 			"功能",
 			"新增玩家函数chooseButtonCard，暂无角色使用",
 			"玩家函数countTongXiPai和countYiXiPai支持type参数",
-			"玩家函数可set'chooseToDiscard'参数，用于展示牌时间设置，默认2.5s",
+			"玩家chooseToDiscard函数可set'delay_time'参数，用于展示牌时间设置，默认2.5s",
 			
 			"优化",
 			"完善破晓技能描述",
