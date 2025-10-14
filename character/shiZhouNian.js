@@ -6732,7 +6732,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         direct:true,
                         content:async function(event,trigger,player){
                             var list=['继续回合','跳过回合'];
-                            var control=await player.chooseControl(list).set('prompt','启动前：你被挑衅了').forResultControl();
+                            var control=await player.chooseControl(list).set('prompt','启动后：你被挑衅了').forResultControl();
                             if(control=='跳过回合'){
                                 await player.removeZhiShiWu('tiaoXinX')
                                 player.removeSkill('tiaoXinX');
