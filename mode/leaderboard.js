@@ -7,7 +7,7 @@ export default () => {
             var fetchCharactersData = async (mode, ai) => {
                 try {
                     // 请求角色的胜率排行榜数据
-                    const response = await fetch('https://agdatabase.ssyy.tech:50000/v1/leaderboard?include_ai=' + ai + mode, {
+                    const response = await fetch('https://agdatabase.ssyy.tech:50000/v1/leaderboard?include_ai=' + ai + mode+'&min_games=10', {
                         method: 'GET',
                         headers: {
                             'Authorization': 'Bearer FrRz9uz64OZUSglLKv7CcLs4yTjCedOk'
