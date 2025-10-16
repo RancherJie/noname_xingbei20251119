@@ -424,8 +424,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 contentAfter:async function(event, trigger, player){
                     if(player.storage.wangNvJinKu_baoshi > 1 && get.shiQi(!player.side) > 1){
-                        await player.changeShiQi(-1,!player.side);
-                        await player.changeShiQi(1);
+                        await player.changeShiQi(-1,!player.side).set('zhuanYi',true);
+                        await player.changeShiQi(1).set('zhuanYi',true);
                     }
                 },
                 ai:{
