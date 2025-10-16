@@ -2518,6 +2518,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 },
                 position:'h',
                 discard: true,
+                filterTarget:function(card,player,target){
+                    var yingZhan_event=_status.event.getParent("_yingZhan");
+                    // 只能应战敌方角色，且不能是本次攻击的来源
+                    return player != target && player.side != target.side && target != yingZhan_event.source;
+                },
                 viewAs:function(cards,player){
                     if(cards.length==0) return;
                     const trigger = _status.event;
