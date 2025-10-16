@@ -955,7 +955,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }
                 },
                 check:function (event,player){
-                    return player.canGongJi()||player.canFaShu();
+                    return player.countCards('h')>2&&(player.canGongJi()||player.canFaShu());
                 }
             },
             daoGaoShi:{
