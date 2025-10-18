@@ -2258,7 +2258,11 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }).forResult();
                     if(qipai.cards){
                         await player.discard(qipai.cards).set('showCards',true);
-                        var choose = await player.chooseTarget(1,"对任意角色造成1点法术伤害", true).forResult();
+                        var choose = await player.chooseTarget(1,"对任意角色造成1点法术伤害", true)
+                        .set('ai',function(target){
+                            const player = _status.event.player;
+                            return get.damageEffect2(target,player,1);
+                        }).forResult();
                         await choose.targets[0].faShuDamage(1,player);
                         await event.trigger("faDongJiNeng_youHun");
                     }
