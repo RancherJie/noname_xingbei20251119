@@ -2915,7 +2915,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     source: "gongJiMingZhong"
                 },
                 filter: function(event,player) {
-                    return player.hasCard(card=> get.xiBie(card)==get.xiBie(event.card));
+                    return !event.yingZhan && player.hasCard(card=> get.xiBie(card)==get.xiBie(event.card));
                 },
                 async cost(event,trigger,player){
                     event.result=await player.chooseCard(1,'h', card => get.xiBie(card) == get.xiBie(trigger.card))
