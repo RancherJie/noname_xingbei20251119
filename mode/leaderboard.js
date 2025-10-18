@@ -698,6 +698,10 @@ export default () => {
                     } else {
                         dialog.buttons = newButtons;
                     }
+                    
+                    if (typeof dialog._applyProxyHandlers === 'function') {
+                        dialog._applyProxyHandlers();
+                    }
                 }
 
                 function applyActiveFilters() {
@@ -1352,12 +1356,16 @@ export default () => {
                     ui.click.charactercard(this.link, this);  // 显示角色卡片
                 };
 
-                for (i = 0; i < dialog.buttons.length; i++) {
-                    dialog.buttons[i].group = allCharacterDict[dialog.buttons[i].link][1];
-                    dialog.buttons[i].capt = getCapt(dialog.buttons[i].link);
-                    dialog.buttons[i].classList.add("noclick");
-                    dialog.buttons[i].listen(banCharacter);
+                function applyProxyHandlers() {
+                    for (i = 0; i < dialog.buttons.length; i++) {
+                        dialog.buttons[i].group = allCharacterDict[dialog.buttons[i].link][1];
+                        dialog.buttons[i].capt = getCapt(dialog.buttons[i].link);
+                        dialog.buttons[i].classList.add("noclick");
+                        dialog.buttons[i].listen(banCharacter);
+                    }
                 }
+                applyProxyHandlers();
+                dialog._applyProxyHandlers = applyProxyHandlers;
 
                 if (!expandall) {
                     if (characterDialogGroup[lib.config.character_dialog_tool] || lib.config.character_dialog_tool == "自创") {
