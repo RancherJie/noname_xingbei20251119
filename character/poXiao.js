@@ -2096,7 +2096,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         },
                         direct: true,
                         content: async function(event,trigger,player){
-                            //console.log(trigger.fashu);
                             if(trigger.faShu) {
                                 player.storage.damageFaShu = true;
                             } else {
@@ -2106,13 +2105,15 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     },
                     clear: {
                         trigger: {
-                            player: "phaseBegin"
+                            player: ["phaseBegin","phaseEnd"]
                         },
                         direct: true,
                         content: function() {
                             player.storage.damageFaShu = false;
                             player.storage.damageGongJi = false;
                         },
+                        silent: true,
+                        popup: false
                     }
                 },
             },
@@ -2146,11 +2147,15 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     gongJi:{
                         trigger:{player:'gongJiEnd'},
                         filter:function(event,player){
-                            return !event.yingZhan && event.gongJiMingZhong;
+                            return !event.yingZhan;
                         },
                         direct:true,
                         content: async function(event,trigger,player){
-                            await trigger.target.faShuDamage(1,player);
+                            // 攻击命中造成1点法术伤害
+                            if(trigger.gongJiMingZhong){
+                                await trigger.target.faShuDamage(1,player);
+                            }
+                            // 无论是否命中都应该移除此技能效果，避免本次没有命中后续攻击命中也能触发1点法术伤害
                             await player.removeSkill('longHunNingShi_gongJi');
                         },
                         "_priority": 1
