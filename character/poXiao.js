@@ -1154,7 +1154,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     await player.draw(mopai_num);
                     if(player.countTongXiPai()<2){
                         // 没有同系牌，直接结束
-                        event.finish();
+                        await event.finish();
                     }
                     // 弃X张同系
                     var qiPai = await player.chooseCard([2,Infinity],'h', card => get.xuanZeTongXiPai(card))
@@ -1164,7 +1164,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                             return 1;
                     }).forResult();
                     // 各造成X点法术伤害
-                    if(qiPai){
+                    if(qiPai.bool){
                         await player.discard(qiPai.cards).set('showCards',true);
                         var duishou = await player.chooseTarget(1,'选择任意对手，各造成X点法术伤害',true,function(card, player, target){
                                 return player != target && target.side != player.side;
