@@ -2692,7 +2692,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     await player.discard(event.cards).set("showCards",true);
                     await trigger.changeDamageNum(event.cards.length);
                 },
-                "_priority": 0
+                "_priority": 2
             },
             xiSheng: {
                 trigger: {
