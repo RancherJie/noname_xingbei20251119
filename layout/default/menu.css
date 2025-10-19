@@ -273,6 +273,11 @@
 	top: 350px;
 }
 
+.menubg.charactercard > .menubutton.match {
+	left: -100px;
+	top: 250px;
+}
+
 .menubg.charactercard > .ava > .changeskin {
 	bottom: 6px;
 	left: 6px;
@@ -2108,4 +2113,103 @@ div.popup-container.editor div {
 
 #window:not(.nopointer) .popup-container > .prompt-container > div > div > div > .menubutton {
 	cursor: pointer;
+}
+
+/* 最近对局样式 */
+/* 弹窗总体滚动区域 */
+.recent-matches-dialog {
+  padding-top: 6px;
+  padding-bottom: 8px;
+}
+
+/* 列表容器 */
+.recent-matches-list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+/* 单条记录卡片 */
+.recent-match-item {
+	height: 70px;
+	position: relative;
+	border-radius: 12px;
+	padding: 10px 12px;
+	box-shadow: 0 1px 0 rgba(0,0,0,0.06) inset, 0 1px 2px rgba(0,0,0,0.04);
+	background: rgba(255,255,255,0.06);
+}
+
+.recent-match-item .time {
+	position: absolute;
+	bottom: 0px;
+	margin-bottom: 4px;
+	line-height: 1.25;
+}
+
+.recent-match-item .win {
+	position: absolute;
+    left: 20px;
+    top: 30px;
+    font-size: 30px;
+    font-family: 'xinwei';
+}
+
+.recent-match-item .meta {
+	position: absolute;
+	top: 0px;
+	left: 60px;
+	font-size: 12px;
+	opacity: .85;
+	display: flex;
+	flex-direction: row;
+	gap: 2px 12px;
+	margin-bottom: 6px;
+	height: 20px;
+	width: 100px;
+}
+
+.recent-match-item .meta-line {
+	position: relative;
+    font-size: 14px;
+    padding: 10px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.recent-match-item .stats {
+	position: absolute;
+    left: 70px;
+    top: 40px;
+    font-size: 14px;
+    margin-bottom: 6px;
+    opacity: .95;
+}
+
+.recent-match-item .actions {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.recent-match-item .actions .button {
+	position: absolute;
+    right: 10px;
+    bottom: 5px;
+    width: 50px;
+    display: inline-block;
+    font-size: 12px;
+    line-height: 1;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.12);
+    cursor: pointer;
+    user-select: none;
+}
+
+.recent-match-item .actions .button:hover {
+  filter: brightness(1.05);
+  -webkit-filter: brightness(1.05);
 }
