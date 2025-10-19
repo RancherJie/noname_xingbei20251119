@@ -3622,39 +3622,33 @@ export class Click {
 							}
 							if (!data) return;
 							let store = lib.db.transaction(["video"], "readwrite").objectStore("video");
-							let videos = lib.videos.slice(0);
-							for (let i = 0; i < videos.length; i++) {
-								if (videos[i].starred) {
-									videos.splice(i--, 1);
+							lib.videos=[];
+							store.openCursor().onsuccess = function (e) {
+								var cursor = e.target.result;
+								if (cursor) {
+									lib.videos.push(cursor.value);
+									cursor.continue();
+								}else{
+									let newvid = {
+										"name": ["[保存]"+heroName, mode],
+										"mode": "xingBei",
+										"video": data,
+										"win": me.is_winner,
+										"name1": name,
+										"time": timestamp
+									}
+									for (let i = 0; i < lib.videos.length; i++) {
+										if (lib.videos[i].time == newvid.time) {
+											alert("录像已存在，请勿重复保存");
+											return;
+										}
+									}
+									lib.videos=[];
+									store.put(newvid);
+									alert("录像保存成功");
 								}
-							}
-							let vinum = parseInt(lib.config.video);
-							for (let deletei = 0; deletei < 5; deletei++) {
-								if (videos.length >= vinum) {
-									let toremove = videos.pop();
-									lib.videos.remove(toremove);
-									store.delete(toremove.time);
-								} else {
-									break;
-								}
-							}
-							let newvid = {
-								"name": ["[保存]"+heroName, mode],
-								"mode": "xingBei",
-								"video": data,
-								"win": me.is_winner,
-								"name1": name,
-								"time": timestamp
-							}
-							for (let i = 0; i < lib.videos.length; i++) {
-								if (lib.videos[i].time == newvid.time) {
-									alert("录像已存在，请勿重复保存");
-									return;
-								}
-							}
-							lib.videos.unshift(newvid);
-							store.put(newvid);
-							alert("录像保存成功");
+							};
+							
 						});
 						btn.setAttribute("role", "button");
 						btn.tabIndex = 0;
