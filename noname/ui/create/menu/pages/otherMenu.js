@@ -1602,7 +1602,13 @@ export const otherMenu = function (/** @type { boolean | undefined } */ connectM
 					};
 
 					lib.videos.sort(function (a, b) {
-						return parseInt(b.time) - parseInt(a.time);
+						if(a.name[0].includes('保存')&&b.name[0].includes('保存')){
+							return parseInt(b.time) - parseInt(a.time);
+						}else if(a.name[0].includes('保存')&&!b.name[0].includes('保存')){
+							return -1;
+						}else if(!a.name[0].includes('保存')&&b.name[0].includes('保存')){
+							return 1;
+						}else return parseInt(b.time) - parseInt(a.time);
 					});
 					var clickcapt = function () {
 						var current = this.parentNode.querySelector(".videonode.active");

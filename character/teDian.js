@@ -423,9 +423,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
 
                 },
                 contentAfter:async function(event, trigger, player){
-                    if(player.storage.wangNvJinKu_baoshi >= 1 && get.shiQi(!player.side) > 1){
-                        await player.changeShiQi(-1,!player.side);
-                        await player.changeShiQi(1);
+                    if(player.storage.wangNvJinKu_baoshi > 1 && get.shiQi(!player.side) > 1){
+                        await player.changeShiQi(-1,!player.side).set('zhuanYi',true);
+                        await player.changeShiQi(1).set('zhuanYi',true);
                     }
                 },
                 ai:{
@@ -3135,9 +3135,9 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     var zuo_cards=player.getExpansions('tianPing_zuo');
                     var you_cards=player.getExpansions('tianPing_you');
                     if(zuo_cards.length>you_cards.length){
-                        await player.discard(zuo_cards,'tianPing_zuo','sheQi');
+                        await player.discard(zuo_cards,'tianPing_zuo').set('sheQi',true);
                     }else{
-                        await player.discard(you_cards,'tianPing_you','sheQi');
+                        await player.discard(you_cards,'tianPing_you').set('sheQi',true);
                     }
                     var cards=get.cards(4);
                     await player.showHiddenCards(cards);
@@ -3167,8 +3167,8 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                 content: async function(event, trigger, player) {
                     var zuo_cards=player.getExpansions('tianPing_zuo');
                     var you_cards=player.getExpansions('tianPing_you');
-                    await player.discard(zuo_cards,'tianPing_zuo','sheQi');
-                    await player.discard(you_cards,'tianPing_you','sheQi');
+                    await player.discard(zuo_cards,'tianPing_zuo').set('sheQi',true);
+                    await player.discard(you_cards,'tianPing_you').set('sheQi',true);
                     var targets=await player.chooseTarget('神之审判：对2名目标对手各造成2点攻击伤害③',2,lib.filter.opponent,true).set('ai',function(target){
                         return get.damageEffect2(target, _status.event.player, 2);
                     }).forResultTargets();
@@ -3483,7 +3483,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
             jiDuShaoNv: "嫉妒少女",
             jianZhiZi:'剑之子',
             moGongEX: "魔弓EX",
-            sheng_zhongCaiZhe:'仲裁者',
+            sheng_zhongCaiZhe:'圣仲裁者',
 
             jianZhiMoNv_name:"席拉",
             lingXiZhiChao_name: "濯香姬",

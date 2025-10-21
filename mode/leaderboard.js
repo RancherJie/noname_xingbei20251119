@@ -5,9 +5,14 @@ export default () => {
         name:'leaderboard',
         start: async function(){
             var fetchCharactersData = async (mode, ai) => {
+                const params = new URLSearchParams({
+                    include_ai: ai,
+                    mode: mode,
+                    min_games: 10
+                });
                 try {
                     // 请求角色的胜率排行榜数据
-                    const response = await fetch('https://agdatabase.ssyy.tech:50000/v1/leaderboard?include_ai=' + ai + mode+'&min_games=10', {
+                    const response = await fetch(`https://agdatabase.ssyy.tech:50000/v1/leaderboard?${params}`, {
                         method: 'GET',
                         headers: {
                             'Authorization': 'Bearer FrRz9uz64OZUSglLKv7CcLs4yTjCedOk'
@@ -29,7 +34,7 @@ export default () => {
                 };
                
                 var  str, noclick, expandall, heightset;
-                var payload = ["&mode=3v3", "false"];
+                var payload = ["3v3", "false"];
                 // 获取排行榜数据
                 var charactersRankingData = await fetchCharactersData(payload[0],payload[1]);
                 // var charactersRankingData = [];
@@ -693,6 +698,10 @@ export default () => {
                     } else {
                         dialog.buttons = newButtons;
                     }
+                    
+                    if (typeof dialog._applyProxyHandlers === 'function') {
+                        dialog._applyProxyHandlers();
+                    }
                 }
 
                 function applyActiveFilters() {
@@ -761,7 +770,7 @@ export default () => {
                         rankingbtn1.classList.remove("thundertext");
                     }
                     
-                    payload[0] = !isActive ? "&mode=" + this.innerHTML : "";
+                    payload[0] = !isActive ? this.innerHTML : "";
 
                     // 防抖
                     const mySeq = ++rankingFetchSeq;
@@ -848,7 +857,7 @@ export default () => {
                 }
                 
                 // 排行榜两个按钮的子选项
-                var modelist = ["3v3", "2v2"];
+                var modelist = ["4v4", "3v3", "2v2"];
                 for(var i = 0; i < modelist.length; i++) {
                     var modespan = document.createElement("div");
                     modespan.style.display = "inline-block";
@@ -1347,12 +1356,16 @@ export default () => {
                     ui.click.charactercard(this.link, this);  // 显示角色卡片
                 };
 
-                for (i = 0; i < dialog.buttons.length; i++) {
-                    dialog.buttons[i].group = allCharacterDict[dialog.buttons[i].link][1];
-                    dialog.buttons[i].capt = getCapt(dialog.buttons[i].link);
-                    dialog.buttons[i].classList.add("noclick");
-                    dialog.buttons[i].listen(banCharacter);
+                function applyProxyHandlers() {
+                    for (i = 0; i < dialog.buttons.length; i++) {
+                        dialog.buttons[i].group = allCharacterDict[dialog.buttons[i].link][1];
+                        dialog.buttons[i].capt = getCapt(dialog.buttons[i].link);
+                        dialog.buttons[i].classList.add("noclick");
+                        dialog.buttons[i].listen(banCharacter);
+                    }
                 }
+                applyProxyHandlers();
+                dialog._applyProxyHandlers = applyProxyHandlers;
 
                 if (!expandall) {
                     if (characterDialogGroup[lib.config.character_dialog_tool] || lib.config.character_dialog_tool == "自创") {
