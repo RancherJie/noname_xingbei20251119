@@ -10446,14 +10446,14 @@ export class Library {
 				baoShi:{
 					intro:{
 						name:'宝石',
-						content:'mark',
+						content:'你有拥有#个宝石能量',
 					},
 					markimage:'image/card/xingShi/baoShi.png',
 				},
 				shuiJing:{
 					intro:{
 						name:'水晶',
-						content:'mark',
+						content:'你有拥有#个水晶能量',
 					},
 					markimage:'image/card/xingShi/shuiJing.png',
 				},

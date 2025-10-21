@@ -12068,9 +12068,9 @@ export const Content = {
 	},
 	changeShiQi:function(){
 		'step 0'
-		event.trigger('changeShiQiJudge');
+		if(!event.zhuanYi) event.trigger('changeShiQiJudge');
 		'step 1'
-		event.trigger('changeShiQiBefore');
+		if(!event.zhuanYi) event.trigger('changeShiQiBefore');
 		'step 2'
 		num=event.num;
 		side=event.side;
@@ -12139,9 +12139,9 @@ export const Content = {
 		'step 3'
 		game.checkResult();
 		'step 4'
-		event.trigger('changeShiQiEnd');
+		if(!event.zhuanYi) event.trigger('changeShiQiEnd');
 		'step 5'
-		event.trigger('changeShiQiAfter');
+		if(!event.zhuanYi) event.trigger('changeShiQiAfter');
 	},
 	changeZhanJi:function(){
 		'step 0'
