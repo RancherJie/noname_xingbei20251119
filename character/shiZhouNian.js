@@ -657,7 +657,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         content:async function(event,trigger,player){
                             var fengYin=event.name;
                             var cards=player.getJiChuXiaoGuo(fengYin);
-                            var source=player.storage.fengYin;
+                            var source=player.storage[fengYin];
                             await player.discard(cards,fengYin).set('visible',true);
                             player.removeSkill(fengYin);
                             await player.faShuDamage(source,3); 
@@ -721,7 +721,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         content:async function(event,trigger,player){
                             var fengYin=event.name;
                             var cards=player.getJiChuXiaoGuo(fengYin);
-                            var source=player.storage.fengYin;
+                            var source=player.storage[fengYin];
                             await player.discard(cards,fengYin).set('visible',true);
                             player.removeSkill(fengYin);
                             await player.faShuDamage(source,3); 
@@ -785,7 +785,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         content:async function(event,trigger,player){
                             var fengYin=event.name;
                             var cards=player.getJiChuXiaoGuo(fengYin);
-                            var source=player.storage.fengYin;
+                            var source=player.storage[fengYin];
                             await player.discard(cards,fengYin).set('visible',true);
                             player.removeSkill(fengYin);
                             await player.faShuDamage(source,3); 
@@ -849,7 +849,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         content:async function(event,trigger,player){
                             var fengYin=event.name;
                             var cards=player.getJiChuXiaoGuo(fengYin);
-                            var source=player.storage.fengYin;
+                            var source=player.storage[fengYin];
                             await player.discard(cards,fengYin).set('visible',true);
                             player.removeSkill(fengYin);
                             await player.faShuDamage(source,3); 
@@ -915,7 +915,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         content:async function(event,trigger,player){
                             var fengYin=event.name;
                             var cards=player.getJiChuXiaoGuo(fengYin);
-                            var source=player.storage.fengYin;
+                            var source=player.storage[fengYin];
                             await player.discard(cards,fengYin).set('visible',true);
                             player.removeSkill(fengYin);
                             await player.faShuDamage(source,3); 

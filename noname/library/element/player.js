@@ -11531,11 +11531,12 @@ export class Player extends HTMLDivElement {
 	}
 
 	addFengYin(fengYin,cards,source){
+		if(!fengYin||!cards.length||!source) return;
 		if(!source) source = this;
 		if(!this.hasSkill(fengYin)){
 			this.addSkill(fengYin);
 		}
-		this.storage.fengYin=source;
+		this.storage[fengYin]=source;
 		return this.addJiChuXiaoGuo(cards,source,fengYin);
 	}
 
