@@ -1175,10 +1175,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         else return 0;
                     }).forResult('control');
                     await player.draw(mopai_num);
-                    if(player.countTongXiPai()<2){
-                        // 没有同系牌，直接结束
-                        await event.finish();
-                    }
+                    if(player.countTongXiPai()<2) return;
                     // 弃X张同系
                     var qiPai = await player.chooseCard([2,Infinity],'h', card => get.xuanZeTongXiPai(card))
                     .set('prompt',"百万龙炎：弃X张同系牌,对自己和任一对手各造成X点法术伤害")
