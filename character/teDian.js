@@ -1447,7 +1447,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     }else{
                         var shiQiCha=game.hongShiQi-game.lanShiQi;
                     }
-                    await player.removeZhiShiWu('yuanChu_xinYang',shiQiCha);
+                    if(shiQiCha>0) await player.removeZhiShiWu('yuanChu_xinYang',shiQiCha);
                 },
                 content:async function(event,trigger,player){
                     var target=event.target;
