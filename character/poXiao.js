@@ -1303,7 +1303,6 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                     if(event.getParent().name =="_heCheng_backup" && event.getParent().player==player) 
                         return true; //合杯必定掉对面士气，先触发
                     //正常打伤害的触发判定
-                    if(event.source!=player) return false;  //改变士气的人不是玩家自己不发动
                     if(event.side==player.side) return false;    //改变自己方士气不发动
                     if(event.num>=0) return false;  //增加士气不发动
                     return player.storage._zhuiJi;
