@@ -663,7 +663,7 @@ game.import('character',function(lib,game,ui,get,ai,_status){
                         }
                     }else{
                         let card=await player.draw().forResult();
-                        await player.showHiddenCards(card);
+                        await player.showCards(card);
                         cards.push(card[0]);
                     }
 
