@@ -1,3 +1,6 @@
+本仓库已废弃，仅作留存
+新仓库：https://github.com/RancherJie/noname_xingbei
+
 noname-server.exe 的源码见以下仓库：
 
 https://github.com/nonameShijian/noname-server
